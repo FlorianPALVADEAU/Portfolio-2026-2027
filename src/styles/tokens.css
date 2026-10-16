@@ -40,3 +40,24 @@
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
+
+/* Fluid type scale: sizes grow smoothly from a 320px mobile to a wide desktop. */
+@theme {
+  --text-xs: clamp(0.75rem, 0.72rem + 0.1vw, 0.8125rem);
+  --text-xs--line-height: 1.5;
+  --text-sm: clamp(0.875rem, 0.84rem + 0.12vw, 0.9375rem);
+  --text-sm--line-height: 1.5;
+  --text-base: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  --text-base--line-height: 1.6;
+  --text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.375rem);
+  --text-lg--line-height: 1.5;
+  --text-xl: clamp(1.375rem, 1.2rem + 0.8vw, 2rem);
+  --text-xl--line-height: 1.25;
+  --text-2xl: clamp(1.75rem, 1.4rem + 1.6vw, 3rem);
+  --text-2xl--line-height: 1.1;
+  --text-3xl: clamp(2.25rem, 1.6rem + 3vw, 4.5rem);
+  --text-3xl--line-height: 1.05;
+  --text-display: clamp(3rem, 1.5rem + 7vw, 9rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.03em;
+}
