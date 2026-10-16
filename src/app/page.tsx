@@ -1,7 +1,5 @@
-export default function Home() {
-  return (
-    <main>
-      <h1>Florian Palvadeau</h1>
-    </main>
-  );
+import { Home } from "@/components/templates/home";
+
+export default function HomePage() {
+  return <Home />;
 }

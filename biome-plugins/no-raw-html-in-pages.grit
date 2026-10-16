@@ -1,0 +1,9 @@
+language js(jsx)
+
+or {
+  `<$tag $props>$children</$tag>`,
+  `<$tag $props />`
+} as $el where {
+  $tag <: r"^[a-z][a-zA-Z0-9]*$",
+  register_diagnostic(span=$el, message="Pages and layouts are pure assemblies. Do not use raw HTML elements here: compose a template or organism from src/components instead.", severity="error")
+}

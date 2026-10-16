@@ -1,15 +1,37 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
   "files": {
     "includes": ["**", "!.next", "!next-env.d.ts", "!CHANGELOG.md", "!package-lock.json"]
   },
-  "formatter": { "enabled": true, "indentStyle": "space", "indentWidth": 2, "lineWidth": 100 },
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
-  "css": { "parser": { "tailwindDirectives": true } },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
   "linter": {
     "enabled": true,
-    "domains": { "next": "recommended", "react": "recommended" },
+    "domains": {
+      "next": "recommended",
+      "react": "recommended"
+    },
     "rules": {
       "preset": "recommended",
       "a11y": "error",
@@ -22,9 +44,27 @@
         "noUnusedVariables": "error",
         "useExhaustiveDependencies": "error"
       },
-      "style": { "useImportType": "error", "useConst": "error", "noNonNullAssertion": "error" },
-      "suspicious": { "noExplicitAny": "error", "noConsole": "warn" }
+      "style": {
+        "useImportType": "error",
+        "useConst": "error",
+        "noNonNullAssertion": "error"
+      },
+      "suspicious": {
+        "noExplicitAny": "error",
+        "noConsole": "warn"
+      }
     }
   },
-  "javascript": { "formatter": { "quoteStyle": "double", "semicolons": "always" } }
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "semicolons": "always"
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["src/app/**/page.tsx", "src/app/**/layout.tsx"],
+      "plugins": ["./biome-plugins/no-raw-html-in-pages.grit"]
+    }
+  ]
 }
