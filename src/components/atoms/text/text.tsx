@@ -1,4 +1,5 @@
 import type { ComponentPropsWithoutRef, ElementType } from "react";
+import { cn } from "@/lib/utils";
 
 const sizes = { xs: "text-xs", sm: "text-sm", base: "text-base", lg: "text-lg" } as const;
 const tones = { default: "text-foreground", muted: "text-muted-foreground" } as const;
@@ -16,5 +17,5 @@ export function Text({
   className = "",
   ...props
 }: TextProps) {
-  return <Tag className={`${sizes[size]} ${tones[tone]} ${className}`.trim()} {...props} />;
+  return <Tag className={cn(sizes[size], tones[tone], className)} {...props} />;
 }

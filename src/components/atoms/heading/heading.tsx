@@ -1,4 +1,5 @@
 import type { ComponentPropsWithoutRef } from "react";
+import { cn } from "@/lib/utils";
 
 const sizes = {
   display: "text-display font-semibold tracking-tight",
@@ -16,5 +17,5 @@ type HeadingProps = ComponentPropsWithoutRef<"h1"> & {
 
 export function Heading({ level, size = "2xl", className = "", ...props }: HeadingProps) {
   const Tag = `h${level}` as const;
-  return <Tag className={`text-balance ${sizes[size]} ${className}`.trim()} {...props} />;
+  return <Tag className={cn("text-balance", sizes[size], className)} {...props} />;
 }
