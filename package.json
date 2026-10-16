@@ -14,7 +14,10 @@
     "ci:lint": "biome ci .",
     "prepare": "lefthook install",
     "knip": "knip",
-    "lint:arch": "depcruise src --config .dependency-cruiser.cjs"
+    "lint:arch": "depcruise src --config .dependency-cruiser.cjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "next": "16.4.2",
@@ -26,14 +29,20 @@
     "@commitlint/cli": "21.2.3",
     "@commitlint/config-conventional": "21.2.3",
     "@tailwindcss/turbopack": "^4",
-    "@types/node": "^20",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "24.19.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "6.1.2",
+    "@vitest/coverage-v8": "5.0.5",
     "dependency-cruiser": "18.6.0",
+    "jsdom": "29.1.1",
     "knip": "6.41.0",
     "lefthook": "2.2.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "5.0.5"
   },
   "description": "Personal portfolio of Florian Palvadeau, full-stack software engineer",
   "engines": {
