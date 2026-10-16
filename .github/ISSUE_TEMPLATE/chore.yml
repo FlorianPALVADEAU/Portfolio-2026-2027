@@ -1,0 +1,17 @@
+name: Chore
+description: Tooling, CI, dependencies, documentation or refactoring
+labels: ["type:chore"]
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+      placeholder: "- [ ] ..."
+    validations:
+      required: true

@@ -1,0 +1,24 @@
+name: Feature
+description: A user-facing capability or component
+labels: ["type:feat"]
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why is this needed and who benefits?
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+      description: A checklist of verifiable outcomes.
+      placeholder: "- [ ] ..."
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Design links, constraints, out of scope.
