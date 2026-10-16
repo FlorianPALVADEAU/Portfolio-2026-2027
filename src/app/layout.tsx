@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Document } from "@/components/templates/document";
+import { GridOverlay } from "@/features/grid-overlay";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <Document lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       {children}
+      {process.env.NODE_ENV === "development" && <GridOverlay />}
     </Document>
   );
 }
