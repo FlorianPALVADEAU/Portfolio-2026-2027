@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.3.0](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/compare/portfolio-v0.2.0...portfolio-v0.3.0) (2026-10-16)
+
+
+### Features
+
+* add layout primitives and a 12-column grid overlay ([7f7686a](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/7f7686a0777549e37dba8299bcacd22d872154f2)), closes [#55](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/55)
+* build the core atoms ([fb7e3ee](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/fb7e3ee95087fe1677632efa8774062327edf8ed)), closes [#57](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/57)
+* define design tokens and the three themes ([5ab3b85](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/5ab3b85c2589305be063e39fde5d2d56a444ace0)), closes [#53](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/53)
+* set up typography with a fluid scale and text atoms ([b2a8cad](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/b2a8cad9ec4fe7f80814c7aec005e1e8bc44da49)), closes [#54](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/54)
+
+
+### Bug fixes
+
+* pin TypeScript 6 so the architecture lint works ([a86ae25](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/a86ae25ae2b7b25bf04f5098321040544f213d8b)), closes [#64](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/64)
+
+
+### Documentation
+
+* document the design system foundations ([3d49ba2](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/3d49ba212f9e8293bf01f9f23a5e19faeacdc140)), closes [#59](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/59)
+
 ## [0.2.0](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/compare/portfolio-v0.1.0...portfolio-v0.2.0) (2026-10-16)
 
 
