@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
+import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { Document } from "@/components/templates/document";
 import { GridOverlay } from "@/features/grid-overlay";
+import { RouteFocus } from "@/features/route-focus";
 import { getMessages, isLocale, locales } from "@/lib/i18n";
 import "../globals.css";
 
@@ -46,6 +48,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
     <Document lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
       <SiteHeader locale={locale} messages={messages.header} />
       {children}
+      <SiteFooter />
+      <RouteFocus />
       {process.env.NODE_ENV === "development" && <GridOverlay />}
     </Document>
   );

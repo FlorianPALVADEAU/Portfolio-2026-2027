@@ -6,6 +6,7 @@ import { Link } from "@/components/atoms/link";
 import { Section } from "@/components/atoms/section";
 import { Stack } from "@/components/atoms/stack";
 import { Text } from "@/components/atoms/text";
+import { MAIN_ID } from "@/features/route-focus";
 import type { Locale, Messages } from "@/lib/i18n";
 
 type HomeProps = {
@@ -15,7 +16,7 @@ type HomeProps = {
 
 export function Home({ locale, messages }: HomeProps) {
   return (
-    <main>
+    <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
       <Section>
         <Container>
           <Stack gap="sm">
