@@ -17,7 +17,14 @@
       "on": "Ton: an",
       "off": "Ton: aus"
     },
-    "skip": "Zum Inhalt springen"
+    "skip": "Zum Inhalt springen",
+    "nav": {
+      "label": "Abschnitte",
+      "works": "Projekte",
+      "skills": "Kompetenzen",
+      "about": "Über mich",
+      "contact": "Kontakt"
+    }
   },
   "palette": {
     "trigger": "Befehle",
@@ -33,7 +40,15 @@
   "home": {
     "badge": "Offen für Stellen, Schweiz",
     "role": "Full-Stack-Softwareentwickler",
-    "cta": "Kontakt aufnehmen"
+    "cta": "Kontakt aufnehmen",
+    "sections": {
+      "intro": "Einführung",
+      "works": "Ausgewählte Projekte",
+      "skills": "Kompetenzen",
+      "about": "Über mich (IRL)",
+      "gallery": "Galerie",
+      "contact": "Lass uns zusammenarbeiten"
+    }
   },
   "project": {
     "back": "Zurück zur Startseite",

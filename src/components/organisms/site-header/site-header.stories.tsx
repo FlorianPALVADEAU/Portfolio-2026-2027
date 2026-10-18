@@ -20,6 +20,13 @@ const meta = {
     messages: {
       language: "Language",
       skip: "Skip to content",
+      nav: {
+        label: "Sections",
+        works: "Work",
+        skills: "Skills",
+        about: "About",
+        contact: "Contact",
+      },
       sound: { on: "Sound: on", off: "Sound: off" },
       theme: { label: "Theme", names: { dark: "Dark", light: "Light", swiss: "Swiss" } },
     },

@@ -225,3 +225,27 @@ test.describe("project page", () => {
     expect(sitemap).toContain("/en/projects/sample-project</loc>");
   });
 });
+
+test.describe("landing sections", () => {
+  test("header navigation jumps to a section without a page transition", async ({ page }) => {
+    await page.goto("/en");
+
+    await page
+      .getByRole("navigation", { name: "Sections" })
+      .getByRole("link", { name: "Skills" })
+      .click();
+
+    await expect(page).toHaveURL(/#skills$/);
+    await expect(page.getByRole("region", { name: "Skills" })).toBeInViewport();
+  });
+
+  for (const [locale, heading] of [
+    ["fr", "Projets sélectionnés"],
+    ["de", "Ausgewählte Projekte"],
+  ] as const) {
+    test(`shows translated section headings in ${locale}`, async ({ page }) => {
+      await page.goto(`/${locale}`);
+      await expect(page.getByRole("heading", { level: 2, name: heading })).toBeVisible();
+    });
+  }
+});
