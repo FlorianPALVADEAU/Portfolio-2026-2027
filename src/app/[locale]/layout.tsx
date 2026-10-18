@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { Document } from "@/components/templates/document";
 import { GridOverlay } from "@/features/grid-overlay";
+import { PageTransition } from "@/features/page-transition";
 import { RouteFocus } from "@/features/route-focus";
 import { SmoothScroll } from "@/features/smooth-scroll";
 import { getMessages, isLocale, locales } from "@/lib/i18n";
@@ -52,6 +53,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       <SiteFooter />
       <RouteFocus />
       <SmoothScroll />
+      <PageTransition />
       {process.env.NODE_ENV === "development" && <GridOverlay />}
     </Document>
   );

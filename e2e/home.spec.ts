@@ -73,3 +73,29 @@ test.describe("smooth scroll", () => {
     });
   });
 });
+
+test.describe("page transition", () => {
+  test("navigates through the overlay and the route is announced", async ({ page }) => {
+    await page.goto("/en");
+    await page.getByRole("link", { name: "FR, Français" }).click();
+
+    await expect(page).toHaveURL(/\/fr$/);
+    await expect(page.locator("html")).toHaveAttribute("lang", "fr");
+    await expect(page.locator("next-route-announcer").getByRole("alert")).toHaveText(
+      /Florian Palvadeau/,
+    );
+    await expect(page.getByRole("main")).toBeVisible();
+    await expect(page.getByRole("link", { name: "EN, English" })).toBeVisible();
+  });
+
+  test.describe("with reduced motion", () => {
+    test.use({ reducedMotion: "reduce" });
+
+    test("navigates directly", async ({ page }) => {
+      await page.goto("/en");
+      await page.getByRole("link", { name: "DE, Deutsch" }).click();
+
+      await expect(page).toHaveURL(/\/de$/);
+    });
+  });
+});
