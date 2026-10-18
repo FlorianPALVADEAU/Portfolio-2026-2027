@@ -40,6 +40,7 @@
   "home": {
     "badge": "Ouvert aux opportunités, Suisse",
     "role": "Ingénieur logiciel full-stack",
+    "tagline": "Je conçois, développe et exploite des applications web en TypeScript, des intégrations d'entreprise à la billetterie d'une course que j'ai fondée.",
     "cta": "Me contacter",
     "sections": {
       "intro": "Introduction",
@@ -48,7 +49,9 @@
       "about": "À propos (IRL)",
       "gallery": "Galerie",
       "contact": "Travaillons ensemble"
-    }
+    },
+    "scroll": "Défiler",
+    "portraitAlt": "Portrait de Florian Palvadeau"
   },
   "project": {
     "back": "Retour à l'accueil",

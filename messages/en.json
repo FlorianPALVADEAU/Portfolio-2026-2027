@@ -40,6 +40,7 @@
   "home": {
     "badge": "Open to positions, Switzerland",
     "role": "Full-stack software engineer",
+    "tagline": "I design, build and run web applications in TypeScript, from enterprise integrations to the ticketing platform of a race I founded.",
     "cta": "Get in touch",
     "sections": {
       "intro": "Introduction",
@@ -48,7 +49,9 @@
       "about": "About me (IRL)",
       "gallery": "Gallery",
       "contact": "Let's work together"
-    }
+    },
+    "scroll": "Scroll",
+    "portraitAlt": "Portrait of Florian Palvadeau"
   },
   "project": {
     "back": "Back to home",

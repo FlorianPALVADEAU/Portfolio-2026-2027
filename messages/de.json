@@ -40,6 +40,7 @@
   "home": {
     "badge": "Offen für Stellen, Schweiz",
     "role": "Full-Stack-Softwareentwickler",
+    "tagline": "Ich entwerfe, entwickle und betreibe Webanwendungen in TypeScript, von Unternehmensintegrationen bis zur Ticketing-Plattform eines Rennens, das ich gegründet habe.",
     "cta": "Kontakt aufnehmen",
     "sections": {
       "intro": "Einführung",
@@ -48,7 +49,9 @@
       "about": "Über mich (IRL)",
       "gallery": "Galerie",
       "contact": "Lass uns zusammenarbeiten"
-    }
+    },
+    "scroll": "Scrollen",
+    "portraitAlt": "Porträt von Florian Palvadeau"
   },
   "project": {
     "back": "Zurück zur Startseite",

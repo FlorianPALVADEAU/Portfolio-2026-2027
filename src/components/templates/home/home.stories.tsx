@@ -10,6 +10,9 @@ const meta = {
       badge: "Open to positions, Switzerland",
       role: "Full-stack software engineer",
       cta: "Get in touch",
+      tagline: "I design, build and run web applications in TypeScript.",
+      scroll: "Scroll",
+      portraitAlt: "Portrait of Florian Palvadeau",
       sections: {
         intro: "Introduction",
         works: "Selected works",
