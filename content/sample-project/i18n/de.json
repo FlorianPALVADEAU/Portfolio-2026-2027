@@ -1,0 +1,54 @@
+{
+  "title": "Beispielprojekt",
+  "summary": "Ein Beispiel, das alle Inhaltsblöcke nutzt.",
+  "role": "Full-Stack-Entwickler",
+  "alt": "Beispiel-Titelbild",
+  "blocks": {
+    "overview": {
+      "title": "Überblick",
+      "paragraphs": [
+        "Dieses Beispiel zeigt, wie eine Fallstudie aussieht.",
+        "Echte Projekte ersetzen es."
+      ]
+    },
+    "stack": {
+      "title": "Stack"
+    },
+    "challenges": {
+      "title": "Herausforderungen",
+      "items": [
+        {
+          "title": "Typisierte Inhalte",
+          "body": "Inhalte werden beim Build geprüft."
+        },
+        {
+          "title": "Drei Sprachen",
+          "body": "Jeder Text existiert auf Französisch, Englisch und Deutsch."
+        }
+      ]
+    },
+    "screenshot": {
+      "alt": "Beispiel-Screenshot",
+      "caption": "Ein Beispiel-Screenshot"
+    },
+    "results": {
+      "title": "Ergebnisse",
+      "items": [
+        {
+          "label": "Sprachen",
+          "value": "3"
+        },
+        {
+          "label": "Blöcke",
+          "value": "6"
+        }
+      ]
+    },
+    "links": {
+      "title": "Links",
+      "labels": {
+        "source": "Quellcode"
+      }
+    }
+  }
+}

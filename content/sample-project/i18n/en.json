@@ -1,0 +1,51 @@
+{
+  "title": "Sample project",
+  "summary": "A placeholder that exercises every content block.",
+  "role": "Full-stack developer",
+  "alt": "Placeholder cover",
+  "blocks": {
+    "overview": {
+      "title": "Overview",
+      "paragraphs": ["This placeholder shows how a case study reads.", "Real projects replace it."]
+    },
+    "stack": {
+      "title": "Stack"
+    },
+    "challenges": {
+      "title": "Challenges",
+      "items": [
+        {
+          "title": "Typed content",
+          "body": "Content is validated at build time."
+        },
+        {
+          "title": "Three locales",
+          "body": "Every text exists in French, English and German."
+        }
+      ]
+    },
+    "screenshot": {
+      "alt": "Placeholder screenshot",
+      "caption": "A placeholder screenshot"
+    },
+    "results": {
+      "title": "Results",
+      "items": [
+        {
+          "label": "Locales",
+          "value": "3"
+        },
+        {
+          "label": "Blocks",
+          "value": "6"
+        }
+      ]
+    },
+    "links": {
+      "title": "Links",
+      "labels": {
+        "source": "Source code"
+      }
+    }
+  }
+}
