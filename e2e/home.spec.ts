@@ -188,3 +188,10 @@ test.describe("seo", () => {
     }
   });
 });
+
+test("the page sets no cookies, so no consent banner is needed", async ({ page, context }) => {
+  await page.goto("/en");
+  await page.waitForLoadState("networkidle");
+
+  expect(await context.cookies()).toEqual([]);
+});
