@@ -84,6 +84,9 @@
           }
         }
       }
+    },
+    "works": {
+      "description": "Projekte, die ich gebaut und geleitet habe, samt den Entscheidungen dahinter."
     }
   },
   "project": {

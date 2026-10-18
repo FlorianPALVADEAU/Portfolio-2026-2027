@@ -1,7 +1,9 @@
+import type { ComponentProps } from "react";
 import { AboutSection } from "@/components/organisms/about-section";
 import { HeroSection } from "@/components/organisms/hero-section";
 import { IntroSection } from "@/components/organisms/intro-section";
 import { LandingSection } from "@/components/organisms/landing-section";
+import { WorksSection } from "@/components/organisms/works-section";
 import { MAIN_ID } from "@/features/route-focus";
 import type { Locale, Messages } from "@/lib/i18n";
 import { landingSections } from "@/lib/landing";
@@ -9,9 +11,10 @@ import { landingSections } from "@/lib/landing";
 type HomeProps = {
   locale: Locale;
   messages: Messages["home"];
+  projects: ComponentProps<typeof WorksSection>["projects"];
 };
 
-export function Home({ locale, messages }: HomeProps) {
+export function Home({ locale, messages, projects }: HomeProps) {
   const position = (id: (typeof landingSections)[number]) => landingSections.indexOf(id) + 1;
   const title = messages.sections;
 
@@ -19,7 +22,13 @@ export function Home({ locale, messages }: HomeProps) {
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
       <HeroSection locale={locale} messages={messages} />
       <IntroSection index={position("intro")} title={title.intro} messages={messages.intro} />
-      <LandingSection id="works" index={position("works")} title={title.works} />
+      <WorksSection
+        index={position("works")}
+        title={title.works}
+        locale={locale}
+        messages={messages.works}
+        projects={projects}
+      />
       <LandingSection id="skills" index={position("skills")} title={title.skills} />
       <AboutSection index={position("about")} title={title.about} messages={messages.about} />
       <LandingSection id="gallery" index={position("gallery")} title={title.gallery} />

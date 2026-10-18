@@ -287,3 +287,24 @@ test.describe("intro and about", () => {
     });
   }
 });
+
+test.describe("selected works", () => {
+  test("lists the case study and opens it from the card", async ({ page }) => {
+    await page.goto("/en");
+
+    const works = page.getByRole("region", { name: "Selected works" });
+    await works.getByRole("link", { name: "Overbound" }).click();
+
+    await expect(page).toHaveURL(/\/en\/projects\/overbound$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Overbound" })).toBeVisible();
+  });
+
+  test("cards are reachable and named in French", async ({ page }) => {
+    await page.goto("/fr");
+    await expect(
+      page
+        .getByRole("region", { name: "Projets sélectionnés" })
+        .getByRole("link", { name: "Overbound" }),
+    ).toBeVisible();
+  });
+});
