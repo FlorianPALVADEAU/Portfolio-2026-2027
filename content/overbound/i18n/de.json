@@ -1,0 +1,107 @@
+{
+  "title": "Overbound",
+  "summary": "Ein Hindernislauf, den ich gegründet und organisiert habe und dessen Ticketing-Plattform ich entwickelt habe: 336 verkaufte Tickets für die erste Ausgabe am 12. September 2026.",
+  "role": "Gründer, Organisator und Entwickler",
+  "alt": "Titelbild von Overbound",
+  "blocks": {
+    "context": {
+      "title": "Kontext",
+      "paragraphs": [
+        "Overbound ist ein Hindernislauf, den ich 2025 geschaffen und am 12. September 2026 erstmals auf der Île de Loisirs de Saint-Quentin-en-Yvelines bei Paris durchgeführt habe. Es gab zwei Formate: RANKED, ein Zeitrennen am Vormittag auf Runden von etwa 2 km mit Ausscheidungsregel, und OPEN, ein Format am Nachmittag in Wellen für alle, die es ausprobieren wollten.",
+        "Rund um die Strecke gab es ein Festdorf mit Foodtrucks und kommerziellen Partnern."
+      ]
+    },
+    "problem": {
+      "title": "Das Problem",
+      "paragraphs": [
+        "Ein Eventticket zu verkaufen ist ein Softwareproblem mit Termin: Anmeldungen müssen zuverlässig sein, Zahlungen müssen abgestimmt werden, und die Teilnehmenden brauchen bis zum Renntag klare Informationen. Gleichzeitig musste der Anlass selbst von Grund auf aufgebaut werden, mit Gelände, Hindernissen, Sicherheitsdispositiv, Freiwilligen und Partnern.",
+        "Ich war der einzige Entwickler und der Hauptorganisator, deshalb musste jede technische Entscheidung günstig im Betrieb und unter Druck einfach zu korrigieren sein."
+      ]
+    },
+    "role": {
+      "title": "Meine Rolle",
+      "paragraphs": [
+        "Ich habe das Projekt von Anfang bis Ende geleitet: Konzept und Marke, Website und Ticketing-Plattform, Partnersuche und Verhandlungen, Beschaffung und Bau der Hindernisse, Koordination der Sicherheit, Organisation der Freiwilligen, Budget und den Eventtag selbst."
+      ]
+    },
+    "stack": {
+      "title": "Stack"
+    },
+    "platform": {
+      "title": "Ticketing-Plattform",
+      "paragraphs": [
+        "Die Plattform ist eine Next.js-Webanwendung. Stripe wickelt die Zahlungen ab, Supabase speichert Teilnehmende und Anmeldungen, und Sanity enthält die redaktionellen Inhalte des Events, sodass Informationen ohne neues Deployment geändert werden konnten.",
+        "Der Ticketverkauf startete am 1. März 2026 und brachte über 320 Tickets für beide Formate."
+      ]
+    },
+    "decisions": {
+      "title": "Entscheidungen und Abwägungen",
+      "items": [
+        {
+          "title": "Zwei Formate auf einer Strecke",
+          "body": "RANKED und OPEN teilten dieselben Hindernisse, brauchten aber andere Regeln, Zeitmessung und Besetzung. Getrennte Zeitfenster erlaubten es, beide mit derselben Infrastruktur zu betreuen."
+        },
+        {
+          "title": "Gratisplätze und Rabatte",
+          "body": "Gratisplätze und Rabattcodes halfen, den Anlass zu füllen, verwässerten aber den Ticketumsatz, und gedruckte Flyer liessen sich keinen Verkäufen zuordnen."
+        },
+        {
+          "title": "Partner als Teil des Erlebnisses",
+          "body": "Die Partnerstände waren als Aktivitäten im Dorf gedacht und nicht als Banner. Der Nutzen war unterschiedlich: Manche schufen echte Erlebnisse, andere kamen schlecht ausgerüstet und brachten wenig."
+        }
+      ]
+    },
+    "outcome": {
+      "title": "Ergebnis",
+      "paragraphs": [
+        "RANKED war etwa vier Wochen vor dem Event ausverkauft. Die Teilnehmenden gaben sehr positive Rückmeldungen zu den Hindernissen, der Stimmung und dem Dorf, und die erste Ausgabe erreichte finanzielles Gleichgewicht."
+      ]
+    },
+    "results": {
+      "title": "Zahlen",
+      "items": [
+        {
+          "label": "Verkaufte Tickets",
+          "value": "336"
+        },
+        {
+          "label": "Aktive Tickets nach 12 Rückerstattungen",
+          "value": "324"
+        },
+        {
+          "label": "Gestartete (Schätzung)",
+          "value": "Rund 310"
+        },
+        {
+          "label": "Kommerzielle Partner",
+          "value": "11"
+        },
+        {
+          "label": "Koordinierte Freiwillige",
+          "value": "60"
+        },
+        {
+          "label": "Einsätze des Roten Kreuzes",
+          "value": "18, keiner schwer"
+        }
+      ]
+    },
+    "lessons": {
+      "title": "Was ich ändern würde",
+      "items": [
+        {
+          "title": "Kapazität an Freiwilligen",
+          "body": "Es gab weniger Freiwillige als versprochen, mit spürbaren Ausfällen, vor allem am Nachmittag. Künftig werden Freiwillige in mehreren Schritten bestätigt, und jeder Bereich erhält eine namentlich bestimmte Leitung."
+        },
+        {
+          "title": "Zu später Aufbau",
+          "body": "Der Streckenbau dauerte länger als geplant und stützte sich stark auf Familie und Freunde. Geländeaufbau und Besetzung am Renntag sollten getrennt werden, mit Lieferterminen und Zeitpuffer."
+        },
+        {
+          "title": "Messen, was wirkt",
+          "body": "Flyer, Rabatte und Partnerstände liessen sich kaum mit Verkäufen verknüpfen. Wer Akquise und Partnernutzen von Anfang an misst, sieht, was sich zu wiederholen lohnt."
+        }
+      ]
+    }
+  }
+}

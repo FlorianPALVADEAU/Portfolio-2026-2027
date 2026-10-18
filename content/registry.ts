@@ -4,12 +4,12 @@
  */
 export const registry = {
   project: {
-    "sample-project": {
-      structure: () => import("./sample-project/project"),
+    overbound: {
+      structure: () => import("./overbound/project"),
       text: {
-        fr: () => import("./sample-project/i18n/fr.json"),
-        en: () => import("./sample-project/i18n/en.json"),
-        de: () => import("./sample-project/i18n/de.json"),
+        fr: () => import("./overbound/i18n/fr.json"),
+        en: () => import("./overbound/i18n/en.json"),
+        de: () => import("./overbound/i18n/de.json"),
       },
     },
   },

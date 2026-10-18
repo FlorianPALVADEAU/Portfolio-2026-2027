@@ -1,0 +1,107 @@
+{
+  "title": "Overbound",
+  "summary": "An obstacle-course race I founded and organised, and whose ticketing platform I built: 336 tickets sold for a first edition held on 12 September 2026.",
+  "role": "Founder, organiser and developer",
+  "alt": "Overbound cover",
+  "blocks": {
+    "context": {
+      "title": "Context",
+      "paragraphs": [
+        "Overbound is an obstacle-course race I created in 2025 and held for the first time on 12 September 2026 at the Île de Loisirs de Saint-Quentin-en-Yvelines, near Paris. It offered two formats: RANKED, a timed morning race made of loops of about 2 km with an elimination rule, and OPEN, an afternoon format in waves for anyone who wanted to try.",
+        "Around the course, the event ran a festival village with food vendors and commercial partners."
+      ]
+    },
+    "problem": {
+      "title": "The problem",
+      "paragraphs": [
+        "Selling an event ticket is a software problem with a deadline attached: registrations must be reliable, payments must reconcile, and participants need clear information up to race day. At the same time, the event itself had to be built from nothing, with a venue, obstacles, safety cover, volunteers and partners.",
+        "I was the only developer and the main organiser, so every technical choice had to stay cheap to run and easy to fix under pressure."
+      ]
+    },
+    "role": {
+      "title": "My role",
+      "paragraphs": [
+        "I led the project end to end: concept and brand, the website and ticketing platform, partner outreach and negotiation, obstacle sourcing and construction, safety coordination, volunteer organisation, budget and the event day itself."
+      ]
+    },
+    "stack": {
+      "title": "Stack"
+    },
+    "platform": {
+      "title": "Ticketing platform",
+      "paragraphs": [
+        "The platform is a Next.js web application. Stripe handles payments, Supabase stores participants and registrations, and Sanity holds the editable event content, so information could change without a redeploy.",
+        "Ticketing opened on 1 March 2026 and sold more than 320 tickets across both formats."
+      ]
+    },
+    "decisions": {
+      "title": "Decisions and trade-offs",
+      "items": [
+        {
+          "title": "Two formats on one course",
+          "body": "RANKED and OPEN shared the same obstacles but needed different rules, timing and staffing. Running them in separate time slots let one set of infrastructure serve both."
+        },
+        {
+          "title": "Free places and discounts",
+          "body": "Free entries and discount codes helped fill the event, but they diluted ticket revenue, and printed flyers could not be attributed to sales."
+        },
+        {
+          "title": "Partners as part of the experience",
+          "body": "Partner booths were designed as village activities rather than banners. The value varied: some created real experiences, others arrived under-equipped and returned little."
+        }
+      ]
+    },
+    "outcome": {
+      "title": "Outcome",
+      "paragraphs": [
+        "RANKED sold out about four weeks before the event. Participants gave very positive feedback on the obstacles, the atmosphere and the village, and the first edition reached financial break-even."
+      ]
+    },
+    "results": {
+      "title": "Results",
+      "items": [
+        {
+          "label": "Tickets sold",
+          "value": "336"
+        },
+        {
+          "label": "Active tickets after 12 refunds",
+          "value": "324"
+        },
+        {
+          "label": "Starters (estimate)",
+          "value": "About 310"
+        },
+        {
+          "label": "Commercial partners",
+          "value": "11"
+        },
+        {
+          "label": "Volunteers coordinated",
+          "value": "60"
+        },
+        {
+          "label": "Red Cross interventions",
+          "value": "18, none serious"
+        }
+      ]
+    },
+    "lessons": {
+      "title": "What I would change",
+      "items": [
+        {
+          "title": "Volunteer capacity",
+          "body": "There were fewer volunteers than promised, with notable no-shows, especially in the afternoon. Next time volunteers are confirmed in several stages and every area has a named lead."
+        },
+        {
+          "title": "Setup started too late",
+          "body": "Building the course took longer than planned and relied heavily on family and friends. Site setup and race-day staffing should be separate, with delivery milestones and a time buffer."
+        },
+        {
+          "title": "Measuring what works",
+          "body": "Flyers, discounts and partner booths were hard to link to sales. Tracking acquisition and partner value from the start would show what is worth repeating."
+        }
+      ]
+    }
+  }
+}

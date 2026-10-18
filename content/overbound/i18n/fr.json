@@ -1,0 +1,107 @@
+{
+  "title": "Overbound",
+  "summary": "Une course à obstacles que j'ai fondée et organisée, et dont j'ai développé la billetterie : 336 billets vendus pour une première édition tenue le 12 septembre 2026.",
+  "role": "Fondateur, organisateur et développeur",
+  "alt": "Couverture d'Overbound",
+  "blocks": {
+    "context": {
+      "title": "Contexte",
+      "paragraphs": [
+        "Overbound est une course à obstacles que j'ai créée en 2025 et organisée pour la première fois le 12 septembre 2026 à l'Île de Loisirs de Saint-Quentin-en-Yvelines, près de Paris. Elle proposait deux formats : RANKED, une course chronométrée le matin sur des boucles d'environ 2 km avec élimination, et OPEN, un format l'après-midi par vagues pour tous ceux qui voulaient essayer.",
+        "Autour du parcours, l'événement comptait un village avec food trucks et partenaires commerciaux."
+      ]
+    },
+    "problem": {
+      "title": "Le problème",
+      "paragraphs": [
+        "Vendre un billet d'événement est un problème logiciel avec une échéance : les inscriptions doivent être fiables, les paiements doivent se réconcilier, et les participants ont besoin d'informations claires jusqu'au jour J. En parallèle, l'événement lui-même devait être construit de zéro, avec un site, des obstacles, un dispositif de sécurité, des bénévoles et des partenaires.",
+        "J'étais le seul développeur et le principal organisateur : chaque choix technique devait rester peu coûteux à exploiter et facile à corriger sous pression."
+      ]
+    },
+    "role": {
+      "title": "Mon rôle",
+      "paragraphs": [
+        "J'ai porté le projet de bout en bout : concept et marque, site web et billetterie, démarchage et négociation avec les partenaires, achat et construction des obstacles, coordination de la sécurité, organisation des bénévoles, budget et jour de l'événement."
+      ]
+    },
+    "stack": {
+      "title": "Stack"
+    },
+    "platform": {
+      "title": "Plateforme de billetterie",
+      "paragraphs": [
+        "La plateforme est une application web Next.js. Stripe gère les paiements, Supabase stocke les participants et les inscriptions, et Sanity contient le contenu éditorial de l'événement, ce qui permettait de modifier les informations sans redéploiement.",
+        "La billetterie a ouvert le 1er mars 2026 et a vendu plus de 320 billets sur les deux formats."
+      ]
+    },
+    "decisions": {
+      "title": "Décisions et compromis",
+      "items": [
+        {
+          "title": "Deux formats sur un même parcours",
+          "body": "RANKED et OPEN partageaient les mêmes obstacles mais demandaient des règles, un chronométrage et des effectifs différents. Les placer sur des créneaux séparés a permis de servir les deux avec la même infrastructure."
+        },
+        {
+          "title": "Places gratuites et réductions",
+          "body": "Les places gratuites et les codes de réduction ont aidé à remplir l'événement, mais ils ont dilué le chiffre d'affaires de la billetterie, et les flyers imprimés n'étaient pas attribuables à des ventes."
+        },
+        {
+          "title": "Les partenaires dans l'expérience",
+          "body": "Les stands partenaires ont été pensés comme des activités du village plutôt que comme des bannières. La valeur a varié : certains ont créé de vraies expériences, d'autres sont arrivés sous-équipés et ont peu rapporté."
+        }
+      ]
+    },
+    "outcome": {
+      "title": "Résultat",
+      "paragraphs": [
+        "RANKED était complet environ quatre semaines avant l'événement. Les participants ont donné des retours très positifs sur les obstacles, l'ambiance et le village, et la première édition a atteint l'équilibre financier."
+      ]
+    },
+    "results": {
+      "title": "Chiffres",
+      "items": [
+        {
+          "label": "Billets vendus",
+          "value": "336"
+        },
+        {
+          "label": "Billets actifs après 12 remboursements",
+          "value": "324"
+        },
+        {
+          "label": "Partants (estimation)",
+          "value": "Environ 310"
+        },
+        {
+          "label": "Partenaires commerciaux",
+          "value": "11"
+        },
+        {
+          "label": "Bénévoles coordonnés",
+          "value": "60"
+        },
+        {
+          "label": "Interventions de la Croix-Rouge",
+          "value": "18, aucune grave"
+        }
+      ]
+    },
+    "lessons": {
+      "title": "Ce que je changerais",
+      "items": [
+        {
+          "title": "Capacité en bénévoles",
+          "body": "Il y avait moins de bénévoles que prévu, avec des absences notables, surtout l'après-midi. La prochaine fois, les bénévoles seront confirmés en plusieurs étapes et chaque zone aura un responsable nommé."
+        },
+        {
+          "title": "Une installation trop tardive",
+          "body": "La construction du parcours a pris plus de temps que prévu et s'est beaucoup appuyée sur la famille et les amis. L'installation du site et les effectifs du jour J doivent être séparés, avec des jalons de livraison et une marge de temps."
+        },
+        {
+          "title": "Mesurer ce qui fonctionne",
+          "body": "Les flyers, les réductions et les stands partenaires étaient difficiles à relier aux ventes. Suivre l'acquisition et la valeur des partenaires dès le départ montrerait ce qui mérite d'être répété."
+        }
+      ]
+    }
+  }
+}
