@@ -4,7 +4,13 @@ import { SiteHeader } from "./site-header";
 const meta = {
   title: "Organisms/SiteHeader",
   component: SiteHeader,
-  args: { locale: "en", messages: { language: "Language" } },
+  args: {
+    locale: "en",
+    messages: {
+      language: "Language",
+      theme: { label: "Theme", names: { dark: "Dark", light: "Light", swiss: "Swiss" } },
+    },
+  },
   parameters: { layout: "fullscreen", nextjs: { navigation: { pathname: "/en" } } },
 } satisfies Meta<typeof SiteHeader>;
 

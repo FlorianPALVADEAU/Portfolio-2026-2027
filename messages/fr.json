@@ -4,7 +4,15 @@
     "description": "Portfolio de Florian Palvadeau, ingénieur logiciel full-stack ouvert aux opportunités en Suisse."
   },
   "header": {
-    "language": "Langue"
+    "language": "Langue",
+    "theme": {
+      "label": "Thème",
+      "names": {
+        "dark": "Sombre",
+        "light": "Clair",
+        "swiss": "Suisse"
+      }
+    }
   },
   "home": {
     "badge": "Ouvert aux opportunités, Suisse",
