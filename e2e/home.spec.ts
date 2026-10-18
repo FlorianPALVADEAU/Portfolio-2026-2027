@@ -255,7 +255,7 @@ test.describe("hero", () => {
     await page.goto("/en");
 
     await expect(page.getByRole("img", { name: "Portrait of Florian Palvadeau" })).toBeVisible();
-    await expect(page.getByText("Full-stack software engineer")).toBeVisible();
+    await expect(page.getByText("Full-stack software engineer", { exact: true })).toBeVisible();
     await expect(page.getByText("Kubernetes", { exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: "Get in touch" })).toBeVisible();
   });
@@ -270,4 +270,20 @@ test.describe("hero", () => {
       await expect(badge).toHaveCSS("opacity", "1");
     });
   });
+});
+
+test.describe("intro and about", () => {
+  for (const [locale, statement, role] of [
+    ["en", "I build reliable web software", "Software engineer, IT industrialization"],
+    ["fr", "Je crée des logiciels web fiables", "Ingénieur logiciel, industrialisation IT"],
+    ["de", "Ich entwickle zuverlässige Websoftware", "Softwareingenieur, IT-Industrialisierung"],
+  ] as const) {
+    test(`renders the story and career path in ${locale}`, async ({ page }) => {
+      await page.goto(`/${locale}`);
+
+      await expect(page.getByText(statement)).toBeVisible();
+      await expect(page.getByText(role, { exact: false }).first()).toBeVisible();
+      await expectNoA11yViolations(page);
+    });
+  }
 });

@@ -1,4 +1,6 @@
+import { AboutSection } from "@/components/organisms/about-section";
 import { HeroSection } from "@/components/organisms/hero-section";
+import { IntroSection } from "@/components/organisms/intro-section";
 import { LandingSection } from "@/components/organisms/landing-section";
 import { MAIN_ID } from "@/features/route-focus";
 import type { Locale, Messages } from "@/lib/i18n";
@@ -10,12 +12,18 @@ type HomeProps = {
 };
 
 export function Home({ locale, messages }: HomeProps) {
+  const position = (id: (typeof landingSections)[number]) => landingSections.indexOf(id) + 1;
+  const title = messages.sections;
+
   return (
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
       <HeroSection locale={locale} messages={messages} />
-      {landingSections.map((id, index) => (
-        <LandingSection key={id} id={id} index={index + 1} title={messages.sections[id]} />
-      ))}
+      <IntroSection index={position("intro")} title={title.intro} messages={messages.intro} />
+      <LandingSection id="works" index={position("works")} title={title.works} />
+      <LandingSection id="skills" index={position("skills")} title={title.skills} />
+      <AboutSection index={position("about")} title={title.about} messages={messages.about} />
+      <LandingSection id="gallery" index={position("gallery")} title={title.gallery} />
+      <LandingSection id="contact" index={position("contact")} title={title.contact} />
     </main>
   );
 }

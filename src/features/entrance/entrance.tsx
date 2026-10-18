@@ -15,7 +15,11 @@ export function Entrance(props: ComponentPropsWithoutRef<"div">) {
 
   useLayoutEffect(() => {
     const element = root.current;
-    if (!element || prefersReducedMotion()) return;
+    if (!element) return;
+    if (prefersReducedMotion()) {
+      element.dataset.entranceState = "done";
+      return;
+    }
 
     const context = gsap.context(() => {
       gsap.from(`[${ENTRANCE_ATTRIBUTE}]`, {
@@ -25,11 +29,14 @@ export function Entrance(props: ComponentPropsWithoutRef<"div">) {
         ease: "power3.out",
         stagger: 0.08,
         clearProps: "all",
+        onComplete: () => {
+          element.dataset.entranceState = "done";
+        },
       });
     }, element);
 
     return () => context.revert();
   }, []);
 
-  return <div ref={root} {...props} />;
+  return <div ref={root} data-entrance-root {...props} />;
 }
