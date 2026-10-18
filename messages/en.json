@@ -84,6 +84,9 @@
           }
         }
       }
+    },
+    "works": {
+      "description": "Projects I built and ran, with the decisions behind them."
     }
   },
   "project": {
