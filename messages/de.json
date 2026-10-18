@@ -13,6 +13,10 @@
         "swiss": "Schweizer"
       }
     },
+    "sound": {
+      "on": "Ton: an",
+      "off": "Ton: aus"
+    },
     "skip": "Zum Inhalt springen"
   },
   "home": {

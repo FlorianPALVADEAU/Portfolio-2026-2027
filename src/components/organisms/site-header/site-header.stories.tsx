@@ -9,6 +9,7 @@ const meta = {
     messages: {
       language: "Language",
       skip: "Skip to content",
+      sound: { on: "Sound: on", off: "Sound: off" },
       theme: { label: "Theme", names: { dark: "Dark", light: "Light", swiss: "Swiss" } },
     },
   },

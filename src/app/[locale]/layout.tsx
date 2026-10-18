@@ -8,6 +8,7 @@ import { GridOverlay } from "@/features/grid-overlay";
 import { PageTransition } from "@/features/page-transition";
 import { RouteFocus } from "@/features/route-focus";
 import { SmoothScroll } from "@/features/smooth-scroll";
+import { UiSound } from "@/features/ui-sound";
 import { getMessages, isLocale, locales } from "@/lib/i18n";
 import "../globals.css";
 
@@ -54,6 +55,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       <RouteFocus />
       <SmoothScroll />
       <PageTransition />
+      <UiSound />
       {process.env.NODE_ENV === "development" && <GridOverlay />}
     </Document>
   );

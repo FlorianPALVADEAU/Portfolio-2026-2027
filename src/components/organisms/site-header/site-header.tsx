@@ -2,6 +2,7 @@ import { Container } from "@/components/atoms/container";
 import { Link } from "@/components/atoms/link";
 import { SkipLink } from "@/components/atoms/skip-link";
 import { LocaleSwitcher } from "@/components/molecules/locale-switcher";
+import { SoundToggle } from "@/components/molecules/sound-toggle";
 import { ThemeSwitcher } from "@/components/molecules/theme-switcher";
 import { MAIN_ID } from "@/features/route-focus";
 import type { Locale, Messages } from "@/lib/i18n";
@@ -25,6 +26,7 @@ export function SiteHeader({ locale, messages }: SiteHeaderProps) {
           </Link>
           <div className="flex flex-wrap items-center justify-end gap-x-4">
             <ThemeSwitcher label={messages.theme.label} names={messages.theme.names} />
+            <SoundToggle onLabel={messages.sound.on} offLabel={messages.sound.off} />
             <LocaleSwitcher current={locale} label={messages.language} />
           </div>
         </Container>
