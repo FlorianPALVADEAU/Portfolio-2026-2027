@@ -31,7 +31,7 @@ function run(overrides: {
   const media = overrides.media ?? ["/cover.png", "/shot.png"];
   const layer = Layer.succeed(ContentSource, {
     readStructure: () => Effect.succeed(overrides.structure ?? structure),
-    readText: (slug, locale) =>
+    readText: (_kind, slug, locale) =>
       overrides.missingLocale
         ? Effect.fail(new ContentError({ slug, locale, reason: "missing locale file" }))
         : Effect.succeed(overrides.text ?? text),

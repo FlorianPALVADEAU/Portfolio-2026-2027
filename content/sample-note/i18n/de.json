@@ -1,0 +1,9 @@
+{
+  "title": "Beispielnotiz",
+  "summary": "Eine Beispielnotiz.",
+  "blocks": {
+    "body": {
+      "paragraphs": ["Diese Notiz testet den Lader."]
+    }
+  }
+}

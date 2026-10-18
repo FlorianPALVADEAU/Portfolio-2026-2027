@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { locales } from "@/lib/i18n";
-import { loadProject, projectSlugs } from ".";
+import { loadNote, loadProject, noteSlugs, projectSlugs } from ".";
 
 describe("shipped content", () => {
   const cases = projectSlugs.flatMap((slug) => locales.map((locale) => [slug, locale] as const));
@@ -14,6 +14,20 @@ describe("shipped content", () => {
 
   it("rejects an unknown project", async () => {
     await expect(loadProject("does-not-exist", "en")).rejects.toThrow("unknown project");
+  });
+
+  it.each(noteSlugs.flatMap((slug) => locales.map((locale) => [slug, locale] as const)))(
+    "note %s loads and validates in %s",
+    async (slug, locale) => {
+      const note = await loadNote(slug, locale);
+
+      expect(note.slug).toBe(slug);
+      expect(note.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    },
+  );
+
+  it("rejects an unknown note", async () => {
+    await expect(loadNote("does-not-exist", "en")).rejects.toThrow("unknown note");
   });
 
   it("keeps German free of the eszett", async () => {
