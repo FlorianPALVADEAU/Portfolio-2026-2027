@@ -6,6 +6,9 @@ const messages = {
   badge: "Badge",
   role: "Role",
   cta: "Contact me",
+  tagline: "Tagline",
+  scroll: "Scroll",
+  portraitAlt: "Portrait",
   sections: {
     intro: "Introduction",
     works: "Selected works",

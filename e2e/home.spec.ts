@@ -249,3 +249,25 @@ test.describe("landing sections", () => {
     });
   }
 });
+
+test.describe("hero", () => {
+  test("shows the portrait, tagline and stack once the entrance settles", async ({ page }) => {
+    await page.goto("/en");
+
+    await expect(page.getByRole("img", { name: "Portrait of Florian Palvadeau" })).toBeVisible();
+    await expect(page.getByText("Full-stack software engineer")).toBeVisible();
+    await expect(page.getByText("Kubernetes", { exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Get in touch" })).toBeVisible();
+  });
+
+  test.describe("with reduced motion", () => {
+    test.use({ reducedMotion: "reduce" });
+
+    test("content is visible immediately", async ({ page }) => {
+      await page.goto("/en");
+      const badge = page.getByText("Open to positions, Switzerland");
+
+      await expect(badge).toHaveCSS("opacity", "1");
+    });
+  });
+});
