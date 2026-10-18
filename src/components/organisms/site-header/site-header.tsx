@@ -1,5 +1,6 @@
 import { Container } from "@/components/atoms/container";
 import { Link } from "@/components/atoms/link";
+import { Logo } from "@/components/atoms/logo";
 import { SkipLink } from "@/components/atoms/skip-link";
 import { LocaleSwitcher } from "@/components/molecules/locale-switcher";
 import { SoundToggle } from "@/components/molecules/sound-toggle";
@@ -24,6 +25,7 @@ export function SiteHeader({ locale, messages, palette }: SiteHeaderProps) {
             href={`/${locale}`}
             className="inline-flex min-h-11 items-center font-mono text-sm font-medium no-underline"
           >
+            <Logo className="mr-3 h-5" />
             Florian Palvadeau
           </Link>
           <div className="flex flex-wrap items-center justify-end gap-x-4">
