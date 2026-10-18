@@ -4,7 +4,15 @@
     "description": "Portfolio von Florian Palvadeau, Full-Stack-Softwareentwickler, offen für Stellen in der Schweiz."
   },
   "header": {
-    "language": "Sprache"
+    "language": "Sprache",
+    "theme": {
+      "label": "Design",
+      "names": {
+        "dark": "Dunkel",
+        "light": "Hell",
+        "swiss": "Schweizer"
+      }
+    }
   },
   "home": {
     "badge": "Offen für Stellen, Schweiz",

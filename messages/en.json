@@ -4,7 +4,15 @@
     "description": "Portfolio of Florian Palvadeau, a full-stack software engineer open to positions in Switzerland."
   },
   "header": {
-    "language": "Language"
+    "language": "Language",
+    "theme": {
+      "label": "Theme",
+      "names": {
+        "dark": "Dark",
+        "light": "Light",
+        "swiss": "Swiss"
+      }
+    }
   },
   "home": {
     "badge": "Open to positions, Switzerland",

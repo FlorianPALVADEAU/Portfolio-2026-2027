@@ -24,3 +24,15 @@ test("unknown locale returns 404", async ({ page }) => {
   const response = await page.goto("/es");
   expect(response?.status()).toBe(404);
 });
+
+test("chosen theme persists across reloads without a flash", async ({ page }) => {
+  await page.goto("/en");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+
+  await page.getByRole("radio", { name: "Swiss" }).check({ force: true });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "swiss");
+
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "swiss");
+  await expect(page.getByRole("radio", { name: "Swiss" })).toBeChecked();
+});

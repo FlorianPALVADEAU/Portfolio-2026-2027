@@ -1,6 +1,7 @@
 import { Container } from "@/components/atoms/container";
 import { Link } from "@/components/atoms/link";
 import { LocaleSwitcher } from "@/components/molecules/locale-switcher";
+import { ThemeSwitcher } from "@/components/molecules/theme-switcher";
 import type { Locale, Messages } from "@/lib/i18n";
 
 type SiteHeaderProps = {
@@ -18,7 +19,10 @@ export function SiteHeader({ locale, messages }: SiteHeaderProps) {
         >
           Florian Palvadeau
         </Link>
-        <LocaleSwitcher current={locale} label={messages.language} />
+        <div className="flex flex-wrap items-center justify-end gap-x-4">
+          <ThemeSwitcher label={messages.theme.label} names={messages.theme.names} />
+          <LocaleSwitcher current={locale} label={messages.language} />
+        </div>
       </Container>
     </header>
   );
