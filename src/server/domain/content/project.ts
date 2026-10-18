@@ -1,5 +1,5 @@
 import { Schema } from "effect";
-import { BlockStructure, blockTextSchema } from "./blocks";
+import { BlockStructure, blockTextSchema, type ResolvedBlock } from "./blocks";
 
 const NonEmpty = Schema.String.check(Schema.isNonEmpty());
 
@@ -32,3 +32,12 @@ export function projectTextSchema(project: ProjectStructure) {
     ),
   });
 }
+
+/** A project resolved for one locale: structure and translated text merged. */
+export type Project = Omit<ProjectStructure, "blocks" | "cover"> & {
+  title: string;
+  summary: string;
+  role: string;
+  cover: ProjectStructure["cover"] & { alt: string };
+  blocks: readonly ResolvedBlock[];
+};

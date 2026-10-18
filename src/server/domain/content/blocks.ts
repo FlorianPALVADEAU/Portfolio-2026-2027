@@ -47,3 +47,10 @@ const blockTexts = {
 export function blockTextSchema(block: BlockStructure) {
   return blockTexts[block.type];
 }
+
+/** A block with its locale text merged in, ready for rendering. */
+export type ResolvedBlock = BlockStructure extends infer Structure
+  ? Structure extends { type: infer Type extends BlockType }
+    ? Structure & Schema.Schema.Type<(typeof blockTexts)[Type]>
+    : never
+  : never;
