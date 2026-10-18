@@ -49,7 +49,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
 
   return (
     <Document lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
-      <SiteHeader locale={locale} messages={messages.header} />
+      <SiteHeader locale={locale} messages={messages.header} palette={messages.palette} />
       {children}
       <SiteFooter />
       <RouteFocus />

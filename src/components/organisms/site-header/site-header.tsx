@@ -4,15 +4,17 @@ import { SkipLink } from "@/components/atoms/skip-link";
 import { LocaleSwitcher } from "@/components/molecules/locale-switcher";
 import { SoundToggle } from "@/components/molecules/sound-toggle";
 import { ThemeSwitcher } from "@/components/molecules/theme-switcher";
+import { CommandPalette } from "@/features/command-palette";
 import { MAIN_ID } from "@/features/route-focus";
 import type { Locale, Messages } from "@/lib/i18n";
 
 type SiteHeaderProps = {
   locale: Locale;
   messages: Messages["header"];
+  palette: Messages["palette"];
 };
 
-export function SiteHeader({ locale, messages }: SiteHeaderProps) {
+export function SiteHeader({ locale, messages, palette }: SiteHeaderProps) {
   return (
     <>
       <SkipLink href={`#${MAIN_ID}`}>{messages.skip}</SkipLink>
@@ -26,6 +28,7 @@ export function SiteHeader({ locale, messages }: SiteHeaderProps) {
           </Link>
           <div className="flex flex-wrap items-center justify-end gap-x-4">
             <ThemeSwitcher label={messages.theme.label} names={messages.theme.names} />
+            <CommandPalette locale={locale} themeNames={messages.theme.names} messages={palette} />
             <SoundToggle onLabel={messages.sound.on} offLabel={messages.sound.off} />
             <LocaleSwitcher current={locale} label={messages.language} />
           </div>
