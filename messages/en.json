@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "title": "Florian Palvadeau, Full-stack Software Engineer",
+    "description": "Portfolio of Florian Palvadeau, a full-stack software engineer open to positions in Switzerland."
+  },
+  "header": {
+    "language": "Language"
+  },
+  "home": {
+    "badge": "Open to positions, Switzerland",
+    "role": "Full-stack software engineer",
+    "cta": "Get in touch"
+  }
+}

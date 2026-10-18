@@ -11,3 +11,4 @@ Each file records one decision: its context, the choice and its consequences. Co
 | [0005](0005-vercel-web-analytics.md) | Vercel Web Analytics |
 | [0006](0006-three-locales-from-day-one.md) | Three locales from day one |
 | [0007](0007-token-driven-themes.md) | Token-driven themes |
+| [0008](0008-in-house-i18n-with-typed-messages.md) | In-house i18n with typed messages |

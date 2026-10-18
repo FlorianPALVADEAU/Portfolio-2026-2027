@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "title": "Florian Palvadeau, ingénieur logiciel full-stack",
+    "description": "Portfolio de Florian Palvadeau, ingénieur logiciel full-stack ouvert aux opportunités en Suisse."
+  },
+  "header": {
+    "language": "Langue"
+  },
+  "home": {
+    "badge": "Ouvert aux opportunités, Suisse",
+    "role": "Ingénieur logiciel full-stack",
+    "cta": "Me contacter"
+  }
+}
