@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.4.0](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/compare/portfolio-v0.3.0...portfolio-v0.4.0) (2026-10-18)
+
+
+### Features
+
+* **a11y:** add skip link, footer landmark and route focus ([#82](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/82)) ([f9808e6](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/f9808e653c25f91f92720ea644912b56d5be40e9)), closes [#72](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/72)
+* **analytics:** add vercel web analytics and speed insights ([#88](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/88)) ([5430e77](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/5430e77621776050fb8bdefaf70f664041d9ea34)), closes [#78](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/78)
+* **i18n:** add fr, en and de locale routing ([#79](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/79)) ([74f10f7](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/74f10f7cf671de370eba251642a83e00dfd1b3e0)), closes [#70](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/70)
+* **motion:** add gentle smooth scroll with lenis ([#83](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/83)) ([48fb4bc](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/48fb4bc728a31df0040ba42634d56d6640be7d40)), closes [#73](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/73)
+* **motion:** add gsap page transition overlay ([#84](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/84)) ([12fb134](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/12fb1344d00fe79a19d20ede398a9850a7aef44c)), closes [#74](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/74)
+* **nav:** add keyboard command palette ([#86](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/86)) ([6386a39](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/6386a39fdb385fb4d1f09b176d290e1428217329)), closes [#76](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/76)
+* **seo:** add metadata, sitemap, robots, og images and json-ld ([#87](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/87)) ([a0e9648](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/a0e96483aeb7d1939c829991b44862666e97fca2)), closes [#77](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/77)
+* **sound:** add muted-by-default ui sound system ([#85](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/85)) ([66a83f2](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/66a83f20907c82fb55a93d26547b38ed1775c4a3)), closes [#75](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/75)
+* **theme:** add persistent dark, light and swiss switcher ([#81](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/81)) ([e08a578](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/e08a57890a6e7cf599262c8f5b112038218b52db)), closes [#71](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/71)
+
 ## [0.3.0](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/compare/portfolio-v0.2.0...portfolio-v0.3.0) (2026-10-16)
 
 
