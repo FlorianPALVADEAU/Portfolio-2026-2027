@@ -203,7 +203,7 @@ test.describe("project page", () => {
     ["de", "Zurück zur Startseite"],
   ] as const) {
     test(`renders without accessibility violations in ${locale}`, async ({ page }) => {
-      await page.goto(`/${locale}/projects/sample-project`);
+      await page.goto(`/${locale}/projects/overbound`);
 
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
       await expect(page.getByRole("link", { name: back })).toBeVisible();
@@ -222,7 +222,7 @@ test.describe("project page", () => {
     await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute("content", /noindex/);
 
     const sitemap = await (await request.get("/sitemap.xml")).text();
-    expect(sitemap).toContain("/en/projects/sample-project</loc>");
+    expect(sitemap).toContain("/en/projects/overbound</loc>");
   });
 });
 
