@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "title": "Florian Palvadeau, Full-Stack-Softwareentwickler",
+    "description": "Portfolio von Florian Palvadeau, Full-Stack-Softwareentwickler, offen für Stellen in der Schweiz."
+  },
+  "header": {
+    "language": "Sprache"
+  },
+  "home": {
+    "badge": "Offen für Stellen, Schweiz",
+    "role": "Full-Stack-Softwareentwickler",
+    "cta": "Kontakt aufnehmen"
+  }
+}

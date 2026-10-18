@@ -6,22 +6,31 @@ import { Link } from "@/components/atoms/link";
 import { Section } from "@/components/atoms/section";
 import { Stack } from "@/components/atoms/stack";
 import { Text } from "@/components/atoms/text";
+import type { Locale, Messages } from "@/lib/i18n";
 
-export function Home() {
+type HomeProps = {
+  locale: Locale;
+  messages: Messages["home"];
+};
+
+export function Home({ locale, messages }: HomeProps) {
   return (
     <main>
       <Section>
         <Container>
           <Stack gap="sm">
-            <Badge variant="outline">Open to positions, Switzerland</Badge>
+            <Badge variant="outline">{messages.badge}</Badge>
             <Heading level={1} size="display">
               Florian Palvadeau
             </Heading>
-            <Text tone="muted">Full-stack software engineer</Text>
+            <Text tone="muted">{messages.role}</Text>
             <Stack direction="row" gap="sm">
               <Button asChild>
-                <Link href="/" className="no-underline hover:text-accent-foreground">
-                  Get in touch
+                <Link
+                  href={`/${locale}#contact`}
+                  className="no-underline hover:text-accent-foreground"
+                >
+                  {messages.cta}
                 </Link>
               </Button>
             </Stack>
