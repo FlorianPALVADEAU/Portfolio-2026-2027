@@ -150,3 +150,41 @@ test.describe("command palette", () => {
     await expectNoA11yViolations(page);
   });
 });
+
+test.describe("seo", () => {
+  test("exposes canonical, alternates, open graph and a Person without contact data", async ({
+    page,
+  }) => {
+    await page.goto("/de");
+
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/de$/);
+    await expect(page.locator('link[rel="alternate"][hreflang="fr"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveCount(1);
+    await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute("content", "de_CH");
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+      "content",
+      /opengraph-image/,
+    );
+
+    const raw = await page.locator('script[type="application/ld+json"]').textContent();
+    const person = JSON.parse(raw ?? "{}");
+    expect(person["@type"]).toBe("Person");
+    expect(Object.keys(person)).not.toEqual(
+      expect.arrayContaining(["email", "telephone", "address"]),
+    );
+  });
+
+  test("serves sitemap, robots and a PNG open graph image per locale", async ({ request }) => {
+    const sitemap = await (await request.get("/sitemap.xml")).text();
+    for (const locale of ["fr", "en", "de"]) expect(sitemap).toContain(`/${locale}</loc>`);
+
+    const robots = await (await request.get("/robots.txt")).text();
+    expect(robots).toContain("Sitemap:");
+
+    for (const locale of ["fr", "en", "de"]) {
+      const image = await request.get(`/${locale}/opengraph-image`);
+      expect(image.status()).toBe(200);
+      expect(image.headers()["content-type"]).toContain("image/png");
+    }
+  });
+});

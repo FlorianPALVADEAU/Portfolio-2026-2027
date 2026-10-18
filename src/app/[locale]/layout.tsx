@@ -10,6 +10,8 @@ import { RouteFocus } from "@/features/route-focus";
 import { SmoothScroll } from "@/features/smooth-scroll";
 import { UiSound } from "@/features/ui-sound";
 import { getMessages, isLocale, locales } from "@/lib/i18n";
+import { languageAlternates, openGraphLocale } from "@/lib/seo";
+import { siteName, siteUrl } from "@/lib/site";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -34,11 +36,20 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
   const { meta } = await getMessages(locale);
 
   return {
+    metadataBase: new URL(siteUrl),
     title: meta.title,
     description: meta.description,
-    alternates: {
-      languages: Object.fromEntries(locales.map((l) => [l, `/${l}`])),
+    alternates: { canonical: `/${locale}`, languages: languageAlternates() },
+    openGraph: {
+      type: "website",
+      siteName,
+      title: meta.title,
+      description: meta.description,
+      url: `/${locale}`,
+      locale: openGraphLocale(locale),
+      alternateLocale: locales.filter((l) => l !== locale).map(openGraphLocale),
     },
+    twitter: { card: "summary_large_image", title: meta.title, description: meta.description },
   };
 }
 
