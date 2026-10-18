@@ -56,3 +56,20 @@ test("page exposes header, main and footer landmarks", async ({ page }) => {
   await expect(page.getByRole("main")).toBeVisible();
   await expect(page.getByRole("contentinfo")).toBeVisible();
 });
+
+test.describe("smooth scroll", () => {
+  test("is active by default", async ({ page }) => {
+    await page.goto("/en");
+    await expect(page.locator("html")).toHaveClass(/lenis/);
+  });
+
+  test.describe("with reduced motion", () => {
+    test.use({ reducedMotion: "reduce" });
+
+    test("is off", async ({ page }) => {
+      await page.goto("/en");
+      await expect(page.getByRole("main")).toBeVisible();
+      await expect(page.locator("html")).not.toHaveClass(/lenis/);
+    });
+  });
+});
