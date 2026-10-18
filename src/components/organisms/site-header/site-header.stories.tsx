@@ -8,6 +8,7 @@ const meta = {
     locale: "en",
     messages: {
       language: "Language",
+      skip: "Skip to content",
       theme: { label: "Theme", names: { dark: "Dark", light: "Light", swiss: "Swiss" } },
     },
   },

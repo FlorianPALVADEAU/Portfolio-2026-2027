@@ -36,3 +36,23 @@ test("chosen theme persists across reloads without a flash", async ({ page }) =>
   await expect(page.locator("html")).toHaveAttribute("data-theme", "swiss");
   await expect(page.getByRole("radio", { name: "Swiss" })).toBeChecked();
 });
+
+test("skip link is the first tab stop and moves focus to main", async ({ page }) => {
+  await page.goto("/en");
+  await page.keyboard.press("Tab");
+
+  const skip = page.getByRole("link", { name: "Skip to content" });
+  await expect(skip).toBeFocused();
+  await expect(skip).toBeVisible();
+
+  await page.keyboard.press("Enter");
+  await expect(page.locator("main")).toBeFocused();
+});
+
+test("page exposes header, main and footer landmarks", async ({ page }) => {
+  await page.goto("/en");
+
+  await expect(page.getByRole("banner")).toBeVisible();
+  await expect(page.getByRole("main")).toBeVisible();
+  await expect(page.getByRole("contentinfo")).toBeVisible();
+});
