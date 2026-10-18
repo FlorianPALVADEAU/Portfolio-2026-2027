@@ -1,0 +1,9 @@
+{
+  "title": "Note exemple",
+  "summary": "Une note exemple.",
+  "blocks": {
+    "body": {
+      "paragraphs": ["Cette note sert à tester le chargeur."]
+    }
+  }
+}

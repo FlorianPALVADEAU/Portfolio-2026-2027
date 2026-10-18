@@ -1,5 +1,5 @@
 import { Schema } from "effect";
-import { BlockStructure, blockTextSchema, type ResolvedBlock } from "./blocks";
+import { BlockStructure, blocksTextSchema, type ResolvedBlock } from "./blocks";
 
 const NonEmpty = Schema.String.check(Schema.isNonEmpty());
 
@@ -27,9 +27,7 @@ export function projectTextSchema(project: ProjectStructure) {
     summary: NonEmpty,
     role: NonEmpty,
     alt: NonEmpty,
-    blocks: Schema.Struct(
-      Object.fromEntries(project.blocks.map((block) => [block.id, blockTextSchema(block)])),
-    ),
+    blocks: blocksTextSchema(project.blocks),
   });
 }
 

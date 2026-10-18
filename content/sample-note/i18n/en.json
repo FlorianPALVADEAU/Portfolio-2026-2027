@@ -1,0 +1,9 @@
+{
+  "title": "Sample note",
+  "summary": "A placeholder note.",
+  "blocks": {
+    "body": {
+      "paragraphs": ["This note exists to exercise the loader."]
+    }
+  }
+}

@@ -2,34 +2,41 @@ import { access } from "node:fs/promises";
 import path from "node:path";
 import { Effect, Layer } from "effect";
 import { ContentError } from "@/server/domain/content";
-import { ContentSource } from "@/server/services/content";
+import { type ContentKind, ContentSource } from "@/server/services/content";
 import { registry } from "../../../../content/registry";
 
-export const slugs = Object.keys(registry);
+type Entry = {
+  structure: () => Promise<{ default: unknown }>;
+  text: Readonly<Record<string, () => Promise<{ default: unknown }>>>;
+};
 
-type Entry = (typeof registry)[keyof typeof registry];
+export const slugsOf = (kind: ContentKind): readonly string[] => Object.keys(registry[kind]);
 
-const entryFor = (slug: string): Effect.Effect<Entry, ContentError> =>
-  slug in registry
-    ? Effect.succeed(registry[slug as keyof typeof registry])
-    : Effect.fail(new ContentError({ slug, reason: "unknown project" }));
+const entryFor = (kind: ContentKind, slug: string): Effect.Effect<Entry, ContentError> => {
+  const entries: Readonly<Record<string, Entry>> = registry[kind];
+  const entry = entries[slug];
+  return entry
+    ? Effect.succeed(entry)
+    : Effect.fail(new ContentError({ slug, reason: `unknown ${kind}` }));
+};
 
 export const ContentSourceLive = Layer.succeed(ContentSource, {
-  readStructure: (slug) =>
-    entryFor(slug).pipe(
+  readStructure: (kind, slug) =>
+    entryFor(kind, slug).pipe(
       Effect.flatMap((entry) =>
         Effect.tryPromise({
           try: async () => (await entry.structure()).default,
-          catch: () => new ContentError({ slug, reason: "cannot read project.ts" }),
+          catch: () => new ContentError({ slug, reason: `cannot read ${kind} structure` }),
         }),
       ),
     ),
-  readText: (slug, locale) =>
-    entryFor(slug).pipe(
+  readText: (kind, slug, locale) =>
+    entryFor(kind, slug).pipe(
       Effect.flatMap((entry) => {
-        const load = entry.text[locale as keyof typeof entry.text];
-        if (!load)
+        const load = entry.text[locale];
+        if (!load) {
           return Effect.fail(new ContentError({ slug, locale, reason: "missing locale file" }));
+        }
         return Effect.tryPromise({
           try: async () => (await load()).default,
           catch: () => new ContentError({ slug, locale, reason: "cannot read locale file" }),

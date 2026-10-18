@@ -44,7 +44,7 @@ const blockTexts = {
 } as const satisfies Record<BlockType, Schema.Top>;
 
 /** Text schema for one block, chosen by its structural type. */
-export function blockTextSchema(block: BlockStructure) {
+function blockTextSchema(block: BlockStructure) {
   return blockTexts[block.type];
 }
 
@@ -54,3 +54,24 @@ export type ResolvedBlock = BlockStructure extends infer Structure
     ? Structure & Schema.Schema.Type<(typeof blockTexts)[Type]>
     : never
   : never;
+
+/** One text entry per block id, each shaped by its block type. */
+export function blocksTextSchema(blocks: readonly BlockStructure[]) {
+  return Schema.Struct(
+    Object.fromEntries(blocks.map((block) => [block.id, blockTextSchema(block)])),
+  );
+}
+
+/** Merges validated per-block text into the structure. */
+export function resolveBlocks(
+  blocks: readonly BlockStructure[],
+  texts: Readonly<Record<string, unknown>>,
+): readonly ResolvedBlock[] {
+  // Each text was decoded with the schema of its own block type, so the merge is sound.
+  return blocks.map((block) => ({ ...block, ...(texts[block.id] as object) }) as ResolvedBlock);
+}
+
+/** Image files referenced by blocks, which must exist on disk. */
+export function blockMedia(blocks: readonly BlockStructure[]): string[] {
+  return blocks.flatMap((block) => (block.type === "media" ? [block.image.src] : []));
+}
