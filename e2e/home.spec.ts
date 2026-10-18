@@ -195,3 +195,33 @@ test("the page sets no cookies, so no consent banner is needed", async ({ page, 
 
   expect(await context.cookies()).toEqual([]);
 });
+
+test.describe("project page", () => {
+  for (const [locale, back] of [
+    ["en", "Back to home"],
+    ["fr", "Retour à l'accueil"],
+    ["de", "Zurück zur Startseite"],
+  ] as const) {
+    test(`renders without accessibility violations in ${locale}`, async ({ page }) => {
+      await page.goto(`/${locale}/projects/sample-project`);
+
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await expect(page.getByRole("link", { name: back })).toBeVisible();
+      await expectNoA11yViolations(page);
+    });
+  }
+
+  test("unknown project shows the not-found page and the sitemap lists real ones", async ({
+    page,
+    request,
+  }) => {
+    await page.goto("/en/projects/nope");
+    // Cache Components streams the shell first, so the status can already be 200;
+    // the not-found page still carries a noindex robots tag.
+    await expect(page.getByText("This page could not be found")).toBeVisible();
+    await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute("content", /noindex/);
+
+    const sitemap = await (await request.get("/sitemap.xml")).text();
+    expect(sitemap).toContain("/en/projects/sample-project</loc>");
+  });
+});

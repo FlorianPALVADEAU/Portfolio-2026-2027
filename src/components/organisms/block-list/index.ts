@@ -1,1 +1,1 @@
-export { BlockList } from "./block-list";
+export { type Block, BlockList } from "./block-list";

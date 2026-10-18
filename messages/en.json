@@ -34,5 +34,10 @@
     "badge": "Open to positions, Switzerland",
     "role": "Full-stack software engineer",
     "cta": "Get in touch"
+  },
+  "project": {
+    "back": "Back to home",
+    "role": "Role",
+    "year": "Year"
   }
 }
