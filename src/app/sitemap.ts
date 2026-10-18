@@ -2,14 +2,22 @@ import type { MetadataRoute } from "next";
 import { locales } from "@/lib/i18n";
 import { languageAlternates } from "@/lib/seo";
 import { siteUrl } from "@/lib/site";
+import { projectSlugs } from "@/server/infrastructure/content";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+/** One entry per locale for every page, each pointing at its translations. */
+function entriesFor(path: string): MetadataRoute.Sitemap {
   const languages = Object.fromEntries(
-    Object.entries(languageAlternates()).map(([language, path]) => [language, `${siteUrl}${path}`]),
+    Object.entries(languageAlternates(path)).map(([language, href]) => [
+      language,
+      `${siteUrl}${href}`,
+    ]),
   );
-
   return locales.map((locale) => ({
-    url: `${siteUrl}/${locale}`,
+    url: `${siteUrl}/${locale}${path}`,
     alternates: { languages },
   }));
+}
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [...entriesFor(""), ...projectSlugs.flatMap((slug) => entriesFor(`/projects/${slug}`))];
 }

@@ -34,5 +34,10 @@
     "badge": "Ouvert aux opportunités, Suisse",
     "role": "Ingénieur logiciel full-stack",
     "cta": "Me contacter"
+  },
+  "project": {
+    "back": "Retour à l'accueil",
+    "role": "Rôle",
+    "year": "Année"
   }
 }

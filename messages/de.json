@@ -34,5 +34,10 @@
     "badge": "Offen für Stellen, Schweiz",
     "role": "Full-Stack-Softwareentwickler",
     "cta": "Kontakt aufnehmen"
+  },
+  "project": {
+    "back": "Zurück zur Startseite",
+    "role": "Rolle",
+    "year": "Jahr"
   }
 }
