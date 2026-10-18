@@ -1,23 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import en from "../../../../messages/en.json";
 import { Home } from "./home";
 
-const messages = {
-  badge: "Badge",
-  role: "Role",
-  cta: "Contact me",
-  tagline: "Tagline",
-  scroll: "Scroll",
-  portraitAlt: "Portrait",
-  sections: {
-    intro: "Introduction",
-    works: "Selected works",
-    skills: "Skills",
-    about: "About me (IRL)",
-    gallery: "Gallery",
-    contact: "Let's work together",
-  },
-};
+const messages = { ...en.home, badge: "Badge", cta: "Contact me" };
 
 describe("Home", () => {
   it("renders the main landmark with the owner's name as the page heading", () => {
@@ -48,6 +34,7 @@ describe("Home", () => {
       "Gallery",
       "Let's work together",
     ]);
+    expect(screen.getByRole("heading", { level: 3, name: "Experience" })).toBeVisible();
     expect(screen.getByRole("region", { name: "Skills" })).toHaveAttribute("id", "skills");
   });
 });

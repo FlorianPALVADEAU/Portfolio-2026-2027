@@ -51,7 +51,40 @@
       "contact": "Lass uns zusammenarbeiten"
     },
     "scroll": "Scrollen",
-    "portraitAlt": "Porträt von Florian Palvadeau"
+    "portraitAlt": "Porträt von Florian Palvadeau",
+    "intro": {
+      "statement": "Ich entwickle zuverlässige Websoftware, von Unternehmensintegrationen bis zu Produkten, die ich selbst betreibe.",
+      "aside": "Seit 2022 arbeite ich mit TypeScript, zwischen internen Werkzeugen im grossen Massstab bei JCDecaux und der Ticketing-Plattform eines Rennens, das ich gegründet habe. Ab September 2027 verfügbar für Stellen in Genf und im Kanton Waadt."
+    },
+    "about": {
+      "paragraphs": [
+        "Ich bin Full-Stack-Softwareingenieur und arbeite hauptsächlich mit TypeScript, React, Next.js und NestJS. 2022 habe ich als Entwickler bei Neurones IT begonnen und bin danach zu JCDecaux gewechselt, zunächst im dualen Studium und seit September 2025 als Softwareingenieur in der IT-Industrialisierung.",
+        "Bei JCDecaux entwickle und betreibe ich interne Werkzeuge, die international im Einsatz sind, und arbeite auf Englisch mit lokalen Teams. Ich habe an der IIM digitales Projektmanagement studiert und schätze den Teil des Berufs, in dem Anforderungen, Planung und Auslieferung zusammenkommen.",
+        "Nebenbei habe ich Overbound gegründet, einen Hindernislauf. Die erste Ausgabe im September 2026 brachte über 320 Teilnehmende und 60 Freiwillige zusammen, mit einer Ticketing-Plattform, die ich selbst entwickelt habe."
+      ],
+      "present": "Heute",
+      "timeline": {
+        "title": "Werdegang",
+        "items": {
+          "jcdecaux": {
+            "role": "Softwareingenieur, IT-Industrialisierung",
+            "summary": "Interne Automatisierungs- und Deployment-Werkzeuge im internationalen Einsatz (React, NestJS, PostgreSQL, AWS, Kubernetes)."
+          },
+          "overbound": {
+            "role": "Gründer und Organisator",
+            "summary": "Hindernislauf und seine Ticketing-Plattform (Next.js, Supabase, Stripe, Sanity)."
+          },
+          "apprentice": {
+            "role": "Duales Studium, IT-Industrialisierung",
+            "summary": "Zwei Anwendungen, die täglich von über 1000 Mitarbeitenden genutzt werden, als Microservices mit CI/CD."
+          },
+          "neurones": {
+            "role": "Full-Stack-Entwickler",
+            "summary": "SaaS-Plattform zur Verwaltung von Microsoft-365-Umgebungen für Grosskunden (Django, Vue.js)."
+          }
+        }
+      }
+    }
   },
   "project": {
     "back": "Zurück zur Startseite",

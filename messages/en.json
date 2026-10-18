@@ -51,7 +51,40 @@
       "contact": "Let's work together"
     },
     "scroll": "Scroll",
-    "portraitAlt": "Portrait of Florian Palvadeau"
+    "portraitAlt": "Portrait of Florian Palvadeau",
+    "intro": {
+      "statement": "I build reliable web software, from enterprise integrations to products I run myself.",
+      "aside": "Since 2022 I have worked in TypeScript, between large-scale internal tooling at JCDecaux and the ticketing platform of a race I founded. Available from September 2027 for roles in Geneva and the canton of Vaud."
+    },
+    "about": {
+      "paragraphs": [
+        "I am a full-stack software engineer, mostly working with TypeScript, React, Next.js and NestJS. I started in 2022 as a developer at Neurones IT, then joined JCDecaux, first as an apprentice and, since September 2025, as a software engineer in IT industrialization.",
+        "At JCDecaux I build and run internal tools that are deployed internationally, working in English with local teams. I studied digital project management at IIM, and I enjoy the part of engineering where requirements, planning and delivery meet.",
+        "Alongside, I founded Overbound, an obstacle-course race. Its first edition in September 2026 brought together more than 320 participants and 60 volunteers, with a ticketing platform I built myself."
+      ],
+      "present": "Present",
+      "timeline": {
+        "title": "Experience",
+        "items": {
+          "jcdecaux": {
+            "role": "Software engineer, IT industrialization",
+            "summary": "Internal automation and deployment tooling used internationally (React, NestJS, PostgreSQL, AWS, Kubernetes)."
+          },
+          "overbound": {
+            "role": "Founder and organiser",
+            "summary": "Obstacle-course race and its ticketing platform (Next.js, Supabase, Stripe, Sanity)."
+          },
+          "apprentice": {
+            "role": "IT industrialization apprentice",
+            "summary": "Two applications used daily by more than 1,000 colleagues, built as microservices with CI/CD."
+          },
+          "neurones": {
+            "role": "Full-stack developer",
+            "summary": "SaaS platform to manage Microsoft 365 environments for large-account clients (Django, Vue.js)."
+          }
+        }
+      }
+    }
   },
   "project": {
     "back": "Back to home",
