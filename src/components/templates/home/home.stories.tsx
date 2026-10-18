@@ -10,6 +10,14 @@ const meta = {
       badge: "Open to positions, Switzerland",
       role: "Full-stack software engineer",
       cta: "Get in touch",
+      sections: {
+        intro: "Introduction",
+        works: "Selected works",
+        skills: "Skills",
+        about: "About me (IRL)",
+        gallery: "Gallery",
+        contact: "Let's work together",
+      },
     },
   },
 } satisfies Meta<typeof Home>;

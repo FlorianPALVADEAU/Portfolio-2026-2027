@@ -17,7 +17,14 @@
       "on": "Son : activé",
       "off": "Son : coupé"
     },
-    "skip": "Aller au contenu"
+    "skip": "Aller au contenu",
+    "nav": {
+      "label": "Sections",
+      "works": "Projets",
+      "skills": "Compétences",
+      "about": "À propos",
+      "contact": "Contact"
+    }
   },
   "palette": {
     "trigger": "Commandes",
@@ -33,7 +40,15 @@
   "home": {
     "badge": "Ouvert aux opportunités, Suisse",
     "role": "Ingénieur logiciel full-stack",
-    "cta": "Me contacter"
+    "cta": "Me contacter",
+    "sections": {
+      "intro": "Introduction",
+      "works": "Projets sélectionnés",
+      "skills": "Compétences",
+      "about": "À propos (IRL)",
+      "gallery": "Galerie",
+      "contact": "Travaillons ensemble"
+    }
   },
   "project": {
     "back": "Retour à l'accueil",

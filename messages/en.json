@@ -17,7 +17,14 @@
       "on": "Sound: on",
       "off": "Sound: off"
     },
-    "skip": "Skip to content"
+    "skip": "Skip to content",
+    "nav": {
+      "label": "Sections",
+      "works": "Work",
+      "skills": "Skills",
+      "about": "About",
+      "contact": "Contact"
+    }
   },
   "palette": {
     "trigger": "Commands",
@@ -33,7 +40,15 @@
   "home": {
     "badge": "Open to positions, Switzerland",
     "role": "Full-stack software engineer",
-    "cta": "Get in touch"
+    "cta": "Get in touch",
+    "sections": {
+      "intro": "Introduction",
+      "works": "Selected works",
+      "skills": "Skills",
+      "about": "About me (IRL)",
+      "gallery": "Gallery",
+      "contact": "Let's work together"
+    }
   },
   "project": {
     "back": "Back to home",

@@ -2,7 +2,19 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { Home } from "./home";
 
-const messages = { badge: "Badge", role: "Role", cta: "Contact me" };
+const messages = {
+  badge: "Badge",
+  role: "Role",
+  cta: "Contact me",
+  sections: {
+    intro: "Introduction",
+    works: "Selected works",
+    skills: "Skills",
+    about: "About me (IRL)",
+    gallery: "Gallery",
+    contact: "Let's work together",
+  },
+};
 
 describe("Home", () => {
   it("renders the main landmark with the owner's name as the page heading", () => {
@@ -19,5 +31,20 @@ describe("Home", () => {
 
     expect(screen.getByText("Badge")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Contact me" })).toHaveAttribute("href", "/fr#contact");
+  });
+
+  it("renders every landing section with an anchor and a heading, in order", () => {
+    render(<Home locale="en" messages={messages} />);
+
+    const headings = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
+    expect(headings).toEqual([
+      "Introduction",
+      "Selected works",
+      "Skills",
+      "About me (IRL)",
+      "Gallery",
+      "Let's work together",
+    ]);
+    expect(screen.getByRole("region", { name: "Skills" })).toHaveAttribute("id", "skills");
   });
 });
