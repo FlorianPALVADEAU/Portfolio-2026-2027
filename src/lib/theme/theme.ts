@@ -1,9 +1,9 @@
 export const themes = ["dark", "light", "swiss"] as const;
 export type Theme = (typeof themes)[number];
 export const defaultTheme: Theme = "dark";
-export const THEME_STORAGE_KEY = "theme";
+const THEME_STORAGE_KEY = "theme";
 
-export function isTheme(value: unknown): value is Theme {
+function isTheme(value: unknown): value is Theme {
   return typeof value === "string" && (themes as readonly string[]).includes(value);
 }
 
