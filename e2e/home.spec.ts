@@ -99,3 +99,14 @@ test.describe("page transition", () => {
     });
   });
 });
+
+test("sound is muted by default and the opt-in persists", async ({ page }) => {
+  await page.goto("/en");
+  await expect(page.getByRole("button", { name: "Sound: off" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Sound: off" }).click();
+  await expect(page.getByRole("button", { name: "Sound: on" })).toBeVisible();
+
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Sound: on" })).toBeVisible();
+});

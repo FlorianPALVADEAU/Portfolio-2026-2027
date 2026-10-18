@@ -13,6 +13,10 @@
         "swiss": "Suisse"
       }
     },
+    "sound": {
+      "on": "Son : activé",
+      "off": "Son : coupé"
+    },
     "skip": "Aller au contenu"
   },
   "home": {
