@@ -13,6 +13,7 @@ const meta = {
       tagline:
         "I design, build and run web applications in TypeScript, from enterprise integrations to the ticketing platform of a race I founded.",
       cta: "Get in touch",
+      cv: "Download CV (PDF)",
       scroll: "Scroll",
       portraitAlt: "Portrait of Florian Palvadeau",
     },
@@ -22,3 +23,5 @@ const meta = {
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {};
+
+export const WithCv: StoryObj<typeof meta> = { args: { cvHref: "/cv/cv-en.pdf" } };

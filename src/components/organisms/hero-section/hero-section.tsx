@@ -12,10 +12,15 @@ import { heroStack } from "@/lib/landing";
 
 type HeroSectionProps = {
   locale: Locale;
-  messages: Pick<Messages["home"], "badge" | "role" | "tagline" | "cta" | "scroll" | "portraitAlt">;
+  messages: Pick<
+    Messages["home"],
+    "badge" | "role" | "tagline" | "cta" | "cv" | "scroll" | "portraitAlt"
+  >;
+  /** Public URL of the CV in the visitor's language; omitted when none has been added. */
+  cvHref?: string | null;
 };
 
-export function HeroSection({ locale, messages }: HeroSectionProps) {
+export function HeroSection({ locale, messages, cvHref = null }: HeroSectionProps) {
   return (
     <Section className="relative overflow-hidden pt-8 md:pt-16">
       <Container>
@@ -48,7 +53,7 @@ export function HeroSection({ locale, messages }: HeroSectionProps) {
                 </li>
               ))}
             </ul>
-            <div data-entrance>
+            <div data-entrance className="flex flex-wrap gap-3">
               <Button asChild size="lg">
                 <Link
                   href={`/${locale}#contact`}
@@ -57,6 +62,13 @@ export function HeroSection({ locale, messages }: HeroSectionProps) {
                   {messages.cta}
                 </Link>
               </Button>
+              {cvHref && (
+                <Button asChild size="lg" variant="outline">
+                  <a href={cvHref} download className="no-underline">
+                    {messages.cv}
+                  </a>
+                </Button>
+              )}
             </div>
           </div>
           <div className="relative mx-auto w-full max-w-sm md:max-w-none">
