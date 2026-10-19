@@ -26,7 +26,7 @@ export function SiteHeader({ locale, messages, palette }: SiteHeaderProps) {
       <SkipLink href={`#${MAIN_ID}`}>{messages.skip}</SkipLink>
       <HeaderReveal>
         <Container>
-          <div className="relative flex items-center justify-between bg-background py-2">
+          <div className="relative flex items-center justify-between rounded-full border border-border/60 bg-background/60 py-2 pr-2 pl-4 sm:pl-5 backdrop-blur-md backdrop-saturate-150">
             <Link href={`/${locale}`} className="inline-flex min-h-11 items-center no-underline">
               <Logo label={siteName} className="h-5" />
             </Link>
@@ -36,7 +36,10 @@ export function SiteHeader({ locale, messages, palette }: SiteHeaderProps) {
                 <SoundToggle onLabel={messages.sound.on} offLabel={messages.sound.off} />
                 <LocaleSwitcher current={locale} label={messages.language} />
               </div>
-              <Button asChild className="hidden hover:text-accent-foreground md:inline-flex">
+              <Button
+                asChild
+                className="hidden rounded-full px-5 text-xs tracking-wider uppercase hover:text-accent-foreground md:inline-flex"
+              >
                 <Link href={`/${locale}#contact`} className="no-underline">
                   {messages.cta}
                 </Link>
@@ -46,7 +49,11 @@ export function SiteHeader({ locale, messages, palette }: SiteHeaderProps) {
                 closeLabel={messages.menu.close}
                 navLabel={messages.nav.label}
                 action={
-                  <Button asChild size="lg" className="w-full hover:text-accent-foreground">
+                  <Button
+                    asChild
+                    size="lg"
+                    className="w-full rounded-full tracking-wider uppercase hover:text-accent-foreground"
+                  >
                     <Link href={`/${locale}#contact`} className="no-underline">
                       {messages.cta}
                     </Link>

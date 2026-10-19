@@ -55,7 +55,7 @@ export function ViewCursor({ label, children }: ViewCursorProps) {
       <span
         ref={bubble}
         aria-hidden="true"
-        className="pointer-events-none fixed top-0 left-0 z-(--z-overlay) -mt-12 -ml-12 flex size-24 scale-0 items-center justify-center bg-accent text-sm font-medium text-accent-foreground"
+        className="pointer-events-none fixed top-0 left-0 z-(--z-overlay) -mt-12 -ml-12 flex size-24 scale-0 items-center justify-center rounded-full bg-accent font-mono text-xs uppercase tracking-widest text-accent-foreground"
       >
         {label}
       </span>

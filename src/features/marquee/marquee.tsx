@@ -25,7 +25,7 @@ function Items({ items, hidden }: { items: readonly string[]; hidden?: boolean }
       )}
     >
       {items.map((item) => (
-        <li key={item} className="text-lg whitespace-nowrap">
+        <li key={item} className="font-mono text-sm tracking-wide whitespace-nowrap uppercase">
           {item}
         </li>
       ))}
@@ -93,7 +93,10 @@ export function Marquee({ items, label, pauseLabel, playLabel }: MarqueeProps) {
   }, [userPaused, engaged]);
 
   return (
-    <section aria-label={label} className="relative bg-background px-(--gutter) py-6">
+    <section
+      aria-label={label}
+      className="relative border-y border-border bg-background px-(--gutter) py-6"
+    >
       <div ref={root} data-motion="static" className="group flex items-center gap-4">
         <div className="flex min-w-0 flex-1 overflow-hidden">
           <div ref={track} className="flex w-max group-data-[motion=static]:w-auto">
@@ -103,7 +106,7 @@ export function Marquee({ items, label, pauseLabel, playLabel }: MarqueeProps) {
         </div>
         {animated && (
           <Button
-            variant="secondary"
+            variant="outline"
             size="sm"
             onClick={() => setUserPaused((paused) => !paused)}
             className="shrink-0"

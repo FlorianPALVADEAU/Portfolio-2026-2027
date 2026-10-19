@@ -5,7 +5,7 @@ import { AboutSection } from "./about-section";
 
 describe("AboutSection", () => {
   it("renders the story and the career path, newest first", () => {
-    render(<AboutSection title="About" messages={en.home.about} />);
+    render(<AboutSection index={4} title="About" messages={en.home.about} />);
 
     const entries = screen.getAllByRole("listitem").map((item) => item.textContent ?? "");
     expect(entries[0]).toContain("JCDecaux");

@@ -52,8 +52,10 @@
       "works": "Ausgewählte Projekte",
       "skills": "Kompetenzen",
       "about": "Über mich (IRL)",
+      "gallery": "Galerie",
       "contact": "Lass uns zusammenarbeiten"
     },
+    "scroll": "Scrollen",
     "portraitAlt": "Porträt von Florian Palvadeau",
     "intro": {
       "statement": "Ich entwickle zuverlässige Websoftware, von Unternehmensintegrationen bis zu Produkten, die ich selbst betreibe.",

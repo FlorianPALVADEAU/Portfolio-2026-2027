@@ -22,6 +22,7 @@
   --shadow-lg: 0 18px 40px -12px rgb(var(--shadow-color) / 0.3);
 
   --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 @theme {

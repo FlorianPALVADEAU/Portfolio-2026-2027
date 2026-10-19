@@ -52,8 +52,10 @@
       "works": "Selected works",
       "skills": "Skills",
       "about": "About me (IRL)",
+      "gallery": "Gallery",
       "contact": "Let's work together"
     },
+    "scroll": "Scroll",
     "portraitAlt": "Portrait of Florian Palvadeau",
     "intro": {
       "statement": "I build reliable web software, from enterprise integrations to products I run myself.",

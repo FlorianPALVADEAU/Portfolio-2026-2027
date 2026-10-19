@@ -1,5 +1,6 @@
 export { pictureCredits } from "./credits";
 export { experience, formatPeriod } from "./experience";
+export { heroStack } from "./hero-stack";
 export { profiles } from "./profiles";
-export { navSections } from "./sections";
+export { landingSections, navSections } from "./sections";
 export { certifications, skillGroups, technologies } from "./skills";

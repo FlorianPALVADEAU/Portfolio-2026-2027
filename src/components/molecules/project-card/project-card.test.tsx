@@ -23,9 +23,8 @@ describe("ProjectCard", () => {
   it("shows year, summary, stack and cover", () => {
     render(<ProjectCard {...props} />);
 
-    expect(screen.getByText(/^2026, /)).toBeVisible();
+    expect(screen.getByText("2026 • Next.js • Stripe")).toBeVisible();
     expect(screen.getByText("A summary")).toBeVisible();
-    expect(screen.getByText(/Next.js, Stripe/)).toBeVisible();
     expect(screen.getByRole("img", { name: "Cover" })).toBeVisible();
   });
 });

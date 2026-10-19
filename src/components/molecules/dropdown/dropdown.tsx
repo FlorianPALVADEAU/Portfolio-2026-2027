@@ -67,7 +67,7 @@ export function Dropdown({ label, trigger, align = "end", children }: DropdownPr
           id={panelId}
           data-hover-sound="item"
           className={cn(
-            "absolute top-full z-50 mt-2 min-w-44 bg-surface p-1 shadow-lg",
+            "absolute top-full z-50 mt-2 min-w-44 rounded-lg border border-border bg-background/90 p-1 shadow-lg backdrop-blur-md",
             align === "end" ? "right-0" : "left-0",
           )}
         >

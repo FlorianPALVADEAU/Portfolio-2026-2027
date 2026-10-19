@@ -3,12 +3,14 @@ import { AboutSection } from "@/components/organisms/about-section";
 import { ContactSection } from "@/components/organisms/contact-section";
 import { HeroSection } from "@/components/organisms/hero-section";
 import { IntroSection } from "@/components/organisms/intro-section";
+import { LandingSection } from "@/components/organisms/landing-section";
 import { SceneBackdrop } from "@/components/organisms/scene-backdrop";
 import { SkillsSection } from "@/components/organisms/skills-section";
 import { TechnologyBand } from "@/components/organisms/technology-band";
 import { WorksSection } from "@/components/organisms/works-section";
 import { MAIN_ID } from "@/features/route-focus";
 import type { Locale, Messages } from "@/lib/i18n";
+import { landingSections } from "@/lib/landing";
 
 type HomeProps = {
   locale: Locale;
@@ -17,6 +19,7 @@ type HomeProps = {
 };
 
 export function Home({ locale, messages, projects }: HomeProps) {
+  const position = (id: (typeof landingSections)[number]) => landingSections.indexOf(id) + 1;
   const title = messages.sections;
 
   return (
@@ -29,14 +32,16 @@ export function Home({ locale, messages, projects }: HomeProps) {
         photo={messages.photos.panorama}
       />
       <WorksSection
+        index={position("works")}
         title={title.works}
         locale={locale}
         messages={messages.works}
         projects={projects}
       />
       <TechnologyBand messages={messages.marquee} />
-      <SkillsSection title={title.skills} messages={messages.skills} />
-      <AboutSection title={title.about} messages={messages.about} />
+      <SkillsSection index={position("skills")} title={title.skills} messages={messages.skills} />
+      <AboutSection index={position("about")} title={title.about} messages={messages.about} />
+      <LandingSection id="gallery" index={position("gallery")} title={title.gallery} tone="muted" />
       <ContactSection
         title={title.contact}
         messages={messages.contact}

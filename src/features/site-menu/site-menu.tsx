@@ -102,7 +102,7 @@ export function SiteMenu({
         aria-controls={panelId}
         data-sound={open ? "close" : "open"}
         onClick={() => setOpen(!open)}
-        className="inline-flex h-11 cursor-pointer items-center gap-2 bg-muted px-4 text-base font-medium transition-colors duration-(--duration-fast) hover:bg-border"
+        className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full bg-muted px-4 text-xs font-medium tracking-wider uppercase transition-colors duration-(--duration-fast) hover:bg-border"
       >
         {open ? closeLabel : openLabel}
         <Icon
@@ -127,14 +127,14 @@ export function SiteMenu({
           data-card=""
           aria-label={navLabel}
           style={{ rotate: `${CARD_TILTS[0]}deg` }}
-          className="bg-surface p-3 shadow-lg"
+          className="rounded-3xl border border-border bg-surface p-3 shadow-lg"
         >
           <ul>
             {items.map((item) => (
               <li key={item.href} data-item="">
                 <Link
                   href={item.href}
-                  className="group flex min-h-16 items-center justify-between px-4 text-3xl md:min-h-14 md:text-2xl font-medium tracking-tight no-underline transition-transform duration-(--duration-fast) hover:translate-x-1 hover:text-foreground"
+                  className="group flex min-h-16 items-center justify-between rounded-2xl px-4 text-3xl md:min-h-14 md:text-2xl font-medium tracking-tight no-underline transition-transform duration-(--duration-fast) hover:translate-x-1 hover:text-foreground"
                 >
                   {item.label}
                   <span
@@ -152,7 +152,7 @@ export function SiteMenu({
         <div
           data-card=""
           style={{ rotate: `${CARD_TILTS[2]}deg` }}
-          className="flex items-center justify-between gap-1 bg-surface p-3 shadow-lg"
+          className="flex items-center justify-between gap-1 rounded-3xl border border-border bg-surface p-3 shadow-lg"
         >
           {children}
         </div>

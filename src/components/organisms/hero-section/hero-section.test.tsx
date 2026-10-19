@@ -7,6 +7,7 @@ const messages = {
   role: "Full-stack software engineer",
   tagline: "I build web applications.",
   cta: "Get in touch",
+  scroll: "Scroll",
   portraitAlt: "Portrait of Florian",
 };
 
@@ -18,11 +19,10 @@ describe("HeroSection", () => {
     expect(screen.getByRole("img", { name: "Portrait of Florian" })).toBeVisible();
   });
 
-  it("says what this is and links the call to action to the contact section", () => {
+  it("lists the stack and links the call to action to the contact section", () => {
     render(<HeroSection locale="de" messages={messages} />);
 
-    expect(screen.getByText(/Full-stack software engineer\./)).toBeVisible();
-    expect(screen.getByText("Open to positions")).toBeVisible();
+    expect(screen.getByText("Kubernetes")).toBeVisible();
     expect(screen.getByRole("link", { name: "Get in touch" })).toHaveAttribute(
       "href",
       "/de#contact",
