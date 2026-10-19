@@ -1,5 +1,6 @@
 import { Container } from "@/components/atoms/container";
 import { Link } from "@/components/atoms/link";
+import { NowPlaying } from "@/features/now-playing";
 import type { Locale, Messages } from "@/lib/i18n";
 import { navSections, pictureCredits, profiles } from "@/lib/landing";
 import { siteName } from "@/lib/site";
@@ -74,6 +75,11 @@ export function SiteFooter({ locale, nav, messages }: SiteFooterProps) {
               {siteName}
             </text>
           </svg>
+          <NowPlaying
+            messages={messages.nowPlaying}
+            className="text-sm"
+            linkClassName={linkClass}
+          />
           <p className="text-sm">{messages.legal}</p>
         </div>
       </Container>
