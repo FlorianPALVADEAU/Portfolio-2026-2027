@@ -2,23 +2,20 @@
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { type ReactNode, useLayoutEffect, useRef } from "react";
+import dynamic from "next/dynamic";
+import { type ReactNode, useLayoutEffect, useRef, useState } from "react";
 import { prefersReducedMotion } from "@/lib/motion";
+import { canRenderScene } from "@/lib/scene";
 import { playIfEnabled } from "@/lib/sound";
-import { followTarget, pinchTarget } from "./reel-physics";
+import { type CoverState, type ReelCover, restingState } from "./reel-cover";
 import { prepareTypewriter, ROLLER_COPIES, splitIntoLetters } from "./reel-text";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Degrees a card leans on its inner edge before it straightens. */
+const ReelCanvas = dynamic(() => import("./reel-canvas"), { ssr: false });
+
+/** Degrees a cover leans on its inner edge before it straightens. */
 const TILT = 7;
-/** Strongest backward lean of a row, in degrees, on a wide screen and on a narrow one. */
-const MAX_TILT = 16;
-const MAX_TILT_SMALL = 9;
-/** Distance in px of the viewer: lower exaggerates the trapezoid. */
-const PERSPECTIVE = 800;
-/** Share of its size a cover loses at full speed. */
-const SHRINK = 0.04;
 
 /** +1 for a card left of the grid's middle, -1 for one right of it, 0 when centred. */
 function sideOf(item: HTMLElement, container: HTMLElement): number {
@@ -29,28 +26,45 @@ function sideOf(item: HTMLElement, container: HTMLElement): number {
 }
 
 /**
- * A row appears as a pair: both images lean with their inner edges down, then straighten and
- * grow slightly while the cover un-zooms. Tied to scroll, so it plays in both directions.
+ * A row appears as a pair: both covers lean with their inner edges down, then straighten and
+ * grow slightly while the picture un-zooms. Tied to scroll, so it plays in both directions.
  */
-function appearOnScroll(item: HTMLElement, cell: HTMLElement, container: HTMLElement) {
-  const image = item.querySelector<HTMLElement>("[data-reel-image]");
-  const timeline = gsap.timeline({
-    scrollTrigger: {
-      trigger: cell,
-      start: "top 98%",
-      end: "top 50%",
-      scrub: 0.5,
-      invalidateOnRefresh: true,
+function appearOnScroll(state: CoverState, cell: HTMLElement, container: HTMLElement) {
+  gsap.fromTo(
+    state,
+    { tilt: () => sideOf(cell, container) * TILT, grow: 0.84, zoom: 1.5 },
+    {
+      tilt: 0,
+      grow: 1,
+      zoom: 1,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: cell,
+        start: "top 98%",
+        end: "top 50%",
+        scrub: 0.5,
+        invalidateOnRefresh: true,
+      },
     },
-  });
-  timeline.fromTo(
-    item,
-    { rotation: () => sideOf(cell, container) * TILT, scale: 0.84 },
-    { rotation: 0, scale: 1, ease: "power2.out", duration: 1 },
-    0,
   );
-  if (image)
-    timeline.fromTo(image, { scale: 1.5 }, { scale: 1, ease: "power2.out", duration: 1 }, 0);
+}
+
+/** Eases the hover zoom of a cover in and out, for the pointer and for keyboard focus alike. */
+function followHover(item: HTMLElement, state: CoverState): () => void {
+  const to = (hover: number) => () =>
+    gsap.to(state, { hover, duration: 0.6, ease: "power3.out", overwrite: true });
+  const enter = to(1);
+  const leave = to(0);
+  item.addEventListener("pointerenter", enter);
+  item.addEventListener("pointerleave", leave);
+  item.addEventListener("focusin", enter);
+  item.addEventListener("focusout", leave);
+  return () => {
+    item.removeEventListener("pointerenter", enter);
+    item.removeEventListener("pointerleave", leave);
+    item.removeEventListener("focusin", enter);
+    item.removeEventListener("focusout", leave);
+  };
 }
 
 /** Hides the title and tags, then plays them once the card is far enough into the viewport. */
@@ -97,85 +111,55 @@ function revealTextOnEnter(item: HTMLElement, restores: Array<() => void>) {
 }
 
 /**
- * Fast scrolling warps every cover like a trapezoid pulled toward the middle of the viewport:
- * the edge facing the centre narrows, more so the farther the row is from it. The pivot is the
- * grid's centre axis, so both images of a row lean together. Strength follows scroll speed, lags
- * behind it and settles back to a straight rectangle. Only the frames are transformed.
- */
-function warpWhileScrolling(cells: HTMLElement[], container: HTMLElement): () => void {
-  const frames = cells.map((cell) => cell.querySelector<HTMLElement>("[data-reel-frame]"));
-  const desktop = window.matchMedia("(min-width: 1024px)");
-  let pinch = 0;
-  let lastY = window.scrollY;
-  let warped = false;
-
-  const tick = (_time: number, deltaTime: number) => {
-    const velocity = ((window.scrollY - lastY) / Math.max(deltaTime, 1)) * 1000;
-    lastY = window.scrollY;
-    pinch = followTarget(pinch, pinchTarget(velocity), Math.min(deltaTime, 100) / 1000);
-    if (pinch === 0 && !warped) return;
-
-    warped = pinch !== 0;
-    const viewport = window.innerHeight;
-    const axis = container.getBoundingClientRect().left + container.offsetWidth / 2;
-    const maxTilt = desktop.matches ? MAX_TILT : MAX_TILT_SMALL;
-    cells.forEach((cell, index) => {
-      const frame = frames[index];
-      if (!frame) return;
-      if (!warped) {
-        gsap.set(frame, { clearProps: "transform" });
-        return;
-      }
-      const box = cell.getBoundingClientRect();
-      const away = Math.max(
-        -1,
-        Math.min(1, (box.top + box.height / 2 - viewport / 2) / (viewport / 2)),
-      );
-      gsap.set(frame, {
-        transformPerspective: PERSPECTIVE,
-        rotationX: maxTilt * pinch * away,
-        scale: 1 - SHRINK * pinch,
-        transformOrigin: `${axis - box.left}px 50%`,
-      });
-    });
-  };
-
-  gsap.ticker.add(tick);
-  return () => gsap.ticker.remove(tick);
-}
-
-/**
- * Carries the visitor through the project list. Rows appear in pairs that straighten and grow,
- * fast scrolling warps the covers into trapezoids, titles roll in letter by letter and tags are typed.
- * Marked descendants: `data-reel-cell`, `data-reel-item`, `data-reel-frame`, `data-reel-image`, `data-reel-title`,
- * `data-reel-tags`. With reduced motion nothing is touched and the list stays a plain list.
+ * Carries the visitor through the project list. Covers are drawn as planes in one canvas and bend
+ * like the inside of a tube while the page moves, rows appear in pairs that straighten and grow,
+ * titles roll in letter by letter and tags decode from noise.
+ * Marked descendants: `data-reel-cell`, `data-reel-item`, `data-reel-frame`, `data-reel-image`,
+ * `data-reel-title`, `data-reel-tags`. Without WebGL or with reduced motion the DOM covers stay
+ * and the list stays a plain list.
  */
 export function WorksReel({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
+  const [covers, setCovers] = useState<ReelCover[]>([]);
 
   useLayoutEffect(() => {
     const container = root.current;
     if (!container || prefersReducedMotion()) return;
 
     const restores: Array<() => void> = [];
+    const planes: ReelCover[] = [];
     const cells = gsap.utils.toArray<HTMLElement>("[data-reel-cell]", container);
+    const drawable = canRenderScene();
     const context = gsap.context(() => {
-      for (const cell of cells) {
+      cells.forEach((cell, index) => {
         const item = cell.querySelector<HTMLElement>("[data-reel-item]");
-        if (!item) continue;
-        appearOnScroll(item, cell, container);
+        if (!item) return;
         revealTextOnEnter(item, restores);
-      }
+        const frame = item.querySelector<HTMLElement>("[data-reel-frame]");
+        const image = item.querySelector<HTMLImageElement>("[data-reel-image]");
+        if (!(drawable && frame && image)) return;
+
+        const state = restingState();
+        appearOnScroll(state, cell, container);
+        restores.push(followHover(item, state));
+        planes.push({ id: `cover-${index}`, frame, image, state });
+      });
     }, container);
-    const stopWarp = warpWhileScrolling(cells, container);
+    setCovers(planes);
 
     return () => {
-      stopWarp();
+      setCovers([]);
       context.revert();
-      gsap.set("[data-reel-frame]", { clearProps: "transform" });
       for (const restore of restores) restore();
     };
   }, []);
 
-  return <div ref={root}>{children}</div>;
+  return (
+    <div ref={root}>
+      {children}
+      {covers.length > 0 && root.current ? (
+        <ReelCanvas covers={covers} container={root.current} />
+      ) : null}
+    </div>
+  );
 }
