@@ -356,3 +356,18 @@ test.describe("technology band", () => {
     });
   });
 });
+
+test.describe("contact", () => {
+  test("links the approved profiles and publishes no direct contact details", async ({ page }) => {
+    await page.goto("/en");
+
+    const contact = page.locator("#contact");
+    await expect(contact.getByRole("link", { name: /GitHub/ })).toHaveAttribute(
+      "href",
+      "https://github.com/FlorianPALVADEAU",
+    );
+    await expect(contact.getByRole("link", { name: /LinkedIn/ })).toBeVisible();
+    await expect(page.locator('a[href^="mailto:"], a[href^="tel:"]')).toHaveCount(0);
+    await expectNoA11yViolations(page);
+  });
+});

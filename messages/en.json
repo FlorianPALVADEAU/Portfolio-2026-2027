@@ -104,6 +104,11 @@
         }
       }
     },
+    "contact": {
+      "invitation": "I am open to full-stack roles in Geneva and the canton of Vaud from September 2027. If my work looks relevant to your team, reach out through one of these profiles.",
+      "profiles": "Profiles",
+      "newTab": "opens in a new tab"
+    },
     "works": {
       "description": "Projects I built and ran, with the decisions behind them."
     },

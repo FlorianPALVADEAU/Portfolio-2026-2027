@@ -104,6 +104,11 @@
         }
       }
     },
+    "contact": {
+      "invitation": "Je suis ouvert aux postes full-stack à Genève et dans le canton de Vaud à partir de septembre 2027. Si mon travail peut intéresser votre équipe, écrivez-moi via l'un de ces profils.",
+      "profiles": "Profils",
+      "newTab": "s'ouvre dans un nouvel onglet"
+    },
     "works": {
       "description": "Des projets que j'ai construits et menés, avec les décisions qui les sous-tendent."
     },
