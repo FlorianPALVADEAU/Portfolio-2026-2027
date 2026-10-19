@@ -1,4 +1,6 @@
+import { CircleAlert } from "lucide-react";
 import { type ComponentPropsWithoutRef, type ReactNode, useId } from "react";
+import { Icon } from "@/components/atoms/icon";
 import { cn } from "@/lib/utils";
 
 type Control = {
@@ -11,14 +13,20 @@ type FieldProps = {
   label: string;
   /** Shown under the control when the value is rejected. */
   error?: string | undefined;
+  /** Decorative detail under the control, such as a character count. */
+  hint?: ReactNode;
   children: (control: Control) => ReactNode;
 };
 
 const control =
-  "w-full rounded-md border bg-transparent px-4 py-3 text-base text-foreground placeholder:text-muted-foreground";
+  "w-full rounded-md border bg-surface px-4 py-3 text-base text-foreground placeholder:text-muted-foreground";
+
+/** Border at least 3:1 against the page; an error adds a ring so it never relies on colour. */
+const borderOf = (error: string | undefined) =>
+  error ? "border-foreground ring-1 ring-foreground" : "border-muted-foreground";
 
 /** Label, control and error wired together; the control is rendered by the caller. */
-function Field({ label, error, children }: FieldProps) {
+function Field({ label, error, hint, children }: FieldProps) {
   const id = useId();
   const errorId = `${id}-error`;
 
@@ -33,15 +41,22 @@ function Field({ label, error, children }: FieldProps) {
         "aria-describedby": error ? errorId : undefined,
       })}
       {error && (
-        <p id={errorId} className="text-sm font-medium">
+        <p id={errorId} className="flex items-start gap-2 text-sm font-medium">
+          <Icon icon={CircleAlert} size="sm" className="mt-0.5" />
           {error}
+        </p>
+      )}
+      {hint && (
+        <p
+          aria-hidden="true"
+          className="text-right font-mono text-xs text-muted-foreground tabular-nums"
+        >
+          {hint}
         </p>
       )}
     </div>
   );
 }
-
-const borderOf = (error: string | undefined) => (error ? "border-foreground" : "border-border");
 
 type InputFieldProps = Omit<ComponentPropsWithoutRef<"input">, "id"> &
   Pick<FieldProps, "label" | "error">;
@@ -57,17 +72,17 @@ export function InputField({ label, error, className, ...props }: InputFieldProp
 }
 
 type TextAreaFieldProps = Omit<ComponentPropsWithoutRef<"textarea">, "id"> &
-  Pick<FieldProps, "label" | "error">;
+  Pick<FieldProps, "label" | "error" | "hint">;
 
-export function TextAreaField({ label, error, className, ...props }: TextAreaFieldProps) {
+export function TextAreaField({ label, error, hint, className, ...props }: TextAreaFieldProps) {
   return (
-    <Field label={label} error={error}>
+    <Field label={label} error={error} hint={hint}>
       {(attributes) => (
         <textarea
           rows={6}
           {...props}
           {...attributes}
-          className={cn(control, borderOf(error), "resize-y", className)}
+          className={cn(control, borderOf(error), "resize-none", className)}
         />
       )}
     </Field>

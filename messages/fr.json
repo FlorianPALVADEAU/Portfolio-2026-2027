@@ -115,17 +115,28 @@
       "newTab": "s'ouvre dans un nouvel onglet",
       "form": {
         "title": "Écrivez-moi",
+        "intro": "Je lis chaque message moi-même et je réponds depuis ma propre adresse. Votre e-mail sert uniquement à vous répondre.",
+        "required": "Tous les champs sont obligatoires.",
         "name": "Nom",
         "email": "E-mail",
         "message": "Message",
         "submit": "Envoyer le message",
         "sending": "Envoi en cours",
-        "sent": "Message envoyé. Je réponds dès que possible.",
-        "invalid": "Vérifiez les champs : un nom, un e-mail valide et un message d'au moins 10 caractères.",
-        "human": "La vérification anti-spam a échoué. Relancez le contrôle et réessayez.",
+        "errors": {
+          "name": "Indiquez votre nom.",
+          "email": "Saisissez une adresse e-mail valide, par exemple nom@entreprise.com.",
+          "message": "Écrivez au moins 10 caractères."
+        },
+        "invalid": "Vérifiez les champs signalés et réessayez.",
+        "human": "La vérification anti-spam n'a pas pu confirmer que vous êtes humain. Attendez qu'elle se termine, puis renvoyez.",
         "unavailable": "Le message n'a pas pu être envoyé. Réessayez plus tard ou utilisez l'un des profils ci-dessus.",
+        "unconfigured": "Le formulaire de contact n'est pas disponible pour le moment. Utilisez l'un des profils ci-dessus.",
         "challenge": "Vérification anti-spam",
-        "website": "Laissez ce champ vide"
+        "confirmation": {
+          "title": "Message envoyé",
+          "text": "Merci. Je vous répondrai depuis ma propre adresse.",
+          "again": "Envoyer un autre message"
+        }
       }
     },
     "works": {

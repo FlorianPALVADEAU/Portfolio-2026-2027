@@ -2,7 +2,7 @@
 
 import { Effect, Layer } from "effect";
 import { headers } from "next/headers";
-import type { ContactState } from "@/lib/contact";
+import { type ContactState, invalidFields } from "@/lib/contact";
 import { sendContact } from "@/server/services/contact";
 import { HumanCheckTurnstile } from "./human-check-turnstile";
 import { MailerResend } from "./mailer-resend";
@@ -32,15 +32,15 @@ export async function submitContact(
       Effect.provide(Layer.mergeAll(HumanCheckTurnstile, MailerResend)),
       Effect.match({
         onSuccess: (): ContactState => ({ status: "sent" }),
-        onFailure: (error): ContactState => ({
-          status: "error",
-          reason:
-            error._tag === "InvalidContact"
-              ? "invalid"
-              : error._tag === "HumanCheckFailed"
-                ? "human"
-                : "unavailable",
-        }),
+        onFailure: (error): ContactState => {
+          if (error._tag === "InvalidContact") {
+            return { status: "error", reason: "invalid", fields: invalidFields(fields) };
+          }
+          return {
+            status: "error",
+            reason: error._tag === "HumanCheckFailed" ? "human" : "unavailable",
+          };
+        },
       }),
       Effect.tap((state) =>
         state.status === "error" ? Effect.logWarning(`contact ${state.reason}`) : Effect.void,

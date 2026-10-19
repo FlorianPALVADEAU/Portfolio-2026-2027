@@ -16,6 +16,36 @@ test.describe("contact form", () => {
     await expectNoA11yViolations(page);
   });
 
+  test("explains an invalid form in the page language and moves focus to the first problem", async ({
+    page,
+  }) => {
+    await page.goto("/fr#contact");
+    const form = page.getByRole("region", { name: "Travaillons ensemble" }).locator("form");
+    await form.scrollIntoViewIfNeeded();
+
+    await form.getByRole("button", { name: "Envoyer le message" }).click();
+
+    await expect(form.getByLabel("Nom")).toBeFocused();
+    await expect(form.getByLabel("Nom")).toHaveAttribute("aria-invalid", "true");
+    await expect(form.getByText("Indiquez votre nom.")).toBeVisible();
+    await expect(form.getByText("Écrivez au moins 10 caractères.")).toBeVisible();
+    await expectNoA11yViolations(page);
+  });
+
+  test("loads nothing from Cloudflare until the visitor starts writing", async ({ page }) => {
+    const hosts: string[] = [];
+    page.on("request", (request) => hosts.push(new URL(request.url()).hostname));
+    await page.goto("/en#contact");
+    const form = page.locator("#contact form");
+    await form.scrollIntoViewIfNeeded();
+    await page.waitForLoadState("load");
+    expect(hosts).not.toContain("challenges.cloudflare.com");
+
+    await form.getByLabel("Name").focus();
+
+    await expect.poll(() => hosts).toContain("challenges.cloudflare.com");
+  });
+
   test("keeps the honeypot out of the tab order", async ({ page }) => {
     await page.goto("/en#contact");
 

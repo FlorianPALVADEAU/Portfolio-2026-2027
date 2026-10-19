@@ -115,17 +115,28 @@
       "newTab": "öffnet in einem neuen Tab",
       "form": {
         "title": "Schreiben Sie mir",
+        "intro": "Ich lese jede Nachricht selbst und antworte von meiner eigenen Adresse. Ihre E-Mail dient nur dazu, Ihnen zu antworten.",
+        "required": "Alle Felder sind Pflichtfelder.",
         "name": "Name",
         "email": "E-Mail",
         "message": "Nachricht",
         "submit": "Nachricht senden",
         "sending": "Wird gesendet",
-        "sent": "Nachricht gesendet. Ich antworte so bald wie möglich.",
-        "invalid": "Prüfen Sie die Felder: ein Name, eine gültige E-Mail und eine Nachricht mit mindestens 10 Zeichen.",
-        "human": "Die Spam-Prüfung ist fehlgeschlagen. Starten Sie die Prüfung neu und versuchen Sie es erneut.",
+        "errors": {
+          "name": "Geben Sie Ihren Namen an.",
+          "email": "Geben Sie eine gültige E-Mail-Adresse ein, zum Beispiel name@firma.ch.",
+          "message": "Schreiben Sie mindestens 10 Zeichen."
+        },
+        "invalid": "Prüfen Sie die markierten Felder und versuchen Sie es erneut.",
+        "human": "Die Spam-Prüfung konnte nicht bestätigen, dass Sie ein Mensch sind. Warten Sie, bis sie abgeschlossen ist, und senden Sie erneut.",
         "unavailable": "Die Nachricht konnte nicht gesendet werden. Versuchen Sie es später erneut oder nutzen Sie eines der Profile oben.",
+        "unconfigured": "Das Kontaktformular ist im Moment nicht verfügbar. Nutzen Sie eines der Profile oben.",
         "challenge": "Spam-Prüfung",
-        "website": "Dieses Feld leer lassen"
+        "confirmation": {
+          "title": "Nachricht gesendet",
+          "text": "Danke. Ich antworte von meiner eigenen Adresse.",
+          "again": "Weitere Nachricht senden"
+        }
       }
     },
     "works": {

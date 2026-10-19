@@ -115,17 +115,28 @@
       "newTab": "opens in a new tab",
       "form": {
         "title": "Write to me",
+        "intro": "I read every message myself and answer from my own address. Your email is used only to reply to you.",
+        "required": "All fields are required.",
         "name": "Name",
         "email": "Email",
         "message": "Message",
         "submit": "Send message",
         "sending": "Sending",
-        "sent": "Message sent. I will reply as soon as I can.",
-        "invalid": "Check the fields: a name, a valid email and a message of at least 10 characters.",
-        "human": "The anti-spam check failed. Reload the challenge and try again.",
-        "unavailable": "The message could not be sent. Please try again later or use one of the profiles above.",
+        "errors": {
+          "name": "Enter your name.",
+          "email": "Enter a valid email address, such as name@company.com.",
+          "message": "Write at least 10 characters."
+        },
+        "invalid": "Check the highlighted fields and try again.",
+        "human": "The anti-spam check could not confirm you are human. Wait for it to finish, then send again.",
+        "unavailable": "The message could not be sent. Try again later or use one of the profiles above.",
+        "unconfigured": "The contact form is not available right now. Use one of the profiles above.",
         "challenge": "Anti-spam check",
-        "website": "Leave this field empty"
+        "confirmation": {
+          "title": "Message sent",
+          "text": "Thank you. I will answer from my own address.",
+          "again": "Send another message"
+        }
       }
     },
     "works": {
