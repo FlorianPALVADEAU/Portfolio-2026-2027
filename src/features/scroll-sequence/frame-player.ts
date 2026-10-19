@@ -32,7 +32,7 @@ export function createFramePlayer(canvas: HTMLCanvasElement, set: FrameSet): Fra
   const images = Array.from({ length: set.count }, (_, index) => {
     const image = new Image();
     image.decoding = "async";
-    image.src = set.src(index);
+    image.src = `${set.directory}/${String(index).padStart(4, "0")}.webp`;
     return image;
   });
 
