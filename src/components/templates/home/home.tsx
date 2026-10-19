@@ -3,6 +3,7 @@ import { AboutSection } from "@/components/organisms/about-section";
 import { HeroSection } from "@/components/organisms/hero-section";
 import { IntroSection } from "@/components/organisms/intro-section";
 import { LandingSection } from "@/components/organisms/landing-section";
+import { SkillsSection } from "@/components/organisms/skills-section";
 import { WorksSection } from "@/components/organisms/works-section";
 import { MAIN_ID } from "@/features/route-focus";
 import type { Locale, Messages } from "@/lib/i18n";
@@ -29,7 +30,7 @@ export function Home({ locale, messages, projects }: HomeProps) {
         messages={messages.works}
         projects={projects}
       />
-      <LandingSection id="skills" index={position("skills")} title={title.skills} />
+      <SkillsSection index={position("skills")} title={title.skills} messages={messages.skills} />
       <AboutSection index={position("about")} title={title.about} messages={messages.about} />
       <LandingSection id="gallery" index={position("gallery")} title={title.gallery} />
       <LandingSection id="contact" index={position("contact")} title={title.contact} />
