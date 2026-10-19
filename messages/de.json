@@ -112,7 +112,32 @@
     "contact": {
       "invitation": "Ab September 2027 bin ich offen für Full-Stack-Stellen in Genf und im Kanton Waadt. Wenn meine Arbeit für Ihr Team interessant ist, melden Sie sich über eines dieser Profile.",
       "profiles": "Profile",
-      "newTab": "öffnet in einem neuen Tab"
+      "newTab": "öffnet in einem neuen Tab",
+      "form": {
+        "title": "Schreiben Sie mir",
+        "intro": "Ich lese jede Nachricht selbst und antworte von meiner eigenen Adresse. Ihre E-Mail dient nur dazu, Ihnen zu antworten.",
+        "required": "Alle Felder sind Pflichtfelder.",
+        "name": "Name",
+        "email": "E-Mail",
+        "message": "Nachricht",
+        "submit": "Nachricht senden",
+        "sending": "Wird gesendet",
+        "errors": {
+          "name": "Geben Sie Ihren Namen an.",
+          "email": "Geben Sie eine gültige E-Mail-Adresse ein, zum Beispiel name@firma.ch.",
+          "message": "Schreiben Sie mindestens 10 Zeichen."
+        },
+        "invalid": "Prüfen Sie die markierten Felder und versuchen Sie es erneut.",
+        "human": "Die Spam-Prüfung konnte nicht bestätigen, dass Sie ein Mensch sind. Warten Sie, bis sie abgeschlossen ist, und senden Sie erneut.",
+        "unavailable": "Die Nachricht konnte nicht gesendet werden. Versuchen Sie es später erneut oder nutzen Sie eines der Profile oben.",
+        "unconfigured": "Das Kontaktformular ist im Moment nicht verfügbar. Nutzen Sie eines der Profile oben.",
+        "challenge": "Spam-Prüfung",
+        "confirmation": {
+          "title": "Nachricht gesendet",
+          "text": "Danke. Ich antworte von meiner eigenen Adresse.",
+          "again": "Weitere Nachricht senden"
+        }
+      }
     },
     "works": {
       "description": "Projekte, die ich gebaut und geleitet habe, samt den Entscheidungen dahinter.",

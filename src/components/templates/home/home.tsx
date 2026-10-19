@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { AboutSection } from "@/components/organisms/about-section";
 import { ContactSection } from "@/components/organisms/contact-section";
 import { HeroSection } from "@/components/organisms/hero-section";
@@ -15,9 +15,11 @@ type HomeProps = {
   locale: Locale;
   messages: Messages["home"];
   projects: ComponentProps<typeof WorksSection>["projects"];
+  /** Contact form, built by the route because it depends on server-side wiring. */
+  contact?: ReactNode;
 };
 
-export function Home({ locale, messages, projects }: HomeProps) {
+export function Home({ locale, messages, projects, contact }: HomeProps) {
   const position = (id: (typeof landingSections)[number]) => landingSections.indexOf(id) + 1;
   const title = messages.sections;
 
@@ -44,7 +46,9 @@ export function Home({ locale, messages, projects }: HomeProps) {
         title={title.contact}
         messages={messages.contact}
         photo={messages.photos.closing}
-      />
+      >
+        {contact}
+      </ContactSection>
     </main>
   );
 }
