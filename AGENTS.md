@@ -75,3 +75,13 @@ Keep components as small as possible: one responsibility, typed props, no logic 
 - Atomic and import rules respected; docs, stories and tests updated where relevant.
 - Accessible, responsive from small mobile upward, copy in FR, EN and DE.
 - Pull request description states what changed and why.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
