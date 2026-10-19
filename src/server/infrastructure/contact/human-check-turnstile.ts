@@ -24,8 +24,8 @@ const fail = (reason: string) => new HumanCheckFailed({ reason });
 export const HumanCheckTurnstile = Layer.succeed(HumanCheck, {
   verify: (token, ip) =>
     Effect.gen(function* () {
-      const secret = process.env.TURNSTILE_SECRET;
-      if (!secret) return yield* fail("TURNSTILE_SECRET is not set");
+      const secret = process.env.TURNSTILE_SECRET_KEY;
+      if (!secret) return yield* fail("TURNSTILE_SECRET_KEY is not set");
       if (token.length === 0 || token.length > 2048) return yield* fail("missing token");
 
       const body = new URLSearchParams({ secret, response: token });

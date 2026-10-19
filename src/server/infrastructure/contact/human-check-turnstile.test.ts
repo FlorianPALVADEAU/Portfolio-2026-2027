@@ -15,7 +15,7 @@ const answer = (body: unknown, ok = true) =>
 
 describe("Turnstile human check", () => {
   beforeEach(() => {
-    vi.stubEnv("TURNSTILE_SECRET", "secret");
+    vi.stubEnv("TURNSTILE_SECRET_KEY", "secret");
     vi.stubEnv("NODE_ENV", "production");
   });
   afterEach(() => {
@@ -54,7 +54,7 @@ describe("Turnstile human check", () => {
     vi.stubGlobal("fetch", fetchMock);
     expect((await verify(""))._tag).toBe("Failure");
 
-    vi.stubEnv("TURNSTILE_SECRET", "");
+    vi.stubEnv("TURNSTILE_SECRET_KEY", "");
     expect((await verify("token"))._tag).toBe("Failure");
     expect(fetchMock).not.toHaveBeenCalled();
   });
