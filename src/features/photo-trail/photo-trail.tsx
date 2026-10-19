@@ -18,8 +18,8 @@ type PhotoTrailProps = {
 /**
  * Photos that appear along the pointer path, and along the path the page takes under a resting
  * pointer while scrolling, grow in with a small bounce and fade out. The layer
- * fills its parent and listens to it, so the parent decides where the trail lives. It sits behind
- * the parent's content (`z-0`: give that content `z-10`). The photos are mounted, and so
+ * fills its parent, which decides where the trail lives; only the pointer inside it counts. It sits over
+ * the parent's content, without catching the pointer. The photos are mounted, and so
  * downloaded, only with a fine pointer and without reduced motion; elsewhere it renders nothing.
  */
 export function PhotoTrail({ photos }: PhotoTrailProps) {
@@ -90,9 +90,13 @@ export function PhotoTrail({ photos }: PhotoTrailProps) {
     function onScroll() {
       scrolled += Math.abs(window.scrollY - scrollY);
       scrollY = window.scrollY;
-      if (!pointer || scrolled < SPAWN_DISTANCE) return;
+      if (scrolled < SPAWN_DISTANCE) return;
       scrolled = 0;
-      place(pointer.x, pointer.y);
+      // Before the first pointer move there is no position to follow: use the middle of the screen.
+      place(
+        pointer?.x ?? window.innerWidth / 2 + gsap.utils.random(-120, 120),
+        pointer?.y ?? window.innerHeight / 2 + gsap.utils.random(-120, 120),
+      );
     }
 
     window.addEventListener("pointermove", onMove);
@@ -105,7 +109,7 @@ export function PhotoTrail({ photos }: PhotoTrailProps) {
   }, [active]);
 
   return (
-    <div ref={layer} aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+    <div ref={layer} aria-hidden="true" className="pointer-events-none absolute inset-0 z-30">
       {active &&
         photos.map((src) => (
           <div
