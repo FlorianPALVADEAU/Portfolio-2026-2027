@@ -387,6 +387,10 @@ test.describe("3d scene", () => {
 
   test("never keeps more than one canvas alive while scrolling", async ({ page }) => {
     await page.goto("/en");
+    const webgl = await page.evaluate(
+      () => document.createElement("canvas").getContext("webgl2") !== null,
+    );
+    test.skip(!webgl, "this browser build has no WebGL, so no canvas ever mounts");
     await expect(page.locator("canvas")).toHaveCount(1);
 
     for (const section of ["works", "about"]) {
