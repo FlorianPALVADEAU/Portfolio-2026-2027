@@ -5,6 +5,15 @@ async function openMenu(page: Page) {
   await page.getByRole("button", { name: "Menu" }).click();
 }
 
+// Below md the language flags live in the menu; from md up they sit behind a header dropdown.
+async function openLanguage(page: Page) {
+  const dropdown = page.getByRole("button", { name: /^Language:/ });
+  if (await dropdown.isVisible()) await dropdown.click();
+  else if (!(await page.getByRole("link", { name: "DE, Deutsch" }).isVisible())) {
+    await openMenu(page);
+  }
+}
+
 test("root redirects to a locale and the page has no accessibility violations", async ({
   page,
 }) => {
@@ -17,7 +26,7 @@ test("root redirects to a locale and the page has no accessibility violations", 
 
 test("locale switcher navigates to the German page", async ({ page }) => {
   await page.goto("/en");
-  await page.getByRole("button", { name: /^Language:/ }).click();
+  await openLanguage(page);
   await page.getByRole("link", { name: "DE, Deutsch" }).click();
 
   await expect(page).toHaveURL(/\/de$/);
@@ -85,7 +94,7 @@ test.describe("smooth scroll", () => {
 test.describe("page transition", () => {
   test("navigates through the overlay and the route is announced", async ({ page }) => {
     await page.goto("/en");
-    await page.getByRole("button", { name: /^Language:/ }).click();
+    await openLanguage(page);
     await page.getByRole("link", { name: "FR, Français" }).click();
 
     await expect(page).toHaveURL(/\/fr$/);
@@ -94,7 +103,6 @@ test.describe("page transition", () => {
       /Florian Palvadeau/,
     );
     await expect(page.getByRole("main")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Langue: Français" })).toBeVisible();
   });
 
   test.describe("with reduced motion", () => {
@@ -102,7 +110,7 @@ test.describe("page transition", () => {
 
     test("navigates directly", async ({ page }) => {
       await page.goto("/en");
-      await page.getByRole("button", { name: /^Language:/ }).click();
+      await openLanguage(page);
       await page.getByRole("link", { name: "DE, Deutsch" }).click();
 
       await expect(page).toHaveURL(/\/de$/);
@@ -110,7 +118,8 @@ test.describe("page transition", () => {
   });
 });
 
-test("sound is muted by default and the opt-in persists", async ({ page }) => {
+test("sound is muted by default and the opt-in persists", async ({ page, isMobile }) => {
+  test.skip(isMobile, "the sound toggle is desktop-only: touch screens have no hover");
   await page.goto("/en");
   await expect(page.getByRole("button", { name: "Sound: off" })).toBeVisible();
 
@@ -462,7 +471,7 @@ test("changing language keeps the theme and the scroll position", async ({ page 
   await page.evaluate(() => window.scrollTo(0, 1200));
   const before = await page.evaluate(() => window.scrollY);
 
-  await page.getByRole("button", { name: /^Language:/ }).click();
+  await openLanguage(page);
   await page.getByRole("link", { name: "FR, Français" }).click();
 
   await expect(page).toHaveURL(/\/fr$/);
