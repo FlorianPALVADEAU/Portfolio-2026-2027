@@ -16,7 +16,11 @@ describe("splitIntoLetters", () => {
     expect(letters).toHaveLength("AtlasDashboard".length);
     expect(strips[0]?.children).toHaveLength(ROLLER_COPIES);
     expect(node.querySelector(".sr-only")?.textContent).toBe("Atlas Dashboard");
-    expect(node.querySelector("[aria-hidden='true']")?.textContent?.startsWith("AAAA")).toBe(true);
+    expect(
+      node
+        .querySelector("[aria-hidden='true']")
+        ?.textContent?.startsWith("A".repeat(ROLLER_COPIES)),
+    ).toBe(true);
   });
 
   it("restores the original content", () => {

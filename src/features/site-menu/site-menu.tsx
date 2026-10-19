@@ -3,6 +3,7 @@
 import { gsap } from "gsap";
 import { Plus } from "lucide-react";
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
+import { FlipText } from "@/components/atoms/flip-text";
 import { Icon } from "@/components/atoms/icon";
 import { Link } from "@/components/atoms/link";
 import { prefersReducedMotion } from "@/lib/motion";
@@ -102,9 +103,9 @@ export function SiteMenu({
         aria-controls={panelId}
         data-sound={open ? "close" : "open"}
         onClick={() => setOpen(!open)}
-        className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full bg-muted px-4 text-xs font-medium tracking-wider uppercase transition-colors duration-(--duration-fast) hover:bg-border"
+        className="flip-host inline-flex h-11 cursor-pointer items-center gap-2 rounded-full bg-muted px-4 text-xs font-medium tracking-wider uppercase transition-colors duration-(--duration-fast) hover:bg-border"
       >
-        {open ? closeLabel : openLabel}
+        <FlipText>{open ? closeLabel : openLabel}</FlipText>
         <Icon
           icon={Plus}
           size="sm"
@@ -134,9 +135,9 @@ export function SiteMenu({
               <li key={item.href} data-item="">
                 <Link
                   href={item.href}
-                  className="group flex min-h-16 items-center justify-between rounded-2xl px-4 text-3xl md:min-h-14 md:text-2xl font-medium tracking-tight no-underline transition-transform duration-(--duration-fast) hover:translate-x-1 hover:text-foreground"
+                  className="group flip-host flex min-h-16 items-center justify-between rounded-2xl px-4 text-3xl md:min-h-14 md:text-2xl font-medium tracking-tight no-underline transition-transform duration-(--duration-fast) hover:translate-x-1 hover:text-foreground"
                 >
-                  {item.label}
+                  <FlipText>{item.label}</FlipText>
                   <span
                     aria-hidden="true"
                     className="size-2 rounded-full bg-accent opacity-0 transition-opacity duration-(--duration-fast) group-hover:opacity-100 group-focus-visible:opacity-100"

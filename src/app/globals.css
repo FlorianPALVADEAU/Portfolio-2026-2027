@@ -27,3 +27,20 @@ html.lenis body {
 .lenis.lenis-stopped {
   overflow: clip;
 }
+
+/* Letter roll of `FlipText`: plays once each time a `flip-host` is hovered. */
+@keyframes flip-roll {
+  from {
+    transform: translateY(-66.6667%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .flip-host:hover .flip-strip {
+    animation: flip-roll 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--i) * 15ms);
+  }
+}
