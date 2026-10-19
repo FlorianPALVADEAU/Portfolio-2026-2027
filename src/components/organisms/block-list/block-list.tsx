@@ -4,6 +4,7 @@ import { MediaBlock } from "@/components/molecules/media-block";
 import { ResultsBlock } from "@/components/molecules/results-block";
 import { StackBlock } from "@/components/molecules/stack-block";
 import { TextBlock } from "@/components/molecules/text-block";
+import { Reveal } from "@/features/reveal";
 
 type Image = { src: string; width: number; height: number };
 
@@ -59,10 +60,10 @@ type BlockListProps = {
 
 export function BlockList({ blocks }: BlockListProps) {
   return (
-    <div className="flex flex-col gap-(--section-space)">
+    <Reveal className="flex flex-col gap-(--section-space)">
       {blocks.map((block) => (
         <div key={block.id}>{renderBlock(block)}</div>
       ))}
-    </div>
+    </Reveal>
   );
 }

@@ -5,7 +5,13 @@ import { IntroSection } from "./intro-section";
 
 describe("IntroSection", () => {
   it("renders the statement and the aside under the section heading", () => {
-    render(<IntroSection index={1} title="Introduction" messages={en.home.intro} />);
+    render(
+      <IntroSection
+        title="Introduction"
+        messages={en.home.intro}
+        photo={en.home.photos.panorama}
+      />,
+    );
 
     expect(screen.getByRole("heading", { level: 2, name: "Introduction" })).toBeVisible();
     expect(screen.getByText(en.home.intro.statement)).toBeVisible();

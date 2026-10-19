@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { Document } from "@/components/templates/document";
 import { Analytics } from "@/features/analytics";
+import { BackgroundMusic } from "@/features/background-music";
 import { GridOverlay } from "@/features/grid-overlay";
 import { PageTransition } from "@/features/page-transition";
 import { RouteFocus } from "@/features/route-focus";
@@ -63,11 +64,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
     <Document lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
       <SiteHeader locale={locale} messages={messages.header} palette={messages.palette} />
       {children}
-      <SiteFooter />
+      <SiteFooter locale={locale} nav={messages.header.nav} messages={messages.footer} />
       <RouteFocus />
       <SmoothScroll />
       <PageTransition />
       <UiSound />
+      <BackgroundMusic />
       <Analytics />
       {process.env.NODE_ENV === "development" && <GridOverlay />}
     </Document>

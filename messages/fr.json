@@ -18,6 +18,11 @@
       "off": "Son : coupé"
     },
     "skip": "Aller au contenu",
+    "cta": "Parlons-en",
+    "menu": {
+      "open": "Menu",
+      "close": "Fermer"
+    },
     "nav": {
       "label": "Sections",
       "works": "Projets",
@@ -117,11 +122,27 @@
       "label": "Technologies que j'utilise",
       "pause": "Pause",
       "play": "Lecture"
+    },
+    "photos": {
+      "panorama": {
+        "alt": "Terrasses de vignes de Lavaux au-dessus du lac Léman, dans le canton de Vaud",
+        "caption": "Lavaux, canton de Vaud"
+      },
+      "closing": {
+        "alt": "L'église de Saint-Saphorin entre les vignes de Lavaux et le lac Léman",
+        "caption": "Entre Lavaux et le lac Léman"
+      }
     }
   },
   "project": {
     "back": "Retour à l'accueil",
     "role": "Rôle",
     "year": "Année"
+  },
+  "footer": {
+    "photos": "Photos :",
+    "legal": "© 2026 Florian Palvadeau",
+    "navigation": "Navigation",
+    "profiles": "Ailleurs"
   }
 }

@@ -41,7 +41,7 @@ describe("PageTransition", () => {
     fireEvent.click(getByText("French"));
 
     expect(to).toHaveBeenCalledTimes(1);
-    expect(push).toHaveBeenCalledWith("/fr");
+    expect(push).toHaveBeenCalledWith("/fr", { scroll: true });
   });
 
   it("leaves hash links to the browser", async () => {

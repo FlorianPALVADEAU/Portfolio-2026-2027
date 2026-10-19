@@ -1,0 +1,6 @@
+name: Portfolio CodeQL
+paths-ignore:
+  - .agents
+  - .claude/skills
+  - .codex
+  - .github/skills

@@ -1,5 +1,6 @@
 "use client";
 
+import { Search } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   useCallback,
@@ -10,11 +11,14 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/atoms/button";
+import { Icon } from "@/components/atoms/icon";
 import { type Locale, localeNames, locales, localizePath } from "@/lib/i18n";
 import {
   getServerSoundEnabled,
   getSoundEnabled,
+  playIfEnabled,
   setSoundEnabled,
   subscribeSound,
 } from "@/lib/sound";
@@ -47,6 +51,7 @@ export function CommandPalette({ locale, themeNames, messages }: CommandPaletteP
   const listId = useId();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const soundEnabled = useSyncExternalStore(subscribeSound, getSoundEnabled, getServerSoundEnabled);
 
   const commands = useMemo<Command[]>(
@@ -94,12 +99,18 @@ export function CommandPalette({ locale, themeNames, messages }: CommandPaletteP
     command.run();
   }
 
+  // The dialog lives on <body> so it still opens when its trigger sits in a collapsed menu.
+  useEffect(() => setPortalTarget(document.body), []);
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey)) {
         event.preventDefault();
         if (dialog.current?.open) close();
-        else open();
+        else {
+          playIfEnabled("open");
+          open();
+        }
       }
     };
     document.addEventListener("keydown", onKeyDown);
@@ -122,65 +133,76 @@ export function CommandPalette({ locale, themeNames, messages }: CommandPaletteP
 
   return (
     <>
-      <Button variant="ghost" size="sm" className="min-h-11" onClick={open}>
-        {messages.trigger}
-      </Button>
-      <dialog
-        ref={dialog}
-        aria-label={messages.title}
-        onPointerDown={(event) => {
-          if (event.target === dialog.current) close();
-        }}
-        className="m-auto w-[min(32rem,calc(100%-2rem))] rounded-lg border border-border bg-background p-0 text-foreground backdrop:bg-black/60"
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label={messages.trigger}
+        data-sound="open"
+        onClick={open}
       >
-        <input
-          ref={input}
-          type="text"
-          role="combobox"
-          aria-expanded="true"
-          aria-controls={listId}
-          aria-autocomplete="list"
-          aria-activedescendant={activeCommand ? `${listId}-${activeCommand.id}` : undefined}
-          aria-label={messages.placeholder}
-          placeholder={messages.placeholder}
-          value={query}
-          onChange={(event) => {
-            setQuery(event.target.value);
-            setActive(0);
-          }}
-          onKeyDown={onInputKeyDown}
-          className="min-h-12 w-full border-0 border-b border-border bg-transparent px-4 text-base outline-none placeholder:text-muted-foreground"
-        />
-        <div
-          id={listId}
-          role="listbox"
-          aria-label={messages.title}
-          className="max-h-72 overflow-y-auto p-2"
-        >
-          {results.map((command, index) => (
+        <Icon icon={Search} />
+      </Button>
+      {portalTarget &&
+        createPortal(
+          <dialog
+            ref={dialog}
+            aria-label={messages.title}
+            onClose={() => playIfEnabled("close")}
+            onPointerDown={(event) => {
+              if (event.target === dialog.current) close();
+            }}
+            className="m-auto w-[min(32rem,calc(100%-2rem))] rounded-lg border border-border bg-background p-0 text-foreground backdrop:bg-black/60"
+          >
+            <input
+              ref={input}
+              type="text"
+              role="combobox"
+              aria-expanded="true"
+              aria-controls={listId}
+              aria-autocomplete="list"
+              aria-activedescendant={activeCommand ? `${listId}-${activeCommand.id}` : undefined}
+              aria-label={messages.placeholder}
+              placeholder={messages.placeholder}
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setActive(0);
+              }}
+              onKeyDown={onInputKeyDown}
+              className="min-h-12 w-full border-0 border-b border-border bg-transparent px-4 text-base outline-none placeholder:text-muted-foreground"
+            />
             <div
-              key={command.id}
-              id={`${listId}-${command.id}`}
-              role="option"
-              aria-selected={index === active}
-              onPointerMove={() => setActive(index)}
-              tabIndex={-1}
-              onPointerUp={() => run(command)}
-              className={cn(
-                "flex min-h-11 cursor-pointer items-center rounded-md px-3 text-sm",
-                index === active ? "bg-surface text-foreground" : "text-muted-foreground",
-              )}
+              id={listId}
+              role="listbox"
+              aria-label={messages.title}
+              className="max-h-72 overflow-y-auto p-2"
             >
-              {command.label}
+              {results.map((command, index) => (
+                <div
+                  key={command.id}
+                  id={`${listId}-${command.id}`}
+                  role="option"
+                  aria-selected={index === active}
+                  onPointerMove={() => setActive(index)}
+                  tabIndex={-1}
+                  onPointerUp={() => run(command)}
+                  className={cn(
+                    "flex min-h-11 cursor-pointer items-center rounded-md px-3 text-sm",
+                    index === active ? "bg-surface text-foreground" : "text-muted-foreground",
+                  )}
+                >
+                  {command.label}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        {results.length === 0 && (
-          <p role="status" className="m-0 px-4 py-3 text-sm text-muted-foreground">
-            {messages.empty}
-          </p>
+            {results.length === 0 && (
+              <p role="status" className="m-0 px-4 py-3 text-sm text-muted-foreground">
+                {messages.empty}
+              </p>
+            )}
+          </dialog>,
+          portalTarget,
         )}
-      </dialog>
     </>
   );
 }

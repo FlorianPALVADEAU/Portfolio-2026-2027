@@ -20,6 +20,8 @@ const meta = {
     messages: {
       language: "Language",
       skip: "Skip to content",
+      cta: "Let's talk",
+      menu: { open: "Menu", close: "Close" },
       nav: {
         label: "Sections",
         works: "Work",

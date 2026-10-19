@@ -7,6 +7,6 @@ describe("StackBlock", () => {
     render(<StackBlock title="Stack" items={["TypeScript", "Next.js"]} />);
 
     expect(screen.getByRole("heading", { name: "Stack" })).toBeVisible();
-    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    expect(screen.getByText("TypeScript, Next.js")).toBeVisible();
   });
 });

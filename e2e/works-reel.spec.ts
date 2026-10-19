@@ -9,9 +9,26 @@ test.describe("works reel", () => {
     await works.scrollIntoViewIfNeeded();
 
     await expect(works.getByRole("link", { name: "Overbound" })).toBeVisible();
-    await expect(works.locator("[data-reel-title] [aria-hidden='true']").first()).toHaveText(
-      "Overbound",
+    await expect(works.locator("[data-reel-title] .sr-only").first()).toHaveText("Overbound");
+    await expect(works.locator("[data-reel-title] [aria-hidden='true']").first()).toBeAttached();
+    await expectNoA11yViolations(page);
+  });
+
+  test("draws the covers in a hidden canvas and keeps the DOM ones for assistive tech", async ({
+    page,
+  }) => {
+    await page.goto("/en");
+    const webgl = await page.evaluate(() =>
+      Boolean(document.createElement("canvas").getContext("webgl2")),
     );
+    test.skip(!webgl, "WebGL is not available in this browser");
+    const works = page.getByRole("region", { name: "Selected works" });
+    await works.scrollIntoViewIfNeeded();
+
+    const canvas = page.locator("[data-reel-canvas]");
+    await expect(canvas).toHaveAttribute("aria-hidden", "true");
+    await expect(canvas.locator("canvas")).toBeAttached();
+    await expect(works.locator("[data-reel-image]").first()).toHaveAttribute("alt", /.+/);
     await expectNoA11yViolations(page);
   });
 
@@ -20,5 +37,6 @@ test.describe("works reel", () => {
     await page.goto("/en");
 
     await expect(page.locator("[data-reel-title] [aria-hidden='true']")).toHaveCount(0);
+    await expect(page.locator("[data-reel-canvas]")).toHaveCount(0);
   });
 });

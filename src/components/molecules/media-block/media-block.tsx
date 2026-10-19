@@ -16,10 +16,10 @@ export function MediaBlock({ image, alt, caption }: MediaBlockProps) {
         height={image.height}
         alt={alt}
         sizes="(min-width: 1024px) 960px, 100vw"
-        className="h-auto w-full rounded-lg border border-border"
+        className="h-auto w-full"
       />
       {caption && (
-        <Text as="small" tone="muted" size="sm" className="mt-2 block">
+        <Text as="small" size="sm" className="mt-2 block">
           <figcaption>{caption}</figcaption>
         </Text>
       )}

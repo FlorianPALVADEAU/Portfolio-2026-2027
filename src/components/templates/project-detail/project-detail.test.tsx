@@ -22,7 +22,7 @@ describe("ProjectDetail", () => {
     );
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
-    expect(screen.getByText("Role: Developer")).toBeVisible();
+    expect(screen.getByText(/Role: Developer/)).toBeVisible();
     expect(screen.getByRole("link", { name: "Back to home" })).toHaveAttribute("href", "/en");
     expect(screen.getByRole("heading", { level: 2, name: "Overview" })).toBeVisible();
   });

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Badge } from "@/components/atoms/badge";
 import { Container } from "@/components/atoms/container";
 import { Heading } from "@/components/atoms/heading";
 import { Link } from "@/components/atoms/link";
@@ -7,6 +6,7 @@ import { Section } from "@/components/atoms/section";
 import { Stack } from "@/components/atoms/stack";
 import { Text } from "@/components/atoms/text";
 import { type Block, BlockList } from "@/components/organisms/block-list";
+import { Entrance } from "@/features/entrance";
 import { MAIN_ID } from "@/features/route-focus";
 import type { Locale, Messages } from "@/lib/i18n";
 
@@ -29,21 +29,22 @@ export function ProjectDetail({ locale, messages, project }: ProjectDetailProps)
       <Section>
         <Container>
           <Stack gap="lg">
-            <Stack gap="sm">
-              <Link href={`/${locale}`} className="inline-flex min-h-11 items-center text-sm">
-                {messages.back}
-              </Link>
-              <Heading level={1} size="display">
+            <Entrance className="flex flex-col gap-4">
+              <Heading level={1} size="display" className="text-[clamp(3rem,11vw,10rem)]">
                 {project.title}
               </Heading>
-              <Text tone="muted" size="lg" className="max-w-prose">
+              <Text data-entrance size="lg" className="max-w-prose">
                 {project.summary}
               </Text>
-              <Stack direction="row" gap="xs">
-                <Badge variant="outline">{`${messages.role}: ${project.role}`}</Badge>
-                <Badge variant="outline">{`${messages.year}: ${project.year}`}</Badge>
-              </Stack>
-            </Stack>
+              <Text
+                data-entrance
+              >{`${messages.role}: ${project.role} · ${messages.year}: ${project.year}`}</Text>
+              <div data-entrance>
+                <Link href={`/${locale}`} className="inline-flex min-h-11 items-center">
+                  {messages.back}
+                </Link>
+              </div>
+            </Entrance>
             <Image
               src={project.cover.src}
               width={project.cover.width}
@@ -51,7 +52,7 @@ export function ProjectDetail({ locale, messages, project }: ProjectDetailProps)
               alt={project.cover.alt}
               priority
               sizes="(min-width: 1024px) 1200px, 100vw"
-              className="h-auto w-full rounded-lg border border-border"
+              className="h-auto w-full"
             />
             <BlockList blocks={project.blocks} />
           </Stack>
