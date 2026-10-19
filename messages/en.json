@@ -137,6 +137,12 @@
           "text": "Thank you. I will answer from my own address.",
           "again": "Send another message"
         }
+      },
+      "booking": {
+        "title": "Book a call",
+        "text": "Prefer to talk? Pick a time that suits you. The calendar loads from Calendly only when you ask for it.",
+        "action": "Show the calendar",
+        "frame": "Booking calendar"
       }
     },
     "works": {
@@ -157,7 +163,8 @@
         "alt": "The church of Saint-Saphorin between the Lavaux vineyards and Lake Geneva",
         "caption": "Between Lavaux and Lake Geneva"
       }
-    }
+    },
+    "cv": "Download CV (PDF)"
   },
   "project": {
     "back": "Back to home",
