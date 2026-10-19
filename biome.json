@@ -12,7 +12,11 @@
       "!next-env.d.ts",
       "!CHANGELOG.md",
       "!.release-please-manifest.json",
-      "!package-lock.json"
+      "!package-lock.json",
+      "!.agents",
+      "!.codex",
+      "!.claude/skills",
+      "!.github/skills"
     ]
   },
   "formatter": {
