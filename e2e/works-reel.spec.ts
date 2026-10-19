@@ -14,7 +14,7 @@ test.describe("works reel", () => {
     await expectNoA11yViolations(page);
   });
 
-  test("shears the covers while scrolling and straightens them at rest", async ({ page }) => {
+  test("warps the covers while scrolling and straightens them at rest", async ({ page }) => {
     await page.goto("/en");
     const works = page.getByRole("region", { name: "Selected works" });
     await works.scrollIntoViewIfNeeded();

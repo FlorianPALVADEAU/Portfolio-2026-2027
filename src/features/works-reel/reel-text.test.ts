@@ -29,20 +29,29 @@ describe("splitIntoLetters", () => {
 });
 
 describe("prepareTypewriter", () => {
-  it("types progressively and keeps the full text laid out", () => {
+  it("resolves random symbols into the real text from left to right", () => {
     const node = element("2026 • Next.js");
     const { type } = prepareTypewriter(node);
     const visible = node.querySelector("[aria-hidden='true']");
 
     type(0);
-    expect(visible?.textContent).toBe("2026 • Next.js");
-    expect(visible?.querySelector(".opacity-0")?.textContent).toBe("2026 • Next.js");
+    expect(visible?.textContent).toHaveLength(14);
+    expect(visible?.textContent?.[4]).toBe(" ");
 
     type(0.5);
-    expect(visible?.querySelector(".opacity-0")?.textContent).toBe("Next.js");
+    expect(visible?.textContent).toHaveLength(14);
+    expect(visible?.textContent?.startsWith("2026 • ")).toBe(true);
     expect(node.querySelector(".sr-only")?.textContent).toBe("2026 • Next.js");
 
     type(1);
-    expect(visible?.querySelector(".opacity-0")?.textContent).toBe("");
+    expect(visible?.textContent).toBe("2026 • Next.js");
+  });
+
+  it("restores the original nodes", () => {
+    const node = element("2026 • Next.js");
+    const { restore } = prepareTypewriter(node);
+    restore();
+    expect(node.textContent).toBe("2026 • Next.js");
+    expect(node.querySelector("[aria-hidden='true']")).toBeNull();
   });
 });

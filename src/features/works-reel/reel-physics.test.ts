@@ -1,19 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { followTarget, skewTarget } from "./reel-physics";
+import { followTarget, pinchTarget } from "./reel-physics";
 
-describe("skewTarget", () => {
+describe("pinchTarget", () => {
   it("is still when the page is still", () => {
-    expect(skewTarget(0, 6)).toBe(0);
+    expect(pinchTarget(0)).toBe(0);
   });
 
-  it("follows the scroll direction", () => {
-    expect(skewTarget(900, 6)).toBeGreaterThan(0);
-    expect(skewTarget(-900, 6)).toBeLessThan(0);
+  it("ignores the scroll direction", () => {
+    expect(pinchTarget(-900)).toBe(pinchTarget(900));
   });
 
-  it("grows with speed but never passes the cap", () => {
-    expect(skewTarget(600, 6)).toBeLessThan(skewTarget(1800, 6));
-    expect(Math.abs(skewTarget(1e6, 6))).toBeLessThanOrEqual(6);
+  it("grows with speed but never passes 1", () => {
+    expect(pinchTarget(600)).toBeLessThan(pinchTarget(1800));
+    expect(pinchTarget(1e6)).toBeLessThanOrEqual(1);
   });
 });
 
@@ -39,17 +38,6 @@ describe("followTarget", () => {
     for (let frame = 0; frame < 30; frame += 1) slow = followTarget(slow, 0, 1 / 60);
     for (let frame = 0; frame < 60; frame += 1) fast = followTarget(fast, 0, 1 / 120);
     expect(fast).toBeCloseTo(slow, 6);
-  });
-
-  it("passes through zero when the direction flips", () => {
-    let value = 4;
-    const seen: number[] = [];
-    for (let frame = 0; frame < 90; frame += 1) {
-      value = followTarget(value, -4, 1 / 60);
-      seen.push(value);
-    }
-    expect(seen.some((step) => Math.abs(step) < 0.5)).toBe(true);
-    expect(seen.at(-1)).toBeLessThan(-3.9);
   });
 
   it("settles exactly on zero", () => {

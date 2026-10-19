@@ -1,13 +1,13 @@
-/** Scroll speed, in px/s, at which the skew reaches about three quarters of its maximum. */
+/** Scroll speed, in px/s, at which the warp reaches about three quarters of its maximum. */
 const REFERENCE_VELOCITY = 1800;
 /** Seconds to catch up with a faster target: quick enough to feel attached to the scroll. */
 const RISE = 0.1;
-/** Seconds to let go of a slower target: the cards resist losing speed, back to rest in ~0.6s. */
+/** Seconds to let go of a slower target: the rows resist losing speed, back to rest in ~0.6s. */
 const FALL = 0.18;
 
-/** Skew target in degrees, signed like the scroll and capped at `maxDegrees` for any speed. */
-export function skewTarget(velocity: number, maxDegrees: number): number {
-  return maxDegrees * Math.tanh(velocity / REFERENCE_VELOCITY);
+/** Warp strength from 0 to 1 for any scroll speed. Direction does not matter, only speed. */
+export function pinchTarget(velocity: number): number {
+  return Math.tanh(Math.abs(velocity) / REFERENCE_VELOCITY);
 }
 
 /**
