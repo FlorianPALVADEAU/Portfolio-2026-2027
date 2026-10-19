@@ -392,3 +392,34 @@ test.describe("3d scene", () => {
     await expectNoA11yViolations(page);
   });
 });
+
+test.describe("3d budget", () => {
+  const renderer = "WebGLRenderer";
+
+  test("keeps three.js out of the scripts the document ships", async ({ page, request }) => {
+    const html = await (await request.get("/en")).text();
+    const sources = [...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map((match) => match[1] ?? "");
+    expect(sources.length).toBeGreaterThan(0);
+
+    for (const source of sources) {
+      const body = await (await request.get(source)).text();
+      expect(body, source).not.toContain(renderer);
+    }
+    await page.goto("/en");
+  });
+
+  test.describe("with reduced motion", () => {
+    test.use({ reducedMotion: "reduce" });
+
+    test("never downloads three.js", async ({ page }) => {
+      const chunks: string[] = [];
+      page.on("response", async (response) => {
+        if (!response.url().endsWith(".js")) return;
+        if ((await response.text().catch(() => "")).includes(renderer)) chunks.push(response.url());
+      });
+      await page.goto("/en", { waitUntil: "networkidle" });
+
+      expect(chunks).toEqual([]);
+    });
+  });
+});
