@@ -30,6 +30,10 @@ export async function submitContact(
   return Effect.runPromise(
     sendContact({ fields, token: field(data, "cf-turnstile-response"), ip }).pipe(
       Effect.provide(Layer.mergeAll(HumanCheckTurnstile, MailerResend)),
+      // The visitor never sees the cause; the server log keeps it.
+      Effect.tapError((error) =>
+        Effect.logWarning(`contact ${error._tag}: ${"reason" in error ? error.reason : ""}`),
+      ),
       Effect.match({
         onSuccess: (): ContactState => ({ status: "sent" }),
         onFailure: (error): ContactState => {
@@ -42,9 +46,6 @@ export async function submitContact(
           };
         },
       }),
-      Effect.tap((state) =>
-        state.status === "error" ? Effect.logWarning(`contact ${state.reason}`) : Effect.void,
-      ),
     ),
   );
 }

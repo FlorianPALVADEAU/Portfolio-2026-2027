@@ -29,7 +29,10 @@ export const MailerResend = Layer.succeed(Mailer, {
             }),
             signal: AbortSignal.timeout(10_000),
           });
-          if (!reply.ok) throw new Error(`resend ${reply.status}`);
+          if (!reply.ok) {
+            const detail = await reply.text().catch(() => "");
+            throw new Error(`resend ${reply.status} ${detail.slice(0, 200)}`.trim());
+          }
         },
         catch: (error) => fail(String(error)),
       });
