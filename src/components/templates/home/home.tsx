@@ -1,5 +1,6 @@
 import type { ComponentProps } from "react";
 import { AboutSection } from "@/components/organisms/about-section";
+import { ContactSection } from "@/components/organisms/contact-section";
 import { HeroSection } from "@/components/organisms/hero-section";
 import { IntroSection } from "@/components/organisms/intro-section";
 import { LandingSection } from "@/components/organisms/landing-section";
@@ -35,7 +36,11 @@ export function Home({ locale, messages, projects }: HomeProps) {
       <SkillsSection index={position("skills")} title={title.skills} messages={messages.skills} />
       <AboutSection index={position("about")} title={title.about} messages={messages.about} />
       <LandingSection id="gallery" index={position("gallery")} title={title.gallery} />
-      <LandingSection id="contact" index={position("contact")} title={title.contact} />
+      <ContactSection
+        index={position("contact")}
+        title={title.contact}
+        messages={messages.contact}
+      />
     </main>
   );
 }

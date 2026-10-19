@@ -104,6 +104,11 @@
         }
       }
     },
+    "contact": {
+      "invitation": "Ab September 2027 bin ich offen für Full-Stack-Stellen in Genf und im Kanton Waadt. Wenn meine Arbeit für Ihr Team interessant ist, melden Sie sich über eines dieser Profile.",
+      "profiles": "Profile",
+      "newTab": "öffnet in einem neuen Tab"
+    },
     "works": {
       "description": "Projekte, die ich gebaut und geleitet habe, samt den Entscheidungen dahinter."
     },
