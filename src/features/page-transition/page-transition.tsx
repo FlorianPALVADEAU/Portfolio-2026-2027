@@ -63,7 +63,7 @@ export function PageTransition() {
         ease: "power3.inOut",
         onComplete: () => {
           giveUp.current = setTimeout(reveal, GIVE_UP_MS);
-          router.push(destination);
+          router.push(destination, { scroll: !anchor.hasAttribute("data-keep-scroll") });
         },
       });
     }

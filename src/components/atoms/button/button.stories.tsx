@@ -7,7 +7,7 @@ const meta = {
   args: { children: "Contact me" },
   argTypes: {
     variant: { control: "select", options: ["primary", "secondary", "outline", "ghost"] },
-    size: { control: "select", options: ["sm", "md", "lg"] },
+    size: { control: "select", options: ["sm", "md", "lg", "icon"] },
   },
 } satisfies Meta<typeof Button>;
 

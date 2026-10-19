@@ -18,6 +18,11 @@
       "off": "Ton: aus"
     },
     "skip": "Zum Inhalt springen",
+    "cta": "Lass uns reden",
+    "menu": {
+      "open": "Menü",
+      "close": "Schliessen"
+    },
     "nav": {
       "label": "Abschnitte",
       "works": "Projekte",

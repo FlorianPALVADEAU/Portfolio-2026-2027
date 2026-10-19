@@ -18,6 +18,11 @@
       "off": "Son : coupé"
     },
     "skip": "Aller au contenu",
+    "cta": "Parlons-en",
+    "menu": {
+      "open": "Menu",
+      "close": "Fermer"
+    },
     "nav": {
       "label": "Sections",
       "works": "Projets",

@@ -1,6 +1,6 @@
 import Script from "next/script";
 import type { ReactNode } from "react";
-import { defaultTheme, themeInitScript } from "@/lib/theme";
+import { themeInitScript } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 type DocumentProps = {
@@ -11,12 +11,7 @@ type DocumentProps = {
 
 export function Document({ lang, className = "", children }: DocumentProps) {
   return (
-    <html
-      lang={lang}
-      data-theme={defaultTheme}
-      suppressHydrationWarning
-      className={cn("h-full antialiased", className)}
-    >
+    <html lang={lang} suppressHydrationWarning className={cn("h-full antialiased", className)}>
       <body className="min-h-full flex flex-col">
         <Script id="theme-init" strategy="beforeInteractive">
           {themeInitScript}
