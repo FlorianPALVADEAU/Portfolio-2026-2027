@@ -34,7 +34,7 @@ export function WorksSection({ index, title, locale, messages, projects }: Works
       </Text>
       <ViewCursor label={messages.view}>
         <WorksReel>
-          <ul className="grid gap-16 lg:grid-cols-2 lg:gap-x-10">
+          <ul className="grid gap-y-24 lg:-mx-10 lg:grid-cols-2 lg:gap-x-14 lg:gap-y-40 2xl:-mx-20">
             {projects.map((project) => (
               <li key={project.slug} data-reel-cell className="only:lg:col-span-2">
                 <ProjectCard

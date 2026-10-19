@@ -67,47 +67,83 @@ function followHover(item: HTMLElement, state: CoverState): () => void {
   };
 }
 
-/** Hides the title and tags, then plays them once the card is far enough into the viewport. */
+/**
+ * Hides the title and tags, plays them whenever the title enters the viewport and hides them
+ * again once it leaves, so scrolling away and back replays the reveal. Hovering the title flips
+ * its letters once.
+ */
 function revealTextOnEnter(item: HTMLElement, restores: Array<() => void>) {
   const titleElement = item.querySelector<HTMLElement>("[data-reel-title]");
   const tagsElement = item.querySelector<HTMLElement>("[data-reel-tags]");
   const roller = titleElement ? splitIntoLetters(titleElement) : null;
   const typing = tagsElement ? prepareTypewriter(tagsElement) : null;
   const length = tagsElement?.textContent?.length ?? 0;
+  const resting = -100 * ((ROLLER_COPIES - 1) / ROLLER_COPIES);
+  let reveal: gsap.core.Timeline | null = null;
+  let flip: gsap.core.Tween | null = null;
 
-  if (roller) {
-    restores.push(roller.restore);
-    gsap.set(roller.strips, { yPercent: -100 * ((ROLLER_COPIES - 1) / ROLLER_COPIES) });
-    gsap.set(roller.letters, { autoAlpha: 0 });
-  }
-  if (typing) {
-    restores.push(typing.restore);
-    typing.type(0);
-  }
+  if (roller) restores.push(roller.restore);
+  if (typing) restores.push(typing.restore);
 
-  ScrollTrigger.create({
-    trigger: item,
-    start: "top 80%",
-    once: true,
-    onEnter: () => {
-      playIfEnabled("pop");
-      if (roller) {
-        gsap.to(roller.letters, { autoAlpha: 1, duration: 0.15, stagger: 0.03 });
-        // Fast at first, then easing out: the strip falls past its copies before landing.
-        gsap.to(roller.strips, { yPercent: 0, duration: 1.5, ease: "expo.out", stagger: 0.03 });
-      }
-      if (typing) {
-        const progress = { value: 0 };
-        gsap.to(progress, {
+  const hide = () => {
+    reveal?.kill();
+    flip?.kill();
+    if (roller) {
+      gsap.set(roller.strips, { yPercent: resting });
+      gsap.set(roller.letters, { autoAlpha: 0 });
+    }
+    typing?.type(0);
+  };
+
+  const play = () => {
+    hide();
+    playIfEnabled("pop");
+    reveal = gsap.timeline();
+    if (roller) {
+      reveal.to(roller.letters, { autoAlpha: 1, duration: 0.15, stagger: 0.03 }, 0);
+      // Fast at first, then easing out: the strip falls past its copies before landing.
+      reveal.to(roller.strips, { yPercent: 0, duration: 1.5, ease: "expo.out", stagger: 0.03 }, 0);
+    }
+    if (typing) {
+      const progress = { value: 0 };
+      reveal.to(
+        progress,
+        {
           value: 1,
-          delay: 0.1,
           duration: Math.max(0.25, length * 0.008),
           ease: "none",
           onUpdate: () => typing.type(progress.value),
-        });
-      }
-    },
+        },
+        0.1,
+      );
+    }
+  };
+
+  hide();
+  ScrollTrigger.create({
+    trigger: titleElement ?? item,
+    start: "top 92%",
+    end: "bottom top",
+    onEnter: play,
+    onEnterBack: play,
+    onLeave: hide,
+    onLeaveBack: hide,
   });
+
+  if (roller && titleElement) {
+    const onHover = () => {
+      if (reveal?.isActive() || flip?.isActive()) return;
+      gsap.set(roller.strips, { yPercent: resting });
+      flip = gsap.to(roller.strips, {
+        yPercent: 0,
+        duration: 0.9,
+        ease: "expo.out",
+        stagger: 0.025,
+      });
+    };
+    titleElement.addEventListener("pointerenter", onHover);
+    restores.push(() => titleElement.removeEventListener("pointerenter", onHover));
+  }
 }
 
 /**

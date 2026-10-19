@@ -10,8 +10,8 @@ import { fragmentShader, vertexShader } from "./reel-shader";
 /** Distance in px between the camera and the page plane: one world unit is one screen pixel. */
 const CAMERA_DISTANCE = 1000;
 /** How far, in px, the top and bottom edges of the viewport come toward the camera at full speed. */
-const DEPTH = 150;
-const DEPTH_SMALL = 90;
+const DEPTH = 100;
+const DEPTH_SMALL = 60;
 const WIDE_SCREEN = 1024;
 /** Planes beyond this many px outside the viewport are not drawn. */
 const CULL_MARGIN = 240;
