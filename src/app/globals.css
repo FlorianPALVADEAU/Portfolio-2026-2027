@@ -44,3 +44,21 @@ html.lenis body {
     animation-delay: calc(var(--i) * 15ms);
   }
 }
+
+/* Level meter of `NowPlaying`: bars bounce while a track plays and rest otherwise. */
+@keyframes meter-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .meter-bar {
+    animation: meter-bounce 0.9s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.3s);
+  }
+}

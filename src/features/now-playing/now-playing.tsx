@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { type CSSProperties, useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 type Track = { title: string; artist: string; url: string; playing: boolean };
 
@@ -29,12 +30,36 @@ export function NowPlaying({ messages, className, linkClassName }: NowPlayingPro
   if (!track) return null;
 
   return (
-    <p className={className}>
-      {`${track.playing ? messages.playing : messages.lastPlayed}: `}
-      <a href={track.url} target="_blank" rel="noopener noreferrer" className={linkClassName}>
-        {`${track.title}, ${track.artist}`}
-        <span className="sr-only">{` (${messages.newTab})`}</span>
-      </a>
+    <p
+      className={cn(
+        "flex w-fit max-w-full items-center gap-3 rounded-3xl border border-current/40 py-2 pr-5 pl-4",
+        className,
+      )}
+    >
+      <span aria-hidden="true" className="flex h-4 items-end gap-[3px]">
+        {[0, 1, 2].map((bar) => (
+          <span
+            key={bar}
+            style={{ "--i": bar } as CSSProperties}
+            className={cn(
+              "h-full w-[3px] origin-bottom rounded-full bg-current",
+              track.playing ? "meter-bar" : "scale-y-[0.55]",
+            )}
+          />
+        ))}
+      </span>
+      <span className="min-w-0">
+        <span className="opacity-70">{`${track.playing ? messages.playing : messages.lastPlayed}: `}</span>
+        <a
+          href={track.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn("font-medium", linkClassName)}
+        >
+          {`${track.title}, ${track.artist}`}
+          <span className="sr-only">{` (${messages.newTab})`}</span>
+        </a>
+      </span>
     </p>
   );
 }
