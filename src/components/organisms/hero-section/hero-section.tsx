@@ -7,6 +7,7 @@ import { Link } from "@/components/atoms/link";
 import { Section } from "@/components/atoms/section";
 import { Text } from "@/components/atoms/text";
 import { Entrance } from "@/features/entrance";
+import { Scene } from "@/features/scene";
 import type { Locale, Messages } from "@/lib/i18n";
 import { heroStack } from "@/lib/landing";
 
@@ -18,6 +19,7 @@ type HeroSectionProps = {
 export function HeroSection({ locale, messages }: HeroSectionProps) {
   return (
     <Section className="relative overflow-hidden pt-8 md:pt-16">
+      <Scene />
       <Container>
         <Entrance className="grid items-center gap-12 md:grid-cols-[1.25fr_1fr]">
           <div className="flex flex-col gap-6">

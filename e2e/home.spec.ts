@@ -371,3 +371,24 @@ test.describe("contact", () => {
     await expectNoA11yViolations(page);
   });
 });
+
+test.describe("3d scene", () => {
+  test.describe("with reduced motion", () => {
+    test.use({ reducedMotion: "reduce" });
+
+    test("keeps the static poster and never mounts a canvas", async ({ page }) => {
+      await page.goto("/en");
+
+      await expect(page.locator('[data-scene="poster"]')).toHaveCount(1);
+      await expect(page.locator("canvas")).toHaveCount(0);
+    });
+  });
+
+  test("stays decorative when it mounts", async ({ page }) => {
+    await page.goto("/en");
+
+    const scene = page.locator("[data-scene]");
+    await expect(scene).toHaveAttribute("aria-hidden", "true");
+    await expectNoA11yViolations(page);
+  });
+});
