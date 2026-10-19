@@ -61,7 +61,7 @@ export function prepareTypewriter(element: HTMLElement): {
   return {
     type: (progress) => {
       const count = Math.round(text.length * Math.min(Math.max(progress, 0), 1));
-      typed.data = text.slice(0, count);
+      typed.textContent = text.slice(0, count);
       pending.textContent = text.slice(count);
     },
     restore: () => element.replaceChildren(...previous),
