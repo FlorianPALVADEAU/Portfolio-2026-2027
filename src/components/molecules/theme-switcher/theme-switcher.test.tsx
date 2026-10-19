@@ -11,26 +11,28 @@ beforeEach(() => {
 });
 
 describe("ThemeSwitcher", () => {
-  it("is a labelled radio group with dark selected by default", () => {
+  it("names the current theme, dark by default", () => {
     render(<ThemeSwitcher label="Theme" names={names} />);
 
-    expect(screen.getByRole("group", { name: "Theme" })).toBeInTheDocument();
-    expect(screen.getByRole("radio", { name: "Dark" })).toBeChecked();
+    expect(screen.getByRole("button", { name: "Theme: Dark" })).toBeInTheDocument();
   });
 
-  it("applies and persists the chosen theme", async () => {
+  it("lists the three themes and applies and persists the chosen one", async () => {
     render(<ThemeSwitcher label="Theme" names={names} />);
 
-    await userEvent.click(screen.getByRole("radio", { name: "Swiss" }));
+    await userEvent.click(screen.getByRole("button", { name: "Theme: Dark" }));
+    expect(screen.getAllByRole("button", { pressed: false })).toHaveLength(2);
+    await userEvent.click(screen.getByRole("button", { name: "Swiss" }));
 
     expect(document.documentElement.dataset.theme).toBe("swiss");
     expect(localStorage.getItem("theme")).toBe("swiss");
+    expect(screen.getByRole("button", { name: "Theme: Swiss" })).toBeInTheDocument();
   });
 
   it("restores the stored theme", async () => {
     localStorage.setItem("theme", "light");
     render(<ThemeSwitcher label="Theme" names={names} />);
 
-    expect(await screen.findByRole("radio", { name: "Light" })).toBeChecked();
+    expect(await screen.findByRole("button", { name: "Theme: Light" })).toBeInTheDocument();
   });
 });

@@ -32,9 +32,9 @@ describe("themeInitScript", () => {
     expect(document.documentElement.dataset.theme).toBe("light");
   });
 
-  it("leaves the default when the stored value is invalid", () => {
+  it("falls back to the default when the stored value is invalid", () => {
     localStorage.setItem("theme", "neon");
     new Function(themeInitScript)();
-    expect(document.documentElement.dataset.theme).toBeUndefined();
+    expect(document.documentElement.dataset.theme).toBe("dark");
   });
 });

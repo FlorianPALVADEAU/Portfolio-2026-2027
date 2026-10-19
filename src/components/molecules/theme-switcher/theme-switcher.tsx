@@ -1,6 +1,9 @@
 "use client";
 
+import { Check, Moon, Plus, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Icon } from "@/components/atoms/icon";
+import { Dropdown } from "@/components/molecules/dropdown";
 import {
   applyTheme,
   defaultTheme,
@@ -11,6 +14,8 @@ import {
 } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
+const glyphs = { dark: Moon, light: Sun, swiss: Plus } as const;
+
 type ThemeSwitcherProps = {
   label: string;
   names: Record<Theme, string>;
@@ -20,7 +25,10 @@ export function ThemeSwitcher({ label, names }: ThemeSwitcherProps) {
   const [theme, setTheme] = useState<Theme>(defaultTheme);
 
   useEffect(() => {
-    setTheme(readStoredTheme() ?? defaultTheme);
+    const stored = readStoredTheme() ?? defaultTheme;
+    setTheme(stored);
+    // A locale change swaps the root layout, and the new <html> comes without the attribute.
+    applyTheme(stored);
   }, []);
 
   function select(next: Theme) {
@@ -30,27 +38,26 @@ export function ThemeSwitcher({ label, names }: ThemeSwitcherProps) {
   }
 
   return (
-    <fieldset className="m-0 flex items-center gap-1 border-0 p-0">
-      <legend className="sr-only">{label}</legend>
-      {themes.map((value) => (
-        <label
-          key={value}
-          className={cn(
-            "inline-flex min-h-11 cursor-pointer items-center rounded-md px-3 text-sm has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ring",
-            theme === value ? "bg-surface text-foreground" : "text-muted-foreground",
-          )}
-        >
-          <input
-            type="radio"
-            name="theme"
-            value={value}
-            checked={theme === value}
-            onChange={() => select(value)}
-            className="sr-only"
-          />
-          {names[value]}
-        </label>
-      ))}
-    </fieldset>
+    <Dropdown label={`${label}: ${names[theme]}`} trigger={<Icon icon={glyphs[theme]} />}>
+      <ul>
+        {themes.map((value) => (
+          <li key={value}>
+            <button
+              type="button"
+              aria-pressed={theme === value}
+              onClick={() => select(value)}
+              className={cn(
+                "flex min-h-11 w-full cursor-pointer items-center gap-3 rounded-md px-3 text-sm hover:bg-muted",
+                theme === value ? "text-foreground" : "text-muted-foreground",
+              )}
+            >
+              <Icon icon={glyphs[value]} size="sm" />
+              <span className="flex-1 text-left">{names[value]}</span>
+              {theme === value && <Icon icon={Check} size="sm" />}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </Dropdown>
   );
 }

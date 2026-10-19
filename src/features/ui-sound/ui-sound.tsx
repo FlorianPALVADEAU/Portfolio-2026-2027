@@ -9,7 +9,11 @@ function interactiveTarget(event: Event): Element | null {
   return event.target instanceof Element ? event.target.closest(INTERACTIVE) : null;
 }
 
-/** Plays soft feedback on hover and click once the visitor has opted in. */
+/**
+ * Plays soft feedback on hover and click once the visitor has opted in. An element picks its own
+ * click sound with `data-sound` ("open", "close") or silences it with `data-sound="none"`.
+ * A container with `data-hover-sound="item"` swaps the hover sound for a much shorter one.
+ */
 export function UiSound() {
   useEffect(() => {
     let hovered: Element | null = null;
@@ -19,10 +23,17 @@ export function UiSound() {
       const target = interactiveTarget(event);
       if (target === hovered) return;
       hovered = target;
-      if (target) playIfEnabled("hover");
+      if (!target) return;
+      const inList =
+        target.closest("[data-hover-sound]")?.getAttribute("data-hover-sound") === "item";
+      playIfEnabled(inList ? "item" : "hover");
     };
     const onClick = (event: MouseEvent) => {
-      if (interactiveTarget(event)) playIfEnabled("click");
+      const target = interactiveTarget(event);
+      if (!target) return;
+      const sound = target.closest<HTMLElement>("[data-sound]")?.dataset.sound;
+      if (sound === "open" || sound === "close") playIfEnabled(sound);
+      else if (sound !== "none") playIfEnabled("click");
     };
 
     document.addEventListener("pointerover", onPointerOver);
