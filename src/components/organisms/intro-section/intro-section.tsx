@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Container } from "@/components/atoms/container";
 import { Section } from "@/components/atoms/section";
 import { LitText } from "@/features/lit-text";
 import { Marquee } from "@/features/marquee";
@@ -13,20 +12,23 @@ type IntroSectionProps = {
   controls: Pick<Messages["home"]["marquee"], "pause" | "play">;
 };
 
-/** What the owner does, lit word by word as it scrolls in, above the companies worked with. */
+/**
+ * What the owner does, above the companies worked with. It slides over the hero, then stays in
+ * place while the paragraph lights up word by word. It is opaque and above the hero (`z-10`).
+ */
 export function IntroSection({ title, messages, controls }: IntroSectionProps) {
   return (
     <Section
       id="intro"
       aria-label={title}
       data-theme="dark"
-      className="relative scroll-mt-4 bg-black text-foreground"
+      className="relative z-10 scroll-mt-4 bg-black py-0 text-foreground"
     >
-      <Container className="flex flex-col gap-24 md:gap-32">
-        <LitText
-          text={messages.paragraph}
-          className="mx-auto max-w-5xl text-center text-[clamp(1.75rem,3.8vw,3.5rem)] leading-[1.15] tracking-tight text-balance"
-        />
+      <LitText
+        text={messages.paragraph}
+        stageClassName="flex flex-col justify-center gap-20 px-(--gutter) motion-reduce:min-h-svh motion-reduce:py-(--section-space) md:gap-28"
+        className="mx-auto max-w-5xl text-center text-[clamp(1.75rem,3.8vw,3.5rem)] leading-[1.15] tracking-tight text-balance"
+      >
         <Marquee
           items={clients.map(({ id, name, width, height, onWhite }) => ({
             id,
@@ -48,8 +50,10 @@ export function IntroSection({ title, messages, controls }: IntroSectionProps) {
           pauseLabel={controls.pause}
           playLabel={controls.play}
           className="border-0 bg-transparent px-0"
+          seconds={26}
+          fade
         />
-      </Container>
+      </LitText>
     </Section>
   );
 }

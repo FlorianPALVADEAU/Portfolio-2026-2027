@@ -6,7 +6,7 @@ import { Button } from "@/components/atoms/button";
 import { prefersReducedMotion } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-const LOOP_SECONDS = 40;
+const DEFAULT_LOOP_SECONDS = 40;
 
 type MarqueeItem = { id: string; content: ReactNode };
 
@@ -16,6 +16,10 @@ type MarqueeProps = {
   pauseLabel: string;
   playLabel: string;
   className?: string;
+  /** Time of one full loop. */
+  seconds?: number;
+  /** Fades both ends of the band on wide screens. */
+  fade?: boolean;
 };
 
 function Items({ items, hidden }: { items: readonly MarqueeItem[]; hidden?: boolean }) {
@@ -41,7 +45,15 @@ function Items({ items, hidden }: { items: readonly MarqueeItem[]; hidden?: bool
  * the copy is hidden from assistive technology. Hovering or focusing inside pauses it, and a
  * button gives keyboard users the same control. Reduced motion shows one static, wrapping list.
  */
-export function Marquee({ items, label, pauseLabel, playLabel, className }: MarqueeProps) {
+export function Marquee({
+  items,
+  label,
+  pauseLabel,
+  playLabel,
+  className,
+  seconds = DEFAULT_LOOP_SECONDS,
+  fade = false,
+}: MarqueeProps) {
   const root = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
   const tween = useRef<gsap.core.Tween | null>(null);
@@ -62,7 +74,7 @@ export function Marquee({ items, label, pauseLabel, playLabel, className }: Marq
     const context = gsap.context(() => {
       tween.current = gsap.to(element, {
         xPercent: -50,
-        duration: LOOP_SECONDS,
+        duration: seconds,
         ease: "none",
         repeat: -1,
       });
@@ -72,7 +84,7 @@ export function Marquee({ items, label, pauseLabel, playLabel, className }: Marq
       tween.current = null;
       context.revert();
     };
-  }, []);
+  }, [seconds]);
 
   useEffect(() => {
     const element = root.current;
@@ -101,7 +113,13 @@ export function Marquee({ items, label, pauseLabel, playLabel, className }: Marq
       className={cn("relative border-y border-border bg-background px-(--gutter) py-6", className)}
     >
       <div ref={root} data-motion="static" className="group flex items-center gap-4">
-        <div className="flex min-w-0 flex-1 overflow-hidden">
+        <div
+          className={cn(
+            "flex min-w-0 flex-1 overflow-hidden",
+            fade &&
+              "md:[mask-image:linear-gradient(to_right,transparent,black_14%,black_86%,transparent)]",
+          )}
+        >
           <div ref={track} className="flex w-max group-data-[motion=static]:w-auto">
             <Items items={items} />
             <Items items={items} hidden />
