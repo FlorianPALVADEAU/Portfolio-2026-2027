@@ -66,7 +66,8 @@ export function PhotoTrail({ photos }: PhotoTrailProps) {
 
     function place(clientX: number, clientY: number) {
       const box = stage?.getBoundingClientRect();
-      if (!box) return;
+      // The stage is pinned only once the section above has fully faded out.
+      if (!box || box.top > 1) return;
       const x = clientX - box.left;
       const y = clientY - box.top;
       if (x < 0 || y < 0 || x > box.width || y > box.height) return;
@@ -78,7 +79,7 @@ export function PhotoTrail({ photos }: PhotoTrailProps) {
       if (event.pointerType !== "mouse") return;
       pointer = { x: event.clientX, y: event.clientY };
       const box = stage?.getBoundingClientRect();
-      if (!box) return;
+      if (!box || box.top > 1) return;
       if (
         last &&
         Math.hypot(pointer.x - box.left - last.x, pointer.y - box.top - last.y) < SPAWN_DISTANCE
