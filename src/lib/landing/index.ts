@@ -1,4 +1,4 @@
 export { experience, formatPeriod } from "./experience";
 export { heroStack } from "./hero-stack";
 export { landingSections, navSections } from "./sections";
-export { certifications, skillGroups } from "./skills";
+export { certifications, skillGroups, technologies } from "./skills";
