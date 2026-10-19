@@ -9,7 +9,7 @@ type TechnologyBandProps = {
 export function TechnologyBand({ messages }: TechnologyBandProps) {
   return (
     <Marquee
-      items={technologies}
+      items={technologies.map((name) => ({ id: name, content: name }))}
       label={messages.label}
       pauseLabel={messages.pause}
       playLabel={messages.play}

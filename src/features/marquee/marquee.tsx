@@ -1,21 +1,28 @@
 "use client";
 
 import { gsap } from "gsap";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "@/components/atoms/button";
 import { prefersReducedMotion } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-const LOOP_SECONDS = 40;
+const DEFAULT_LOOP_SECONDS = 40;
+
+type MarqueeItem = { id: string; content: ReactNode };
 
 type MarqueeProps = {
-  items: readonly string[];
+  items: readonly MarqueeItem[];
   label: string;
   pauseLabel: string;
   playLabel: string;
+  className?: string;
+  /** Time of one full loop. */
+  seconds?: number;
+  /** Fades both ends of the band on wide screens. */
+  fade?: boolean;
 };
 
-function Items({ items, hidden }: { items: readonly string[]; hidden?: boolean }) {
+function Items({ items, hidden }: { items: readonly MarqueeItem[]; hidden?: boolean }) {
   return (
     <ul
       aria-hidden={hidden || undefined}
@@ -24,9 +31,9 @@ function Items({ items, hidden }: { items: readonly string[]; hidden?: boolean }
         hidden && "group-data-[motion=static]:hidden",
       )}
     >
-      {items.map((item) => (
-        <li key={item} className="font-mono text-sm tracking-wide whitespace-nowrap uppercase">
-          {item}
+      {items.map(({ id, content }) => (
+        <li key={id} className="font-mono text-sm tracking-wide whitespace-nowrap uppercase">
+          {content}
         </li>
       ))}
     </ul>
@@ -34,11 +41,19 @@ function Items({ items, hidden }: { items: readonly string[]; hidden?: boolean }
 }
 
 /**
- * Slow, endless band of keywords. The track holds two copies so a -50% shift loops seamlessly;
+ * Slow, endless band of keywords or logos. The track holds two copies so a -50% shift loops seamlessly;
  * the copy is hidden from assistive technology. Hovering or focusing inside pauses it, and a
  * button gives keyboard users the same control. Reduced motion shows one static, wrapping list.
  */
-export function Marquee({ items, label, pauseLabel, playLabel }: MarqueeProps) {
+export function Marquee({
+  items,
+  label,
+  pauseLabel,
+  playLabel,
+  className,
+  seconds = DEFAULT_LOOP_SECONDS,
+  fade = false,
+}: MarqueeProps) {
   const root = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
   const tween = useRef<gsap.core.Tween | null>(null);
@@ -59,7 +74,7 @@ export function Marquee({ items, label, pauseLabel, playLabel }: MarqueeProps) {
     const context = gsap.context(() => {
       tween.current = gsap.to(element, {
         xPercent: -50,
-        duration: LOOP_SECONDS,
+        duration: seconds,
         ease: "none",
         repeat: -1,
       });
@@ -69,7 +84,7 @@ export function Marquee({ items, label, pauseLabel, playLabel }: MarqueeProps) {
       tween.current = null;
       context.revert();
     };
-  }, []);
+  }, [seconds]);
 
   useEffect(() => {
     const element = root.current;
@@ -95,10 +110,16 @@ export function Marquee({ items, label, pauseLabel, playLabel }: MarqueeProps) {
   return (
     <section
       aria-label={label}
-      className="relative border-y border-border bg-background px-(--gutter) py-6"
+      className={cn("relative border-y border-border bg-background px-(--gutter) py-6", className)}
     >
       <div ref={root} data-motion="static" className="group flex items-center gap-4">
-        <div className="flex min-w-0 flex-1 overflow-hidden">
+        <div
+          className={cn(
+            "flex min-w-0 flex-1 overflow-hidden",
+            fade &&
+              "md:[mask-image:linear-gradient(to_right,transparent,black_14%,black_86%,transparent)]",
+          )}
+        >
           <div ref={track} className="flex w-max group-data-[motion=static]:w-auto">
             <Items items={items} />
             <Items items={items} hidden />

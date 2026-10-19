@@ -5,36 +5,36 @@ import { HeroSection } from "./hero-section";
 const messages = {
   badge: "Open to positions",
   role: "Full-stack software engineer",
-  tagline: "I build web applications.",
-  cta: "Get in touch",
+  headline: "From Geneva, I build software that holds.",
   cv: "Download CV (PDF)",
   scroll: "Scroll",
-  portraitAlt: "Portrait of Florian",
 };
 
 describe("HeroSection", () => {
-  it("exposes the name as the only h1 and the portrait with alt text", () => {
-    render(<HeroSection locale="en" messages={messages} />);
+  it("exposes one h1 that carries the owner's name and the headline", () => {
+    render(<HeroSection messages={messages} />);
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
-    expect(screen.getByRole("img", { name: "Portrait of Florian" })).toBeVisible();
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "Florian Palvadeau. From Geneva, I build software that holds.",
+      }),
+    ).toBeInTheDocument();
   });
 
-  it("lists the stack and links the call to action to the contact section", () => {
-    render(<HeroSection locale="de" messages={messages} />);
+  it("shows the role and the availability", () => {
+    render(<HeroSection messages={messages} />);
 
-    expect(screen.getByText("Kubernetes")).toBeVisible();
-    expect(screen.getByRole("link", { name: "Get in touch" })).toHaveAttribute(
-      "href",
-      "/de#contact",
-    );
+    expect(screen.getByText("Full-stack software engineer")).toBeInTheDocument();
+    expect(screen.getByText("Open to positions")).toBeInTheDocument();
   });
 
   it("offers the CV only when a file exists for the language", () => {
-    const { rerender } = render(<HeroSection locale="en" messages={messages} />);
+    const { rerender } = render(<HeroSection messages={messages} />);
     expect(screen.queryByRole("link", { name: "Download CV (PDF)" })).not.toBeInTheDocument();
 
-    rerender(<HeroSection locale="en" messages={messages} cvHref="/cv/cv-en.pdf" />);
+    rerender(<HeroSection messages={messages} cvHref="/cv/cv-en.pdf" />);
     const link = screen.getByRole("link", { name: "Download CV (PDF)" });
     expect(link).toHaveAttribute("href", "/cv/cv-en.pdf");
     expect(link).toHaveAttribute("download");

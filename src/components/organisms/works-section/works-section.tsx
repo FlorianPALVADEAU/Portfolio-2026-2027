@@ -27,7 +27,7 @@ export function WorksSection({ index, title, locale, messages, projects }: Works
       index={index}
       title={title}
       tone="raised"
-      className="-mt-10 rounded-t-[2.5rem] border-t border-border md:-mt-16 md:rounded-t-[4rem]"
+      className="relative z-10 -mt-10 rounded-t-[2.5rem] border-t border-border md:-mt-16 md:rounded-t-[4rem]"
     >
       <Text tone="muted" className="max-w-prose">
         {messages.description}

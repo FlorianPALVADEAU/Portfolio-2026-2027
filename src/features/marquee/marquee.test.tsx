@@ -3,7 +3,15 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { Marquee } from "./marquee";
 
-const props = { items: ["React", "NestJS"], label: "Tech", pauseLabel: "Pause", playLabel: "Play" };
+const props = {
+  items: [
+    { id: "react", content: "React" },
+    { id: "nest", content: "NestJS" },
+  ],
+  label: "Tech",
+  pauseLabel: "Pause",
+  playLabel: "Play",
+};
 
 function mockMotion(reduced: boolean) {
   window.matchMedia = vi.fn().mockReturnValue({

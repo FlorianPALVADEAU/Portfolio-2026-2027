@@ -1,34 +1,59 @@
 import Image from "next/image";
-import { Text } from "@/components/atoms/text";
-import { LandingSection } from "@/components/organisms/landing-section";
+import { Section } from "@/components/atoms/section";
+import { LitText } from "@/features/lit-text";
+import { Marquee } from "@/features/marquee";
 import type { Messages } from "@/lib/i18n";
+import { clients } from "@/lib/landing";
+import { cn } from "@/lib/utils";
 
 type IntroSectionProps = {
   title: string;
   messages: Messages["home"]["intro"];
-  photo: Messages["home"]["photos"]["panorama"];
+  controls: Pick<Messages["home"]["marquee"], "pause" | "play">;
 };
 
-export function IntroSection({ title, messages, photo }: IntroSectionProps) {
+/**
+ * What the owner does, above the companies worked with. It slides over the hero, then stays in
+ * place while the paragraph lights up word by word. It is opaque and above the hero (`z-10`).
+ */
+export function IntroSection({ title, messages, controls }: IntroSectionProps) {
   return (
-    <LandingSection id="intro" title={title} tone="clear">
-      <div className="grid gap-8 md:grid-cols-12">
-        <p className="max-w-[28ch] text-[clamp(1.5rem,2.4vw,2.25rem)] leading-tight font-medium tracking-tight md:col-span-7">
-          {messages.statement}
-        </p>
-        <Text className="md:col-span-4 md:col-start-9">{messages.aside}</Text>
-      </div>
-      <figure className="-mx-(--gutter) m-0">
-        <Image
-          src="/photos/lavaux-terraces.jpg"
-          alt={photo.alt}
-          width={1920}
-          height={1080}
-          sizes="100vw"
-          className="aspect-[4/5] w-full object-cover md:aspect-[21/9]"
+    <Section
+      id="intro"
+      aria-label={title}
+      data-theme="dark"
+      className="relative z-10 scroll-mt-4 bg-black py-0 text-foreground"
+    >
+      <LitText
+        text={messages.paragraph}
+        stageClassName="flex flex-col justify-center gap-20 px-(--gutter) motion-reduce:min-h-svh motion-reduce:py-(--section-space) md:gap-28"
+        className="mx-auto max-w-5xl text-center text-[clamp(1.75rem,3.8vw,3.5rem)] leading-[1.15] tracking-tight text-balance"
+      >
+        <Marquee
+          items={clients.map(({ id, name, width, height, onWhite }) => ({
+            id,
+            content: (
+              <Image
+                src={`/brand/companies/${id}.svg`}
+                alt={name}
+                width={width}
+                height={height}
+                unoptimized
+                className={cn(
+                  "h-6 w-auto opacity-70 md:h-7",
+                  onWhite ? "invert" : "brightness-0 invert",
+                )}
+              />
+            ),
+          }))}
+          label={messages.clients}
+          pauseLabel={controls.pause}
+          playLabel={controls.play}
+          className="border-0 bg-transparent px-0"
+          seconds={26}
+          fade
         />
-        <figcaption className="px-(--gutter) pt-3 text-sm">{photo.caption}</figcaption>
-      </figure>
-    </LandingSection>
+      </LitText>
+    </Section>
   );
 }

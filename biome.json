@@ -17,7 +17,8 @@
       "!.codex",
       "!.claude/skills",
       "!.github/skills",
-      "!public/brand/certifications"
+      "!public/brand/certifications",
+      "!public/brand/companies"
     ]
   },
   "formatter": {
