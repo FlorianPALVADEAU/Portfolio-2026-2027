@@ -4,7 +4,6 @@ import { ContactSection } from "@/components/organisms/contact-section";
 import { HeroSection } from "@/components/organisms/hero-section";
 import { IntroSection } from "@/components/organisms/intro-section";
 import { LandingSection } from "@/components/organisms/landing-section";
-import { SceneBackdrop } from "@/components/organisms/scene-backdrop";
 import { SkillsSection } from "@/components/organisms/skills-section";
 import { TechnologyBand } from "@/components/organisms/technology-band";
 import { WorksSection } from "@/components/organisms/works-section";
@@ -24,7 +23,6 @@ export function Home({ locale, messages, projects }: HomeProps) {
 
   return (
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
-      <SceneBackdrop />
       <HeroSection locale={locale} messages={messages} />
       <IntroSection
         title={title.intro}
