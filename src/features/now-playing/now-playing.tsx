@@ -5,6 +5,9 @@ import { cn } from "@/lib/utils";
 
 type Track = { title: string; artist: string; url: string; playing: boolean };
 
+/** Bounce length of each bar of the meter, in seconds. */
+const METER = [0.9, 0.7, 1.1, 0.8, 1] as const;
+
 type NowPlayingProps = {
   messages: { playing: string; lastPlayed: string; newTab: string };
   className?: string;
@@ -32,15 +35,15 @@ export function NowPlaying({ messages, className, linkClassName }: NowPlayingPro
   return (
     <p
       className={cn(
-        "flex w-fit max-w-full items-center gap-3 rounded-3xl border border-current/40 py-2 pr-5 pl-4",
+        "pill-in flex w-fit max-w-full items-center gap-3 rounded-3xl border border-current/40 py-2 pr-5 pl-4",
         className,
       )}
     >
-      <span aria-hidden="true" className="flex h-4 items-end gap-[3px]">
-        {[0, 1, 2].map((bar) => (
+      <span aria-hidden="true" className="flex h-5 items-end gap-[3px]">
+        {METER.map((duration, bar) => (
           <span
-            key={bar}
-            style={{ "--i": bar } as CSSProperties}
+            key={duration}
+            style={{ "--i": bar, "--d": `${duration}s` } as CSSProperties}
             className={cn(
               "h-full w-[3px] origin-bottom rounded-full bg-current",
               track.playing ? "meter-bar" : "scale-y-[0.55]",
