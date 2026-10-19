@@ -13,7 +13,7 @@
   --accent: #8ab4ff;
   --accent-foreground: #0a0a0b;
   --ring: #8ab4ff;
-  --radius: 0.75rem;
+  --radius: 0;
   --shadow-color: 0 0 0;
 }
 
@@ -29,7 +29,7 @@
   --accent: #1d4ed8;
   --accent-foreground: #ffffff;
   --ring: #1d4ed8;
-  --radius: 0.75rem;
+  --radius: 0;
   --shadow-color: 12 10 9;
 }
 

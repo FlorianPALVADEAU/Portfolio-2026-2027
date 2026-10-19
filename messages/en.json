@@ -52,10 +52,8 @@
       "works": "Selected works",
       "skills": "Skills",
       "about": "About me (IRL)",
-      "gallery": "Gallery",
       "contact": "Let's work together"
     },
-    "scroll": "Scroll",
     "portraitAlt": "Portrait of Florian Palvadeau",
     "intro": {
       "statement": "I build reliable web software, from enterprise integrations to products I run myself.",
@@ -122,11 +120,27 @@
       "label": "Technologies I work with",
       "pause": "Pause",
       "play": "Play"
+    },
+    "photos": {
+      "panorama": {
+        "alt": "Vineyard terraces of Lavaux above Lake Geneva, in the canton of Vaud",
+        "caption": "Lavaux, canton of Vaud"
+      },
+      "closing": {
+        "alt": "The church of Saint-Saphorin between the Lavaux vineyards and Lake Geneva",
+        "caption": "Between Lavaux and Lake Geneva"
+      }
     }
   },
   "project": {
     "back": "Back to home",
     "role": "Role",
     "year": "Year"
+  },
+  "footer": {
+    "photos": "Photos:",
+    "legal": "© 2026 Florian Palvadeau",
+    "navigation": "Navigation",
+    "profiles": "Elsewhere"
   }
 }

@@ -25,7 +25,7 @@ const sizes = {
   display: "text-display",
 } as const;
 const radii = { sm: "rounded-sm", md: "rounded-md", lg: "rounded-lg", xl: "rounded-xl" } as const;
-const shadows = { sm: "shadow-sm", md: "shadow-md", lg: "shadow-lg" } as const;
+const shadows = { sm: "shadow-sm", md: "shadow-md", lg: "shadow-lg" } as const; // taste-skill-ignore: documents the tokens
 
 function Colors() {
   return (

@@ -41,7 +41,6 @@ describe("Home", () => {
       "Selected works",
       "Skills",
       "About me (IRL)",
-      "Gallery",
       "Let's work together",
     ]);
     expect(screen.getByRole("heading", { level: 3, name: "Experience" })).toBeVisible();

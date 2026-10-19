@@ -13,7 +13,6 @@ const meta = {
       tagline:
         "I design, build and run web applications in TypeScript, from enterprise integrations to the ticketing platform of a race I founded.",
       cta: "Get in touch",
-      scroll: "Scroll",
       portraitAlt: "Portrait of Florian Palvadeau",
     },
   },

@@ -52,10 +52,8 @@
       "works": "Ausgewählte Projekte",
       "skills": "Kompetenzen",
       "about": "Über mich (IRL)",
-      "gallery": "Galerie",
       "contact": "Lass uns zusammenarbeiten"
     },
-    "scroll": "Scrollen",
     "portraitAlt": "Porträt von Florian Palvadeau",
     "intro": {
       "statement": "Ich entwickle zuverlässige Websoftware, von Unternehmensintegrationen bis zu Produkten, die ich selbst betreibe.",
@@ -122,11 +120,27 @@
       "label": "Technologien, mit denen ich arbeite",
       "pause": "Pause",
       "play": "Abspielen"
+    },
+    "photos": {
+      "panorama": {
+        "alt": "Rebterrassen des Lavaux über dem Genfersee im Kanton Waadt",
+        "caption": "Lavaux, Kanton Waadt"
+      },
+      "closing": {
+        "alt": "Die Kirche von Saint-Saphorin zwischen den Weinbergen des Lavaux und dem Genfersee",
+        "caption": "Zwischen Lavaux und Genfersee"
+      }
     }
   },
   "project": {
     "back": "Zurück zur Startseite",
     "role": "Rolle",
     "year": "Jahr"
+  },
+  "footer": {
+    "photos": "Fotos:",
+    "legal": "© 2026 Florian Palvadeau",
+    "navigation": "Navigation",
+    "profiles": "Weitere Profile"
   }
 }

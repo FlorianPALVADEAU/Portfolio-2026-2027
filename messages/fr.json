@@ -52,10 +52,8 @@
       "works": "Projets sélectionnés",
       "skills": "Compétences",
       "about": "À propos (IRL)",
-      "gallery": "Galerie",
       "contact": "Travaillons ensemble"
     },
-    "scroll": "Défiler",
     "portraitAlt": "Portrait de Florian Palvadeau",
     "intro": {
       "statement": "Je crée des logiciels web fiables, des intégrations d'entreprise aux produits que je pilote moi-même.",
@@ -122,11 +120,27 @@
       "label": "Technologies que j'utilise",
       "pause": "Pause",
       "play": "Lecture"
+    },
+    "photos": {
+      "panorama": {
+        "alt": "Terrasses de vignes de Lavaux au-dessus du lac Léman, dans le canton de Vaud",
+        "caption": "Lavaux, canton de Vaud"
+      },
+      "closing": {
+        "alt": "L'église de Saint-Saphorin entre les vignes de Lavaux et le lac Léman",
+        "caption": "Entre Lavaux et le lac Léman"
+      }
     }
   },
   "project": {
     "back": "Retour à l'accueil",
     "role": "Rôle",
     "year": "Année"
+  },
+  "footer": {
+    "photos": "Photos :",
+    "legal": "© 2026 Florian Palvadeau",
+    "navigation": "Navigation",
+    "profiles": "Ailleurs"
   }
 }

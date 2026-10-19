@@ -1,6 +1,4 @@
-import { Badge } from "@/components/atoms/badge";
 import { Heading } from "@/components/atoms/heading";
-import { Stack } from "@/components/atoms/stack";
 
 type StackBlockProps = {
   title: string;
@@ -9,15 +7,13 @@ type StackBlockProps = {
 
 export function StackBlock({ title, items }: StackBlockProps) {
   return (
-    <Stack gap="sm">
-      <Heading level={2}>{title}</Heading>
-      <ul className="flex flex-wrap gap-2">
-        {items.map((item) => (
-          <li key={item}>
-            <Badge variant="outline">{item}</Badge>
-          </li>
-        ))}
-      </ul>
-    </Stack>
+    <div className="grid gap-6 md:grid-cols-12">
+      <Heading level={2} className="md:col-span-4">
+        {title}
+      </Heading>
+      <p className="text-[clamp(1.25rem,2.1vw,1.875rem)] md:col-span-7 md:col-start-6">
+        {items.join(", ")}
+      </p>
+    </div>
   );
 }

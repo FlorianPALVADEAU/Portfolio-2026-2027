@@ -1,88 +1,55 @@
 import Image from "next/image";
-import { Badge } from "@/components/atoms/badge";
 import { Button } from "@/components/atoms/button";
-import { Container } from "@/components/atoms/container";
 import { Heading } from "@/components/atoms/heading";
 import { Link } from "@/components/atoms/link";
-import { Section } from "@/components/atoms/section";
-import { Text } from "@/components/atoms/text";
 import { Entrance } from "@/features/entrance";
 import type { Locale, Messages } from "@/lib/i18n";
-import { heroStack } from "@/lib/landing";
 
 type HeroSectionProps = {
   locale: Locale;
-  messages: Pick<Messages["home"], "badge" | "role" | "tagline" | "cta" | "scroll" | "portraitAlt">;
+  messages: Pick<Messages["home"], "badge" | "role" | "tagline" | "cta" | "portraitAlt">;
 };
 
+/** The name is the monument: it takes the left nine columns, the portrait the last three. */
 export function HeroSection({ locale, messages }: HeroSectionProps) {
   return (
-    <Section className="relative overflow-hidden pt-8 md:pt-16">
-      <Container>
-        <Entrance className="grid items-center gap-12 md:grid-cols-[1.25fr_1fr]">
-          <div className="flex flex-col gap-6">
-            <div data-entrance>
-              <Badge variant="outline">
-                <span aria-hidden="true" className="size-2 rounded-full bg-accent" />
-                {messages.badge}
-              </Badge>
-            </div>
-            <Heading level={1} size="display">
-              Florian Palvadeau
-            </Heading>
-            <p
-              data-entrance
-              className="text-3xl font-semibold tracking-tight text-accent md:text-4xl"
-            >
-              {messages.role}
-            </p>
-            <Text data-entrance tone="muted" size="lg" className="max-w-prose">
-              {messages.tagline}
-            </Text>
-            <ul data-entrance className="flex flex-wrap gap-2">
-              {heroStack.map((name) => (
-                <li key={name}>
-                  <Badge variant="default" className="font-mono">
-                    {name}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
-            <div data-entrance>
-              <Button asChild size="lg">
-                <Link
-                  href={`/${locale}#contact`}
-                  className="no-underline hover:text-accent-foreground"
-                >
-                  {messages.cta}
-                </Link>
-              </Button>
-            </div>
-          </div>
-          <div className="relative mx-auto w-full max-w-sm md:max-w-none">
-            <div
-              aria-hidden="true"
-              className="absolute inset-8 -z-10 rounded-full bg-accent opacity-25 blur-3xl"
-            />
-            <Image
-              src="/brand/portrait.webp"
-              alt={messages.portraitAlt}
-              width={910}
-              height={1137}
-              priority
-              sizes="(min-width: 768px) 40vw, 90vw"
-              className="h-auto w-full rounded-2xl border border-border object-cover object-top md:max-h-[85svh]"
-            />
-          </div>
-        </Entrance>
-        <p
-          aria-hidden="true"
-          className="mt-12 hidden items-center gap-3 font-mono text-xs uppercase tracking-widest text-muted-foreground md:flex"
+    <section className="grid md:min-h-[calc(100svh-104px)] md:grid-cols-12">
+      <Entrance className="flex flex-col justify-end gap-10 px-(--gutter) py-6 md:col-span-9 md:gap-16 md:py-10">
+        <Heading
+          level={1}
+          size="display"
+          className="text-[clamp(3.25rem,13.4vw,13rem)] leading-[0.84] font-semibold tracking-[-0.05em] text-balance"
         >
-          <span className="h-px w-12 bg-current" />
-          {messages.scroll}
-        </p>
-      </Container>
-    </Section>
+          Florian <br />
+          Palvadeau
+        </Heading>
+        <div className="flex max-w-[46ch] flex-col gap-6">
+          <p data-entrance className="text-lg">
+            {`${messages.role}. ${messages.tagline}`}
+          </p>
+          <div data-entrance className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <Button asChild size="lg">
+              <Link
+                href={`/${locale}#contact`}
+                className="no-underline hover:text-accent-foreground"
+              >
+                {messages.cta}
+              </Link>
+            </Button>
+            <p className="text-base">{messages.badge}</p>
+          </div>
+        </div>
+      </Entrance>
+      <div className="relative h-[60svh] md:col-span-3 md:h-auto">
+        <Image
+          src="/brand/portrait.webp"
+          alt={messages.portraitAlt}
+          fill
+          priority
+          sizes="(min-width: 768px) 25vw, 100vw"
+          className="object-cover object-top"
+        />
+      </div>
+    </section>
   );
 }

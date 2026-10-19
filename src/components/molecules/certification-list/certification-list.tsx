@@ -1,5 +1,4 @@
 import { Heading } from "@/components/atoms/heading";
-import { Text } from "@/components/atoms/text";
 
 type CertificationListProps = {
   title: string;
@@ -14,22 +13,14 @@ type CertificationListProps = {
 
 export function CertificationList({ title, items }: CertificationListProps) {
   return (
-    <div className="flex flex-col gap-4">
-      <Heading level={3} size="xl">
+    <div className="grid gap-2 md:grid-cols-12 md:gap-6">
+      <Heading level={3} size="lg" className="text-[length:inherit] font-semibold md:col-span-4">
         {title}
       </Heading>
-      <ul className="flex flex-col border-t border-border">
+      <ul className="flex flex-col gap-2 md:col-span-8">
         {items.map((item) => (
-          <li
-            key={item.id}
-            className="flex flex-wrap items-baseline justify-between gap-x-4 border-b border-border py-3"
-          >
-            <p className="font-semibold">
-              {item.score ? `${item.name}, ${item.score}` : item.name}
-            </p>
-            <Text as="span" size="sm" tone="muted" className="font-mono">
-              {`${item.issuer} · ${item.year}`}
-            </Text>
+          <li key={item.id}>
+            {`${item.score ? `${item.name}, ${item.score}` : item.name}: ${item.issuer}, ${item.year}`}
           </li>
         ))}
       </ul>

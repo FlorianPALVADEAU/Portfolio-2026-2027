@@ -16,7 +16,6 @@ describe("WorksSection", () => {
   it("links every project to its locale-aware page", () => {
     render(
       <WorksSection
-        index={2}
         title="Selected works"
         locale="fr"
         messages={en.home.works}

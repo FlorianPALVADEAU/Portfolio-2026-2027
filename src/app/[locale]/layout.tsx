@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist } from "next/font/google";
 import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
@@ -18,12 +18,6 @@ import "../globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -61,10 +55,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   const messages = await getMessages(locale);
 
   return (
-    <Document lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
+    <Document lang={locale} className={geistSans.variable}>
       <SiteHeader locale={locale} messages={messages.header} palette={messages.palette} />
       {children}
-      <SiteFooter />
+      <SiteFooter locale={locale} nav={messages.header.nav} messages={messages.footer} />
       <RouteFocus />
       <SmoothScroll />
       <PageTransition />

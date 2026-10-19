@@ -25,7 +25,7 @@ function Items({ items, hidden }: { items: readonly string[]; hidden?: boolean }
       )}
     >
       {items.map((item) => (
-        <li key={item} className="font-mono text-sm tracking-wide whitespace-nowrap uppercase">
+        <li key={item} className="text-lg whitespace-nowrap">
           {item}
         </li>
       ))}
@@ -95,7 +95,7 @@ export function Marquee({ items, label, pauseLabel, playLabel }: MarqueeProps) {
   return (
     <section
       aria-label={label}
-      className="relative border-y border-border bg-background px-(--gutter) py-6"
+      className="relative bg-background px-(--gutter) py-6"
     >
       <div ref={root} data-motion="static" className="group flex items-center gap-4">
         <div className="flex min-w-0 flex-1 overflow-hidden">
@@ -106,7 +106,7 @@ export function Marquee({ items, label, pauseLabel, playLabel }: MarqueeProps) {
         </div>
         {animated && (
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={() => setUserPaused((paused) => !paused)}
             className="shrink-0"

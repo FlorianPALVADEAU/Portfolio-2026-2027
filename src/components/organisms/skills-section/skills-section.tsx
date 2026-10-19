@@ -5,15 +5,14 @@ import type { Messages } from "@/lib/i18n";
 import { certifications, skillGroups } from "@/lib/landing";
 
 type SkillsSectionProps = {
-  index: number;
   title: string;
   messages: Messages["home"]["skills"];
 };
 
-export function SkillsSection({ index, title, messages }: SkillsSectionProps) {
+export function SkillsSection({ title, messages }: SkillsSectionProps) {
   return (
-    <LandingSection id="skills" index={index} title={title} tone="muted">
-      <div className="grid gap-12 md:grid-cols-2">
+    <LandingSection id="skills" title={title} tone="muted">
+      <div className="flex flex-col gap-8 text-[clamp(1.25rem,2.1vw,1.875rem)] leading-snug">
         {skillGroups.map(({ id, items }) => (
           <SkillGroup
             key={id}
@@ -21,8 +20,6 @@ export function SkillsSection({ index, title, messages }: SkillsSectionProps) {
             items={items ?? messages.groups[id].items}
           />
         ))}
-      </div>
-      <div className="mt-12 max-w-2xl">
         <CertificationList title={messages.certifications} items={certifications} />
       </div>
     </LandingSection>
