@@ -9,9 +9,8 @@ test.describe("works reel", () => {
     await works.scrollIntoViewIfNeeded();
 
     await expect(works.getByRole("link", { name: "Overbound" })).toBeVisible();
-    await expect(works.locator("[data-reel-title] [aria-hidden='true']").first()).toHaveText(
-      "Overbound",
-    );
+    await expect(works.locator("[data-reel-title] .sr-only").first()).toHaveText("Overbound");
+    await expect(works.locator("[data-reel-title] [aria-hidden='true']").first()).toBeAttached();
     await expectNoA11yViolations(page);
   });
 

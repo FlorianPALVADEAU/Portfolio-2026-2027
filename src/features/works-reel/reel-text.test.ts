@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { prepareTypewriter, splitIntoLetters } from "./reel-text";
+import { prepareTypewriter, ROLLER_COPIES, splitIntoLetters } from "./reel-text";
 
 function element(text: string): HTMLElement {
   const node = document.createElement("p");
@@ -11,11 +11,12 @@ function element(text: string): HTMLElement {
 describe("splitIntoLetters", () => {
   it("keeps the real text for assistive tech and animates an aria-hidden copy", () => {
     const node = element("Atlas Dashboard");
-    const { letters } = splitIntoLetters(node);
+    const { letters, strips } = splitIntoLetters(node);
 
     expect(letters).toHaveLength("AtlasDashboard".length);
+    expect(strips[0]?.children).toHaveLength(ROLLER_COPIES);
     expect(node.querySelector(".sr-only")?.textContent).toBe("Atlas Dashboard");
-    expect(node.querySelector("[aria-hidden='true']")?.textContent).toBe("Atlas Dashboard");
+    expect(node.querySelector("[aria-hidden='true']")?.textContent?.startsWith("AAAA")).toBe(true);
   });
 
   it("restores the original content", () => {

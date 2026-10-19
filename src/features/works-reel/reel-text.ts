@@ -14,31 +14,49 @@ function replaceWithAccessibleCopy(element: HTMLElement, text: string): HTMLElem
   return visible;
 }
 
-/** One inline-block span per letter, grouped by word so lines still wrap between words only. */
+/** Glyph copies stacked in each letter's strip: the strip scrolls past them before it settles. */
+export const ROLLER_COPIES = 4;
+
+/**
+ * One masked slot per letter holding a vertical strip of identical glyphs, grouped by word so
+ * lines still wrap between words only. Sliding a strip rolls the letter like a drum.
+ */
 export function splitIntoLetters(element: HTMLElement): {
   letters: HTMLElement[];
+  strips: HTMLElement[];
   restore: () => void;
 } {
   const text = element.textContent ?? "";
   const previous = Array.from(element.childNodes);
   const visible = replaceWithAccessibleCopy(element, text);
   const letters: HTMLElement[] = [];
+  const strips: HTMLElement[] = [];
 
   text.split(" ").forEach((word, index, words) => {
     const wordElement = document.createElement("span");
     wordElement.className = "inline-block whitespace-nowrap";
     for (const character of word) {
       const letter = document.createElement("span");
-      letter.className = "inline-block";
-      letter.textContent = character;
+      // Extra bottom room keeps descenders from being clipped by the mask.
+      letter.className = "-mb-[0.15em] inline-block h-[calc(1lh+0.15em)] overflow-hidden align-top";
+      const strip = document.createElement("span");
+      strip.className = "block";
+      for (let copy = 0; copy < ROLLER_COPIES; copy += 1) {
+        const glyph = document.createElement("span");
+        glyph.className = "block pb-[0.15em]";
+        glyph.textContent = character;
+        strip.append(glyph);
+      }
+      letter.append(strip);
       wordElement.append(letter);
       letters.push(letter);
+      strips.push(strip);
     }
     visible.append(wordElement);
     if (index < words.length - 1) visible.append(" ");
   });
 
-  return { letters, restore: () => element.replaceChildren(...previous) };
+  return { letters, strips, restore: () => element.replaceChildren(...previous) };
 }
 
 /**

@@ -36,7 +36,7 @@ export function WorksSection({ index, title, locale, messages, projects }: Works
         <WorksReel>
           <ul className="grid gap-16 lg:grid-cols-2 lg:gap-x-10">
             {projects.map((project) => (
-              <li key={project.slug} className="only:lg:col-span-2 lg:even:mt-24">
+              <li key={project.slug} data-reel-cell className="only:lg:col-span-2">
                 <ProjectCard
                   href={`/${locale}/projects/${project.slug}`}
                   title={project.title}
