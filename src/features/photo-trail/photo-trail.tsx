@@ -8,8 +8,7 @@ import { hasFinePointer, prefersReducedMotion } from "@/lib/motion";
 /** Distance in px the pointer, or the page under it, must travel before the next photo appears. */
 const SPAWN_DISTANCE = 130;
 const TILT = 12;
-/** Below 1 so that the text laid over a photo stays readable. */
-const PEAK_OPACITY = 0.7;
+const PEAK_OPACITY = 1;
 
 type PhotoTrailProps = {
   photos: readonly string[];
@@ -19,7 +18,8 @@ type PhotoTrailProps = {
  * Photos that appear along the pointer path, and along the path the page takes under a resting
  * pointer while scrolling, grow in with a small bounce and fade out. The layer
  * fills its parent, which decides where the trail lives; only the pointer inside it counts. It sits over
- * the parent's content, without catching the pointer. The photos are mounted, and so
+ * the parent's content, without catching the pointer, and clips the photos so none can widen the
+ * page. The photos are mounted, and so
  * downloaded, only with a fine pointer and without reduced motion; elsewhere it renders nothing.
  */
 export function PhotoTrail({ photos }: PhotoTrailProps) {
@@ -109,7 +109,11 @@ export function PhotoTrail({ photos }: PhotoTrailProps) {
   }, [active]);
 
   return (
-    <div ref={layer} aria-hidden="true" className="pointer-events-none absolute inset-0 z-30">
+    <div
+      ref={layer}
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-30 overflow-clip"
+    >
       {active &&
         photos.map((src) => (
           <div
