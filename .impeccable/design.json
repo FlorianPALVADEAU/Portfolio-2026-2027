@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-19T00:00:00Z",
+  "title": "Design System: Florian Palvadeau Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "signal-blue-night": {
+        "role": "primary",
+        "displayName": "Signal Blue, night",
+        "canonical": "#8ab4ff",
+        "tonalRamp": [
+          "#0d1a33",
+          "#1a3566",
+          "#27509a",
+          "#3f6fcc",
+          "#6690f0",
+          "#8ab4ff",
+          "#b8d1ff",
+          "#e3eeff"
+        ]
+      },
+      "signal-blue-light": {
+        "role": "primary",
+        "displayName": "Signal Blue, day",
+        "canonical": "#1d4ed8",
+        "tonalRamp": [
+          "#0a1a4d",
+          "#102a80",
+          "#1d4ed8",
+          "#3d68e4",
+          "#6586ec",
+          "#8fa8f3",
+          "#c0cdf8",
+          "#e8edfc"
+        ]
+      },
+      "swiss-red": {
+        "role": "primary",
+        "displayName": "Swiss Red",
+        "canonical": "#d90012",
+        "tonalRamp": [
+          "#330004",
+          "#66000a",
+          "#99000e",
+          "#d90012",
+          "#ff2a3a",
+          "#ff6672",
+          "#ffa3aa",
+          "#ffe0e2"
+        ]
+      },
+      "ink-night": {
+        "role": "neutral",
+        "displayName": "Ink Night",
+        "canonical": "#0a0a0b",
+        "tonalRamp": [
+          "#0a0a0b",
+          "#141416",
+          "#1c1c1f",
+          "#2e2e33",
+          "#52525b",
+          "#a1a1aa",
+          "#d4d4d8",
+          "#f5f5f4"
+        ]
+      },
+      "paper-light": {
+        "role": "neutral",
+        "displayName": "Paper Light",
+        "canonical": "#fafaf9",
+        "tonalRamp": [
+          "#0c0a09",
+          "#292524",
+          "#57534e",
+          "#a8a29e",
+          "#d6d3d1",
+          "#f0efed",
+          "#fafaf9",
+          "#ffffff"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero name and statement moments." },
+      "headline": { "displayName": "Headline", "purpose": "Section titles." },
+      "title": { "displayName": "Title", "purpose": "Card and block titles." },
+      "body": { "displayName": "Body", "purpose": "Paragraphs, 65 to 75ch." },
+      "label": { "displayName": "Label", "purpose": "Buttons, badges, navigation." },
+      "mono": { "displayName": "Mono", "purpose": "Code and technical tags." }
+    },
+    "shadows": [
+      {
+        "name": "shadow-sm",
+        "value": "0 1px 2px 0 rgb(var(--shadow-color) / 0.12)",
+        "purpose": "Subtle lift on small controls."
+      },
+      {
+        "name": "shadow-md",
+        "value": "0 6px 16px -4px rgb(var(--shadow-color) / 0.2)",
+        "purpose": "Menus and popovers."
+      },
+      {
+        "name": "shadow-lg",
+        "value": "0 18px 40px -12px rgb(var(--shadow-color) / 0.3)",
+        "purpose": "Modal-level surfaces only."
+      }
+    ],
+    "motion": [
+      { "name": "duration-fast", "value": "150ms", "purpose": "Color and state transitions." },
+      { "name": "duration-base", "value": "300ms", "purpose": "Default UI transitions." },
+      { "name": "duration-slow", "value": "600ms", "purpose": "Reveals and larger movements." },
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Entrances."
+      },
+      {
+        "name": "ease-in-out-quart",
+        "value": "cubic-bezier(0.76, 0, 0.24, 1)",
+        "purpose": "Page transitions and overlays."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main action; accent fill, uppercase tracked label on CTAs.",
+      "html": "<button class=\"ds-btn-primary\">Contact me</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 20px; border: 0; border-radius: var(--radius, 12px); background: var(--accent, #8ab4ff); color: var(--accent-foreground, #0a0a0b); font-weight: 500; font-size: 1rem; cursor: pointer; transition: opacity 150ms; } .ds-btn-primary:hover { opacity: 0.9; } .ds-btn-primary:focus-visible { outline: 2px solid var(--ring, #8ab4ff); outline-offset: 2px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary action on any surface.",
+      "html": "<button class=\"ds-btn-outline\">Download CV</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 20px; border: 1px solid var(--border, #2e2e33); border-radius: var(--radius, 12px); background: transparent; color: var(--foreground, #f5f5f4); font-weight: 500; font-size: 1rem; cursor: pointer; transition: background-color 150ms; } .ds-btn-outline:hover { background: var(--muted, #1c1c1f); } .ds-btn-outline:focus-visible { outline: 2px solid var(--ring, #8ab4ff); outline-offset: 2px; }"
+    },
+    {
+      "name": "Badge",
+      "kind": "chip",
+      "refersTo": "badge-accent",
+      "description": "Pill tag, for example the availability badge.",
+      "html": "<span class=\"ds-badge\">Open to positions, Switzerland</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; background: var(--accent, #8ab4ff); color: var(--accent-foreground, #0a0a0b); font-size: 0.75rem; font-weight: 500; }"
+    },
+    {
+      "name": "Header Pill",
+      "kind": "nav",
+      "description": "Floating glass pill with logo and controls; the only use of backdrop blur.",
+      "html": "<div class=\"ds-header\"><span class=\"ds-logo\">FPL</span><button class=\"ds-cta\">Contact</button></div>",
+      "css": ".ds-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 8px 20px; border: 1px solid color-mix(in srgb, var(--border, #2e2e33) 60%, transparent); border-radius: 9999px; background: color-mix(in srgb, var(--background, #0a0a0b) 60%, transparent); backdrop-filter: blur(12px) saturate(1.5); color: var(--foreground, #f5f5f4); } .ds-logo { font-weight: 600; letter-spacing: 0.05em; } .ds-cta { height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: var(--accent, #8ab4ff); color: var(--accent-foreground, #0a0a0b); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; } .ds-cta:focus-visible { outline: 2px solid var(--ring, #8ab4ff); outline-offset: 2px; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "description": "Surface one tone above background with hairline border, flat at rest.",
+      "html": "<article class=\"ds-card\"><h3>Overbound Race</h3><p>Ticketing platform, 320+ registrations.</p></article>",
+      "css": ".ds-card { padding: 24px; border: 1px solid var(--border, #2e2e33); border-radius: var(--radius, 12px); background: var(--surface, #141416); color: var(--surface-foreground, #f5f5f4); } .ds-card h3 { margin: 0 0 8px; font-size: 1.375rem; font-weight: 600; line-height: 1.25; } .ds-card p { margin: 0; color: var(--muted-foreground, #a1a1aa); line-height: 1.6; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Instrument",
+    "overview": "The interface behaves like a well-made instrument: precise, restrained, and responsive to touch. Surfaces stay calm so the engineering work carries the page. One accent per theme marks what matters; motion and sound exist as controlled feedback, never as decoration.",
+    "keyCharacteristics": [
+      "One accent per theme, never a second hue.",
+      "Tonal layering and hairline borders instead of shadows.",
+      "Pill-soft, confident controls; square in Swiss.",
+      "Large, tightly tracked Geist display type over calm body text.",
+      "Motion (GSAP) and sound are optional layers; sound is muted by default."
+    ],
+    "rules": [
+      {
+        "name": "The One Signal Rule",
+        "body": "Each theme has exactly one accent. It marks actions, focus and a few key moments; if everything is accented, nothing is.",
+        "section": "colors"
+      },
+      {
+        "name": "The Token Only Rule",
+        "body": "Components read semantic tokens, never raw hex. A new theme must work by changing token values alone.",
+        "section": "colors"
+      },
+      {
+        "name": "The Fluid Scale Rule",
+        "body": "Sizes come from the --text-* clamp scale. No fixed px type and no per-breakpoint overrides.",
+        "section": "typography"
+      },
+      {
+        "name": "The Glass Is Rare Rule",
+        "body": "Backdrop blur belongs to the header pill alone.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use semantic tokens (bg-accent, text-muted-foreground, border-border) so all three themes work.",
+      "Do use the fluid --text-*, --gutter and --section-space scales.",
+      "Do keep the 2px accent focus ring on every interactive element.",
+      "Do time motion with the duration and ease tokens, and honor prefers-reduced-motion.",
+      "Do keep sound muted until the visitor opts in."
+    ],
+    "donts": [
+      "Don't add a second accent hue or hard-code hex in components.",
+      "Don't use shadows for routine depth or glass outside the header.",
+      "Don't use any animation library other than GSAP.",
+      "Don't hide essential controls behind hover on touch screens.",
+      "Don't use rounded corners in the Swiss theme."
+    ]
+  }
+}
