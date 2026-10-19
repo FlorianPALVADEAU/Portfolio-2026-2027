@@ -15,7 +15,7 @@ function replaceWithAccessibleCopy(element: HTMLElement, text: string): HTMLElem
 }
 
 /** Glyph copies stacked in each letter's strip: the strip scrolls past them before it settles. */
-export const ROLLER_COPIES = 4;
+export const ROLLER_COPIES = 3;
 
 /**
  * One masked slot per letter holding a vertical strip of identical glyphs, grouped by word so

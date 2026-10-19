@@ -67,10 +67,32 @@ function followHover(item: HTMLElement, state: CoverState): () => void {
   };
 }
 
+/** Px beyond the viewport edge a text must travel before it is reset, so a reset is never seen. */
+const RESET_MARGIN = 120;
+
 /**
- * Hides the title and tags, plays them whenever the title enters the viewport and hides them
- * again once it leaves, so scrolling away and back replays the reveal. Hovering the title flips
- * its letters once.
+ * Plays `play` when the element enters the viewport and `hide` only once it is fully out of
+ * sight, on either side, so scrolling away and back replays it without ever flashing a reset.
+ */
+function playWhileVisible(element: HTMLElement, play: () => void, hide: () => void) {
+  ScrollTrigger.create({
+    trigger: element,
+    start: "top 92%",
+    end: `bottom top-=${RESET_MARGIN}`,
+    onEnter: play,
+    onEnterBack: play,
+    onLeave: hide,
+  });
+  ScrollTrigger.create({
+    trigger: element,
+    start: `top bottom+=${RESET_MARGIN}`,
+    onLeaveBack: hide,
+  });
+}
+
+/**
+ * Hides the title and tags and plays each one as it enters the viewport. Hovering the title
+ * flips its letters once.
  */
 function revealTextOnEnter(item: HTMLElement, restores: Array<() => void>) {
   const titleElement = item.querySelector<HTMLElement>("[data-reel-title]");
@@ -79,66 +101,64 @@ function revealTextOnEnter(item: HTMLElement, restores: Array<() => void>) {
   const typing = tagsElement ? prepareTypewriter(tagsElement) : null;
   const length = tagsElement?.textContent?.length ?? 0;
   const resting = -100 * ((ROLLER_COPIES - 1) / ROLLER_COPIES);
-  let reveal: gsap.core.Timeline | null = null;
+  let titleReveal: gsap.core.Timeline | null = null;
+  let tagsReveal: gsap.core.Tween | null = null;
   let flip: gsap.core.Tween | null = null;
 
   if (roller) restores.push(roller.restore);
   if (typing) restores.push(typing.restore);
 
-  const hide = () => {
-    reveal?.kill();
+  const hideTitle = () => {
+    titleReveal?.kill();
     flip?.kill();
-    if (roller) {
-      gsap.set(roller.strips, { yPercent: resting });
-      gsap.set(roller.letters, { autoAlpha: 0 });
-    }
+    if (!roller) return;
+    gsap.set(roller.strips, { yPercent: resting });
+    gsap.set(roller.letters, { autoAlpha: 0 });
+  };
+  const hideTags = () => {
+    tagsReveal?.kill();
     typing?.type(0);
   };
 
-  const play = () => {
-    hide();
+  const playTitle = () => {
+    if (!roller) return;
+    hideTitle();
     playIfEnabled("pop");
-    reveal = gsap.timeline();
-    if (roller) {
-      reveal.to(roller.letters, { autoAlpha: 1, duration: 0.15, stagger: 0.03 }, 0);
-      // Fast at first, then easing out: the strip falls past its copies before landing.
-      reveal.to(roller.strips, { yPercent: 0, duration: 1.5, ease: "expo.out", stagger: 0.03 }, 0);
-    }
-    if (typing) {
-      const progress = { value: 0 };
-      reveal.to(
-        progress,
-        {
-          value: 1,
-          duration: Math.max(0.25, length * 0.008),
-          ease: "none",
-          onUpdate: () => typing.type(progress.value),
-        },
-        0.1,
-      );
-    }
+    titleReveal = gsap.timeline();
+    titleReveal.to(roller.letters, { autoAlpha: 1, duration: 0.1, stagger: 0.02 }, 0);
+    // Fast at first, then easing out: the strip falls twice past its copies before landing.
+    titleReveal.to(
+      roller.strips,
+      { yPercent: 0, duration: 0.8, ease: "expo.out", stagger: 0.02 },
+      0,
+    );
+  };
+  const playTags = () => {
+    if (!typing) return;
+    hideTags();
+    const progress = { value: 0 };
+    tagsReveal = gsap.to(progress, {
+      value: 1,
+      duration: Math.max(0.2, length * 0.006),
+      ease: "none",
+      onUpdate: () => typing.type(progress.value),
+    });
   };
 
-  hide();
-  ScrollTrigger.create({
-    trigger: titleElement ?? item,
-    start: "top 92%",
-    end: "bottom top",
-    onEnter: play,
-    onEnterBack: play,
-    onLeave: hide,
-    onLeaveBack: hide,
-  });
+  hideTitle();
+  hideTags();
+  if (titleElement) playWhileVisible(titleElement, playTitle, hideTitle);
+  if (tagsElement) playWhileVisible(tagsElement, playTags, hideTags);
 
   if (roller && titleElement) {
     const onHover = () => {
-      if (reveal?.isActive() || flip?.isActive()) return;
+      if (titleReveal?.isActive() || flip?.isActive()) return;
       gsap.set(roller.strips, { yPercent: resting });
       flip = gsap.to(roller.strips, {
         yPercent: 0,
-        duration: 0.9,
+        duration: 0.5,
         ease: "expo.out",
-        stagger: 0.025,
+        stagger: 0.015,
       });
     };
     titleElement.addEventListener("pointerenter", onHover);
