@@ -5,29 +5,39 @@
  * booting the full overlay UI. Served before live-browser.js and attached to
  * window.__IMPECCABLE_LIVE_SESSION__.
  */
-(function (root) {
-  'use strict';
-
+((root) => {
   function createLiveBrowserSessionState({ prefix, storage, idFactory }) {
-    if (!prefix) throw new Error('prefix required');
+    if (!prefix) throw new Error("prefix required");
     const store = storage || root.localStorage;
-    const makeId = idFactory || function () { return Math.random().toString(16).slice(2, 10); };
-    const sessionKey = prefix + '-session';
-    const handledKey = sessionKey + '-handled';
-    const scrollKey = sessionKey + '-scroll';
+    const makeId = idFactory || (() => Math.random().toString(16).slice(2, 10));
+    const sessionKey = prefix + "-session";
+    const handledKey = sessionKey + "-handled";
+    const scrollKey = sessionKey + "-scroll";
     let checkpointRevision = 0;
     const owner = makeId();
 
     function safeRead(key) {
-      try { return store.getItem(key); } catch { return null; }
+      try {
+        return store.getItem(key);
+      } catch {
+        return null;
+      }
     }
 
     function safeWrite(key, value) {
-      try { store.setItem(key, value); } catch { /* quota exceeded or private mode */ }
+      try {
+        store.setItem(key, value);
+      } catch {
+        /* quota exceeded or private mode */
+      }
     }
 
     function safeRemove(key) {
-      try { store.removeItem(key); } catch { /* unavailable storage */ }
+      try {
+        store.removeItem(key);
+      } catch {
+        /* unavailable storage */
+      }
     }
 
     function loadSession() {
@@ -39,11 +49,13 @@
           checkpointRevision = Math.max(checkpointRevision, parsed.checkpointRevision);
         }
         return parsed;
-      } catch { return null; }
+      } catch {
+        return null;
+      }
     }
 
     function saveSession(session) {
-      if (!session || !session.id) return;
+      if (!(session && session.id)) return;
       // Adopt a revision another tab stored so this write does not lower it.
       // localStorage has no compare-and-set, so a save from another tab that
       // lands between this read and the write below can still be overwritten.
@@ -81,16 +93,18 @@
       try {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
-          return parsed.filter(id => typeof id === 'string' && id);
+          return parsed.filter((id) => typeof id === "string" && id);
         }
-        if (typeof parsed === 'string' && parsed) return [parsed];
-      } catch { /* legacy values were stored as a plain session id */ }
+        if (typeof parsed === "string" && parsed) return [parsed];
+      } catch {
+        /* legacy values were stored as a plain session id */
+      }
       return [raw];
     }
 
     function markHandled(id) {
       if (!id) return;
-      const ids = readHandledIds().filter(existing => existing !== id);
+      const ids = readHandledIds().filter((existing) => existing !== id);
       ids.push(id);
       safeWrite(handledKey, JSON.stringify(ids.slice(-8)));
     }
@@ -104,7 +118,7 @@
         safeRemove(handledKey);
         return;
       }
-      const remaining = readHandledIds().filter(existing => existing !== id);
+      const remaining = readHandledIds().filter((existing) => existing !== id);
       if (remaining.length > 0) safeWrite(handledKey, JSON.stringify(remaining));
       else safeRemove(handledKey);
     }
@@ -145,4 +159,4 @@
   }
 
   root.__IMPECCABLE_LIVE_SESSION__ = { createLiveBrowserSessionState };
-})(typeof window !== 'undefined' ? window : globalThis);
+})(typeof window !== "undefined" ? window : globalThis);
