@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Opacity of a word that has not been reached yet. */
-const DIM = 0.16;
+/** Opacity of a word that has not been reached yet; it keeps the 3:1 contrast large text needs. */
+const DIM = 0.4;
 /** Viewport heights of scrolling, with the stage held in place, that light the whole text. */
 const TRAVEL = 1.5;
 const TRACK = `${(TRAVEL + 1) * 100}svh`;

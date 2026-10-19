@@ -274,13 +274,14 @@ test.describe("landing sections", () => {
 });
 
 test.describe("hero", () => {
-  test("shows the portrait, tagline and stack once the entrance settles", async ({ page }) => {
+  test("names the owner in the only h1 and shows the role and availability", async ({ page }) => {
     await page.goto("/en");
 
-    await expect(page.getByRole("img", { name: "Portrait of Florian Palvadeau" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 1, name: /Florian Palvadeau.*From Geneva/ }),
+    ).toBeVisible();
     await expect(page.getByText("Full-stack software engineer", { exact: true })).toBeVisible();
-    await expect(page.getByText("Kubernetes", { exact: true }).first()).toBeVisible();
-    await expect(page.getByRole("link", { name: "Get in touch" })).toBeVisible();
+    await expect(page.getByText("Open to positions, Switzerland")).toBeVisible();
   });
 
   test.describe("with reduced motion", () => {
@@ -297,14 +298,14 @@ test.describe("hero", () => {
 
 test.describe("intro and about", () => {
   for (const [locale, statement, role] of [
-    ["en", "I build reliable web software", "Software engineer, IT industrialization"],
-    ["fr", "Je crée des logiciels web fiables", "Ingénieur logiciel, industrialisation IT"],
-    ["de", "Ich entwickle zuverlässige Websoftware", "Softwareingenieur, IT-Industrialisierung"],
+    ["en", "I design, build and run web applications", "Software engineer, IT industrialization"],
+    ["fr", "Je conçois, développe et exploite", "Ingénieur logiciel, industrialisation IT"],
+    ["de", "Ich entwerfe, entwickle und betreibe", "Softwareingenieur, IT-Industrialisierung"],
   ] as const) {
     test(`renders the story and career path in ${locale}`, async ({ page }) => {
       await page.goto(`/${locale}`);
 
-      await expect(page.getByText(statement)).toBeVisible();
+      await expect(page.locator("#intro")).toContainText(statement);
       await expect(page.getByText(role, { exact: false }).first()).toBeVisible();
       await expectNoA11yViolations(page);
     });
