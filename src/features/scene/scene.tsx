@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { canRenderScene } from "@/lib/scene";
 import { cn } from "@/lib/utils";
 
+import type { SceneVariant } from "./scene-canvas";
+
 const SceneCanvas = dynamic(() => import("./scene-canvas"), { ssr: false });
 
 /**
@@ -12,7 +14,13 @@ const SceneCanvas = dynamic(() => import("./scene-canvas"), { ssr: false });
  * visitor's device and preferences allow it; otherwise a static radial glow stays. Rendering stops
  * while the scene is off screen or the tab is hidden.
  */
-export function Scene({ className }: { className?: string }) {
+export function Scene({
+  variant = "hero",
+  className,
+}: {
+  variant?: SceneVariant;
+  className?: string;
+}) {
   const root = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(false);
   const [visible, setVisible] = useState(true);
@@ -49,7 +57,7 @@ export function Scene({ className }: { className?: string }) {
         className,
       )}
     >
-      {enabled && <SceneCanvas active={visible && foreground} />}
+      {enabled && visible && <SceneCanvas active={foreground} variant={variant} />}
     </div>
   );
 }

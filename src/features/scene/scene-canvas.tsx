@@ -5,7 +5,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Group } from "three";
 import { Vector3 } from "three";
 
-type SceneCanvasProps = { active: boolean };
+export type SceneVariant = "hero" | "accent";
+
+type SceneCanvasProps = { active: boolean; variant: SceneVariant };
+
+/** The accent variant is a smaller, fainter sphere pushed to the edge so it never sits under copy. */
+const VARIANTS = {
+  hero: { scale: 1, offset: 0, opacity: 0.35 },
+  accent: { scale: 0.55, offset: 3.6, opacity: 0.22 },
+} as const;
 
 const RING_COUNT = 17;
 const RADIUS = 2.4;
@@ -43,7 +51,8 @@ function useAccent(): string {
   return accent;
 }
 
-function Rings() {
+function Rings({ variant }: { variant: SceneVariant }) {
+  const { scale, offset, opacity } = VARIANTS[variant];
   const group = useRef<Group>(null);
   const accent = useAccent();
   const rings = useMemo(() => Array.from({ length: RING_COUNT }, (_, i) => ringPoints(i)), []);
@@ -59,21 +68,23 @@ function Rings() {
   });
 
   return (
-    <group ref={group}>
-      {rings.map((positions, i) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: rings are static and never reorder
-        <lineLoop key={i}>
-          <bufferGeometry>
-            <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-          </bufferGeometry>
-          <lineBasicMaterial color={accent} transparent opacity={0.35} />
-        </lineLoop>
-      ))}
+    <group position={[offset, 0, 0]} scale={scale}>
+      <group ref={group}>
+        {rings.map((positions, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: rings are static and never reorder
+          <lineLoop key={i}>
+            <bufferGeometry>
+              <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+            </bufferGeometry>
+            <lineBasicMaterial color={accent} transparent opacity={opacity} />
+          </lineLoop>
+        ))}
+      </group>
     </group>
   );
 }
 
-export default function SceneCanvas({ active }: SceneCanvasProps) {
+export default function SceneCanvas({ active, variant }: SceneCanvasProps) {
   return (
     <Canvas
       frameloop={active ? "always" : "never"}
@@ -81,7 +92,7 @@ export default function SceneCanvas({ active }: SceneCanvasProps) {
       camera={{ position: [0, 0, 9], fov: 45 }}
       gl={{ antialias: true, powerPreference: "low-power" }}
     >
-      <Rings />
+      <Rings variant={variant} />
     </Canvas>
   );
 }
