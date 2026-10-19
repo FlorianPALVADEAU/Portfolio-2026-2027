@@ -1,7 +1,6 @@
 import { Text } from "@/components/atoms/text";
 import { Timeline } from "@/components/molecules/timeline";
 import { LandingSection } from "@/components/organisms/landing-section";
-import { Scene } from "@/features/scene";
 import type { Messages } from "@/lib/i18n";
 import { experience, formatPeriod } from "@/lib/landing";
 
@@ -21,7 +20,7 @@ export function AboutSection({ index, title, messages }: AboutSectionProps) {
   }));
 
   return (
-    <LandingSection id="about" index={index} title={title} backdrop={<Scene variant="accent" />}>
+    <LandingSection id="about" index={index} title={title}>
       <div className="grid gap-12 md:grid-cols-2">
         <div className="flex flex-col gap-6">
           {messages.paragraphs.map((paragraph) => (
