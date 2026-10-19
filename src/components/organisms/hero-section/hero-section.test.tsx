@@ -39,4 +39,19 @@ describe("HeroSection", () => {
     expect(link).toHaveAttribute("href", "/cv/cv-en.pdf");
     expect(link).toHaveAttribute("download");
   });
+
+  it("scatters decorative photos into the slots and ignores the surplus", () => {
+    const photos = ["/a.jpg", "/b.jpg", "/c.jpg", "/d.jpg", "/e.jpg"];
+    const { container } = render(<HeroSection messages={messages} photos={photos} />);
+
+    const pictures = container.querySelectorAll("img");
+    expect(pictures).toHaveLength(4);
+    for (const picture of pictures) expect(picture).toHaveAttribute("alt", "");
+  });
+
+  it("renders no photo when none was added", () => {
+    const { container } = render(<HeroSection messages={messages} />);
+
+    expect(container.querySelectorAll("img")).toHaveLength(0);
+  });
 });

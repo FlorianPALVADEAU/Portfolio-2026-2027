@@ -1,13 +1,17 @@
+import Image from "next/image";
 import { Button } from "@/components/atoms/button";
 import { Heading } from "@/components/atoms/heading";
 import { ScrollSequence } from "@/features/scroll-sequence";
 import type { Messages } from "@/lib/i18n";
-import { genevaAscent } from "@/lib/landing";
+import { genevaAscent, heroPhotoSlots } from "@/lib/landing";
+import { cn } from "@/lib/utils";
 
 type HeroSectionProps = {
   messages: Pick<Messages["home"], "badge" | "role" | "headline" | "cv" | "scroll">;
   /** Public URL of the CV in the visitor's language; omitted when none has been added. */
   cvHref?: string | null;
+  /** Public URLs of the photos to scatter around the headline; the first ones fill the slots. */
+  photos?: readonly string[];
 };
 
 /**
@@ -15,10 +19,36 @@ type HeroSectionProps = {
  * line. It always uses the dark palette so the footage and the white type read in every theme, and
  * it slides under the sticky header, which is 4.5rem tall.
  */
-export function HeroSection({ messages, cvHref = null }: HeroSectionProps) {
+export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectionProps) {
   return (
     <section data-theme="dark" className="relative -mt-18 bg-black text-foreground">
       <ScrollSequence frames={genevaAscent}>
+        {photos.slice(0, heroPhotoSlots.length).map((src, index) => {
+          const slot = heroPhotoSlots[index];
+          return (
+            slot && (
+              <div
+                key={src}
+                aria-hidden="true"
+                style={{ rotate: `${slot.tilt}deg` }}
+                className={cn("absolute", slot.className)}
+              >
+                <div
+                  data-sequence-photo
+                  className="relative size-full overflow-hidden rounded-lg shadow-2xl"
+                >
+                  <Image
+                    src={src}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 16vw, 34vw"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            )
+          );
+        })}
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 px-(--gutter) text-center">
           <Heading level={1} size="display" data-sequence-reveal className="max-w-4xl">
             <span className="sr-only">Florian Palvadeau.</span> {messages.headline}

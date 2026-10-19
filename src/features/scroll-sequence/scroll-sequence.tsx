@@ -29,7 +29,8 @@ type ScrollSequenceProps = {
 /**
  * Holds a full-screen stage in place and plays a frame sequence while the visitor scrolls past.
  * Children marked `data-sequence-reveal` appear at the end of the sequence and those marked
- * `data-sequence-fade` leave at its start. Without frames a placeholder sky zooms out instead.
+ * `data-sequence-fade` leave at its start; those marked `data-sequence-photo` pop in with a
+ * bounce, so they should rest on a wrapper that holds their tilt. Without frames a placeholder sky zooms out instead.
  * The next section must be opaque and above it (`z-10`). Under reduced motion the stage is not
  * held and does not overlap: the last frame and all the copy are shown at once.
  */
@@ -78,6 +79,16 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
         { opacity: 1, y: 0, duration: 1 - REVEAL_AT, stagger: 0.04, ease: "power2.out" },
         REVEAL_AT - 0.04,
       );
+      for (const [order, photo] of gsap.utils
+        .toArray<HTMLElement>("[data-sequence-photo]")
+        .entries()) {
+        timeline.fromTo(
+          photo,
+          { opacity: 0, scale: 0.6, y: 90, rotation: -14 },
+          { opacity: 1, scale: 1, y: 0, rotation: 0, duration: 0.26, ease: "back.out(1.7)" },
+          REVEAL_AT - 0.06 + order * 0.05,
+        );
+      }
     }, element);
 
     return () => {

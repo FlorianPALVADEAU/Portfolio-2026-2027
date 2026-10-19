@@ -9,6 +9,7 @@ import { CONTACT_ACTION, submitContact } from "@/server/infrastructure/contact";
 import { loadProject, projectSlugs } from "@/server/infrastructure/content";
 import { cvHref } from "@/server/infrastructure/cv";
 import { githubActivity } from "@/server/infrastructure/github";
+import { photoUrls } from "@/server/infrastructure/photos";
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
@@ -24,6 +25,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         locale={locale}
         messages={messages.home}
         cvHref={await cvHref(locale)}
+        heroPhotos={await photoUrls("hero")}
         projects={projects}
         contact={
           <>

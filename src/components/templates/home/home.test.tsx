@@ -36,7 +36,7 @@ describe("Home", () => {
 
     const headings = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
     expect(headings).toEqual([
-      "Engineer by day, race organiser on the side.",
+      "Software engineer by day, race organiser on the side.",
       "Selected works",
       "Skills",
       "Gallery",

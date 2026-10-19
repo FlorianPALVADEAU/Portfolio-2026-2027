@@ -16,18 +16,20 @@ type HomeProps = {
   messages: Messages["home"];
   /** Public URL of the CV in this language, when the file exists. */
   cvHref?: string | null;
+  /** Public URLs of the photos scattered on the hero. */
+  heroPhotos?: readonly string[];
   projects: ComponentProps<typeof WorksSection>["projects"];
   /** Contact form, built by the route because it depends on server-side wiring. */
   contact?: ReactNode;
 };
 
-export function Home({ locale, messages, cvHref, projects, contact }: HomeProps) {
+export function Home({ locale, messages, cvHref, heroPhotos, projects, contact }: HomeProps) {
   const position = (id: (typeof landingSections)[number]) => landingSections.indexOf(id) + 1;
   const title = messages.sections;
 
   return (
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
-      <HeroSection messages={messages} cvHref={cvHref ?? null} />
+      <HeroSection messages={messages} cvHref={cvHref ?? null} photos={heroPhotos ?? []} />
       <IntroSection title={title.intro} messages={messages.intro} controls={messages.marquee} />
       <AboutSection index={position("about")} title={title.about} messages={messages.about} />
       <WorksSection
