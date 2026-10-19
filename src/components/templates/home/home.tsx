@@ -26,7 +26,11 @@ export function Home({ locale, messages, projects }: HomeProps) {
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
       <SceneBackdrop />
       <HeroSection locale={locale} messages={messages} />
-      <IntroSection index={position("intro")} title={title.intro} messages={messages.intro} />
+      <IntroSection
+        title={title.intro}
+        messages={messages.intro}
+        photo={messages.photos.panorama}
+      />
       <WorksSection
         index={position("works")}
         title={title.works}
@@ -39,9 +43,9 @@ export function Home({ locale, messages, projects }: HomeProps) {
       <AboutSection index={position("about")} title={title.about} messages={messages.about} />
       <LandingSection id="gallery" index={position("gallery")} title={title.gallery} tone="muted" />
       <ContactSection
-        index={position("contact")}
         title={title.contact}
         messages={messages.contact}
+        photo={messages.photos.closing}
       />
     </main>
   );

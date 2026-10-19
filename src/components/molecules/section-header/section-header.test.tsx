@@ -12,4 +12,10 @@ describe("SectionHeader", () => {
     );
     expect(screen.getByText("[03]")).toHaveAttribute("aria-hidden", "true");
   });
+
+  it("shows no index label when none is given", () => {
+    render(<SectionHeader title="Intro" titleId="intro-title" />);
+
+    expect(screen.queryByText(/^\[\d+\]$/)).not.toBeInTheDocument();
+  });
 });

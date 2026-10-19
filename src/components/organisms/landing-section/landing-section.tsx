@@ -14,7 +14,7 @@ const tones = {
 
 type LandingSectionProps = {
   id: string;
-  index: number;
+  index?: number | undefined;
   title: string;
   tone?: keyof typeof tones;
   className?: string;

@@ -1,5 +1,4 @@
 import { Heading } from "@/components/atoms/heading";
-import { Stack } from "@/components/atoms/stack";
 import { Text } from "@/components/atoms/text";
 
 type ResultsBlockProps = {
@@ -9,20 +8,22 @@ type ResultsBlockProps = {
 
 export function ResultsBlock({ title, items }: ResultsBlockProps) {
   return (
-    <Stack gap="sm">
-      <Heading level={2}>{title}</Heading>
-      <dl className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-6 md:grid-cols-12">
+      <Heading level={2} className="md:col-span-4">
+        {title}
+      </Heading>
+      <dl className="grid gap-8 sm:grid-cols-2 md:col-span-7 md:col-start-6">
         {items.map((item) => (
-          <div key={item.label}>
+          <div key={item.label} className="flex flex-col-reverse justify-end gap-1">
             <dt>
-              <Text as="span" tone="muted" size="sm">
-                {item.label}
-              </Text>
+              <Text as="span">{item.label}</Text>
             </dt>
-            <dd className="text-3xl font-semibold">{item.value}</dd>
+            <dd className="text-[clamp(2.75rem,6vw,5rem)] leading-none font-semibold tracking-tight">
+              {item.value}
+            </dd>
           </div>
         ))}
       </dl>
-    </Stack>
+    </div>
   );
 }

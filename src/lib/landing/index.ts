@@ -1,3 +1,4 @@
+export { pictureCredits } from "./credits";
 export { experience, formatPeriod } from "./experience";
 export { heroStack } from "./hero-stack";
 export { profiles } from "./profiles";

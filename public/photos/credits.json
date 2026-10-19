@@ -1,0 +1,50 @@
+[
+  {
+    "file": "public/photos/lavaux-terraces.jpg",
+    "media": "image",
+    "ref": "commons:95740662",
+    "title": "Lavaux Switzerland",
+    "creator": "Lorenz Poffet",
+    "creatorUrl": null,
+    "date": "2019-11-11",
+    "license": "CC BY-SA 4.0",
+    "licenseCode": "by-sa",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "creditRequired": true,
+    "page": "https://commons.wikimedia.org/wiki/File:Lavaux_Switzerland.jpg",
+    "via": "Wikimedia Commons",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Lavaux_Switzerland.jpg/1920px-Lavaux_Switzerland.jpg",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 726524,
+    "credit": "\"Lavaux Switzerland\" by Lorenz Poffet, CC BY-SA 4.0, via Wikimedia Commons",
+    "notes": [
+      "Share-alike: an altered version (recoloured, combined with other pictures) must be shared under the same licence."
+    ],
+    "saved": "2026-10-19T11:25:20.096Z"
+  },
+  {
+    "file": "public/photos/lavaux-church.jpg",
+    "media": "image",
+    "ref": "commons:132690118",
+    "title": "Église réformée Saint-Symphorien, Lac Leman et les vignobles en terrasses de Lavaux (2013)",
+    "creator": "JoachimKohler-HB",
+    "creatorUrl": null,
+    "date": "2013-10-19",
+    "license": "CC BY-SA 4.0",
+    "licenseCode": "by-sa",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "creditRequired": true,
+    "page": "https://commons.wikimedia.org/wiki/File:%C3%89glise_r%C3%A9form%C3%A9e_Saint-Symphorien,_Lac_Leman_et_les_vignobles_en_terrasses_de_Lavaux_(2013).jpg",
+    "via": "Wikimedia Commons",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/%C3%89glise_r%C3%A9form%C3%A9e_Saint-Symphorien%2C_Lac_Leman_et_les_vignobles_en_terrasses_de_Lavaux_%282013%29.jpg/1920px-%C3%89glise_r%C3%A9form%C3%A9e_Saint-Symphorien%2C_Lac_Leman_et_les_vignobles_en_terrasses_de_Lavaux_%282013%29.jpg",
+    "width": 1920,
+    "height": 1280,
+    "bytes": 1089055,
+    "credit": "\"Église réformée Saint-Symphorien, Lac Leman et les vignobles en terrasses de Lavaux (2013)\" by JoachimKohler-HB, CC BY-SA 4.0, via Wikimedia Commons",
+    "notes": [
+      "Share-alike: an altered version (recoloured, combined with other pictures) must be shared under the same licence."
+    ],
+    "saved": "2026-10-19T11:25:20.652Z"
+  }
+]

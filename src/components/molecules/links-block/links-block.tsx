@@ -1,6 +1,5 @@
 import { Heading } from "@/components/atoms/heading";
 import { Link } from "@/components/atoms/link";
-import { Stack } from "@/components/atoms/stack";
 
 type LinksBlockProps = {
   title: string;
@@ -10,17 +9,23 @@ type LinksBlockProps = {
 
 export function LinksBlock({ title, items, labels }: LinksBlockProps) {
   return (
-    <Stack gap="sm">
-      <Heading level={2}>{title}</Heading>
-      <ul className="flex flex-wrap gap-x-6 gap-y-2">
+    <div className="grid gap-6 md:grid-cols-12">
+      <Heading level={2} className="md:col-span-4">
+        {title}
+      </Heading>
+      <ul className="flex flex-col gap-2 md:col-span-7 md:col-start-6">
         {items.map(({ id, href }) => (
           <li key={id}>
-            <Link href={href} external className="inline-flex min-h-11 items-center">
+            <Link
+              href={href}
+              external
+              className="inline-flex min-h-11 items-center text-[clamp(1.25rem,2.1vw,1.875rem)]"
+            >
               {labels[id] ?? id}
             </Link>
           </li>
         ))}
       </ul>
-    </Stack>
+    </div>
   );
 }
