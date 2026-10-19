@@ -137,6 +137,13 @@
           "text": "Danke. Ich antworte von meiner eigenen Adresse.",
           "again": "Weitere Nachricht senden"
         }
+      },
+      "github": {
+        "title": "Öffentlicher Code auf GitHub",
+        "note": "Aus der GitHub-API gelesen und stündlich aktualisiert. Forks werden nicht mitgezählt.",
+        "repositories": "Öffentliche Repositories",
+        "stars": "Erhaltene Sterne",
+        "lastPush": "Letzter Push"
       }
     },
     "works": {
