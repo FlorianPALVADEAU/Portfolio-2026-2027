@@ -1,0 +1,8 @@
+import type { UiSound } from "./engine";
+import { getSoundEnabled } from "./preference";
+
+/** Plays a sound only when the visitor opted in; the engine loads on first use so muted visitors never download it. */
+export function playIfEnabled(sound: UiSound): void {
+  if (!getSoundEnabled()) return;
+  void import("./engine").then((engine) => engine.playUiSound(sound));
+}

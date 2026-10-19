@@ -21,6 +21,7 @@ export function ProjectCard({ href, title, summary, year, stack, cover }: Projec
   return (
     <article
       data-view-cursor
+      data-reel-item
       className="group relative flex flex-col gap-5 focus-within:outline-2 focus-within:outline-offset-8 focus-within:outline-ring"
     >
       <div className="overflow-hidden rounded-3xl border border-border bg-muted">
@@ -29,17 +30,22 @@ export function ProjectCard({ href, title, summary, year, stack, cover }: Projec
           width={cover.width}
           height={cover.height}
           alt={cover.alt}
+          data-reel-image
           sizes="(min-width: 1024px) 560px, 100vw"
           className="aspect-video w-full object-cover motion-safe:transition-transform motion-safe:duration-(--duration-slow) motion-safe:ease-out motion-safe:group-hover:scale-105"
         />
       </div>
       <div className="flex flex-col gap-2">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+        <p
+          data-reel-tags
+          className="font-mono text-xs uppercase tracking-widest text-muted-foreground"
+        >
           {[year, ...stack].join(" • ")}
         </p>
         <Heading level={3} size="3xl">
           <Link
             href={href}
+            data-reel-title
             className="no-underline after:absolute after:inset-0 after:content-[''] hover:text-foreground focus-visible:outline-none"
           >
             {title}

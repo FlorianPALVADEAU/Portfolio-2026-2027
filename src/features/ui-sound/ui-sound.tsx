@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { getSoundEnabled, type UiSound as UiSoundName } from "@/lib/sound";
+import { playIfEnabled } from "@/lib/sound";
 
 const INTERACTIVE = "a[href], button, summary, [role='button'], input, select, textarea, label";
 
@@ -14,21 +14,15 @@ export function UiSound() {
   useEffect(() => {
     let hovered: Element | null = null;
 
-    // The engine is imported on first use so muted visitors never download it.
-    const play = (sound: UiSoundName) => {
-      if (!getSoundEnabled()) return;
-      void import("@/lib/sound/engine").then((engine) => engine.playUiSound(sound));
-    };
-
     const onPointerOver = (event: PointerEvent) => {
       if (event.pointerType !== "mouse") return;
       const target = interactiveTarget(event);
       if (target === hovered) return;
       hovered = target;
-      if (target) play("hover");
+      if (target) playIfEnabled("hover");
     };
     const onClick = (event: MouseEvent) => {
-      if (interactiveTarget(event)) play("click");
+      if (interactiveTarget(event)) playIfEnabled("click");
     };
 
     document.addEventListener("pointerover", onPointerOver);
