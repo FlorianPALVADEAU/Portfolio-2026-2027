@@ -1,0 +1,30 @@
+{
+  "title": "Orbit Scheduler",
+  "summary": "Beispielprojekt. Platzhaltertext zur Vorschau des Layouts; durch einen Satz ersetzen, der beschreibt, was gebaut wurde und warum es wichtig war.",
+  "role": "Full-Stack-Entwickler",
+  "alt": "Titelbild von Orbit Scheduler",
+  "blocks": {
+    "context": {
+      "title": "Kontext",
+      "paragraphs": [
+        "Mustertext. Beschreibe die Lage, die Beteiligten und die Einschränkung, die dieses Projekt lohnend machte.",
+        "Ein zweiter kurzer Absatz kann den technischen oder fachlichen Hintergrund ergänzen."
+      ]
+    },
+    "role": {
+      "title": "Meine Rolle",
+      "paragraphs": [
+        "Mustertext. Nenne, wofür du verantwortlich warst: Entwurf, Umsetzung, Auslieferung oder Koordination."
+      ]
+    },
+    "stack": {
+      "title": "Stack"
+    },
+    "outcome": {
+      "title": "Ergebnis",
+      "paragraphs": [
+        "Mustertext. Sage, was sich nach dem Livegang geändert hat, nur mit Zahlen, die du belegen kannst."
+      ]
+    }
+  }
+}

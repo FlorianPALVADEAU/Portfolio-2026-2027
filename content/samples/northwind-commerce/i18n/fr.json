@@ -1,0 +1,30 @@
+{
+  "title": "Northwind Commerce",
+  "summary": "Projet exemple. Texte provisoire pour visualiser la mise en page ; à remplacer par une phrase qui résume ce qui a été construit et pourquoi c'était utile.",
+  "role": "Développeur full-stack",
+  "alt": "Couverture de Northwind Commerce",
+  "blocks": {
+    "context": {
+      "title": "Contexte",
+      "paragraphs": [
+        "Texte modèle. Décris la situation, les personnes impliquées et la contrainte qui rendait ce projet utile.",
+        "Un deuxième court paragraphe peut ajouter le contexte technique ou métier."
+      ]
+    },
+    "role": {
+      "title": "Mon rôle",
+      "paragraphs": [
+        "Texte modèle. Indique ce que tu portais : conception, développement, livraison ou coordination."
+      ]
+    },
+    "stack": {
+      "title": "Stack"
+    },
+    "outcome": {
+      "title": "Résultat",
+      "paragraphs": [
+        "Texte modèle. Dis ce qui a changé après la mise en production, avec uniquement des chiffres que tu peux défendre."
+      ]
+    }
+  }
+}
