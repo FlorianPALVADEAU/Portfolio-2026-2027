@@ -56,6 +56,25 @@
       "statement": "I build reliable web software, from enterprise integrations to products I run myself.",
       "aside": "Since 2022 I have worked in TypeScript, between large-scale internal tooling at JCDecaux and the ticketing platform of a race I founded. Available from September 2027 for roles in Geneva and the canton of Vaud."
     },
+    "skills": {
+      "groups": {
+        "engineering": {
+          "title": "Engineering"
+        },
+        "infrastructure": {
+          "title": "Infrastructure"
+        },
+        "delivery": {
+          "title": "Delivery",
+          "items": ["Scrum", "Hexagonal architecture", "SOLID", "Microservices", "Planning"]
+        },
+        "collaboration": {
+          "title": "Collaboration",
+          "items": ["International teams in English", "Requirements gathering"]
+        }
+      },
+      "certifications": "Certifications"
+    },
     "about": {
       "paragraphs": [
         "I am a full-stack software engineer, mostly working with TypeScript, React, Next.js and NestJS. I started in 2022 as a developer at Neurones IT, then joined JCDecaux, first as an apprentice and, since September 2025, as a software engineer in IT industrialization.",

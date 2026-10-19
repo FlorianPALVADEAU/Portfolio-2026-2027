@@ -256,7 +256,7 @@ test.describe("hero", () => {
 
     await expect(page.getByRole("img", { name: "Portrait of Florian Palvadeau" })).toBeVisible();
     await expect(page.getByText("Full-stack software engineer", { exact: true })).toBeVisible();
-    await expect(page.getByText("Kubernetes", { exact: true })).toBeVisible();
+    await expect(page.getByText("Kubernetes", { exact: true }).first()).toBeVisible();
     await expect(page.getByRole("link", { name: "Get in touch" })).toBeVisible();
   });
 
@@ -307,4 +307,22 @@ test.describe("selected works", () => {
         .getByRole("link", { name: "Overbound" }),
     ).toBeVisible();
   });
+});
+
+test.describe("skills", () => {
+  for (const [locale, group, certifications] of [
+    ["en", "Collaboration", "Certifications"],
+    ["fr", "Collaboration", "Certifications"],
+    ["de", "Zusammenarbeit", "Zertifizierungen"],
+  ] as const) {
+    test(`lists groups and credentials in ${locale}`, async ({ page }) => {
+      await page.goto(`/${locale}`);
+
+      const skills = page.locator("#skills");
+      await expect(skills.getByRole("heading", { name: group })).toBeVisible();
+      await expect(skills.getByRole("heading", { name: certifications })).toBeVisible();
+      await expect(skills.getByText("CKAD, 92%")).toBeVisible();
+      await expectNoA11yViolations(page);
+    });
+  }
 });
