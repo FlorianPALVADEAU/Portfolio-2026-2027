@@ -79,31 +79,21 @@
       "certifications": "Certifications"
     },
     "about": {
-      "paragraphs": [
-        "Je suis ingénieur logiciel full-stack, principalement en TypeScript, React, Next.js et NestJS. J'ai commencé en 2022 comme développeur chez Neurones IT, puis j'ai rejoint JCDecaux, d'abord en alternance, et depuis septembre 2025 comme ingénieur logiciel en industrialisation IT.",
-        "Chez JCDecaux, je développe et j'exploite des outils internes déployés à l'international, en anglais avec des équipes locales. J'ai étudié la gestion de projet digital à l'IIM, et j'aime la partie du métier où besoins, planification et livraison se rejoignent.",
-        "En parallèle, j'ai fondé Overbound, une course à obstacles. Sa première édition, en septembre 2026, a réuni plus de 320 participants et 60 bénévoles, avec une plateforme de billetterie que j'ai développée moi-même."
-      ],
-      "present": "Aujourd'hui",
-      "timeline": {
-        "title": "Parcours",
-        "items": {
-          "jcdecaux": {
-            "role": "Ingénieur logiciel, industrialisation IT",
-            "summary": "Outils internes d'automatisation et de déploiement utilisés à l'international (React, NestJS, PostgreSQL, AWS, Kubernetes)."
-          },
-          "overbound": {
-            "role": "Fondateur et organisateur",
-            "summary": "Course à obstacles et sa plateforme de billetterie (Next.js, Supabase, Stripe, Sanity)."
-          },
-          "apprentice": {
-            "role": "Alternant industrialisation IT",
-            "summary": "Deux applications utilisées chaque jour par plus de 1 000 collaborateurs, en microservices avec CI/CD."
-          },
-          "neurones": {
-            "role": "Développeur full-stack",
-            "summary": "Plateforme SaaS de gestion d'environnements Microsoft 365 pour de grands comptes (Django, Vue.js)."
-          }
+      "hook": "Ingénieur le jour, organisateur de course à côté.",
+      "text": "J'ai rejoint JCDecaux en 2023 et je développe des outils internes utilisés dans plusieurs pays. En parallèle, j'ai fondé Overbound, une course à obstacles, et développé moi-même sa billetterie.",
+      "portraitAlt": "Portrait de Florian Palvadeau",
+      "facts": {
+        "since": {
+          "value": "2022",
+          "label": "Je code en TypeScript depuis"
+        },
+        "participants": {
+          "value": "320",
+          "label": "Participants à la première édition d'Overbound, en septembre 2026"
+        },
+        "availability": {
+          "value": "Sept. 2027",
+          "label": "Disponible, Genève et canton de Vaud"
         }
       }
     },

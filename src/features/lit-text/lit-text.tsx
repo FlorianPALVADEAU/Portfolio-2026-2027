@@ -28,10 +28,13 @@ type LitTextProps = {
  * A full-screen stage that stays in place while the visitor scrolls, lighting its paragraph word
  * by word. Scrolling goes on only once the last word is lit. Words are dimmed only once the script
  * runs and the text stays plain for assistive technology, so it is fully readable without
- * JavaScript. Under reduced motion the stage is not held and every word is lit.
+ * JavaScript. The stage fades out as it ends, and its negative bottom margin pulls the next
+ * section up by one viewport, so that section can take over at the moment the stage is released.
+ * Under reduced motion the stage is not held, nothing overlaps and every word is lit.
  */
 export function LitText({ text, className, stageClassName, children }: LitTextProps) {
   const track = useRef<HTMLDivElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const element = track.current;
@@ -50,10 +53,9 @@ export function LitText({ text, className, stageClassName, children }: LitTextPr
       timeline.fromTo(
         "[data-lit-word]",
         { opacity: DIM },
-        { opacity: 1, duration: 0.2, stagger: { amount: 0.7 } },
+        { opacity: 1, duration: 0.2, stagger: { amount: 0.5 } },
       );
-      // A short hold on the finished text before the stage is released.
-      timeline.set({}, {}, 1);
+      timeline.to(stage.current, { opacity: 0, duration: 0.2 }, 0.8);
     }, element);
 
     return () => context.revert();
@@ -63,9 +65,10 @@ export function LitText({ text, className, stageClassName, children }: LitTextPr
     <div
       ref={track}
       style={{ "--track": TRACK } as CSSProperties}
-      className="h-(--track) motion-reduce:h-auto"
+      className="-mb-[100svh] h-(--track) motion-reduce:mb-0 motion-reduce:h-auto"
     >
       <div
+        ref={stage}
         className={cn(
           "sticky top-0 h-svh motion-reduce:static motion-reduce:h-auto",
           stageClassName,

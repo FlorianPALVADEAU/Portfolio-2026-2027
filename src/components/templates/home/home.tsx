@@ -29,6 +29,7 @@ export function Home({ locale, messages, cvHref, projects, contact }: HomeProps)
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
       <HeroSection messages={messages} cvHref={cvHref ?? null} />
       <IntroSection title={title.intro} messages={messages.intro} controls={messages.marquee} />
+      <AboutSection index={position("about")} title={title.about} messages={messages.about} />
       <WorksSection
         index={position("works")}
         title={title.works}
@@ -38,7 +39,6 @@ export function Home({ locale, messages, cvHref, projects, contact }: HomeProps)
       />
       <TechnologyBand messages={messages.marquee} />
       <SkillsSection index={position("skills")} title={title.skills} messages={messages.skills} />
-      <AboutSection index={position("about")} title={title.about} messages={messages.about} />
       <LandingSection id="gallery" index={position("gallery")} title={title.gallery} tone="muted" />
       <ContactSection
         title={title.contact}

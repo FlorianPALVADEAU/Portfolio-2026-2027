@@ -36,14 +36,14 @@ describe("Home", () => {
 
     const headings = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
     expect(headings).toEqual([
+      "Engineer by day, race organiser on the side.",
       "Selected works",
       "Skills",
-      "About me (IRL)",
       "Gallery",
       "Let's work together",
     ]);
-    expect(screen.getByRole("heading", { level: 3, name: "Experience" })).toBeVisible();
     expect(screen.getByRole("region", { name: "Introduction" })).toHaveAttribute("id", "intro");
+    expect(screen.getByRole("region", { name: "About me (IRL)" })).toHaveAttribute("id", "about");
     expect(screen.getByRole("region", { name: "Skills" })).toHaveAttribute("id", "skills");
   });
 });

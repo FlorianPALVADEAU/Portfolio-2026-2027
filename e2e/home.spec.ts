@@ -297,16 +297,16 @@ test.describe("hero", () => {
 });
 
 test.describe("intro and about", () => {
-  for (const [locale, statement, role] of [
-    ["en", "I design, build and run web applications", "Software engineer, IT industrialization"],
-    ["fr", "Je conçois, développe et exploite", "Ingénieur logiciel, industrialisation IT"],
-    ["de", "Ich entwerfe, entwickle und betreibe", "Softwareingenieur, IT-Industrialisierung"],
+  for (const [locale, statement, hook] of [
+    ["en", "I design, build and run web applications", "race organiser on the side"],
+    ["fr", "Je conçois, développe et exploite", "organisateur de course à côté"],
+    ["de", "Ich entwerfe, entwickle und betreibe", "nebenbei Rennveranstalter"],
   ] as const) {
-    test(`renders the story and career path in ${locale}`, async ({ page }) => {
+    test(`renders the intro and the about hook in ${locale}`, async ({ page }) => {
       await page.goto(`/${locale}`);
 
       await expect(page.locator("#intro")).toContainText(statement);
-      await expect(page.getByText(role, { exact: false }).first()).toBeVisible();
+      await expect(page.locator("#about")).toContainText(hook);
       await expectNoA11yViolations(page);
     });
   }

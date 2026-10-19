@@ -4,13 +4,20 @@ import en from "../../../../messages/en.json";
 import { AboutSection } from "./about-section";
 
 describe("AboutSection", () => {
-  it("renders the story and the career path, newest first", () => {
-    render(<AboutSection index={4} title="About" messages={en.home.about} />);
+  it("renders the hook as the section heading, with the portrait and the paragraph", () => {
+    render(<AboutSection index={2} title="About" messages={en.home.about} />);
 
-    const entries = screen.getAllByRole("listitem").map((item) => item.textContent ?? "");
-    expect(entries[0]).toContain("JCDecaux");
-    expect(entries[0]).toContain("2025 – Present");
-    expect(entries.at(-1)).toContain("Neurones IT");
     expect(screen.getByRole("region", { name: "About" })).toHaveAttribute("id", "about");
+    expect(screen.getByRole("heading", { level: 2, name: en.home.about.hook })).toBeVisible();
+    expect(screen.getByRole("img", { name: en.home.about.portraitAlt })).toBeInTheDocument();
+    expect(screen.getByText(en.home.about.text)).toBeVisible();
+  });
+
+  it("lists the three facts as terms with their values", () => {
+    render(<AboutSection index={2} title="About" messages={en.home.about} />);
+
+    expect(screen.getAllByRole("term")).toHaveLength(3);
+    expect(screen.getByText("320")).toBeVisible();
+    expect(screen.getByText(en.home.about.facts.availability.label)).toBeVisible();
   });
 });
