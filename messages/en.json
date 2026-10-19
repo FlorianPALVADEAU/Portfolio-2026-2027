@@ -79,8 +79,8 @@
       "certifications": "Certifications"
     },
     "about": {
-      "hook": "Engineer by day, race organiser on the side.",
-      "text": "I joined JCDecaux in 2023 and build internal tools used across several countries. Alongside, I founded Overbound, an obstacle-course race, and wrote its ticketing platform myself.",
+      "hook": "Software engineer by day, race organiser on the side.",
+      "text": "I joined JCDecaux in 2023 and build internal tools used across several countries. Alongside, I founded Overbound, an obstacle-course race, and ran it end to end: logistics, partners, volunteers, finance, communication and the ticketing platform I wrote myself.",
       "portraitAlt": "Portrait of Florian Palvadeau",
       "facts": {
         "since": {
