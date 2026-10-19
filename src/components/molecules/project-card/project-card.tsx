@@ -24,7 +24,7 @@ export function ProjectCard({ href, title, summary, year, stack, cover }: Projec
       data-reel-item
       className="group relative flex flex-col gap-5 focus-within:outline-2 focus-within:outline-offset-8 focus-within:outline-ring"
     >
-      <div className="overflow-hidden rounded-3xl border border-border bg-muted">
+      <div data-reel-frame className="overflow-hidden rounded-3xl border border-border bg-muted">
         <Image
           src={cover.src}
           width={cover.width}
