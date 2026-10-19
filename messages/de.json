@@ -139,11 +139,11 @@
         }
       },
       "github": {
-        "title": "Öffentlicher Code auf GitHub",
-        "note": "Aus der GitHub-API gelesen und stündlich aktualisiert. Forks werden nicht mitgezählt.",
-        "repositories": "Öffentliche Repositories",
-        "stars": "Erhaltene Sterne",
-        "lastPush": "Letzter Push"
+        "title": "Aktivität auf GitHub",
+        "note": "Beiträge im letzten Jahr, von GitHub gelesen und stündlich aktualisiert.",
+        "total": "Beiträge im letzten Jahr",
+        "less": "Weniger",
+        "more": "Mehr"
       }
     },
     "works": {

@@ -1,1 +1,6 @@
-export { type GithubStats, GithubUnavailable, Repository, summarise } from "./github-stats";
+export {
+  ContributionCalendar,
+  type GithubActivity,
+  GithubUnavailable,
+  toActivity,
+} from "./github-activity";

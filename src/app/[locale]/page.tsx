@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
 import { ContactForm } from "@/components/organisms/contact-form";
-import { GithubStats } from "@/components/organisms/github-stats";
+import { GithubActivity } from "@/components/organisms/github-activity";
 import { PersonSchema } from "@/components/organisms/person-schema";
 import { Home } from "@/components/templates/home";
 import { getMessages, isLocale } from "@/lib/i18n";
 import { CONTACT_ACTION, submitContact } from "@/server/infrastructure/contact";
 import { loadProject, projectSlugs } from "@/server/infrastructure/content";
-import { githubStats } from "@/server/infrastructure/github";
+import { githubActivity } from "@/server/infrastructure/github";
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
@@ -24,10 +24,10 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         projects={projects}
         contact={
           <>
-            <GithubStats
+            <GithubActivity
               locale={locale}
               messages={messages.home.contact.github}
-              stats={await githubStats()}
+              activity={await githubActivity()}
             />
             <ContactForm
               messages={messages.home.contact.form}

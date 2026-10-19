@@ -1,2 +1,2 @@
 export { GithubSource } from "./github-source";
-export { loadGithubStats } from "./load-github-stats";
+export { loadGithubActivity } from "./load-github-activity";
