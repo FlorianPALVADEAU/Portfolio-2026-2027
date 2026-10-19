@@ -426,6 +426,16 @@ test.describe("3d budget", () => {
   });
 });
 
+test("ignores keydown events without a key, as sent by browser autofill", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/en");
+
+  await page.evaluate(() => document.dispatchEvent(new Event("keydown")));
+
+  expect(errors).toEqual([]);
+});
+
 test("changing language keeps the theme and the scroll position", async ({ page }) => {
   await page.goto("/en");
   await openMenu(page);

@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
+import { ContactForm } from "@/components/organisms/contact-form";
 import { PersonSchema } from "@/components/organisms/person-schema";
 import { Home } from "@/components/templates/home";
 import { getMessages, isLocale } from "@/lib/i18n";
+import { CONTACT_ACTION, submitContact } from "@/server/infrastructure/contact";
 import { loadProject, projectSlugs } from "@/server/infrastructure/content";
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
@@ -14,7 +16,19 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
   return (
     <>
       <PersonSchema locale={locale} jobTitle={messages.home.role} />
-      <Home locale={locale} messages={messages.home} projects={projects} />
+      <Home
+        locale={locale}
+        messages={messages.home}
+        projects={projects}
+        contact={
+          <ContactForm
+            messages={messages.home.contact.form}
+            action={submitContact}
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+            challengeAction={CONTACT_ACTION}
+          />
+        }
+      />
     </>
   );
 }
