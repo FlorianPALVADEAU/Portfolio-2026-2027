@@ -379,16 +379,33 @@ test.describe("3d scene", () => {
     test("keeps the static poster and never mounts a canvas", async ({ page }) => {
       await page.goto("/en");
 
-      await expect(page.locator('[data-scene="poster"]')).toHaveCount(1);
+      await expect(page.locator('[data-scene="poster"]')).toHaveCount(3);
+      await expect(page.locator('[data-scene="webgl"]')).toHaveCount(0);
       await expect(page.locator("canvas")).toHaveCount(0);
     });
+  });
+
+  test("never keeps more than one canvas alive while scrolling", async ({ page }) => {
+    await page.goto("/en");
+    const webgl = await page.evaluate(
+      () => document.createElement("canvas").getContext("webgl2") !== null,
+    );
+    test.skip(!webgl, "this browser build has no WebGL, so no canvas ever mounts");
+    await expect(page.locator("canvas")).toHaveCount(1);
+
+    for (const section of ["works", "about"]) {
+      await page.locator(`#${section}`).scrollIntoViewIfNeeded();
+      await expect(page.locator(`#${section} canvas`)).toHaveCount(1);
+      await expect(page.locator("canvas")).toHaveCount(1);
+    }
   });
 
   test("stays decorative when it mounts", async ({ page }) => {
     await page.goto("/en");
 
-    const scene = page.locator("[data-scene]");
-    await expect(scene).toHaveAttribute("aria-hidden", "true");
+    for (const scene of await page.locator("[data-scene]").all()) {
+      await expect(scene).toHaveAttribute("aria-hidden", "true");
+    }
     await expectNoA11yViolations(page);
   });
 });

@@ -1,6 +1,7 @@
 import { Text } from "@/components/atoms/text";
 import { ProjectCard } from "@/components/molecules/project-card";
 import { LandingSection } from "@/components/organisms/landing-section";
+import { Scene } from "@/features/scene";
 import type { Locale, Messages } from "@/lib/i18n";
 
 type WorksSectionProps = {
@@ -20,7 +21,7 @@ type WorksSectionProps = {
 
 export function WorksSection({ index, title, locale, messages, projects }: WorksSectionProps) {
   return (
-    <LandingSection id="works" index={index} title={title}>
+    <LandingSection id="works" index={index} title={title} backdrop={<Scene variant="accent" />}>
       <Text tone="muted" className="max-w-prose">
         {messages.description}
       </Text>
