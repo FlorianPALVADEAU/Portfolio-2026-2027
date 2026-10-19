@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { BookingFacade } from "@/components/organisms/booking-facade";
 import { ContactForm } from "@/components/organisms/contact-form";
 import { GithubActivity } from "@/components/organisms/github-activity";
 import { PersonSchema } from "@/components/organisms/person-schema";
@@ -6,6 +7,7 @@ import { Home } from "@/components/templates/home";
 import { getMessages, isLocale } from "@/lib/i18n";
 import { CONTACT_ACTION, submitContact } from "@/server/infrastructure/contact";
 import { loadProject, projectSlugs } from "@/server/infrastructure/content";
+import { cvHref } from "@/server/infrastructure/cv";
 import { githubActivity } from "@/server/infrastructure/github";
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
@@ -21,6 +23,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <Home
         locale={locale}
         messages={messages.home}
+        cvHref={await cvHref(locale)}
         projects={projects}
         contact={
           <>
@@ -34,6 +37,10 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
               action={submitContact}
               siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
               challengeAction={CONTACT_ACTION}
+            />
+            <BookingFacade
+              messages={messages.home.contact.booking}
+              url={process.env.NEXT_PUBLIC_CALENDLY_URL}
             />
           </>
         }

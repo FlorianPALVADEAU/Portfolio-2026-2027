@@ -14,18 +14,20 @@ import { landingSections } from "@/lib/landing";
 type HomeProps = {
   locale: Locale;
   messages: Messages["home"];
+  /** Public URL of the CV in this language, when the file exists. */
+  cvHref?: string | null;
   projects: ComponentProps<typeof WorksSection>["projects"];
   /** Contact form, built by the route because it depends on server-side wiring. */
   contact?: ReactNode;
 };
 
-export function Home({ locale, messages, projects, contact }: HomeProps) {
+export function Home({ locale, messages, cvHref, projects, contact }: HomeProps) {
   const position = (id: (typeof landingSections)[number]) => landingSections.indexOf(id) + 1;
   const title = messages.sections;
 
   return (
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
-      <HeroSection locale={locale} messages={messages} />
+      <HeroSection locale={locale} messages={messages} cvHref={cvHref ?? null} />
       <IntroSection
         title={title.intro}
         messages={messages.intro}

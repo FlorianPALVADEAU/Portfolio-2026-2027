@@ -144,6 +144,12 @@
         "total": "contributions sur la dernière année",
         "less": "Moins",
         "more": "Plus"
+      },
+      "booking": {
+        "title": "Réserver un appel",
+        "text": "Vous préférez échanger de vive voix ? Choisissez un créneau qui vous convient. Le calendrier ne se charge depuis Calendly que si vous le demandez.",
+        "action": "Afficher le calendrier",
+        "frame": "Calendrier de réservation"
       }
     },
     "works": {
@@ -164,7 +170,8 @@
         "alt": "L'église de Saint-Saphorin entre les vignes de Lavaux et le lac Léman",
         "caption": "Entre Lavaux et le lac Léman"
       }
-    }
+    },
+    "cv": "Télécharger le CV (PDF)"
   },
   "project": {
     "back": "Retour à l'accueil",
