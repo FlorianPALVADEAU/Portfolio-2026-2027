@@ -93,10 +93,7 @@ export function Marquee({ items, label, pauseLabel, playLabel }: MarqueeProps) {
   }, [userPaused, engaged]);
 
   return (
-    <section
-      aria-label={label}
-      className="relative bg-background px-(--gutter) py-6"
-    >
+    <section aria-label={label} className="relative bg-background px-(--gutter) py-6">
       <div ref={root} data-motion="static" className="group flex items-center gap-4">
         <div className="flex min-w-0 flex-1 overflow-hidden">
           <div ref={track} className="flex w-max group-data-[motion=static]:w-auto">

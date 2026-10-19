@@ -22,9 +22,7 @@ type WorksSectionProps = {
 export function WorksSection({ title, locale, messages, projects }: WorksSectionProps) {
   return (
     <LandingSection id="works" title={title} tone="raised">
-      <Text className="max-w-prose">
-        {messages.description}
-      </Text>
+      <Text className="max-w-prose">{messages.description}</Text>
       <ViewCursor label={messages.view}>
         <WorksReel>
           <ul className="flex flex-col gap-24">

@@ -36,10 +36,7 @@ export function SiteHeader({ locale, messages, palette }: SiteHeaderProps) {
                 <SoundToggle onLabel={messages.sound.on} offLabel={messages.sound.off} />
                 <LocaleSwitcher current={locale} label={messages.language} />
               </div>
-              <Button
-                asChild
-                className="hidden hover:text-accent-foreground md:inline-flex"
-              >
+              <Button asChild className="hidden hover:text-accent-foreground md:inline-flex">
                 <Link href={`/${locale}#contact`} className="no-underline">
                   {messages.cta}
                 </Link>
@@ -49,11 +46,7 @@ export function SiteHeader({ locale, messages, palette }: SiteHeaderProps) {
                 closeLabel={messages.menu.close}
                 navLabel={messages.nav.label}
                 action={
-                  <Button
-                    asChild
-                    size="lg"
-                    className="w-full hover:text-accent-foreground"
-                  >
+                  <Button asChild size="lg" className="w-full hover:text-accent-foreground">
                     <Link href={`/${locale}#contact`} className="no-underline">
                       {messages.cta}
                     </Link>
