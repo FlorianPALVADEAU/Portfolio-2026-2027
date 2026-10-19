@@ -26,6 +26,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         messages={messages.home}
         cvHref={await cvHref(locale)}
         heroPhotos={await photoUrls("hero")}
+        trailPhotos={await photoUrls("trail")}
         projects={projects}
         contact={
           <>

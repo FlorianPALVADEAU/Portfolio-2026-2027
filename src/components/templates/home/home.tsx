@@ -18,12 +18,22 @@ type HomeProps = {
   cvHref?: string | null;
   /** Public URLs of the photos scattered on the hero. */
   heroPhotos?: readonly string[];
+  /** Public URLs of the photos that follow the pointer in the about section. */
+  trailPhotos?: readonly string[];
   projects: ComponentProps<typeof WorksSection>["projects"];
   /** Contact form, built by the route because it depends on server-side wiring. */
   contact?: ReactNode;
 };
 
-export function Home({ locale, messages, cvHref, heroPhotos, projects, contact }: HomeProps) {
+export function Home({
+  locale,
+  messages,
+  cvHref,
+  heroPhotos,
+  trailPhotos,
+  projects,
+  contact,
+}: HomeProps) {
   const position = (id: (typeof landingSections)[number]) => landingSections.indexOf(id) + 1;
   const title = messages.sections;
 
@@ -31,7 +41,12 @@ export function Home({ locale, messages, cvHref, heroPhotos, projects, contact }
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
       <HeroSection messages={messages} cvHref={cvHref ?? null} photos={heroPhotos ?? []} />
       <IntroSection title={title.intro} messages={messages.intro} controls={messages.marquee} />
-      <AboutSection index={position("about")} title={title.about} messages={messages.about} />
+      <AboutSection
+        index={position("about")}
+        title={title.about}
+        messages={messages.about}
+        trailPhotos={trailPhotos ?? []}
+      />
       <WorksSection
         index={position("works")}
         title={title.works}

@@ -1,7 +1,8 @@
-import Image from "next/image";
 import { Heading } from "@/components/atoms/heading";
 import { Section } from "@/components/atoms/section";
 import { Text } from "@/components/atoms/text";
+import { LiquidImage } from "@/features/liquid-image";
+import { PhotoTrail } from "@/features/photo-trail";
 import { PortraitReveal } from "@/features/portrait-reveal";
 import type { Messages } from "@/lib/i18n";
 
@@ -11,6 +12,8 @@ type AboutSectionProps = {
   index: number;
   title: string;
   messages: Messages["home"]["about"];
+  /** Public URLs of the photos that follow the pointer on desktop. */
+  trailPhotos?: readonly string[];
 };
 
 /**
@@ -19,7 +22,7 @@ type AboutSectionProps = {
  * the intro stage and stays transparent for that first viewport, so the intro can fade out
  * behind the opening portrait.
  */
-export function AboutSection({ index, title, messages }: AboutSectionProps) {
+export function AboutSection({ index, title, messages, trailPhotos = [] }: AboutSectionProps) {
   return (
     <Section
       id="about"
@@ -28,20 +31,20 @@ export function AboutSection({ index, title, messages }: AboutSectionProps) {
       className="relative z-10 scroll-mt-4 bg-[linear-gradient(to_bottom,transparent_100svh,black_100svh)] py-0 text-foreground motion-reduce:bg-black"
     >
       <PortraitReveal className="grid content-center gap-6 px-(--gutter) motion-reduce:min-h-svh motion-reduce:py-(--section-space) md:grid-cols-12 md:items-center md:gap-10">
+        <PhotoTrail photos={trailPhotos} />
         <figure
           data-portrait-frame
           className="relative m-0 aspect-[4/5] h-[34svh] justify-self-center overflow-hidden md:col-span-5 md:col-start-2 md:h-[68svh] motion-reduce:h-auto motion-reduce:w-full motion-reduce:max-w-sm"
         >
-          <Image
+          <LiquidImage
             data-portrait-image
             src="/brand/portrait.webp"
             alt={messages.portraitAlt}
-            fill
             sizes="(min-width: 768px) 40vw, 60vw"
-            className="object-cover object-top contrast-110 grayscale"
+            imageClassName="contrast-110 grayscale"
           />
         </figure>
-        <div className="flex flex-col gap-4 md:col-span-5 md:col-start-8 md:gap-6">
+        <div className="relative z-10 flex flex-col gap-4 md:col-span-5 md:col-start-8 md:gap-6">
           <Text
             data-portrait-line
             as="span"

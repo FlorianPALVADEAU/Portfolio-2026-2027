@@ -20,4 +20,17 @@ describe("AboutSection", () => {
     expect(screen.getByText("320")).toBeVisible();
     expect(screen.getByText(en.home.about.facts.availability.label)).toBeVisible();
   });
+
+  it("mounts no trail picture without a fine pointer, so nothing is downloaded", () => {
+    const { container } = render(
+      <AboutSection
+        index={2}
+        title="About"
+        messages={en.home.about}
+        trailPhotos={["/trail/a.jpg", "/trail/b.jpg"]}
+      />,
+    );
+
+    expect(container.querySelectorAll("img")).toHaveLength(1);
+  });
 });
