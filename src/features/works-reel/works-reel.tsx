@@ -5,15 +5,16 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { type ReactNode, useLayoutEffect, useRef } from "react";
 import { prefersReducedMotion } from "@/lib/motion";
 import { playIfEnabled } from "@/lib/sound";
+import { followTarget, skewTarget } from "./reel-physics";
 import { prepareTypewriter, ROLLER_COPIES, splitIntoLetters } from "./reel-text";
 
 gsap.registerPlugin(ScrollTrigger);
 
 /** Degrees a card leans on its inner edge before it straightens. */
 const TILT = 7;
-/** Fastest scroll, in px/s, that counts as a full pinch. */
-const FULL_PINCH_VELOCITY = 3000;
-const MAX_SHIFT = 48;
+/** Strongest shear of a cover, in degrees, on a wide screen and on a narrow one. */
+const MAX_SKEW = 6;
+const MAX_SKEW_SMALL = 3.5;
 
 /** +1 for a card left of the grid's middle, -1 for one right of it, 0 when centred. */
 function sideOf(item: HTMLElement, container: HTMLElement): number {
@@ -92,32 +93,24 @@ function revealTextOnEnter(item: HTMLElement, restores: Array<() => void>) {
 }
 
 /**
- * Fast scrolling pinches the grid: cards near the middle of the screen are pushed toward the
- * middle of the grid, so its sides bend inward like a string pulled across the centre.
+ * Shears every cover with the scroll: the skew follows the instantaneous speed and direction,
+ * lags behind it and eases back to a straight rectangle once the page stops. Layout never moves,
+ * only the frame is transformed, so the text beneath stays upright.
  */
-function pinchWhileScrolling(cells: HTMLElement[], container: HTMLElement): () => void {
-  let pinch = 0;
+function skewWithScroll(frames: HTMLElement[]): () => void {
+  const setters = frames.map((frame) => gsap.quickSetter(frame, "skewX", "deg"));
+  const desktop = window.matchMedia("(min-width: 1024px)");
+  let skew = 0;
   let lastY = window.scrollY;
-  let touched = false;
 
   const tick = (_time: number, deltaTime: number) => {
-    const speed = (Math.abs(window.scrollY - lastY) / Math.max(deltaTime, 1)) * 1000;
+    const seconds = Math.min(deltaTime, 100) / 1000;
+    const velocity = ((window.scrollY - lastY) / Math.max(deltaTime, 1)) * 1000;
     lastY = window.scrollY;
-    pinch += (Math.min(speed / FULL_PINCH_VELOCITY, 1) - pinch) * 0.12;
-    if (pinch < 0.002 && !touched) return;
-
-    const viewport = window.innerHeight;
-    touched = pinch >= 0.002;
-    for (const cell of cells) {
-      const box = cell.getBoundingClientRect();
-      const distance = Math.abs(box.top + box.height / 2 - viewport / 2) / (viewport * 0.7);
-      const centred = (1 - Math.min(distance, 1)) ** 2;
-      const amount = pinch * centred;
-      gsap.set(cell, {
-        x: sideOf(cell, container) * MAX_SHIFT * amount,
-        scaleX: 1 - 0.06 * amount,
-      });
-    }
+    const target = skewTarget(velocity, desktop.matches ? MAX_SKEW : MAX_SKEW_SMALL);
+    if (skew === 0 && target === 0) return;
+    skew = followTarget(skew, target, seconds);
+    for (const set of setters) set(skew);
   };
 
   gsap.ticker.add(tick);
@@ -126,8 +119,8 @@ function pinchWhileScrolling(cells: HTMLElement[], container: HTMLElement): () =
 
 /**
  * Carries the visitor through the project list. Rows appear in pairs that straighten and grow,
- * fast scrolling pinches the grid's centre, titles roll in letter by letter and tags are typed.
- * Marked descendants: `data-reel-cell`, `data-reel-item`, `data-reel-image`, `data-reel-title`,
+ * covers shear with the scroll speed, titles roll in letter by letter and tags are typed.
+ * Marked descendants: `data-reel-cell`, `data-reel-item`, `data-reel-frame`, `data-reel-image`, `data-reel-title`,
  * `data-reel-tags`. With reduced motion nothing is touched and the list stays a plain list.
  */
 export function WorksReel({ children }: { children: ReactNode }) {
@@ -147,12 +140,13 @@ export function WorksReel({ children }: { children: ReactNode }) {
         revealTextOnEnter(item, restores);
       }
     }, container);
-    const stopPinch = pinchWhileScrolling(cells, container);
+    const frames = gsap.utils.toArray<HTMLElement>("[data-reel-frame]", container);
+    const stopSkew = skewWithScroll(frames);
 
     return () => {
-      stopPinch();
+      stopSkew();
       context.revert();
-      gsap.set(cells, { clearProps: "x,scaleX" });
+      gsap.set(frames, { clearProps: "skewX" });
       for (const restore of restores) restore();
     };
   }, []);
