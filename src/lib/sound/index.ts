@@ -1,4 +1,4 @@
-export type { UiSound } from "./engine";
+export { playIfEnabled } from "./play";
 export {
   getServerSoundEnabled,
   getSoundEnabled,

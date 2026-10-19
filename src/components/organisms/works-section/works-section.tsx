@@ -2,6 +2,7 @@ import { Text } from "@/components/atoms/text";
 import { ProjectCard } from "@/components/molecules/project-card";
 import { LandingSection } from "@/components/organisms/landing-section";
 import { ViewCursor } from "@/features/view-cursor";
+import { WorksReel } from "@/features/works-reel";
 import type { Locale, Messages } from "@/lib/i18n";
 
 type WorksSectionProps = {
@@ -32,20 +33,22 @@ export function WorksSection({ index, title, locale, messages, projects }: Works
         {messages.description}
       </Text>
       <ViewCursor label={messages.view}>
-        <ul className="grid gap-16 lg:grid-cols-2 lg:gap-x-10">
-          {projects.map((project) => (
-            <li key={project.slug} className="only:lg:col-span-2 lg:even:mt-24">
-              <ProjectCard
-                href={`/${locale}/projects/${project.slug}`}
-                title={project.title}
-                summary={project.summary}
-                year={project.year}
-                stack={project.stack}
-                cover={project.cover}
-              />
-            </li>
-          ))}
-        </ul>
+        <WorksReel>
+          <ul className="grid gap-16 lg:grid-cols-2 lg:gap-x-10">
+            {projects.map((project) => (
+              <li key={project.slug} className="only:lg:col-span-2 lg:even:mt-24">
+                <ProjectCard
+                  href={`/${locale}/projects/${project.slug}`}
+                  title={project.title}
+                  summary={project.summary}
+                  year={project.year}
+                  stack={project.stack}
+                  cover={project.cover}
+                />
+              </li>
+            ))}
+          </ul>
+        </WorksReel>
       </ViewCursor>
     </LandingSection>
   );
