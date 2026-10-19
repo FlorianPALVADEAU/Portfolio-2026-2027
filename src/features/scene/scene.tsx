@@ -43,7 +43,7 @@ export function Scene({ className }: { className?: string }) {
       aria-hidden="true"
       data-scene={enabled ? "webgl" : "poster"}
       className={cn(
-        "pointer-events-none absolute inset-0 -z-10",
+        "pointer-events-none absolute inset-0 -z-10 md:[mask-image:linear-gradient(to_left,black_35%,transparent_90%)]",
         !enabled &&
           "bg-[radial-gradient(circle_at_70%_40%,var(--accent)_0,transparent_55%)] opacity-15",
         className,
