@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.5.0](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/compare/portfolio-v0.4.0...portfolio-v0.5.0) (2026-10-19)
+
+
+### Features
+
+* **content:** add block renderer components ([#97](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/97)) ([94fb4d2](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/94fb4d20ec0048c0619fae8860a5ff0dbe94008d)), closes [#91](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/91)
+* **content:** add effect schemas for blocks and projects ([#94](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/94)) ([79c5b03](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/79c5b0353c13c2a301dd029301801e44bf515e09)), closes [#89](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/89)
+* **content:** add note schema and loader ([#99](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/99)) ([d3b0cbf](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/d3b0cbfd3daeb18a113ecca6a56bdc3f4a69abab)), closes [#93](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/93)
+* **content:** add statically generated project page ([#98](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/98)) ([7320c7e](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/7320c7e83b284f2456f78f7d6d1f95eac05f3bf1)), closes [#92](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/92)
+* **content:** add the overbound case study and drop the placeholder ([#114](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/114)) ([f29bc7f](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/f29bc7f8f208097f86429dd42fc822f651ab7782)), closes [#109](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/109)
+* **content:** load and validate content at build time ([#96](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/96)) ([cc6013b](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/cc6013bf086af0618a5102d2bf3d06a4979d3425)), closes [#90](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/90)
+* **landing:** add contact section with approved profiles and form slot ([#118](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/118)) ([0ebb116](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/0ebb11657f23e4856bb8a9165c2ec0a0e0354147)), closes [#108](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/108)
+* **landing:** add paused-on-demand technology marquee between sections ([#117](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/117)) ([5d2b322](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/5d2b32226ec867f1d5928cfc60a8a4db6eebeaac)), closes [#106](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/106)
+* **landing:** assemble home from numbered sections with anchor nav ([#111](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/111)) ([0259803](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/0259803f39c65fe4095a0afab3ae1f2663f71601)), closes [#101](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/101)
+* **landing:** build hero with portrait, stack and gsap entrance ([#112](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/112)) ([1035dba](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/1035dba310740bbc4db40ca98776f713cd335e98)), closes [#102](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/102)
+* **landing:** build selected works section from the content layer (#) ([587adc1](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/587adc1f99f0a469a62b9e4928ec006fde5efa26)), closes [#104](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/104)
+* **landing:** build skills section with grouped content and credentials ([#116](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/116)) ([e2efc39](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/e2efc39538b88270f638c936688dc524c99895a1)), closes [#105](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/105)
+* **landing:** write intro and about sections with a career timeline ([#113](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/113)) ([41289c1](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/41289c1e8d0e4d0ff9714a96263fc2a9e729183e)), closes [#103](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/103)
+
 ## [0.4.0](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/compare/portfolio-v0.3.0...portfolio-v0.4.0) (2026-10-18)
 
 
