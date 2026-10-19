@@ -4,7 +4,7 @@ import { Section } from "@/components/atoms/section";
 import { SectionHeader } from "@/components/molecules/section-header";
 import { cn } from "@/lib/utils";
 
-/** `clear` lets the page-wide scene show through; the others are opaque panels that cover it. */
+/** `clear` leaves the page background as it is; the others paint their own panel. */
 const tones = {
   clear: "",
   base: "bg-background",
