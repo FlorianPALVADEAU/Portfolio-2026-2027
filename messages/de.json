@@ -138,6 +138,13 @@
           "again": "Weitere Nachricht senden"
         }
       },
+      "github": {
+        "title": "Aktivität auf GitHub",
+        "note": "Beiträge im letzten Jahr, von GitHub gelesen und stündlich aktualisiert.",
+        "total": "Beiträge im letzten Jahr",
+        "less": "Weniger",
+        "more": "Mehr"
+      },
       "booking": {
         "title": "Gespräch vereinbaren",
         "text": "Sie sprechen lieber direkt? Wählen Sie einen passenden Termin. Der Kalender wird erst von Calendly geladen, wenn Sie ihn anfordern.",

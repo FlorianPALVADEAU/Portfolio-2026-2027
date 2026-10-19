@@ -138,6 +138,13 @@
           "again": "Send another message"
         }
       },
+      "github": {
+        "title": "Activity on GitHub",
+        "note": "Contributions over the last year, read from GitHub and refreshed every hour.",
+        "total": "contributions in the last year",
+        "less": "Less",
+        "more": "More"
+      },
       "booking": {
         "title": "Book a call",
         "text": "Prefer to talk? Pick a time that suits you. The calendar loads from Calendly only when you ask for it.",

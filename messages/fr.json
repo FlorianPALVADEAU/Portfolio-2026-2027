@@ -138,6 +138,13 @@
           "again": "Envoyer un autre message"
         }
       },
+      "github": {
+        "title": "Activité sur GitHub",
+        "note": "Contributions sur la dernière année, lues depuis GitHub et actualisées toutes les heures.",
+        "total": "contributions sur la dernière année",
+        "less": "Moins",
+        "more": "Plus"
+      },
       "booking": {
         "title": "Réserver un appel",
         "text": "Vous préférez échanger de vive voix ? Choisissez un créneau qui vous convient. Le calendrier ne se charge depuis Calendly que si vous le demandez.",
