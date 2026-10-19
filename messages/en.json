@@ -45,8 +45,7 @@
   "home": {
     "badge": "Open to positions, Switzerland",
     "role": "Full-stack software engineer",
-    "tagline": "I design, build and run web applications in TypeScript, from enterprise integrations to the ticketing platform of a race I founded.",
-    "cta": "Get in touch",
+    "headline": "From Geneva, I build software that holds.",
     "sections": {
       "intro": "Introduction",
       "works": "Selected works",
@@ -56,10 +55,9 @@
       "contact": "Let's work together"
     },
     "scroll": "Scroll",
-    "portraitAlt": "Portrait of Florian Palvadeau",
     "intro": {
-      "statement": "I build reliable web software, from enterprise integrations to products I run myself.",
-      "aside": "Since 2022 I have worked in TypeScript, between large-scale internal tooling at JCDecaux and the ticketing platform of a race I founded. Available from September 2027 for roles in Geneva and the canton of Vaud."
+      "paragraph": "I design, build and run web applications in TypeScript, from enterprise integrations to the ticketing platform of a race I founded. I work from the first requirement to production, with an architecture that stays readable and a delivery that stays calm, so that teams can focus on what matters.",
+      "clients": "Companies I have worked with"
     },
     "skills": {
       "groups": {
@@ -162,10 +160,6 @@
       "play": "Play"
     },
     "photos": {
-      "panorama": {
-        "alt": "Vineyard terraces of Lavaux above Lake Geneva, in the canton of Vaud",
-        "caption": "Lavaux, canton of Vaud"
-      },
       "closing": {
         "alt": "The church of Saint-Saphorin between the Lavaux vineyards and Lake Geneva",
         "caption": "Between Lavaux and Lake Geneva"

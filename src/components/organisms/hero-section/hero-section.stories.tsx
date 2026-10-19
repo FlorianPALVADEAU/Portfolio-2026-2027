@@ -6,16 +6,12 @@ const meta = {
   component: HeroSection,
   parameters: { layout: "fullscreen" },
   args: {
-    locale: "en",
     messages: {
       badge: "Open to positions, Switzerland",
       role: "Full-stack software engineer",
-      tagline:
-        "I design, build and run web applications in TypeScript, from enterprise integrations to the ticketing platform of a race I founded.",
-      cta: "Get in touch",
+      headline: "From Geneva, I build software that holds.",
       cv: "Download CV (PDF)",
       scroll: "Scroll",
-      portraitAlt: "Portrait of Florian Palvadeau",
     },
   },
 } satisfies Meta<typeof HeroSection>;

@@ -27,12 +27,8 @@ export function Home({ locale, messages, cvHref, projects, contact }: HomeProps)
 
   return (
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
-      <HeroSection locale={locale} messages={messages} cvHref={cvHref ?? null} />
-      <IntroSection
-        title={title.intro}
-        messages={messages.intro}
-        photo={messages.photos.panorama}
-      />
+      <HeroSection messages={messages} cvHref={cvHref ?? null} />
+      <IntroSection title={title.intro} messages={messages.intro} controls={messages.marquee} />
       <WorksSection
         index={position("works")}
         title={title.works}

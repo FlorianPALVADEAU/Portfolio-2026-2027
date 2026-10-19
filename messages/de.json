@@ -45,8 +45,7 @@
   "home": {
     "badge": "Offen für Stellen, Schweiz",
     "role": "Full-Stack-Softwareentwickler",
-    "tagline": "Ich entwerfe, entwickle und betreibe Webanwendungen in TypeScript, von Unternehmensintegrationen bis zur Ticketing-Plattform eines Rennens, das ich gegründet habe.",
-    "cta": "Kontakt aufnehmen",
+    "headline": "Von Genf aus baue ich Software, die hält.",
     "sections": {
       "intro": "Einführung",
       "works": "Ausgewählte Projekte",
@@ -56,10 +55,9 @@
       "contact": "Lass uns zusammenarbeiten"
     },
     "scroll": "Scrollen",
-    "portraitAlt": "Porträt von Florian Palvadeau",
     "intro": {
-      "statement": "Ich entwickle zuverlässige Websoftware, von Unternehmensintegrationen bis zu Produkten, die ich selbst betreibe.",
-      "aside": "Seit 2022 arbeite ich mit TypeScript, zwischen internen Werkzeugen im grossen Massstab bei JCDecaux und der Ticketing-Plattform eines Rennens, das ich gegründet habe. Ab September 2027 verfügbar für Stellen in Genf und im Kanton Waadt."
+      "paragraph": "Ich entwerfe, entwickle und betreibe Webanwendungen in TypeScript, von Unternehmensintegrationen bis zur Ticketing-Plattform eines Rennens, das ich gegründet habe. Ich arbeite vom ersten Bedarf bis zum Produktivbetrieb, mit einer Architektur, die lesbar bleibt, und einer Auslieferung, die ruhig bleibt, damit sich Teams auf das Wesentliche konzentrieren können.",
+      "clients": "Unternehmen, mit denen ich gearbeitet habe"
     },
     "skills": {
       "groups": {
@@ -162,10 +160,6 @@
       "play": "Abspielen"
     },
     "photos": {
-      "panorama": {
-        "alt": "Rebterrassen des Lavaux über dem Genfersee im Kanton Waadt",
-        "caption": "Lavaux, Kanton Waadt"
-      },
       "closing": {
         "alt": "Die Kirche von Saint-Saphorin zwischen den Weinbergen des Lavaux und dem Genfersee",
         "caption": "Zwischen Lavaux und Genfersee"
