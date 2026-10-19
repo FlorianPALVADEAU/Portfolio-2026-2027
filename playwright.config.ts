@@ -24,6 +24,8 @@ export default defineConfig({
           url: baseURL,
           reuseExistingServer: !process.env.CI,
           timeout: 180_000,
+          // Cloudflare's published test key: its widget always passes and never leaves the page.
+          env: { NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA" },
         },
       }),
 });

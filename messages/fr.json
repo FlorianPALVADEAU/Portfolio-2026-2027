@@ -112,7 +112,21 @@
     "contact": {
       "invitation": "Je suis ouvert aux postes full-stack à Genève et dans le canton de Vaud à partir de septembre 2027. Si mon travail peut intéresser votre équipe, écrivez-moi via l'un de ces profils.",
       "profiles": "Profils",
-      "newTab": "s'ouvre dans un nouvel onglet"
+      "newTab": "s'ouvre dans un nouvel onglet",
+      "form": {
+        "title": "Écrivez-moi",
+        "name": "Nom",
+        "email": "E-mail",
+        "message": "Message",
+        "submit": "Envoyer le message",
+        "sending": "Envoi en cours",
+        "sent": "Message envoyé. Je réponds dès que possible.",
+        "invalid": "Vérifiez les champs : un nom, un e-mail valide et un message d'au moins 10 caractères.",
+        "human": "La vérification anti-spam a échoué. Relancez le contrôle et réessayez.",
+        "unavailable": "Le message n'a pas pu être envoyé. Réessayez plus tard ou utilisez l'un des profils ci-dessus.",
+        "challenge": "Vérification anti-spam",
+        "website": "Laissez ce champ vide"
+      }
     },
     "works": {
       "description": "Des projets que j'ai construits et menés, avec les décisions qui les sous-tendent.",
