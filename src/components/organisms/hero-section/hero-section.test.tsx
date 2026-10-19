@@ -7,6 +7,7 @@ const messages = {
   role: "Full-stack software engineer",
   tagline: "I build web applications.",
   cta: "Get in touch",
+  cv: "Download CV (PDF)",
   scroll: "Scroll",
   portraitAlt: "Portrait of Florian",
 };
@@ -27,5 +28,15 @@ describe("HeroSection", () => {
       "href",
       "/de#contact",
     );
+  });
+
+  it("offers the CV only when a file exists for the language", () => {
+    const { rerender } = render(<HeroSection locale="en" messages={messages} />);
+    expect(screen.queryByRole("link", { name: "Download CV (PDF)" })).not.toBeInTheDocument();
+
+    rerender(<HeroSection locale="en" messages={messages} cvHref="/cv/cv-en.pdf" />);
+    const link = screen.getByRole("link", { name: "Download CV (PDF)" });
+    expect(link).toHaveAttribute("href", "/cv/cv-en.pdf");
+    expect(link).toHaveAttribute("download");
   });
 });

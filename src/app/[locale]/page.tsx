@@ -5,6 +5,7 @@ import { Home } from "@/components/templates/home";
 import { getMessages, isLocale } from "@/lib/i18n";
 import { CONTACT_ACTION, submitContact } from "@/server/infrastructure/contact";
 import { loadProject, projectSlugs } from "@/server/infrastructure/content";
+import { cvHref } from "@/server/infrastructure/cv";
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
@@ -19,6 +20,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <Home
         locale={locale}
         messages={messages.home}
+        cvHref={await cvHref(locale)}
         projects={projects}
         contact={
           <ContactForm
