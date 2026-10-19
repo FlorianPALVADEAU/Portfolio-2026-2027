@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { BookingFacade } from "@/components/organisms/booking-facade";
 import { ContactForm } from "@/components/organisms/contact-form";
 import { PersonSchema } from "@/components/organisms/person-schema";
 import { Home } from "@/components/templates/home";
@@ -21,12 +22,18 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         messages={messages.home}
         projects={projects}
         contact={
-          <ContactForm
-            messages={messages.home.contact.form}
-            action={submitContact}
-            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
-            challengeAction={CONTACT_ACTION}
-          />
+          <>
+            <ContactForm
+              messages={messages.home.contact.form}
+              action={submitContact}
+              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+              challengeAction={CONTACT_ACTION}
+            />
+            <BookingFacade
+              messages={messages.home.contact.booking}
+              url={process.env.NEXT_PUBLIC_CALENDLY_URL}
+            />
+          </>
         }
       />
     </>
