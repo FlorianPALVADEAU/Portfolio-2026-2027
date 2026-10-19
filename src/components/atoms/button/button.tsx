@@ -1,12 +1,19 @@
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
-import type { ComponentPropsWithoutRef } from "react";
+import {
+  Children,
+  type ComponentPropsWithoutRef,
+  cloneElement,
+  isValidElement,
+  type ReactNode,
+} from "react";
+import { FlipText } from "@/components/atoms/flip-text";
 import { Icon } from "@/components/atoms/icon";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-md font-medium whitespace-nowrap transition-colors duration-(--duration-fast) disabled:pointer-events-none disabled:opacity-50 aria-busy:pointer-events-none",
+  "flip-host inline-flex cursor-pointer items-center justify-center gap-2 rounded-md font-medium whitespace-nowrap transition-colors duration-(--duration-fast) disabled:pointer-events-none disabled:opacity-50 aria-busy:pointer-events-none",
   {
     variants: {
       variant: {
@@ -25,6 +32,14 @@ const buttonVariants = cva(
     defaultVariants: { variant: "primary", size: "md" },
   },
 );
+
+/** Text labels roll on hover; icons and other nodes pass through untouched. */
+function withFlip(node: ReactNode): ReactNode {
+  if (typeof node === "string") return <FlipText>{node}</FlipText>;
+  if (isValidElement<{ children?: ReactNode }>(node) && typeof node.props.children === "string")
+    return cloneElement(node, undefined, <FlipText>{node.props.children}</FlipText>);
+  return node;
+}
 
 type ButtonProps = ComponentPropsWithoutRef<"button"> &
   VariantProps<typeof buttonVariants> & {
@@ -48,7 +63,7 @@ export function Button({
   if (asChild) {
     return (
       <Slot className={classes} {...props}>
-        {children}
+        {withFlip(children)}
       </Slot>
     );
   }
@@ -64,7 +79,7 @@ export function Button({
       {loading && (
         <Icon icon={Loader2} size="sm" className="animate-spin motion-reduce:animate-none" />
       )}
-      {children}
+      {Children.map(children, withFlip)}
     </button>
   );
 }
