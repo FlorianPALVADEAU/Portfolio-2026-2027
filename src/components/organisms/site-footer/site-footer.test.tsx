@@ -14,6 +14,7 @@ const messages = {
   legal: "© 2026 Florian Palvadeau",
   navigation: "Navigation",
   profiles: "Elsewhere",
+  nowPlaying: { playing: "Now playing", lastPlayed: "Last played", newTab: "opens in a new tab" },
 };
 
 describe("SiteFooter", () => {
