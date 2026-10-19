@@ -436,6 +436,17 @@ test("ignores keydown events without a key, as sent by browser autofill", async 
   expect(errors).toEqual([]);
 });
 
+test("the now playing route answers with no content when Spotify is not configured", async ({
+  request,
+  page,
+}) => {
+  const reply = await request.get("/api/now-playing");
+  expect(reply.status()).toBe(204);
+
+  await page.goto("/en");
+  await expect(page.getByRole("contentinfo").getByText(/Now playing|Last played/)).toHaveCount(0);
+});
+
 test("changing language keeps the theme and the scroll position", async ({ page }) => {
   await page.goto("/en");
   await openMenu(page);

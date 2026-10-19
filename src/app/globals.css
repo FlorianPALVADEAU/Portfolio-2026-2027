@@ -44,3 +44,39 @@ html.lenis body {
     animation-delay: calc(var(--i) * 15ms);
   }
 }
+
+/* `NowPlaying`: the pill slides in once, and the level meter bounces while a track plays. */
+@keyframes meter-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  22% {
+    transform: scaleY(1);
+  }
+  48% {
+    transform: scaleY(0.45);
+  }
+  72% {
+    transform: scaleY(0.85);
+  }
+}
+
+@keyframes pill-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .meter-bar {
+    /* Each bar has its own length and offset, so they never move in step. */
+    animation: meter-bounce var(--d) ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.23s);
+  }
+
+  .pill-in {
+    animation: pill-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+}

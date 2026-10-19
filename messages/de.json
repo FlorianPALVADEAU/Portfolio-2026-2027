@@ -175,6 +175,11 @@
     "photos": "Fotos:",
     "legal": "© 2026 Florian Palvadeau",
     "navigation": "Navigation",
-    "profiles": "Weitere Profile"
+    "profiles": "Weitere Profile",
+    "nowPlaying": {
+      "playing": "Läuft gerade",
+      "lastPlayed": "Zuletzt auf Spotify gehört",
+      "newTab": "öffnet in einem neuen Tab"
+    }
   }
 }
