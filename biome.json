@@ -16,7 +16,8 @@
       "!.agents",
       "!.codex",
       "!.claude/skills",
-      "!.github/skills"
+      "!.github/skills",
+      "!public/brand/certifications"
     ]
   },
   "formatter": {
