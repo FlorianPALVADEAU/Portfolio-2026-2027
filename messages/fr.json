@@ -110,7 +110,8 @@
       "newTab": "s'ouvre dans un nouvel onglet"
     },
     "works": {
-      "description": "Des projets que j'ai construits et menés, avec les décisions qui les sous-tendent."
+      "description": "Des projets que j'ai construits et menés, avec les décisions qui les sous-tendent.",
+      "view": "Voir"
     },
     "marquee": {
       "label": "Technologies que j'utilise",

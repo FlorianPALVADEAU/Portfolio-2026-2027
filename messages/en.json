@@ -110,7 +110,8 @@
       "newTab": "opens in a new tab"
     },
     "works": {
-      "description": "Projects I built and ran, with the decisions behind them."
+      "description": "Projects I built and ran, with the decisions behind them.",
+      "view": "View"
     },
     "marquee": {
       "label": "Technologies I work with",

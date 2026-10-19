@@ -10,7 +10,7 @@ type IntroSectionProps = {
 
 export function IntroSection({ index, title, messages }: IntroSectionProps) {
   return (
-    <LandingSection id="intro" index={index} title={title}>
+    <LandingSection id="intro" index={index} title={title} tone="clear">
       <div className="grid gap-8 md:grid-cols-[2fr_1fr] md:items-end">
         <p className="text-balance text-3xl font-medium leading-tight tracking-tight md:text-5xl">
           {messages.statement}

@@ -15,7 +15,7 @@ type ContactSectionProps = {
 
 export function ContactSection({ index, title, messages, children }: ContactSectionProps) {
   return (
-    <LandingSection id="contact" index={index} title={title}>
+    <LandingSection id="contact" index={index} title={title} tone="clear">
       <div className="grid gap-12 md:grid-cols-2">
         <div className="flex flex-col gap-6">
           <Text size="lg" className="max-w-prose">
