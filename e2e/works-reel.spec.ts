@@ -14,18 +14,22 @@ test.describe("works reel", () => {
     await expectNoA11yViolations(page);
   });
 
-  test("warps the covers while scrolling and straightens them at rest", async ({ page }) => {
+  test("draws the covers in a hidden canvas and keeps the DOM ones for assistive tech", async ({
+    page,
+  }) => {
     await page.goto("/en");
+    const webgl = await page.evaluate(() =>
+      Boolean(document.createElement("canvas").getContext("webgl2")),
+    );
+    test.skip(!webgl, "WebGL is not available in this browser");
     const works = page.getByRole("region", { name: "Selected works" });
     await works.scrollIntoViewIfNeeded();
-    const frame = works.locator("[data-reel-frame]").first();
-    const transform = () => frame.evaluate((element) => getComputedStyle(element).transform);
 
-    await expect(async () => {
-      await page.mouse.wheel(0, 900);
-      expect(await transform()).not.toBe("none");
-    }).toPass({ timeout: 5000 });
-    await expect.poll(transform, { timeout: 5000 }).toMatch(/^(none|matrix\(1, 0, 0, 1, 0, 0\))$/);
+    const canvas = page.locator("[data-reel-canvas]");
+    await expect(canvas).toHaveAttribute("aria-hidden", "true");
+    await expect(canvas.locator("canvas")).toBeAttached();
+    await expect(works.locator("[data-reel-image]").first()).toHaveAttribute("alt", /.+/);
+    await expectNoA11yViolations(page);
   });
 
   test("leaves titles untouched under reduced motion", async ({ page }) => {
@@ -33,5 +37,6 @@ test.describe("works reel", () => {
     await page.goto("/en");
 
     await expect(page.locator("[data-reel-title] [aria-hidden='true']")).toHaveCount(0);
+    await expect(page.locator("[data-reel-canvas]")).toHaveCount(0);
   });
 });

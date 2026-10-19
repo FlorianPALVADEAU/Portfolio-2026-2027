@@ -408,17 +408,17 @@ test.describe("3d scene", () => {
     });
   });
 
-  test("keeps one canvas alive for the whole page while scrolling", async ({ page }) => {
+  test("keeps one backdrop canvas alive for the whole page while scrolling", async ({ page }) => {
     await page.goto("/en");
     const webgl = await page.evaluate(
       () => document.createElement("canvas").getContext("webgl2") !== null,
     );
     test.skip(!webgl, "this browser build has no WebGL, so no canvas ever mounts");
-    await expect(page.locator("canvas")).toHaveCount(1);
+    await expect(page.locator("[data-scene] canvas")).toHaveCount(1);
 
     for (const section of ["works", "skills", "about", "contact"]) {
       await page.locator(`#${section}`).scrollIntoViewIfNeeded();
-      await expect(page.locator("canvas")).toHaveCount(1);
+      await expect(page.locator("[data-scene] canvas")).toHaveCount(1);
     }
   });
 
