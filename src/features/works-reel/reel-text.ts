@@ -59,9 +59,18 @@ export function splitIntoLetters(element: HTMLElement): {
   return { letters, strips, restore: () => element.replaceChildren(...previous) };
 }
 
+const NOISE = "!#$%&*+-/<=>?@[]^_{|}~0123456789";
+
+function noise(length: number): string {
+  let result = "";
+  for (let index = 0; index < length; index += 1)
+    result += NOISE[Math.floor(Math.random() * NOISE.length)];
+  return result;
+}
+
 /**
- * Prepares text to be typed. `type(progress)` shows the first part and keeps the rest invisible
- * but laid out, so the line never reflows while it is written.
+ * Prepares text to be decoded. `type(progress)` shows the first part as written and fills the
+ * rest with random symbols of the same length, so the line never reflows while it resolves.
  */
 export function prepareTypewriter(element: HTMLElement): {
   type: (progress: number) => void;
@@ -71,16 +80,17 @@ export function prepareTypewriter(element: HTMLElement): {
   const previous = Array.from(element.childNodes);
   const visible = replaceWithAccessibleCopy(element, text);
   const typed = document.createTextNode("");
-  const pending = document.createElement("span");
-  pending.className = "opacity-0";
-  pending.textContent = text;
+  const pending = document.createTextNode("");
   visible.append(typed, pending);
 
   return {
     type: (progress) => {
       const count = Math.round(text.length * Math.min(Math.max(progress, 0), 1));
       typed.textContent = text.slice(0, count);
-      pending.textContent = text.slice(count);
+      // Spaces stay spaces so the words keep their shape while the rest is still noise.
+      pending.textContent = noise(text.length - count).replace(/./g, (symbol, index) =>
+        text[count + index] === " " ? " " : symbol,
+      );
     },
     restore: () => element.replaceChildren(...previous),
   };

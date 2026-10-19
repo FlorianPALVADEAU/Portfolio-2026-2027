@@ -5,16 +5,20 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { type ReactNode, useLayoutEffect, useRef } from "react";
 import { prefersReducedMotion } from "@/lib/motion";
 import { playIfEnabled } from "@/lib/sound";
-import { followTarget, skewTarget } from "./reel-physics";
+import { followTarget, pinchTarget } from "./reel-physics";
 import { prepareTypewriter, ROLLER_COPIES, splitIntoLetters } from "./reel-text";
 
 gsap.registerPlugin(ScrollTrigger);
 
 /** Degrees a card leans on its inner edge before it straightens. */
 const TILT = 7;
-/** Strongest shear of a cover, in degrees, on a wide screen and on a narrow one. */
-const MAX_SKEW = 6;
-const MAX_SKEW_SMALL = 3.5;
+/** Strongest backward lean of a row, in degrees, on a wide screen and on a narrow one. */
+const MAX_TILT = 16;
+const MAX_TILT_SMALL = 9;
+/** Distance in px of the viewer: lower exaggerates the trapezoid. */
+const PERSPECTIVE = 800;
+/** Share of its size a cover loses at full speed. */
+const SHRINK = 0.04;
 
 /** +1 for a card left of the grid's middle, -1 for one right of it, 0 when centred. */
 function sideOf(item: HTMLElement, container: HTMLElement): number {
@@ -93,24 +97,47 @@ function revealTextOnEnter(item: HTMLElement, restores: Array<() => void>) {
 }
 
 /**
- * Shears every cover with the scroll: the skew follows the instantaneous speed and direction,
- * lags behind it and eases back to a straight rectangle once the page stops. Layout never moves,
- * only the frame is transformed, so the text beneath stays upright.
+ * Fast scrolling warps every cover like a trapezoid pulled toward the middle of the viewport:
+ * the edge facing the centre narrows, more so the farther the row is from it. The pivot is the
+ * grid's centre axis, so both images of a row lean together. Strength follows scroll speed, lags
+ * behind it and settles back to a straight rectangle. Only the frames are transformed.
  */
-function skewWithScroll(frames: HTMLElement[]): () => void {
-  const setters = frames.map((frame) => gsap.quickSetter(frame, "skewX", "deg"));
+function warpWhileScrolling(cells: HTMLElement[], container: HTMLElement): () => void {
+  const frames = cells.map((cell) => cell.querySelector<HTMLElement>("[data-reel-frame]"));
   const desktop = window.matchMedia("(min-width: 1024px)");
-  let skew = 0;
+  let pinch = 0;
   let lastY = window.scrollY;
+  let warped = false;
 
   const tick = (_time: number, deltaTime: number) => {
-    const seconds = Math.min(deltaTime, 100) / 1000;
     const velocity = ((window.scrollY - lastY) / Math.max(deltaTime, 1)) * 1000;
     lastY = window.scrollY;
-    const target = skewTarget(velocity, desktop.matches ? MAX_SKEW : MAX_SKEW_SMALL);
-    if (skew === 0 && target === 0) return;
-    skew = followTarget(skew, target, seconds);
-    for (const set of setters) set(skew);
+    pinch = followTarget(pinch, pinchTarget(velocity), Math.min(deltaTime, 100) / 1000);
+    if (pinch === 0 && !warped) return;
+
+    warped = pinch !== 0;
+    const viewport = window.innerHeight;
+    const axis = container.getBoundingClientRect().left + container.offsetWidth / 2;
+    const maxTilt = desktop.matches ? MAX_TILT : MAX_TILT_SMALL;
+    cells.forEach((cell, index) => {
+      const frame = frames[index];
+      if (!frame) return;
+      if (!warped) {
+        gsap.set(frame, { clearProps: "transform" });
+        return;
+      }
+      const box = cell.getBoundingClientRect();
+      const away = Math.max(
+        -1,
+        Math.min(1, (box.top + box.height / 2 - viewport / 2) / (viewport / 2)),
+      );
+      gsap.set(frame, {
+        transformPerspective: PERSPECTIVE,
+        rotationX: maxTilt * pinch * away,
+        scale: 1 - SHRINK * pinch,
+        transformOrigin: `${axis - box.left}px 50%`,
+      });
+    });
   };
 
   gsap.ticker.add(tick);
@@ -119,7 +146,7 @@ function skewWithScroll(frames: HTMLElement[]): () => void {
 
 /**
  * Carries the visitor through the project list. Rows appear in pairs that straighten and grow,
- * covers shear with the scroll speed, titles roll in letter by letter and tags are typed.
+ * fast scrolling warps the covers into trapezoids, titles roll in letter by letter and tags are typed.
  * Marked descendants: `data-reel-cell`, `data-reel-item`, `data-reel-frame`, `data-reel-image`, `data-reel-title`,
  * `data-reel-tags`. With reduced motion nothing is touched and the list stays a plain list.
  */
@@ -140,13 +167,12 @@ export function WorksReel({ children }: { children: ReactNode }) {
         revealTextOnEnter(item, restores);
       }
     }, container);
-    const frames = gsap.utils.toArray<HTMLElement>("[data-reel-frame]", container);
-    const stopSkew = skewWithScroll(frames);
+    const stopWarp = warpWhileScrolling(cells, container);
 
     return () => {
-      stopSkew();
+      stopWarp();
       context.revert();
-      gsap.set(frames, { clearProps: "skewX" });
+      gsap.set("[data-reel-frame]", { clearProps: "transform" });
       for (const restore of restores) restore();
     };
   }, []);
