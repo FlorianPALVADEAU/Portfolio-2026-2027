@@ -168,6 +168,8 @@ export default function ReelCanvas({
       className={`pointer-events-none fixed inset-0 z-30 ${active ? "" : "invisible"}`}
     >
       <Canvas
+        // R3F turns pointer events back on for its root, which would swallow the cursor and links.
+        style={{ pointerEvents: "none" }}
         frameloop={active ? "always" : "never"}
         dpr={[1, 2]}
         camera={{ position: [0, 0, CAMERA_DISTANCE], near: 10, far: 4000 }}
