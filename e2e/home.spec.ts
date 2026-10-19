@@ -326,3 +326,33 @@ test.describe("skills", () => {
     });
   }
 });
+
+test.describe("technology band", () => {
+  test("loops, then stops when paused", async ({ page }) => {
+    await page.goto("/en");
+
+    const band = page.getByRole("region", { name: "Technologies I work with" });
+    await expect(band.getByRole("list")).toHaveCount(1);
+    const track = band.locator("div.w-max");
+    const offset = () => track.evaluate((node) => node.getBoundingClientRect().x);
+
+    await band.getByRole("button", { name: "Pause" }).click();
+    const paused = await offset();
+    await page.waitForTimeout(400);
+    expect(await offset()).toBe(paused);
+    await expectNoA11yViolations(page);
+  });
+
+  test.describe("with reduced motion", () => {
+    test.use({ reducedMotion: "reduce" });
+
+    test("is static and has no control", async ({ page }) => {
+      await page.goto("/en");
+
+      const band = page.getByRole("region", { name: "Technologies I work with" });
+      await expect(band.getByRole("button")).toHaveCount(0);
+      await expect(band.getByText("Kubernetes").first()).toBeVisible();
+      await expect(band.getByText("Kubernetes").nth(1)).toBeHidden();
+    });
+  });
+});

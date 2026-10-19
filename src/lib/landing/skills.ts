@@ -26,3 +26,6 @@ export const certifications = [
   { id: "psm", name: "PSM I", issuer: "Scrum.org", year: 2025, score: null },
   { id: "aws", name: "AWS Developer Associate", issuer: "AWS", year: 2025, score: null },
 ] as const;
+
+/** Technologies in display order, derived so the marquee never drifts from the skills section. */
+export const technologies = skillGroups.flatMap(({ items }) => items ?? []);
