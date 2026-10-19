@@ -1,6 +1,7 @@
 import { Text } from "@/components/atoms/text";
 import { ProjectCard } from "@/components/molecules/project-card";
 import { LandingSection } from "@/components/organisms/landing-section";
+import { ViewCursor } from "@/features/view-cursor";
 import type { Locale, Messages } from "@/lib/i18n";
 
 type WorksSectionProps = {
@@ -20,24 +21,32 @@ type WorksSectionProps = {
 
 export function WorksSection({ index, title, locale, messages, projects }: WorksSectionProps) {
   return (
-    <LandingSection id="works" index={index} title={title}>
+    <LandingSection
+      id="works"
+      index={index}
+      title={title}
+      tone="raised"
+      className="-mt-10 rounded-t-[2.5rem] border-t border-border md:-mt-16 md:rounded-t-[4rem]"
+    >
       <Text tone="muted" className="max-w-prose">
         {messages.description}
       </Text>
-      <ul className="grid gap-6 lg:grid-cols-2">
-        {projects.map((project) => (
-          <li key={project.slug}>
-            <ProjectCard
-              href={`/${locale}/projects/${project.slug}`}
-              title={project.title}
-              summary={project.summary}
-              year={project.year}
-              stack={project.stack}
-              cover={project.cover}
-            />
-          </li>
-        ))}
-      </ul>
+      <ViewCursor label={messages.view}>
+        <ul className="grid gap-16 lg:grid-cols-2 lg:gap-x-10">
+          {projects.map((project) => (
+            <li key={project.slug} className="only:lg:col-span-2 lg:even:mt-24">
+              <ProjectCard
+                href={`/${locale}/projects/${project.slug}`}
+                title={project.title}
+                summary={project.summary}
+                year={project.year}
+                stack={project.stack}
+                cover={project.cover}
+              />
+            </li>
+          ))}
+        </ul>
+      </ViewCursor>
     </LandingSection>
   );
 }

@@ -37,7 +37,7 @@ export function Home({ locale, messages, projects }: HomeProps) {
       <TechnologyBand messages={messages.marquee} />
       <SkillsSection index={position("skills")} title={title.skills} messages={messages.skills} />
       <AboutSection index={position("about")} title={title.about} messages={messages.about} />
-      <LandingSection id="gallery" index={position("gallery")} title={title.gallery} />
+      <LandingSection id="gallery" index={position("gallery")} title={title.gallery} tone="muted" />
       <ContactSection
         index={position("contact")}
         title={title.contact}

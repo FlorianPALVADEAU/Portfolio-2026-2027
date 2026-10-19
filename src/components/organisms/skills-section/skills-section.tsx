@@ -12,7 +12,7 @@ type SkillsSectionProps = {
 
 export function SkillsSection({ index, title, messages }: SkillsSectionProps) {
   return (
-    <LandingSection id="skills" index={index} title={title}>
+    <LandingSection id="skills" index={index} title={title} tone="muted">
       <div className="grid gap-12 md:grid-cols-2">
         {skillGroups.map(({ id, items }) => (
           <SkillGroup

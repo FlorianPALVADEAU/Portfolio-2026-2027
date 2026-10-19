@@ -110,7 +110,8 @@
       "newTab": "öffnet in einem neuen Tab"
     },
     "works": {
-      "description": "Projekte, die ich gebaut und geleitet habe, samt den Entscheidungen dahinter."
+      "description": "Projekte, die ich gebaut und geleitet habe, samt den Entscheidungen dahinter.",
+      "view": "Ansehen"
     },
     "marquee": {
       "label": "Technologien, mit denen ich arbeite",
