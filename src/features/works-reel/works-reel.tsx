@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import { type ReactNode, useLayoutEffect, useRef, useState } from "react";
 import { prefersReducedMotion } from "@/lib/motion";
 import { canRenderScene } from "@/lib/scene";
-import { playIfEnabled } from "@/lib/sound";
+import { playIfEnabled, preloadFocusIfEnabled } from "@/lib/sound";
 import { type CoverState, type ReelCover, restingState } from "./reel-cover";
 import { prepareTypewriter, ROLLER_COPIES, splitIntoLetters } from "./reel-text";
 
@@ -49,17 +49,69 @@ function appearOnScroll(state: CoverState, cell: HTMLElement, container: HTMLEle
   );
 }
 
-/** Eases the hover zoom of a cover in and out, for the pointer and for keyboard focus alike. */
+/**
+ * A photographer racking focus with a hand-held camera: the picture starts a little out of focus,
+ * the focal line sweeps across it and hunts back and forth while the hand trembles, the shutter
+ * dips twice, and everything settles to a sharp, steady picture.
+ * Each step is `[focus, blur, shake, seconds]`.
+ */
+const FOCUS_HUNT: ReadonlyArray<readonly [number, number, number, number]> = [
+  [0.95, 0.5, 0.4, 0],
+  [0.08, 0.42, 1, 0.34],
+  [0.72, 0.3, 0.7, 0.24],
+  [0.3, 0.18, 0.9, 0.2],
+  [0.58, 0.08, 0.45, 0.17],
+  [0.46, 0.03, 0.25, 0.14],
+  [0.5, 0, 0, 0.3],
+];
+/** The table above is timed at its natural pace; the pull plays this many times faster. */
+const PULL_SPEED = 1.4;
+/** Seconds into the pull at which the shutter dips. */
+const SHUTTER_AT = [0.3, 0.78] as const;
+
+function pullFocus(state: CoverState): gsap.core.Timeline {
+  const pull = gsap.timeline();
+  let at = 0;
+  for (const [focus, blur, shake, seconds] of FOCUS_HUNT) {
+    pull.to(state, { focus, blur, shake, duration: seconds, ease: "power2.inOut" }, at);
+    at += seconds;
+  }
+  for (const time of SHUTTER_AT) {
+    pull.to(state, { shutter: 1, duration: 0.04, ease: "none" }, time);
+    pull.to(state, { shutter: 0, duration: 0.12, ease: "power2.out" }, time + 0.04);
+  }
+  return pull.timeScale(PULL_SPEED);
+}
+
+/**
+ * Eases the hover zoom of a cover in and out, and pulls focus on entry, for the pointer and for
+ * keyboard focus alike. `overwrite: "auto"` only replaces tweens of `hover`; `true` would also kill
+ * the scroll tween sharing this state and freeze the cover mid-tilt.
+ */
 function followHover(item: HTMLElement, state: CoverState): () => void {
+  let pull: gsap.core.Timeline | null = null;
   const to = (hover: number) => () =>
-    gsap.to(state, { hover, duration: 0.6, ease: "power3.out", overwrite: true });
-  const enter = to(1);
-  const leave = to(0);
+    gsap.to(state, { hover, duration: 0.6, ease: "power3.out", overwrite: "auto" });
+  const zoomIn = to(1);
+  const zoomOut = to(0);
+  const enter = () => {
+    zoomIn();
+    playIfEnabled("focus");
+    pull?.kill();
+    pull = pullFocus(state);
+  };
+  const leave = () => {
+    zoomOut();
+    pull?.kill();
+    pull = null;
+    gsap.to(state, { blur: 0, shake: 0, shutter: 0, duration: 0.2, overwrite: "auto" });
+  };
   item.addEventListener("pointerenter", enter);
   item.addEventListener("pointerleave", leave);
   item.addEventListener("focusin", enter);
   item.addEventListener("focusout", leave);
   return () => {
+    pull?.kill();
     item.removeEventListener("pointerenter", enter);
     item.removeEventListener("pointerleave", leave);
     item.removeEventListener("focusin", enter);
@@ -186,6 +238,7 @@ export function WorksReel({ children }: { children: ReactNode }) {
     const planes: ReelCover[] = [];
     const cells = gsap.utils.toArray<HTMLElement>("[data-reel-cell]", container);
     const drawable = canRenderScene();
+    if (drawable) preloadFocusIfEnabled();
     const context = gsap.context(() => {
       cells.forEach((cell, index) => {
         const item = cell.querySelector<HTMLElement>("[data-reel-item]");
