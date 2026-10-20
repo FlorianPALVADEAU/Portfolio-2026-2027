@@ -10,14 +10,12 @@ export async function expectNoA11yViolations(page: Page) {
       (element) => (element as HTMLElement).dataset.entranceState === "done",
     ),
   );
-  // Reveal transitions blend colors too; looping animations never end, so only finite ones count.
-  await page.waitForFunction(() =>
-    document
-      .getAnimations()
-      .every(
-        (animation) =>
-          animation.playState !== "running" ||
-          animation.effect?.getComputedTiming().iterations === Infinity,
+  // Reveal transitions blend colors and may start after the page settled; cut them to their end state.
+  await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; }" });
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
       ),
   );
   // Scroll-scrubbed words (intro, gallery) are dimmed or blurred on purpose until reached; the full text stays in the DOM and readable.
