@@ -80,7 +80,8 @@
           "items": ["Équipes internationales en anglais", "Recueil des besoins"]
         }
       },
-      "certifications": "Certifications"
+      "certifications": "Certifications",
+      "hint": "Continuez à faire défiler"
     },
     "about": {
       "hook": "Ingénieur logiciel le jour, organisateur de course à côté.",

@@ -85,7 +85,8 @@
           "items": ["Internationale Teams auf Englisch", "Anforderungsanalyse"]
         }
       },
-      "certifications": "Zertifizierungen"
+      "certifications": "Zertifizierungen",
+      "hint": "Weiter scrollen"
     },
     "about": {
       "hook": "Tagsüber Softwareingenieur, nebenbei Rennveranstalter.",

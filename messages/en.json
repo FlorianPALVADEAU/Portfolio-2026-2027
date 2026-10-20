@@ -80,7 +80,8 @@
           "items": ["International teams in English", "Requirements gathering"]
         }
       },
-      "certifications": "Certifications"
+      "certifications": "Certifications",
+      "hint": "Keep scrolling"
     },
     "about": {
       "hook": "Software engineer by day, race organiser on the side.",
