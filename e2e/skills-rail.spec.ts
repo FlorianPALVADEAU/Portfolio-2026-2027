@@ -21,7 +21,11 @@ test.describe("skills rail", () => {
       })
       .toBe(true);
 
-    await page.mouse.wheel(0, 2400);
+    // On a small screen each push moves the page one stop, and the first only clears the pause.
+    for (let push = 0; push < 2; push += 1) {
+      await page.mouse.wheel(0, 2400);
+      await page.waitForTimeout(1200);
+    }
     await expect.poll(position).toBeLessThan(before - 200);
   });
 
