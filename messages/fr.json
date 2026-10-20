@@ -54,7 +54,11 @@
       "gallery": "Galerie",
       "contact": "Travaillons ensemble"
     },
-    "scroll": "Défiler",
+    "opening": {
+      "base": "Du code",
+      "phrases": ["qui tient.", "conçu pour durer.", "proprement structuré.", "de qualité."]
+    },
+    "scroll": "Scrolle pour commencer",
     "intro": {
       "paragraph": "Je conçois, développe et exploite des applications web en TypeScript, des intégrations d'entreprise à la billetterie d'une course que j'ai fondée. Je travaille du premier besoin à la mise en production, avec une architecture qui reste lisible et une livraison qui reste sereine, pour que les équipes se concentrent sur l'essentiel.",
       "clients": "Entreprises avec lesquelles j'ai travaillé"
