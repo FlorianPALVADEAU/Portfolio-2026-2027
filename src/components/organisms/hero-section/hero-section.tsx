@@ -31,6 +31,7 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
               <div
                 key={src}
                 aria-hidden="true"
+                data-depth={slot.depth}
                 style={{ rotate: `${slot.tilt}deg` }}
                 className={cn("absolute", slot.className)}
               >
@@ -50,7 +51,10 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
             )
           );
         })}
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 px-(--gutter) text-center">
+        <div
+          data-depth={-0.3}
+          className="absolute inset-0 flex flex-col items-center justify-center gap-5 px-(--gutter) text-center"
+        >
           <Heading level={1} size="display" data-sequence-reveal className="max-w-4xl">
             <span className="sr-only">Florian Palvadeau.</span> {messages.headline}
           </Heading>

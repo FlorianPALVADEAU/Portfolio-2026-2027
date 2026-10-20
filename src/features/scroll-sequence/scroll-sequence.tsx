@@ -20,8 +20,15 @@ const REVEAL_PX = 700;
 const HOLD_PX = 1000;
 /** Pixels over which the picture darkens, so that the copy can be read over the last frames. */
 const DARKEN_PX = 1400;
-const DARKEN_FROM = 0.3;
-const DARKEN_TO = 0.85;
+/**
+ * Share of the frames that is played. The footage ends on a blank white mist; stopping a little
+ * before it keeps a cloud against the sky behind the copy.
+ */
+const PLAYED_SHARE = 0.94;
+const DARKEN_FROM = 0.4;
+const DARKEN_TO = 1;
+/** Pixels that an element with `data-depth="1"` travels, at most, when the pointer crosses the stage. */
+const DEPTH_TRAVEL = 36;
 /**
  * The stage stays stuck for one more viewport after the scrolling, while the next section slides
  * over it. The track is tall enough for the scrolling, that viewport and the stage itself; its
@@ -39,7 +46,8 @@ type ScrollSequenceProps = {
  * Holds a full-screen stage in place and plays a frame sequence while the visitor scrolls past.
  * Children marked `data-sequence-reveal` appear once the sequence has played and those marked
  * `data-sequence-fade` leave at its start; those marked `data-sequence-photo` pop in with a
- * bounce, so they should rest on a wrapper that holds their tilt. A shade darkens the picture towards
+ * bounce, so they should rest on a wrapper that holds their tilt. Those marked `data-depth` drift
+ * with the pointer, the more the bigger the number. A shade darkens the picture towards
  * the end so the copy stays readable. Without frames a placeholder sky zooms out instead.
  * The next section must be opaque and above it (`z-10`). Under reduced motion the stage is not
  * held and does not overlap: the last frame and all the copy are shown at once.
@@ -61,10 +69,11 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
     const player = set ? createFramePlayer(surface, set) : null;
 
     if (prefersReducedMotion()) {
-      player?.show(1);
+      player?.show(PLAYED_SHARE);
       return () => player?.destroy();
     }
 
+    const cleanups: (() => void)[] = [];
     const context = gsap.context(() => {
       // Every position and duration below is in pixels of scrolling.
       const state = { progress: 0 };
@@ -80,7 +89,11 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
 
       timeline.to(
         state,
-        { progress: 1, duration: sequencePx, onUpdate: () => player?.show(state.progress) },
+        {
+          progress: 1,
+          duration: sequencePx,
+          onUpdate: () => player?.show(state.progress * PLAYED_SHARE),
+        },
         0,
       );
       if (!player) {
@@ -111,9 +124,30 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
       }
       // Without this the timeline ends with its last tween, and the hold would stretch it.
       timeline.set({}, {}, sequencePx + REVEAL_PX + HOLD_PX);
+
+      // Elements marked `data-depth` follow the pointer by their own amount, a negative one in
+      // the opposite direction, so the layers seem to sit at different distances.
+      if (window.matchMedia("(hover: hover)").matches) {
+        const layers = gsap.utils.toArray<HTMLElement>("[data-depth]").map((layer) => ({
+          depth: Number(layer.dataset.depth),
+          x: gsap.quickTo(layer, "x", { duration: 0.9, ease: "power3.out" }),
+          y: gsap.quickTo(layer, "y", { duration: 0.9, ease: "power3.out" }),
+        }));
+        const onMove = (event: PointerEvent) => {
+          const dx = event.clientX / window.innerWidth - 0.5;
+          const dy = event.clientY / window.innerHeight - 0.5;
+          for (const { depth, x, y } of layers) {
+            x(dx * 2 * depth * DEPTH_TRAVEL);
+            y(dy * 2 * depth * DEPTH_TRAVEL);
+          }
+        };
+        window.addEventListener("pointermove", onMove, { passive: true });
+        cleanups.push(() => window.removeEventListener("pointermove", onMove));
+      }
     }, element);
 
     return () => {
+      for (const cleanup of cleanups) cleanup();
       context.revert();
       player?.destroy();
     };
@@ -136,7 +170,11 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
             className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_115%,#fff_0%,#8a8a8a_24%,#1a1a1a_58%,#000_82%)]"
           />
         )}
-        <div ref={shade} aria-hidden="true" className="absolute inset-0 bg-black opacity-85" />
+        <div
+          ref={shade}
+          aria-hidden="true"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgb(0_0_0/0.72)_0%,rgb(0_0_0/0.62)_50%,rgb(0_0_0/0.48)_100%)]"
+        />
         {children}
       </div>
     </div>
