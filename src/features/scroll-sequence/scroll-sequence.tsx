@@ -17,7 +17,7 @@ const SEQUENCE_PX = { small: 2000, large: 3000 };
 /** Pixels of scrolling, after the sequence, that reveal the copy. */
 const REVEAL_PX = 700;
 /** Pixels of scrolling, once the copy is shown, that keep it alone on screen before the next section. */
-const HOLD_PX = 1000;
+const HOLD_PX = 500;
 /** Pixels over which the picture darkens, so that the copy can be read over the last frames. */
 const DARKEN_PX = 1400;
 /**
@@ -29,6 +29,8 @@ const DARKEN_FROM = 0.4;
 const DARKEN_TO = 1;
 /** Pixels that an element with `data-depth="1"` travels, at most, when the pointer crosses the stage. */
 const DEPTH_TRAVEL = 36;
+/** Pixels that an element with `data-depth="1"` rises, in total, while the copy is on screen. */
+const DEPTH_DRIFT = 240;
 /**
  * The stage stays stuck for one more viewport after the scrolling, while the next section slides
  * over it. The track is tall enough for the scrolling, that viewport and the stage itself; its
@@ -47,7 +49,7 @@ type ScrollSequenceProps = {
  * Children marked `data-sequence-reveal` appear once the sequence has played and those marked
  * `data-sequence-fade` leave at its start; those marked `data-sequence-photo` pop in with a
  * bounce, so they should rest on a wrapper that holds their tilt. Those marked `data-depth` drift
- * with the pointer, the more the bigger the number. A shade darkens the picture towards
+ * with the pointer and the scroll, the more the bigger the number. A shade darkens the picture towards
  * the end so the copy stays readable. Without frames a placeholder sky zooms out instead.
  * The next section must be opaque and above it (`z-10`). Under reduced motion the stage is not
  * held and does not overlap: the last frame and all the copy are shown at once.
@@ -122,6 +124,17 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
           sequencePx + 60 + order * 60,
         );
       }
+      // The same layers also drift vertically with the scroll, by their depth, from the moment the
+      // copy appears. Their height turns pixels into percent, which leaves `y` to the pointer.
+      for (const layer of gsap.utils.toArray<HTMLElement>("[data-depth]")) {
+        const drift = (Number(layer.dataset.depth) * DEPTH_DRIFT) / layer.offsetHeight;
+        timeline.fromTo(
+          layer,
+          { yPercent: drift * 50 },
+          { yPercent: -drift * 50, duration: REVEAL_PX + HOLD_PX, ease: "none" },
+          sequencePx,
+        );
+      }
       // Without this the timeline ends with its last tween, and the hold would stretch it.
       timeline.set({}, {}, sequencePx + REVEAL_PX + HOLD_PX);
 
@@ -157,7 +170,7 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
     <div
       ref={track}
       style={{ "--track": TRACK } as CSSProperties}
-      className="-mb-[100svh] [--sequence:3000px] md:[--sequence:5000px] h-(--track) motion-reduce:mb-0 motion-reduce:h-svh"
+      className="-mb-[100svh] [--sequence:2000px] md:[--sequence:3000px] h-(--track) motion-reduce:mb-0 motion-reduce:h-svh"
     >
       <div className="sticky top-0 h-svh overflow-hidden motion-reduce:static">
         <div aria-hidden="true" className="absolute inset-0">
