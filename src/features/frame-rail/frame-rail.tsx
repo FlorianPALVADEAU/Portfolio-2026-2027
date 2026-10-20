@@ -71,7 +71,7 @@ export function FrameRail({ frames, navLabel, children }: FrameRailProps) {
         </div>
         <nav
           aria-label={navLabel}
-          className="absolute inset-x-(--gutter) bottom-1 z-10 hidden text-white mix-blend-difference in-data-[motion=rail]:block"
+          className="absolute inset-x-(--gutter) bottom-1 z-10 hidden in-data-[motion=rail]:block"
         >
           <ol className="flex gap-3">
             {frames.map(({ id, label }, order) => (
@@ -85,8 +85,8 @@ export function FrameRail({ frames, navLabel, children }: FrameRailProps) {
                     {String(order + 1).padStart(2, "0")}
                     {` ${label}`}
                   </span>
-                  <span className="block h-0.5 bg-white/30 transition-[height] duration-(--duration-fast) group-hover/step:h-1">
-                    <span data-frame-fill className="block size-full origin-left bg-white" />
+                  <span className="block h-0.5 bg-foreground/25 transition-[height] duration-(--duration-fast) group-hover/step:h-1">
+                    <span data-frame-fill className="block size-full origin-left bg-foreground" />
                   </span>
                 </button>
               </li>

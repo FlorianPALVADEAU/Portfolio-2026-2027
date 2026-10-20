@@ -6,6 +6,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 /** Pixels of scrolling for each pixel the track travels; under 1 so a frame never drags on. */
 const PACE = 0.8;
+/** A small screen asks for more scrolling per frame, so a light swipe does not fly past one. */
+const SMALL_SCREEN_PACE = 1.6;
 const MAX_SKEW_DEG = 2;
 /** Scroll velocity, in pixels per second, that adds one degree of skew. */
 const VELOCITY_PER_DEG = 900;
@@ -166,7 +168,9 @@ export function buildRail({ runway, stage, track }: RailParts): Rail {
   const hold = stage.clientHeight * HOLD_RATIO;
   const finale = stage.querySelector("[data-frame-finale]") ? stage.clientHeight * FINALE_RATIO : 0;
   const total = travel + finale + hold * 2;
-  runway.style.height = `${total * PACE + stage.clientHeight}px`;
+  const small = window.matchMedia(SMALL_SCREEN_QUERY).matches;
+  const pace = small ? SMALL_SCREEN_PACE : PACE;
+  runway.style.height = `${total * pace + stage.clientHeight}px`;
 
   for (const frame of frames) {
     frame.dataset.reveal = "off";
@@ -180,6 +184,17 @@ export function buildRail({ runway, stage, track }: RailParts): Rail {
     ...(finale > 0 ? [(hold + travel + finale) / total] : []),
     1,
   ];
+
+  // A snap moves at most one stop from where the page last rested, however hard the swipe.
+  let resting = 0;
+  const nearest = (progress: number) =>
+    snapPoints.reduce(
+      (best, point, index) =>
+        Math.abs(point - progress) < Math.abs((snapPoints[best] ?? 0) - progress) ? index : best,
+      0,
+    );
+  const snapNearby = (progress: number) =>
+    snapPoints[gsap.utils.clamp(resting - 1, resting + 1, nearest(progress))] ?? progress;
 
   const context = gsap.context(() => {
     const reveal = (frame: HTMLElement | undefined) => {
@@ -205,9 +220,12 @@ export function buildRail({ runway, stage, track }: RailParts): Rail {
         start: "top top",
         end: "bottom bottom",
         scrub: 0.6,
-        ...(window.matchMedia(SMALL_SCREEN_QUERY).matches && {
+        ...(small && {
+          onSnapComplete: (self: ScrollTrigger) => {
+            resting = nearest(self.progress);
+          },
           snap: {
-            snapTo: snapPoints,
+            snapTo: snapNearby,
             inertia: false,
             duration: { min: 0.25, max: 0.7 },
             delay: 0.05,
@@ -248,7 +266,8 @@ export function buildRail({ runway, stage, track }: RailParts): Rail {
   const goTo = (order: number) => {
     const start = runway.getBoundingClientRect().top + window.scrollY;
     const position = gsap.utils.clamp(0, travel, order * viewport);
-    scrollToTop(start + (hold + position) * PACE);
+    resting = Math.max(0, snapPoints.indexOf((hold + position) / total));
+    scrollToTop(start + (hold + position) * pace);
   };
 
   const destroy = () => {
