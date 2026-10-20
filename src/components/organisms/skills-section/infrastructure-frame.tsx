@@ -14,7 +14,11 @@ export function InfrastructureFrame({ order, total, messages }: GroupFrameProps)
   }));
 
   return (
-    <Frame numeral="02" aria-labelledby="skills-infrastructure" className="gap-6 md:gap-16">
+    <Frame
+      numeral="02"
+      aria-labelledby="skills-infrastructure"
+      className="gap-6 in-data-[motion=rail]:justify-start md:gap-16 md:in-data-[motion=rail]:justify-center"
+    >
       <FrameIntro
         order={order}
         total={total}

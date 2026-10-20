@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { FlipText } from "@/components/atoms/flip-text";
 import { Pop } from "@/components/atoms/pop";
 import { Text } from "@/components/atoms/text";
 import { StatFigure } from "@/components/molecules/stat-figure";
@@ -46,15 +47,19 @@ export function CollaborationFrame({ order, total, messages }: GroupFrameProps) 
         </div>
         <ol className="flex flex-col">
           {items.map((item, index) => (
-            <li
-              key={item}
-              className="flex items-baseline gap-4 border-t border-border py-2.5 md:py-4"
-            >
-              <Pop delay={0.55 + index * 0.12} className="flex items-baseline gap-4">
+            <li key={item} className="flip-host relative flex items-baseline gap-4 py-2.5 md:py-4">
+              <Pop
+                from="grow"
+                delay={0.5 + index * 0.2}
+                className="absolute inset-x-0 top-0 h-px bg-foreground/25"
+              />
+              <Pop from="wipe" delay={0.6 + index * 0.2} className="flex items-baseline gap-4">
                 <span aria-hidden="true" className="font-mono text-xs text-muted-foreground">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <Text className="text-lg font-medium text-pretty md:text-xl">{item}</Text>
+                <Text className="text-lg font-medium text-pretty md:text-xl">
+                  <FlipText>{item}</FlipText>
+                </Text>
               </Pop>
             </li>
           ))}

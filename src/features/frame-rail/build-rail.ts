@@ -5,7 +5,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 /** Pixels of scrolling for each pixel the track travels; under 1 so a frame never drags on. */
 const PACE = 0.8;
-const MAX_SKEW_DEG = 3;
+const MAX_SKEW_DEG = 2;
 /** Scroll velocity, in pixels per second, that adds one degree of skew. */
 const VELOCITY_PER_DEG = 900;
 const COUNT_SECONDS = 1.6;
@@ -176,7 +176,13 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
       frame.dataset.reveal = "on";
       countUp(frame);
     };
-    reveal(frames[0]);
+    // The first frame waits until the section scrolls into view, so its entrance is seen.
+    ScrollTrigger.create({
+      trigger: runway,
+      start: "top 75%",
+      once: true,
+      onEnter: () => reveal(frames[0]),
+    });
 
     const skew = { value: 0 };
     const clampSkew = gsap.utils.clamp(-MAX_SKEW_DEG, MAX_SKEW_DEG);
@@ -191,8 +197,8 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
         onUpdate: (self) => {
           const position = gsap.utils.clamp(0, travel, self.progress * total - hold);
           reveal(frames[Math.round(position / viewport)]);
-          // The track is still while a photo shrinks; skewing it would tilt the full-screen frame.
-          if (position >= travel) return;
+          // The track is still before it starts and after it ends; skewing it then only shakes the page.
+          if (position <= 0 || position >= travel) return;
           const target = clampSkew(-self.getVelocity() / VELOCITY_PER_DEG);
           if (Math.abs(target) <= Math.abs(skew.value)) return;
           skew.value = target;

@@ -39,9 +39,9 @@ export function CertificationList({ items, labels }: CertificationListProps) {
               <div className="relative flex size-28 shrink-0 items-center justify-center md:size-auto md:flex-1">
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 flex items-center justify-center text-center text-[2.25rem] leading-[0.85] font-semibold tracking-tighter text-transparent uppercase select-none [-webkit-text-stroke:1px_var(--border)] md:text-[clamp(4.5rem,8vw,7.5rem)]"
+                  className="pointer-events-none absolute inset-x-0 top-0 flex justify-center text-center text-[1.35rem] leading-none font-semibold tracking-tighter whitespace-nowrap text-transparent uppercase select-none [-webkit-text-stroke:1px_color-mix(in_oklch,var(--foreground)_35%,transparent)] md:top-2 md:text-[clamp(2.25rem,4vw,4.5rem)]"
                 >
-                  <span className="max-w-[4ch] md:max-w-none">{item.issued}</span>
+                  <span>{item.issued}</span>
                 </span>
                 <span
                   aria-hidden="true"
@@ -53,7 +53,7 @@ export function CertificationList({ items, labels }: CertificationListProps) {
                   width={160}
                   height={160}
                   unoptimized
-                  className="relative size-20 drop-shadow-2xl transition-transform duration-(--duration-slow) ease-out-expo group-hover/plate:scale-110 md:size-36"
+                  className="relative mt-5 size-20 drop-shadow-2xl transition-transform duration-(--duration-slow) ease-out-expo group-hover/plate:scale-110 md:mt-16 md:size-36"
                 />
               </div>
               <div className="relative flex min-w-0 flex-col gap-1">

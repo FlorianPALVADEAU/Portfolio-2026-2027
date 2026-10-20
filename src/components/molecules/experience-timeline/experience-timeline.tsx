@@ -41,7 +41,7 @@ export function ExperienceTimeline({ entries, startYear, endYear }: ExperienceTi
     <div className="flex flex-col gap-2 md:gap-4">
       <div
         aria-hidden="true"
-        className="relative h-4 font-mono text-xs text-muted-foreground max-md:[&>span:not(:first-child):not(:last-child)]:hidden"
+        className="relative h-4 font-mono text-xs text-foreground/70 max-md:[&>span:not(:first-child):not(:last-child)]:hidden"
       >
         {years.map((year) => (
           <span
@@ -62,7 +62,7 @@ export function ExperienceTimeline({ entries, startYear, endYear }: ExperienceTi
             <Pop
               from="grow"
               delay={0.15 + order * STAGGER_SECONDS}
-              className="absolute inset-x-0 top-0 h-px bg-border"
+              className="absolute inset-x-0 top-0 h-px bg-foreground/25"
             >
               <span className="block size-full origin-left bg-foreground/0 transition-colors duration-(--duration-base) group-hover/lane:bg-accent" />
             </Pop>
@@ -82,12 +82,12 @@ export function ExperienceTimeline({ entries, startYear, endYear }: ExperienceTi
                 </Link>
               </Pop>
               <Pop delay={0.35 + order * STAGGER_SECONDS}>
-                <Text as="span" size="sm" tone="muted">
+                <Text as="span" size="sm" className="text-foreground/80">
                   {entry.role}
                 </Text>
               </Pop>
             </div>
-            <div aria-hidden="true" className="relative h-1.5 rounded-full bg-muted">
+            <div aria-hidden="true" className="relative h-1.5 rounded-full bg-foreground/15">
               <div
                 className="absolute inset-y-0"
                 style={{

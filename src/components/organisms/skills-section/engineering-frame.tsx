@@ -31,7 +31,6 @@ export function EngineeringFrame({
 
   return (
     <Frame
-      numeral="01"
       aria-labelledby="skills-engineering"
       className="gap-6 md:grid md:grid-cols-12 md:items-center md:gap-12"
     >
@@ -56,7 +55,7 @@ export function EngineeringFrame({
           <Pop
             from="wipe"
             delay={0.3}
-            className="relative aspect-[5/2] overflow-hidden rounded-3xl md:aspect-4/3"
+            className="relative aspect-[5/2] overflow-hidden rounded-3xl md:aspect-video"
           >
             <div data-frame-parallax="0.09" className="absolute inset-y-0 -inset-x-[14%]">
               <Image

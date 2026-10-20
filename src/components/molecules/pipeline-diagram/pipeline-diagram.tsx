@@ -37,7 +37,7 @@ export function PipelineDiagram({ stages, automation }: PipelineDiagramProps) {
           className="absolute top-0 left-0 hidden h-px w-1/4 bg-accent md:block motion-safe:animate-[packet_3.2s_linear_infinite]"
         />
         {stages.map((stage, order) => (
-          <li key={stage.id} className="relative">
+          <li key={stage.id} className="relative md:min-h-60">
             <span
               aria-hidden="true"
               className="absolute top-3 -left-[1.4rem] size-2 rounded-full bg-accent md:-top-[2.4rem] md:left-0 md:size-2.5"
