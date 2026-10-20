@@ -1,21 +1,34 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { createWave, echoWave, type Wave, type WavePoint, wavePath } from "@/lib/wave";
+import { createWave, randomWavePoints, wavePath } from "@/lib/wave";
+import type { Reveal } from "./rail-variants";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/** Seed of the background wave; any value gives a pleasant line, this one is simply kept. */
+const WAVE_SEED = 11;
 /** Share of the stage height that a crest or a trough rises from the middle line, at most. */
-const AMPLITUDE_SHARE = 0.17;
-const AMPLITUDE_MAX_PX = 230;
-/** Where the drawing head starts on the screen, as a share of its width; it ends at the right edge. */
-const HEAD_START_SHARE = 0.25;
-/** Horizontal distance between two samples of a drawn path. */
+const AMPLITUDE_SHARE = 0.32;
+/** Share of the stage height taken by the thickness of the wave. */
+const BAND_SHARE = 0.18;
+/** Distance between two turning points of the wave, in widths of one node. */
+const SPACING: readonly [number, number] = [1.2, 3];
+/** Horizontal distance between two samples of the drawn path. */
 const SAMPLE_PX = 8;
-/** Distance between a dot and its label, which is also the length of the stem. */
-const STEM_PX = 32;
+/** Where the drawing edge and the entrance of the labels sit on the screen, as a share of its width. */
+const EDGE_SHARE = 0.85;
+/** Length over which the drawn wave fades out at its leading edge. */
+export const FADE_PX = 240;
 const MAX_SKEW_DEG = 7;
 /** Scroll velocity, in pixels per second, that adds one degree of skew. */
 const VELOCITY_PER_DEG = 420;
+
+/** Where a label starts, before it moves to rest inside the mask that clips it. */
+const REVEAL_FROM: Record<Reveal, gsap.TweenVars> = {
+  rise: { yPercent: 115 },
+  drop: { yPercent: -115 },
+  slide: { xPercent: -105 },
+};
 
 export type RailParts = {
   runway: HTMLElement;
@@ -27,46 +40,34 @@ function pick<T extends Element>(root: ParentNode, selector: string): T[] {
   return Array.from(root.querySelectorAll<T>(selector));
 }
 
-/** Crests and troughs alternate, starting with a crest; the line starts and ends level. */
-function nodePoints(xs: readonly number[], amplitude: number, pitch: number, total: number) {
-  const first = xs[0] ?? 0;
-  const last = xs.at(-1) ?? total;
-  const points: WavePoint[] = [{ x: Math.max(0, first - pitch), y: 0 }];
-  xs.forEach((x, index) => {
-    points.push({ x, y: index % 2 === 0 ? -amplitude : amplitude });
-  });
-  points.push({ x: Math.min(total, last + pitch), y: 0 });
-  return points;
-}
-
-type Drawing = { wave: Wave; pitch: number; total: number; end: number; height: number };
-
-/** Draws every line from the left edge to `end`, where the wave stops for good. */
-function drawWaves(stage: HTMLElement, { wave, pitch, total, end, height }: Drawing) {
+/** Draws the wave, which is only a backdrop: a thick faint band and a fine line along its middle. */
+function drawWave(stage: HTMLElement, total: number, height: number, pitch: number) {
   const svg = stage.querySelector("svg");
   if (!svg) return;
   svg.setAttribute("viewBox", `0 0 ${total} ${height}`);
 
-  const echoes = [
-    echoWave(wave, { scale: -0.5, shift: pitch * 0.6 }),
-    echoWave(wave, { scale: 0.3, shift: -pitch * 0.9 }),
-  ];
-  const layers = [wave, wave, ...echoes];
-  pick<SVGPathElement>(svg, "[data-rail-wave]").forEach((path, index) => {
-    const layer = layers[index];
-    if (layer) {
-      path.setAttribute(
-        "d",
-        wavePath(layer, { from: 0, to: end, step: SAMPLE_PX, baseline: height / 2 }),
-      );
-    }
+  const points = randomWavePoints({
+    seed: WAVE_SEED,
+    width: total,
+    amplitude: height * AMPLITUDE_SHARE,
+    spacing: [SPACING[0] * pitch, SPACING[1] * pitch],
+  });
+  const path = wavePath(createWave(points), {
+    from: 0,
+    to: total,
+    step: SAMPLE_PX,
+    baseline: height / 2,
+  });
+  for (const line of pick(svg, "[data-rail-wave]")) line.setAttribute("d", path);
+  pick(svg, "[data-rail-band]").forEach((band) => {
+    band.setAttribute("stroke-width", String(height * BAND_SHARE));
   });
 }
 
 /**
  * Turns the stage into a pinned horizontal rail and returns a function that undoes it. The runway
  * is as tall as the distance to travel, the stage sticks to the top of it, and one scrubbed
- * timeline, in pixels of scrolling, moves the track, draws the waves and lights up the nodes.
+ * timeline, in pixels of scrolling, moves the track, draws the wave and brings the labels in.
  */
 export function buildRail({ runway, stage, track }: RailParts): () => void {
   stage.dataset.motion = "rail";
@@ -75,25 +76,20 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
   const total = track.scrollWidth;
   const travel = total - viewport;
   const nodes = pick<HTMLElement>(track, "[data-rail-node]");
+  const pitch = nodes[0]?.offsetWidth ?? 0;
 
   const undo = () => {
     runway.style.removeProperty("height");
     stage.dataset.motion = "static";
   };
-  const trackLeft = track.getBoundingClientRect().left;
-  const xs = nodes.map((node) => node.getBoundingClientRect().left - trackLeft);
-  const pitch = nodes[0]?.offsetWidth ?? 0;
-  if (travel <= 0 || xs.length === 0 || pitch === 0) {
+  if (travel <= 0 || pitch === 0) {
     undo();
     return () => {};
   }
 
   runway.style.height = `${travel + height}px`;
-  const amplitude = Math.min(height * AMPLITUDE_SHARE, AMPLITUDE_MAX_PX);
-  const points = nodePoints(xs, amplitude, pitch, total);
-  const wave = createWave(points);
-  const end = points.at(-1)?.x ?? total;
-  drawWaves(stage, { wave, pitch, total, end, height });
+  drawWave(stage, total, height, pitch);
+  const trackLeft = track.getBoundingClientRect().left;
 
   const context = gsap.context(() => {
     const skew = { value: 0 };
@@ -126,68 +122,40 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
     timeline.to(track, { x: -travel, duration: travel }, 0);
     timeline.fromTo("[data-rail-progress]", { scaleX: 0 }, { scaleX: 1, duration: travel }, 0);
     timeline.to("[data-rail-hint]", { autoAlpha: 0, duration: Math.min(260, travel) }, 0);
+    const edge = { from: viewport * EDGE_SHARE, to: total - viewport * (1 - EDGE_SHARE) };
+    timeline.fromTo(
+      "[data-rail-reveal-solid]",
+      { attr: { width: edge.from - FADE_PX } },
+      { attr: { width: edge.to - FADE_PX }, duration: travel },
+      0,
+    );
+    timeline.fromTo(
+      "[data-rail-reveal-fade]",
+      { attr: { x: edge.from - FADE_PX } },
+      { attr: { x: edge.to - FADE_PX }, duration: travel },
+      0,
+    );
 
     for (const layer of pick<HTMLElement>(track, "[data-rail-parallax]")) {
       const reach = Number(layer.dataset.railParallax) * viewport;
       timeline.fromTo(layer, { x: reach }, { x: -reach, duration: travel }, 0);
     }
 
-    // The head is where the drawing ends; the waves are clipped to it, a little behind for the echoes.
-    const head = stage.querySelector<SVGGElement>("[data-rail-head]");
-    const clips = pick<SVGRectElement>(stage, "[data-rail-clip]");
-    const setHeadX = head && gsap.quickSetter(head, "x", "px");
-    const setHeadY = head && gsap.quickSetter(head, "y", "px");
-    const start = viewport * HEAD_START_SHARE;
-    const playhead = { x: start };
-    const render = () => {
-      for (const clip of clips) {
-        const lag = Number(clip.dataset.railLag) * pitch;
-        clip.setAttribute("width", String(Math.max(0, playhead.x - lag)));
-      }
-      setHeadX?.(playhead.x);
-      setHeadY?.(height / 2 + wave(playhead.x));
-    };
-    timeline.fromTo(playhead, { x: start }, { x: end, duration: travel, onUpdate: render }, 0);
-    render();
-    gsap.to("[data-rail-head-ring]", {
-      scale: 2.2,
-      opacity: 0,
-      svgOrigin: "0 0",
-      duration: 1.5,
-      ease: "power2.out",
-      repeat: -1,
-    });
-
-    // Each node is lit when the head reaches it; the label sits on the outer side of the curve.
-    const lit = Math.min(180, travel * 0.05);
-    nodes.forEach((node, index) => {
-      const above = index % 2 === 0;
-      const side = above ? -1 : 1;
-      const dot = pick(node, "[data-rail-fill]");
-      const label = pick(node, "[data-rail-label]");
-      const stem = pick(node, "[data-rail-stem]");
-      const arrival = Math.max(0, ((xs[index] ?? 0) - start) * (travel / (end - start)));
-
-      gsap.set(node, { y: side * amplitude });
-      gsap.set(label, { yPercent: above ? -100 : 0, y: side * STEM_PX });
-      gsap.set(stem, {
-        yPercent: above ? -100 : 0,
-        transformOrigin: above ? "50% 100%" : "50% 0%",
-      });
+    // Each label comes in as it crosses the drawing edge, in the way its place in the rhythm asks.
+    const entrance = Math.min(220, travel * 0.06);
+    for (const node of nodes) {
+      const reveal = (node.dataset.railReveal ?? "rise") as Reveal;
+      const offset = Number(node.dataset.railOffset);
+      const x = node.getBoundingClientRect().left - trackLeft;
+      const arrival = Math.max(0, x - viewport * EDGE_SHARE);
+      gsap.set(pick(node, "[data-rail-label]"), { y: offset * height, yPercent: -50 });
       timeline.fromTo(
-        dot,
-        { scale: 0 },
-        { scale: 1, duration: lit, ease: "back.out(2.4)" },
+        pick(node, "[data-rail-text]"),
+        { xPercent: 0, yPercent: 0, ...REVEAL_FROM[reveal] },
+        { xPercent: 0, yPercent: 0, duration: entrance, ease: "power3.out" },
         arrival,
       );
-      timeline.fromTo(
-        stem,
-        { scaleY: 0 },
-        { scaleY: 1, duration: lit, ease: "power3.out" },
-        arrival,
-      );
-      timeline.fromTo(label, { x: 36 }, { x: 0, duration: lit * 1.6, ease: "power3.out" }, arrival);
-    });
+    }
     // Without this the timeline ends with its last tween, and the scroll distance would shrink.
     timeline.set({}, {}, travel);
   }, stage);

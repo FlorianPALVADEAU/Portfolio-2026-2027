@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type RailSlideProps = {
-  /** Oversized outline word behind the slide; decorative, so hidden from assistive technology. */
+  /** Oversized outline word behind the slide, cut at its edges; decorative, so hidden from assistive technology. */
   ghost?: string;
   /** Pinned to the top-left of the slide while the rail runs. */
   heading?: ReactNode;
@@ -23,7 +23,7 @@ export function RailSlide({ ghost, heading, className, children }: RailSlideProp
       {ghost && (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-0 hidden items-center in-data-[motion=rail]:flex"
+          className="pointer-events-none absolute inset-0 hidden items-center overflow-hidden in-data-[motion=rail]:flex"
         >
           <span
             data-rail-parallax="0.18"

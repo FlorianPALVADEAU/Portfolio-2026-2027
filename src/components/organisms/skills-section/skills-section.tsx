@@ -63,7 +63,7 @@ export function SkillsSection({ index, title, messages }: SkillsSectionProps) {
             </RailNodes>
           </RailSlide>
         ))}
-        <RailSlide className="in-data-[motion=rail]:z-10 in-data-[motion=rail]:w-screen in-data-[motion=rail]:justify-center in-data-[motion=rail]:bg-muted in-data-[motion=rail]:px-(--gutter)">
+        <RailSlide className="in-data-[motion=rail]:z-10 in-data-[motion=rail]:w-screen md:in-data-[motion=rail]:w-[70vw] in-data-[motion=rail]:justify-center in-data-[motion=rail]:bg-muted in-data-[motion=rail]:px-(--gutter)">
           <div className="w-full max-w-xl">
             <CertificationList title={messages.certifications} items={certifications} />
           </div>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createWave, echoWave, wavePath } from "./wave";
+import { createWave, randomWavePoints, wavePath } from "./wave";
 
 const wave = createWave([
   { x: 0, y: 0 },
@@ -30,10 +30,28 @@ describe("createWave", () => {
   });
 });
 
-describe("echoWave", () => {
-  it("scales and shifts the original", () => {
-    const echo = echoWave(wave, { scale: -0.5, shift: 20 });
-    expect(echo(120)).toBeCloseTo(25);
+describe("randomWavePoints", () => {
+  const options = { seed: 7, width: 5000, amplitude: 200, spacing: [300, 700] } as const;
+  const points = randomWavePoints(options);
+
+  it("is the same for the same seed and differs for another", () => {
+    expect(randomWavePoints(options)).toEqual(points);
+    expect(randomWavePoints({ ...options, seed: 8 })).not.toEqual(points);
+  });
+
+  it("runs from 0 to the width, sorted, within the amplitude", () => {
+    expect(points[0]?.x).toBe(0);
+    expect(points.at(-1)?.x).toBe(5000);
+    for (const [index, point] of points.entries()) {
+      expect(Math.abs(point.y)).toBeLessThanOrEqual(200);
+      if (index > 0) expect(point.x).toBeGreaterThan(points[index - 1]?.x ?? 0);
+    }
+  });
+
+  it("alternates between crests and troughs", () => {
+    for (let index = 2; index < points.length; index++) {
+      expect(Math.sign(points[index]?.y ?? 0)).toBe(-Math.sign(points[index - 1]?.y ?? 0));
+    }
   });
 });
 
