@@ -16,6 +16,8 @@ gsap.registerPlugin(ScrollTrigger);
 const SEQUENCE_PX = { small: 3000, large: 5000 };
 /** Pixels of scrolling, after the sequence, that reveal the copy. */
 const REVEAL_PX = 700;
+/** Pixels of scrolling, once the copy is shown, that keep it alone on screen before the next section. */
+const HOLD_PX = 900;
 /** Pixels over which the picture darkens, so that the copy can be read over the last frames. */
 const DARKEN_PX = 1400;
 const DARKEN_FROM = 0.3;
@@ -25,7 +27,7 @@ const DARKEN_TO = 0.85;
  * over it. The track is tall enough for the scrolling, that viewport and the stage itself; its
  * negative bottom margin pulls the next section up by that viewport, over the end of the track.
  */
-const TRACK = `calc(var(--sequence) + ${REVEAL_PX}px + 200svh)`;
+const TRACK = `calc(var(--sequence) + ${REVEAL_PX + HOLD_PX}px + 200svh)`;
 const SMALL_SCREEN = "(max-width: 767px)";
 
 type ScrollSequenceProps = {
@@ -71,7 +73,7 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
         scrollTrigger: {
           trigger: element,
           start: "top top",
-          end: `+=${sequencePx + REVEAL_PX}`,
+          end: `+=${sequencePx + REVEAL_PX + HOLD_PX}`,
           scrub: 0.4,
         },
       });
@@ -107,6 +109,8 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
           sequencePx + 60 + order * 60,
         );
       }
+      // Without this the timeline ends with its last tween, and the hold would stretch it.
+      timeline.set({}, {}, sequencePx + REVEAL_PX + HOLD_PX);
     }, element);
 
     return () => {

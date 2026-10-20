@@ -8,7 +8,7 @@ const messages = {
   headline: "From Geneva, I build software that holds.",
   cv: "Download CV (PDF)",
   scroll: "Scroll to begin",
-  opening: "Engineered to last.",
+  opening: "Code that holds.",
 };
 
 describe("HeroSection", () => {
