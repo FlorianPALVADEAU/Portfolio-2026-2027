@@ -10,7 +10,13 @@ import { buildRail, FADE_PX } from "./build-rail";
  * sideways and a wave is drawn behind its slides (see `buildRail`). The stage
  * reports its mode in `data-motion`, which slides and nodes style themselves by.
  */
-export function WaveRail({ children }: { children: ReactNode }) {
+type WaveRailProps = {
+  /** One per slide that has a `tone`, in the same order; labels the segments of the chapter bar. */
+  chapters: readonly { id: string; label: string }[];
+  children: ReactNode;
+};
+
+export function WaveRail({ chapters, children }: WaveRailProps) {
   const runway = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
@@ -80,11 +86,11 @@ export function WaveRail({ children }: { children: ReactNode }) {
                 />
               </mask>
             </defs>
+            <linearGradient id={`${clipId}-tint`} data-rail-tint gradientUnits="userSpaceOnUse" />
             <g
               mask={`url(#${clipId})`}
               fill="none"
-              stroke="var(--accent)"
-              strokeLinecap="round"
+              stroke={`url(#${clipId}-tint)`}
               strokeLinejoin="round"
             >
               <path data-rail-wave data-rail-band strokeOpacity="0.12" />
@@ -93,12 +99,23 @@ export function WaveRail({ children }: { children: ReactNode }) {
           </svg>
           {children}
         </div>
-        <div
+        <ol
           aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 hidden h-px bg-border in-data-[motion=rail]:block"
+          data-rail-hud
+          className="absolute inset-x-(--gutter) bottom-6 z-10 hidden gap-3 in-data-[motion=rail]:flex"
         >
-          <div data-rail-progress className="size-full origin-left bg-accent" />
-        </div>
+          {chapters.map(({ id, label }, order) => (
+            <li key={id} className="flex flex-1 flex-col gap-2 font-mono text-xs">
+              <span className="truncate">
+                {String(order + 1).padStart(2, "0")}
+                <span className="hidden md:inline">{` ${label}`}</span>
+              </span>
+              <span className="block h-0.5 bg-border">
+                <span data-rail-chapter-fill className="block size-full origin-left" />
+              </span>
+            </li>
+          ))}
+        </ol>
       </div>
     </div>
   );

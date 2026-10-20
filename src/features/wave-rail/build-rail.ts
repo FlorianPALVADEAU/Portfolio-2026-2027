@@ -30,6 +30,8 @@ const REVEAL_FROM: Record<Reveal, gsap.TweenVars> = {
   slide: { xPercent: -105 },
 };
 
+type Drawing = { total: number; end: number; height: number; pitch: number };
+
 export type RailParts = {
   runway: HTMLElement;
   stage: HTMLElement;
@@ -40,21 +42,53 @@ function pick<T extends Element>(root: ParentNode, selector: string): T[] {
   return Array.from(root.querySelectorAll<T>(selector));
 }
 
-/** Draws the wave, which is only a backdrop: a thick faint band and a fine line along its middle. */
-function drawWave(stage: HTMLElement, total: number, height: number, pitch: number) {
+type Chapter = { element: HTMLElement; left: number; width: number; tone: string };
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function readChapters(track: HTMLElement): Chapter[] {
+  const trackLeft = track.getBoundingClientRect().left;
+  return pick<HTMLElement>(track, "[data-rail-chapter]").map((element) => ({
+    element,
+    left: element.getBoundingClientRect().left - trackLeft,
+    width: element.offsetWidth,
+    tone: getComputedStyle(element).getPropertyValue("--rail-tone").trim(),
+  }));
+}
+
+/** The wave takes the colour of the chapter it crosses and shifts to the next one in between. */
+function tintWave(svg: SVGElement, chapters: readonly Chapter[], total: number) {
+  const gradient = svg.querySelector("[data-rail-tint]");
+  if (!gradient) return;
+  gradient.setAttribute("x2", String(total));
+  gradient.replaceChildren(
+    ...chapters.map(({ left, width, tone }) => {
+      const stop = document.createElementNS(SVG_NS, "stop");
+      stop.setAttribute("offset", String((left + width / 2) / total));
+      stop.setAttribute("stop-color", tone);
+      return stop;
+    }),
+  );
+}
+
+/**
+ * Draws the wave, which is only a backdrop: a thick faint band and a fine line along its middle.
+ * It runs up to `end`, so that the last screen is free of it.
+ */
+function drawWave(stage: HTMLElement, { total, end, height, pitch }: Drawing) {
   const svg = stage.querySelector("svg");
   if (!svg) return;
   svg.setAttribute("viewBox", `0 0 ${total} ${height}`);
 
   const points = randomWavePoints({
     seed: WAVE_SEED,
-    width: total,
+    width: end,
     amplitude: height * AMPLITUDE_SHARE,
     spacing: [SPACING[0] * pitch, SPACING[1] * pitch],
   });
   const path = wavePath(createWave(points), {
     from: 0,
-    to: total,
+    to: end,
     step: SAMPLE_PX,
     baseline: height / 2,
   });
@@ -88,7 +122,11 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
   }
 
   runway.style.height = `${travel + height}px`;
-  drawWave(stage, total, height, pitch);
+  // The wave, band included, stops before the last screen begins, which is left to the last slide.
+  drawWave(stage, { total, end: travel - height * BAND_SHARE, height, pitch });
+  const chapters = readChapters(track);
+  const svg = stage.querySelector("svg");
+  if (svg) tintWave(svg, chapters, total);
   const trackLeft = track.getBoundingClientRect().left;
 
   const context = gsap.context(() => {
@@ -120,7 +158,6 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
 
     // Every position and duration below is in pixels of scrolling.
     timeline.to(track, { x: -travel, duration: travel }, 0);
-    timeline.fromTo("[data-rail-progress]", { scaleX: 0 }, { scaleX: 1, duration: travel }, 0);
     timeline.to("[data-rail-hint]", { autoAlpha: 0, duration: Math.min(260, travel) }, 0);
     const edge = { from: viewport * EDGE_SHARE, to: total - viewport * (1 - EDGE_SHARE) };
     timeline.fromTo(
@@ -140,6 +177,22 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
       const reach = Number(layer.dataset.railParallax) * viewport;
       timeline.fromTo(layer, { x: reach }, { x: -reach, duration: travel }, 0);
     }
+
+    timeline.to(
+      "[data-rail-hud]",
+      { autoAlpha: 0, duration: Math.min(viewport * 0.4, travel) },
+      Math.max(0, travel - viewport * 0.7),
+    );
+    // A chapter fills its segment of the bar while its slide crosses the middle of the screen.
+    const fills = pick<HTMLElement>(stage, "[data-rail-chapter-fill]");
+    chapters.forEach(({ left, width, tone }, order) => {
+      const fill = fills[order];
+      if (!fill) return;
+      fill.style.backgroundColor = tone;
+      const from = Math.max(0, left - viewport / 2);
+      const to = Math.min(travel, left + width - viewport / 2);
+      timeline.fromTo(fill, { scaleX: 0 }, { scaleX: 1, duration: Math.max(1, to - from) }, from);
+    });
 
     // Each label comes in as it crosses the drawing edge, in the way its place in the rhythm asks.
     const entrance = Math.min(220, travel * 0.06);

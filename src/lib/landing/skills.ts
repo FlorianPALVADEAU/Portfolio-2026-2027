@@ -1,7 +1,11 @@
-/** Skill groups in display order. `items: null` means the labels are prose and live in messages. */
+/**
+ * Skill groups in display order. `items: null` means the labels are prose and live in messages.
+ * `hue` is the colour of the group in the pinned rail, in degrees of the OKLCH wheel.
+ */
 export const skillGroups = [
   {
     id: "engineering",
+    hue: 255,
     items: [
       "TypeScript",
       "React",
@@ -15,9 +19,9 @@ export const skillGroups = [
       "Supabase",
     ],
   },
-  { id: "infrastructure", items: ["AWS", "Kubernetes", "GitHub Actions", "CI/CD"] },
-  { id: "delivery", items: null },
-  { id: "collaboration", items: null },
+  { id: "infrastructure", hue: 175, items: ["AWS", "Kubernetes", "GitHub Actions", "CI/CD"] },
+  { id: "delivery", hue: 55, items: null },
+  { id: "collaboration", hue: 335, items: null },
 ] as const;
 
 /** Only credentials confirmed by the owner. `score: null` when none is published. */
