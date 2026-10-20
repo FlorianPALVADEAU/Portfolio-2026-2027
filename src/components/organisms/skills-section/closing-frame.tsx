@@ -32,7 +32,10 @@ export function ClosingFrame({ messages, photo }: ClosingFrameProps) {
           <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-black/10" />
         </div>
         <div className="absolute inset-0 flex flex-col justify-end gap-4 p-6 text-white md:p-12 in-data-[motion=rail]:inset-x-[7%] in-data-[motion=rail]:inset-y-[9%]">
-          <Text data-frame-finale-text className="font-mono text-sm tracking-widest uppercase">
+          <Text
+            data-frame-finale-text
+            className="font-mono text-sm tracking-widest text-white uppercase"
+          >
             {messages.eyebrow}
           </Text>
           <h3
@@ -42,7 +45,7 @@ export function ClosingFrame({ messages, photo }: ClosingFrameProps) {
           >
             {photo.caption}
           </h3>
-          <Text data-frame-finale-text className="max-w-[40ch] text-lg md:text-xl">
+          <Text data-frame-finale-text className="max-w-[40ch] text-lg text-white md:text-xl">
             {messages.statement}
           </Text>
         </div>

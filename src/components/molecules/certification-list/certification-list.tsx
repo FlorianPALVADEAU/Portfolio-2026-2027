@@ -26,7 +26,7 @@ const STAGGER_SECONDS = 0.15;
 /**
  * One plate per credential, hung at slightly different heights: the badge large on a glow with
  * the date as an outlined figure right behind it, and the name beneath. The identifier and the
- * verification link show on hover or focus with a mouse, and always on a touch screen, where the
+ * verification link fade in on hover or focus with a mouse, in room kept for them so the plate never grows, and always on a touch screen, where the
  * plate lies flat as a row.
  */
 export function CertificationList({ items, labels }: CertificationListProps) {
@@ -61,7 +61,7 @@ export function CertificationList({ items, labels }: CertificationListProps) {
                 <p className="text-sm text-muted-foreground">
                   {[item.issuer, item.issued, item.score].filter(Boolean).join(" · ")}
                 </p>
-                <div className="grid transition-[grid-template-rows,opacity] duration-(--duration-base) pointer-fine:grid-rows-[0fr] pointer-fine:opacity-0 pointer-fine:group-focus-within/plate:grid-rows-[1fr] pointer-fine:group-focus-within/plate:opacity-100 pointer-fine:group-hover/plate:grid-rows-[1fr] pointer-fine:group-hover/plate:opacity-100">
+                <div className="transition-opacity duration-(--duration-base) pointer-fine:opacity-0 pointer-fine:group-focus-within/plate:opacity-100 pointer-fine:group-hover/plate:opacity-100">
                   <div className="flex flex-col gap-2 overflow-hidden">
                     <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-2 text-sm md:mt-3 md:gap-2 md:pt-3">
                       {item.credentialId && (

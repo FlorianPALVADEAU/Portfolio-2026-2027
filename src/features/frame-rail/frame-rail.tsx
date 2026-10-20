@@ -71,7 +71,7 @@ export function FrameRail({ frames, children }: FrameRailProps) {
         >
           {frames.map(({ id, label }, order) => (
             <li key={id} className="flex flex-1 flex-col gap-2 font-mono text-xs">
-              <span className="truncate max-md:hidden">
+              <span className="truncate max-lg:hidden">
                 {String(order + 1).padStart(2, "0")}
                 <span className="hidden md:inline">{` ${label}`}</span>
               </span>

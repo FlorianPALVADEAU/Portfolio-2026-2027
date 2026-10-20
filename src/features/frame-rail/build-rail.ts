@@ -14,6 +14,8 @@ const HOLD_RATIO = 0.6;
 
 /** Share of the screen height scrolled while a closing photo shrinks and its texts appear. */
 const FINALE_RATIO = 1.2;
+/** Below this width the rail snaps to each frame: a thumb cannot land one precisely. */
+const SNAP_BELOW = "(max-width: 999px)";
 
 export type RailParts = {
   runway: HTMLElement;
@@ -170,6 +172,14 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
     setCounters(frame, () => "0");
   }
 
+  // Progress of the timeline at each resting place: either end, every frame, the finished finale.
+  const snapPoints = [
+    0,
+    ...frames.map((_, order) => (hold + order * viewport) / total),
+    ...(finale > 0 ? [(hold + travel + finale) / total] : []),
+    1,
+  ];
+
   const context = gsap.context(() => {
     const reveal = (frame: HTMLElement | undefined) => {
       if (!frame || frame.dataset.reveal === "on") return;
@@ -194,6 +204,15 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
         start: "top top",
         end: "bottom bottom",
         scrub: 0.6,
+        ...(window.matchMedia(SNAP_BELOW).matches && {
+          snap: {
+            snapTo: snapPoints,
+            inertia: false,
+            duration: { min: 0.25, max: 0.7 },
+            delay: 0.05,
+            ease: "power2.inOut",
+          },
+        }),
         onUpdate: (self) => {
           const position = gsap.utils.clamp(0, travel, self.progress * total - hold);
           reveal(frames[Math.round(position / viewport)]);
