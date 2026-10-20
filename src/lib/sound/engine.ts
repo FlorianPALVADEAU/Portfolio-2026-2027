@@ -1,4 +1,7 @@
-export type UiSound = "hover" | "item" | "click" | "pop" | "open" | "close";
+export type UiSound = "hover" | "item" | "click" | "pop" | "open" | "close" | "focus";
+
+/** Sounds made of tuned notes; `focus` plays recordings instead. */
+type ToneSound = Exclude<UiSound, "focus">;
 
 type Note = {
   frequency: number;
@@ -20,7 +23,7 @@ const E5 = 659.25;
 const G5 = 783.99;
 
 /** Each sound owns one or more variants; repeated triggers rotate so it is never the same twice in a row. */
-const sounds: Record<UiSound, readonly (readonly Note[])[]> = {
+const sounds: Record<ToneSound, readonly (readonly Note[])[]> = {
   hover: [
     [{ frequency: G4, at: 0, duration: 0.16, volume: 0.014 }],
     [{ frequency: A4, at: 0, duration: 0.16, volume: 0.014 }],
@@ -71,7 +74,7 @@ const UI_VOLUME = 1.35;
 type Graph = { context: AudioContext; input: GainNode };
 
 let graph: Graph | null = null;
-const lastVariant = new Map<UiSound, number>();
+const lastVariant = new Map<ToneSound, number>();
 
 /** A decaying noise burst is a cheap, asset-free room reverb. */
 function createImpulse(context: AudioContext): AudioBuffer {
@@ -99,7 +102,7 @@ function createGraph(): Graph {
   return { context, input };
 }
 
-function pickVariant(sound: UiSound): readonly Note[] {
+function pickVariant(sound: ToneSound): readonly Note[] {
   const variants = sounds[sound];
   const previous = lastVariant.get(sound);
   let index = Math.floor(Math.random() * variants.length);
@@ -129,7 +132,119 @@ function playNote({ context, input }: Graph, note: Note, origin: number): void {
   }
 }
 
-/** Tones are synthesized, so there is no audio asset to download. */
+type Recording = {
+  url: string;
+  /** Evens the files out: their peaks sit between 0 dB and -6 dB, and the UI sounds are much quieter. */
+  volume: number;
+};
+
+type Placement = {
+  recording: Recording;
+  /** Seconds after the hover starts at which the file starts playing. */
+  at: number;
+};
+
+/** Playback speed of the recordings; it matches the pace of the focus pull on screen. */
+const FOCUS_RATE = 1.4;
+/**
+ * Every recording is cut to this many seconds, whatever its length, so that all variants feel the
+ * same: the click and a hint of its tail, with the long mechanism whirr dropped.
+ */
+const FOCUS_CLIP_SECONDS = 0.2;
+const FOCUS_CLIP_FADE_SECONDS = 0.07;
+/** Seconds to fade out a focus sound that a newer hover cuts short. */
+const FOCUS_CUT_SECONDS = 0.04;
+
+const MECHANISM: Recording = { url: "/sfx/projects/classic-camera-click-1440.wav", volume: 0.07 };
+const SHUTTER: Recording = { url: "/sfx/projects/vintage-camera-shutter-1438.wav", volume: 0.08 };
+const SOFT_CLICK: Recording = { url: "/sfx/projects/camera-shutter-click-1133.wav", volume: 0.08 };
+
+// Each file clicks a little after its start (0.15 s, 0.1 s and 0.15 s, before the speed up), so
+// `at` is early enough that the clicks land on the two dips of the shutter in the picture, about
+// 0.21 s and 0.56 s into the pull. Hovers rotate between these so it is never the same twice.
+const FOCUS_VARIANTS: readonly (readonly Placement[])[] = [
+  [
+    { recording: MECHANISM, at: 0.1 },
+    { recording: SHUTTER, at: 0.49 },
+  ],
+  [
+    { recording: SHUTTER, at: 0.14 },
+    { recording: SOFT_CLICK, at: 0.45 },
+  ],
+  [
+    { recording: SOFT_CLICK, at: 0.1 },
+    { recording: MECHANISM, at: 0.45 },
+  ],
+];
+
+let lastFocusVariant = -1;
+
+function pickFocusVariant(): readonly Placement[] {
+  let index = Math.floor(Math.random() * FOCUS_VARIANTS.length);
+  if (index === lastFocusVariant) index = (index + 1) % FOCUS_VARIANTS.length;
+  lastFocusVariant = index;
+  return FOCUS_VARIANTS[index] ?? [];
+}
+
+const samples = new Map<string, Promise<AudioBuffer | null>>();
+
+function loadSample(context: AudioContext, url: string): Promise<AudioBuffer | null> {
+  let sample = samples.get(url);
+  if (!sample) {
+    sample = fetch(url)
+      .then((response) => response.arrayBuffer())
+      .then((bytes) => context.decodeAudioData(bytes))
+      .catch(() => null);
+    samples.set(url, sample);
+  }
+  return sample;
+}
+
+/**
+ * Warms the HTTP cache with the focus recordings so that the first hover is not heard late. It does
+ * not open an audio context, which browsers refuse to start before a user gesture.
+ */
+export function preloadFocusSounds(): void {
+  for (const { url } of [MECHANISM, SHUTTER, SOFT_CLICK]) void fetch(url).catch(() => undefined);
+}
+
+let focusVoice: GainNode | null = null;
+
+/** One focus sound at a time: sweeping over projects fades the previous one instead of stacking. */
+async function playFocus({ context, input }: Graph): Promise<void> {
+  const placements = pickFocusVariant();
+  const buffers = await Promise.all(
+    placements.map(({ recording }) => loadSample(context, recording.url)),
+  );
+  const origin = context.currentTime;
+  if (focusVoice) {
+    focusVoice.gain.cancelScheduledValues(origin);
+    focusVoice.gain.setValueAtTime(focusVoice.gain.value, origin);
+    focusVoice.gain.linearRampToValueAtTime(0, origin + FOCUS_CUT_SECONDS);
+  }
+  const voice = context.createGain();
+  voice.connect(input);
+  focusVoice = voice;
+
+  placements.forEach(({ recording, at }, index) => {
+    const buffer = buffers[index];
+    if (!buffer) return;
+    const source = context.createBufferSource();
+    const gain = context.createGain();
+    source.buffer = buffer;
+    source.playbackRate.value = FOCUS_RATE;
+    const start = origin + at;
+    const end = start + FOCUS_CLIP_SECONDS;
+    gain.gain.setValueAtTime(recording.volume, start);
+    gain.gain.setValueAtTime(recording.volume, end - FOCUS_CLIP_FADE_SECONDS);
+    gain.gain.linearRampToValueAtTime(0, end);
+    source.connect(gain).connect(voice);
+    source.start(start);
+    source.stop(end);
+  });
+}
+
+/** Interaction tones are synthesized; only the focus sound plays recordings. */
 export function playUiSound(sound: UiSound): void {
   // Browsers only allow audio after a user gesture; never try before one.
   if (!navigator.userActivation?.hasBeenActive) return;
@@ -137,5 +252,9 @@ export function playUiSound(sound: UiSound): void {
   if (graph.context.state === "suspended") void graph.context.resume();
 
   const origin = graph.context.currentTime;
+  if (sound === "focus") {
+    void playFocus(graph);
+    return;
+  }
   for (const note of pickVariant(sound)) playNote(graph, note, origin);
 }

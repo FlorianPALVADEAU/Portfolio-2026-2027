@@ -1,4 +1,4 @@
-export { playIfEnabled } from "./play";
+export { playIfEnabled, preloadFocusIfEnabled } from "./play";
 export {
   getServerSoundEnabled,
   getSoundEnabled,

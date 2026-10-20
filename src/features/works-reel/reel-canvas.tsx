@@ -17,6 +17,16 @@ const WIDE_SCREEN = 1024;
 const CULL_MARGIN = 240;
 const RADIUS = 24;
 const HOVER_ZOOM = 0.05;
+/** Largest slide of the picture, as a share of its size, at full shake. */
+const SHAKE_X = 0.01;
+const SHAKE_Y = 0.003;
+
+/** Unsteady-hand offset: two out-of-phase waves per axis, never beyond the shake limits. */
+function handShake(seconds: number, strength: number): [number, number] {
+  const x = 0.6 * Math.sin(seconds * 12.7) + 0.4 * Math.sin(seconds * 22 + 1.3);
+  const y = 0.6 * Math.sin(seconds * 10.2 + 0.6) + 0.4 * Math.sin(seconds * 19.5 + 2.1);
+  return [x * SHAKE_X * strength, y * SHAKE_Y * strength];
+}
 
 type Bend = { current: number };
 
@@ -57,6 +67,10 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
       uRadius: { value: RADIUS },
       uDepth: { value: 0 },
       uHalfHeight: { value: 1 },
+      uBlur: { value: 0 },
+      uFocus: { value: 0.5 },
+      uShutter: { value: 0 },
+      uShake: { value: [0, 0] as [number, number] },
     };
     return {
       geometry: new PlaneGeometry(1, 1, 24, 24),
@@ -115,7 +129,7 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
     plane.visible = visible;
     if (!(visible && texture)) return;
 
-    const { tilt, grow, zoom, hover } = cover.state;
+    const { tilt, grow, zoom, hover, blur, focus, shutter, shake } = cover.state;
     const width = box.width * grow;
     const height = box.height * grow;
     const pixels = texture.image as HTMLCanvasElement;
@@ -131,7 +145,13 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
     uniforms.uMap.value = texture;
     uniforms.uRatio.value = coverRatio(pixels.width / pixels.height, width / height);
     uniforms.uSize.value = [width, height];
-    uniforms.uZoom.value = zoom * (1 + HOVER_ZOOM * hover);
+    // Zooming in by exactly the room the shake needs keeps the picture inside its frame.
+    const reach = Math.max(SHAKE_X, SHAKE_Y) * shake;
+    uniforms.uZoom.value = (zoom * (1 + HOVER_ZOOM * hover)) / (1 - 2 * reach);
+    uniforms.uShake.value = handShake(performance.now() / 1000, shake);
+    uniforms.uBlur.value = blur;
+    uniforms.uFocus.value = focus;
+    uniforms.uShutter.value = shutter;
     uniforms.uDepth.value = depth * bend.current;
     uniforms.uHalfHeight.value = size.height / 2;
   });

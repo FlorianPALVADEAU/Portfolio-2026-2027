@@ -6,3 +6,9 @@ export function playIfEnabled(sound: UiSound): void {
   if (!getSoundEnabled()) return;
   void import("./engine").then((engine) => engine.playUiSound(sound));
 }
+
+/** Warms the focus recordings up for visitors who opted in to sound; muted visitors download nothing. */
+export function preloadFocusIfEnabled(): void {
+  if (!getSoundEnabled()) return;
+  void import("./engine").then((engine) => engine.preloadFocusSounds());
+}
