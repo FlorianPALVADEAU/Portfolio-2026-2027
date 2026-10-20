@@ -12,11 +12,14 @@ describe("SkillsSection", () => {
     }
     const certifications = screen.getByRole("region", { name: "Certifications" });
     const entries = within(certifications).getAllByRole("listitem");
-    expect(entries.map((entry) => entry.textContent)).toEqual([
-      "CNCF · 202692%CKAD",
-      "Scrum.org · 2025PSM I",
-      "AWS · 2025AWS Developer Associate",
+    expect(entries).toHaveLength(3);
+    const checks = within(certifications).getAllByRole("link");
+    expect(checks.map((link) => link.getAttribute("href"))).toEqual([
+      "https://training.linuxfoundation.org/certification/verify/",
+      "https://www.scrum.org/user/1559892",
+      "https://aws.amazon.com/verification",
     ]);
+    expect(within(certifications).getByText("LF-gm9o7dmr8j")).toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Skills" })).toHaveAttribute("id", "skills");
   });
 });

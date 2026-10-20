@@ -7,7 +7,7 @@ import type { GroupFrameProps } from "./frame-props";
 /** Frame 5: the credentials, as one card each under the title. */
 export function CertificationsFrame({ order, total, messages }: GroupFrameProps) {
   return (
-    <Frame aria-labelledby="skills-certifications" className="gap-8 md:gap-14">
+    <Frame numeral="05" aria-labelledby="skills-certifications" className="gap-5 md:gap-14">
       <FrameIntro
         order={order}
         total={total}
@@ -15,7 +15,10 @@ export function CertificationsFrame({ order, total, messages }: GroupFrameProps)
         title={messages.certifications}
         lead={messages.certificationsLead}
       />
-      <CertificationList items={certifications} />
+      <CertificationList
+        items={certifications}
+        labels={{ verify: messages.verify, credentialId: messages.credentialId }}
+      />
     </Frame>
   );
 }

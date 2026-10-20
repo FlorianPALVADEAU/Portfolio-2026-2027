@@ -42,9 +42,46 @@ function countUp(frame: HTMLElement) {
 }
 
 /**
+ * A layer drifts while its own frame crosses the screen: from +reach as the frame enters, to
+ * -reach as it leaves, and rests where it was laid out when the frame is centred. A negative
+ * reach drifts the other way, so layers at different depths slide against each other.
+ */
+function addParallax(timeline: gsap.core.Timeline, frames: HTMLElement[], viewport: number) {
+  frames.forEach((frame, order) => {
+    const enters = order > 0;
+    const leaves = order < frames.length - 1;
+    const from = enters ? (order - 1) * viewport : 0;
+    const to = leaves ? (order + 1) * viewport : order * viewport;
+    for (const layer of pick<HTMLElement>(frame, "[data-frame-parallax]")) {
+      const reach = Number(layer.dataset.frameParallax) * viewport;
+      timeline.fromTo(
+        layer,
+        { x: enters ? reach : 0 },
+        { x: leaves ? -reach : 0, duration: to - from },
+        from,
+      );
+    }
+  });
+}
+
+/** A frame fills its segment of the bar from the moment it is half way in until it is half way out. */
+function addProgressFills(
+  timeline: gsap.core.Timeline,
+  stage: HTMLElement,
+  viewport: number,
+  travel: number,
+) {
+  pick<HTMLElement>(stage, "[data-frame-fill]").forEach((fill, order) => {
+    const from = Math.max(0, (order - 0.5) * viewport);
+    const to = Math.min(travel, (order + 0.5) * viewport);
+    timeline.fromTo(fill, { scaleX: 0 }, { scaleX: 1, duration: Math.max(1, to - from) }, from);
+  });
+}
+
+/**
  * Turns the stage into a pinned horizontal rail and returns a function that undoes it. The runway
  * is as tall as the scrolling asked for, the stage sticks to the top of it, and one scrubbed
- * timeline slides the track from frame to frame, settling on a frame whenever scrolling stops.
+ * timeline slides the track from frame to frame.
  * The content of a frame is revealed the first time the frame reaches the middle of the screen.
  */
 export function buildRail({ runway, stage, track }: RailParts): () => void {
@@ -85,16 +122,7 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
         trigger: runway,
         start: "top top",
         end: "bottom bottom",
-        scrub: 0.8,
-        // The delay lets the smooth scroll finish gliding before the rail settles, so the two never
-        // pull in different directions; the snap then follows the direction of the last gesture.
-        snap: {
-          snapTo: 1 / (frames.length - 1),
-          duration: { min: 0.5, max: 1.1 },
-          delay: 0.2,
-          ease: "power3.inOut",
-          directional: true,
-        },
+        scrub: 0.6,
         onUpdate: (self) => {
           reveal(frames[Math.round(self.progress * (frames.length - 1))]);
           const target = clampSkew(-self.getVelocity() / VELOCITY_PER_DEG);
@@ -115,17 +143,8 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
     // Every position and duration below is in pixels of travel.
     timeline.to(track, { x: -travel, duration: travel }, 0);
 
-    for (const layer of pick<HTMLElement>(track, "[data-frame-parallax]")) {
-      const reach = Number(layer.dataset.frameParallax) * viewport;
-      timeline.fromTo(layer, { x: reach }, { x: -reach, duration: travel }, 0);
-    }
-
-    // A frame fills its segment of the bar from the moment it is half way in until it is half way out.
-    pick<HTMLElement>(stage, "[data-frame-fill]").forEach((fill, order) => {
-      const from = Math.max(0, (order - 0.5) * viewport);
-      const to = Math.min(travel, (order + 0.5) * viewport);
-      timeline.fromTo(fill, { scaleX: 0 }, { scaleX: 1, duration: Math.max(1, to - from) }, from);
-    });
+    addParallax(timeline, frames, viewport);
+    addProgressFills(timeline, stage, viewport, travel);
 
     // Without this the timeline ends with its last tween, and the scroll distance would shrink.
     timeline.set({}, {}, travel);

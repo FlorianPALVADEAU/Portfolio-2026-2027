@@ -7,11 +7,16 @@ import { experiences, skillIcon, skillStats, timelineYears } from "@/lib/landing
 import { FrameIntro } from "./frame-intro";
 import type { GroupFrameProps } from "./frame-props";
 
-/** Frame 1: a photo on the left, and on the right where each technology was put to work. */
+/**
+ * Frame 1: a photo on the left, and on the right where each technology was put to work. The photo
+ * drifts inside its mask while the counter card slides the other way, so the two sit at
+ * different depths.
+ */
 export function EngineeringFrame({ order, total, messages }: GroupFrameProps) {
-  const entries = experiences.map(({ id, name, from, to, stack }) => ({
+  const entries = experiences.map(({ id, name, href, from, to, stack }) => ({
     id,
     name,
+    href,
     role: messages.experiences[id],
     from,
     to: to ?? timelineYears.end,
@@ -20,6 +25,7 @@ export function EngineeringFrame({ order, total, messages }: GroupFrameProps) {
 
   return (
     <Frame
+      numeral="01"
       aria-labelledby="skills-engineering"
       className="gap-8 md:grid md:grid-cols-12 md:items-center md:gap-12"
     >
@@ -31,23 +37,26 @@ export function EngineeringFrame({ order, total, messages }: GroupFrameProps) {
           title={messages.groups.engineering.title}
           lead={messages.groups.engineering.lead}
         />
-        <Pop from="scale" delay={0.3} className="relative hidden md:block">
-          <div className="relative overflow-hidden rounded-3xl">
-            <div data-frame-parallax="0.04" className="scale-125">
+        <div className="relative hidden md:block">
+          <Pop from="wipe" delay={0.3} className="relative aspect-4/3 overflow-hidden rounded-3xl">
+            <div data-frame-parallax="0.09" className="absolute inset-y-0 -inset-x-[14%]">
               <Image
                 src="/skills/engineering.jpg"
                 alt=""
-                width={1400}
-                height={932}
-                sizes="40vw"
-                className="aspect-4/3 w-full object-cover"
+                fill
+                sizes="45vw"
+                className="object-cover"
               />
             </div>
+          </Pop>
+          <div data-frame-parallax="-0.1" className="absolute -right-6 -bottom-6">
+            <Pop from="pop" delay={0.9}>
+              <div className="rounded-2xl border border-border bg-surface p-5 shadow-lg transition-[translate] duration-(--duration-base) hover:-translate-y-1">
+                <StatFigure value={skillStats.features} label={messages.stats.features} />
+              </div>
+            </Pop>
           </div>
-          <div className="absolute -right-4 -bottom-6 rounded-2xl border border-border bg-surface p-5 shadow-lg transition-[translate] duration-(--duration-base) hover:-translate-y-1">
-            <StatFigure value={skillStats.features} label={messages.stats.features} />
-          </div>
-        </Pop>
+        </div>
       </div>
       <div className="md:col-span-7">
         <ExperienceTimeline

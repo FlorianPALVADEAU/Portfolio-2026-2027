@@ -18,6 +18,7 @@ export function CollaborationFrame({ order, total, messages }: GroupFrameProps) 
 
   return (
     <Frame
+      numeral="04"
       aria-labelledby="skills-collaboration"
       className="gap-4 md:grid md:grid-cols-4 md:content-center md:gap-5"
     >
@@ -30,11 +31,11 @@ export function CollaborationFrame({ order, total, messages }: GroupFrameProps) 
         className="mb-4 md:col-span-2 md:mb-0 md:pr-8"
       />
       <Pop
-        from="scale"
+        from="wipe"
         delay={0.2}
         className="group/photo relative hidden overflow-hidden rounded-3xl md:col-span-2 md:row-span-3 md:block"
       >
-        <div data-frame-parallax="0.04" className="absolute -inset-x-[12%] inset-y-0">
+        <div data-frame-parallax="0.1" className="absolute inset-y-0 -inset-x-[16%]">
           <Image
             src="/skills/team.jpg"
             alt=""
@@ -65,13 +66,15 @@ export function CollaborationFrame({ order, total, messages }: GroupFrameProps) 
       <Pop delay={0.45} className="md:col-span-2">
         <div className={`${tile} flex items-center gap-6 p-4`}>
           <div className="group/city relative aspect-3/2 w-1/3 shrink-0 overflow-hidden rounded-2xl">
-            <Image
-              src="/skills/city.jpg"
-              alt=""
-              fill
-              sizes="20vw"
-              className="object-cover transition-transform duration-1000 ease-out group-hover/city:scale-110"
-            />
+            <div data-frame-parallax="0.05" className="absolute inset-y-0 -inset-x-[20%]">
+              <Image
+                src="/skills/city.jpg"
+                alt=""
+                fill
+                sizes="20vw"
+                className="object-cover transition-transform duration-1000 ease-out group-hover/city:scale-110"
+              />
+            </div>
           </div>
           <StatFigure value={skillStats.countries} label={messages.stats.countries} />
         </div>

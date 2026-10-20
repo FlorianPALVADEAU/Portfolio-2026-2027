@@ -107,7 +107,9 @@
         "countries": "Länder, die die Anwendungen abdecken",
         "englishCountries": "Länder im Team, Zusammenarbeit auf Englisch"
       },
-      "certificationsLead": "Unabhängige Bestätigung meiner Cloud-, Kubernetes- und Scrum-Kenntnisse."
+      "certificationsLead": "Unabhängige Bestätigung meiner Cloud-, Kubernetes- und Scrum-Kenntnisse.",
+      "verify": "Prüfen",
+      "credentialId": "Zertifikats-ID"
     },
     "about": {
       "hook": "Tagsüber Softwareingenieur, nebenbei Rennveranstalter.",

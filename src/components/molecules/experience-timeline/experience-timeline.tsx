@@ -1,3 +1,6 @@
+import { ArrowUpRight } from "lucide-react";
+import { Icon } from "@/components/atoms/icon";
+import { Link } from "@/components/atoms/link";
 import { Pop } from "@/components/atoms/pop";
 import { Text } from "@/components/atoms/text";
 import { SkillChip } from "@/components/molecules/skill-chip";
@@ -6,6 +9,8 @@ import type { SkillIcon } from "@/lib/landing";
 type TimelineEntry = {
   id: string;
   name: string;
+  /** Website of the company or project. */
+  href: string;
   role: string;
   /** Fractional years, such as 2023.7. */
   from: number;
@@ -49,7 +54,18 @@ export function ExperienceTimeline({ entries, startYear, endYear }: ExperienceTi
             <Pop delay={0.2 + order * STAGGER_SECONDS}>
               <div className="group/lane flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4 transition-[border-color,box-shadow] duration-(--duration-base) hover:border-accent hover:shadow-lg md:p-5 max-md:p-3">
                 <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-                  <p className="text-lg font-semibold">{entry.name}</p>
+                  <Link
+                    href={entry.href}
+                    external
+                    className="group/link inline-flex items-center gap-1.5 text-lg font-semibold no-underline"
+                  >
+                    {entry.name}
+                    <Icon
+                      icon={ArrowUpRight}
+                      size="sm"
+                      className="transition-transform duration-(--duration-base) group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+                    />
+                  </Link>
                   <Text as="span" size="sm" tone="muted">
                     {entry.role}
                   </Text>

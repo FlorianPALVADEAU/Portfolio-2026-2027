@@ -6,6 +6,7 @@ export const experiences = [
   {
     id: "neurones",
     name: "Neurones IT",
+    href: "https://www.neurones.net",
     from: 2022.35,
     to: 2023.65,
     stack: ["Django", "Vue.js"],
@@ -13,6 +14,7 @@ export const experiences = [
   {
     id: "jcdecaux",
     name: "JCDecaux",
+    href: "https://www.jcdecaux.com",
     from: 2023.7,
     to: null,
     stack: ["TypeScript", "React", "NestJS", "PostgreSQL", "Redis", "BullMQ"],
@@ -20,6 +22,7 @@ export const experiences = [
   {
     id: "overbound",
     name: "Overbound Race",
+    href: "https://www.overbound-race.com",
     from: 2025.6,
     to: null,
     stack: ["Next.js", "Supabase"],

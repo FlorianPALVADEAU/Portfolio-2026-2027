@@ -102,7 +102,9 @@
         "countries": "pays couverts par les applications",
         "englishCountries": "pays dans l'équipe, collaboration en anglais"
       },
-      "certificationsLead": "Des validations indépendantes de mes compétences cloud, Kubernetes et Scrum."
+      "certificationsLead": "Des validations indépendantes de mes compétences cloud, Kubernetes et Scrum.",
+      "verify": "Vérifier",
+      "credentialId": "Identifiant"
     },
     "about": {
       "hook": "Ingénieur logiciel le jour, organisateur de course à côté.",

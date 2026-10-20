@@ -9,6 +9,7 @@ import type { GroupFrameProps } from "./frame-props";
 export function DeliveryFrame({ order, total, messages }: GroupFrameProps) {
   return (
     <Frame
+      numeral="03"
       aria-labelledby="skills-delivery"
       className="gap-8 md:grid md:grid-cols-12 md:items-center md:gap-12"
     >
