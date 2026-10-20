@@ -17,7 +17,7 @@ const SEQUENCE_PX = { small: 3000, large: 5000 };
 /** Pixels of scrolling, after the sequence, that reveal the copy. */
 const REVEAL_PX = 700;
 /** Pixels of scrolling, once the copy is shown, that keep it alone on screen before the next section. */
-const HOLD_PX = 900;
+const HOLD_PX = 1400;
 /** Pixels over which the picture darkens, so that the copy can be read over the last frames. */
 const DARKEN_PX = 1400;
 const DARKEN_FROM = 0.3;

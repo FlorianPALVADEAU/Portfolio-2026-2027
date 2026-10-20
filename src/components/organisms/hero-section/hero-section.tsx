@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/atoms/button";
 import { Heading } from "@/components/atoms/heading";
+import { RotatingText } from "@/features/rotating-text";
 import { ScrollSequence } from "@/features/scroll-sequence";
 import type { Messages } from "@/lib/i18n";
 import { genevaAscent, heroPhotoSlots } from "@/lib/landing";
@@ -67,9 +68,11 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
           <p className="font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
             Florian Palvadeau
           </p>
-          <p className="max-w-4xl text-display font-semibold tracking-tight text-balance">
-            {messages.opening}
-          </p>
+          <RotatingText
+            base={messages.opening.base}
+            phrases={messages.opening.phrases}
+            className="max-w-5xl text-[clamp(2.5rem,1rem+6vw,7rem)] leading-[0.95] font-semibold tracking-tight text-balance"
+          />
         </div>
         <div
           aria-hidden="true"
