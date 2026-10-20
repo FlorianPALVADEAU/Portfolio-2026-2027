@@ -37,6 +37,7 @@ test.describe("skills rail", () => {
       "Delivery",
       "Collaboration",
       "Certifications",
+      "Between Lavaux and Lake Geneva",
     ]) {
       await expect(skills.getByRole("heading", { name })).toBeVisible();
     }

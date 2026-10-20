@@ -5,7 +5,14 @@ import { SkillsSection } from "./skills-section";
 
 describe("SkillsSection", () => {
   it("lists every group and only the confirmed certifications", () => {
-    render(<SkillsSection index={3} title="Skills" messages={en.home.skills} />);
+    render(
+      <SkillsSection
+        index={3}
+        title="Skills"
+        messages={en.home.skills}
+        photo={en.home.photos.closing}
+      />,
+    );
 
     for (const name of ["Engineering", "Infrastructure", "Delivery", "Collaboration"]) {
       expect(screen.getByRole("heading", { name })).toBeInTheDocument();

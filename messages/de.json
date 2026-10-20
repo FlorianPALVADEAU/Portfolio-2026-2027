@@ -115,6 +115,10 @@
         "englishCountries": "Länder im Team, Zusammenarbeit auf Englisch"
       },
       "certificationsLead": "Unabhängige Bestätigung meiner Cloud-, Kubernetes- und Scrum-Kenntnisse.",
+      "closing": {
+        "eyebrow": "Und danach?",
+        "statement": "Ich suche eine Stelle als Full-Stack-Entwickler in der Schweiz."
+      },
       "verify": "Prüfen",
       "credentialId": "Zertifikats-ID",
       "pipelineNotes": {

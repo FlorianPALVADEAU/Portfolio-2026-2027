@@ -110,6 +110,10 @@
         "englishCountries": "pays dans l'équipe, collaboration en anglais"
       },
       "certificationsLead": "Des validations indépendantes de mes compétences cloud, Kubernetes et Scrum.",
+      "closing": {
+        "eyebrow": "Et ensuite ?",
+        "statement": "Je cherche un poste d'ingénieur full-stack en Suisse."
+      },
       "verify": "Vérifier",
       "credentialId": "Identifiant",
       "pipelineNotes": {

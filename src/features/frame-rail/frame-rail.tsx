@@ -66,6 +66,7 @@ export function FrameRail({ frames, children }: FrameRailProps) {
         </div>
         <ol
           aria-hidden="true"
+          data-rail-hud
           className="absolute inset-x-(--gutter) bottom-6 z-10 hidden gap-3 in-data-[motion=rail]:flex"
         >
           {frames.map(({ id, label }, order) => (

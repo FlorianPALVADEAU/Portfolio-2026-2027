@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { ReactNode } from "react";
 import { Link } from "@/components/atoms/link";
 import { LandingSection } from "@/components/organisms/landing-section";
@@ -8,12 +7,11 @@ import { profiles } from "@/lib/landing";
 type ContactSectionProps = {
   title: string;
   messages: Messages["home"]["contact"];
-  photo: Messages["home"]["photos"]["closing"];
   /** Slot for the contact form and booking facade. */
   children?: ReactNode;
 };
 
-export function ContactSection({ title, messages, photo, children }: ContactSectionProps) {
+export function ContactSection({ title, messages, children }: ContactSectionProps) {
   return (
     <LandingSection id="contact" title={title} tone="clear">
       <div className="grid gap-12 md:grid-cols-12">
@@ -37,17 +35,6 @@ export function ContactSection({ title, messages, photo, children }: ContactSect
         </ul>
       </div>
       {children}
-      <figure className="-mx-(--gutter) m-0">
-        <Image
-          src="/photos/lavaux-church.jpg"
-          alt={photo.alt}
-          width={1920}
-          height={1280}
-          sizes="100vw"
-          className="aspect-[4/5] w-full object-cover md:aspect-[21/9]"
-        />
-        <figcaption className="px-(--gutter) pt-3 text-sm">{photo.caption}</figcaption>
-      </figure>
     </LandingSection>
   );
 }

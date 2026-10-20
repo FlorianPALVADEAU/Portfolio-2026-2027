@@ -12,6 +12,9 @@ const COUNT_SECONDS = 1.6;
 /** Share of the screen height scrolled while the first and last frames stay still. */
 const HOLD_RATIO = 0.6;
 
+/** Share of the screen height scrolled while a closing photo shrinks and its texts appear. */
+const FINALE_RATIO = 1.2;
+
 export type RailParts = {
   runway: HTMLElement;
   stage: HTMLElement;
@@ -92,6 +95,52 @@ function addProgressFills(
 }
 
 /**
+ * A frame may end the rail with a photo (`data-frame-finale`, holding a `data-frame-finale-image`)
+ * that fills the screen, then shrinks into a rounded card while its `data-frame-finale-text`
+ * lines appear one after the other. The bar underneath fades out as that frame slides in.
+ */
+function addFinale(
+  timeline: gsap.core.Timeline,
+  stage: HTMLElement,
+  viewport: number,
+  start: number,
+  duration: number,
+) {
+  const photo = stage.querySelector<HTMLElement>("[data-frame-finale]");
+  if (!photo) return;
+  const shrink = duration * 0.6;
+  timeline.fromTo(
+    photo,
+    { clipPath: "inset(0% 0% 0% 0% round 0px)" },
+    { clipPath: "inset(9% 7% 9% 7% round 40px)", duration: shrink, ease: "power2.inOut" },
+    start,
+  );
+  const image = photo.querySelector<HTMLElement>("[data-frame-finale-image]");
+  if (image) {
+    timeline.fromTo(
+      image,
+      { scale: 1.18 },
+      { scale: 1, duration: shrink, ease: "power2.inOut" },
+      start,
+    );
+  }
+  const texts = pick<HTMLElement>(stage, "[data-frame-finale-text]");
+  const lineDuration = (duration - shrink) / 2;
+  texts.forEach((text, order) => {
+    timeline.fromTo(
+      text,
+      { autoAlpha: 0, y: 48 },
+      { autoAlpha: 1, y: 0, duration: lineDuration, ease: "power3.out" },
+      start + shrink + (order * (duration - shrink - lineDuration)) / Math.max(1, texts.length - 1),
+    );
+  });
+  const hud = stage.querySelector<HTMLElement>("[data-rail-hud]");
+  if (hud) {
+    timeline.to(hud, { autoAlpha: 0, duration: viewport * 0.4 }, start - viewport * 0.4);
+  }
+}
+
+/**
  * Turns the stage into a pinned horizontal rail and returns a function that undoes it. The runway
  * is as tall as the scrolling asked for, the stage sticks to the top of it, and one scrubbed
  * timeline holds still for a moment, slides the track from frame to frame, then holds again.
@@ -112,7 +161,8 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
     return () => {};
   }
   const hold = stage.clientHeight * HOLD_RATIO;
-  const total = travel + hold * 2;
+  const finale = stage.querySelector("[data-frame-finale]") ? stage.clientHeight * FINALE_RATIO : 0;
+  const total = travel + finale + hold * 2;
   runway.style.height = `${total * PACE + stage.clientHeight}px`;
 
   for (const frame of frames) {
@@ -141,6 +191,8 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
         onUpdate: (self) => {
           const position = gsap.utils.clamp(0, travel, self.progress * total - hold);
           reveal(frames[Math.round(position / viewport)]);
+          // The track is still while a photo shrinks; skewing it would tilt the full-screen frame.
+          if (position >= travel) return;
           const target = clampSkew(-self.getVelocity() / VELOCITY_PER_DEG);
           if (Math.abs(target) <= Math.abs(skew.value)) return;
           skew.value = target;
@@ -161,6 +213,7 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
 
     addParallax(timeline, frames, viewport, hold);
     addProgressFills(timeline, stage, viewport, travel, hold);
+    addFinale(timeline, stage, viewport, hold + travel, finale);
 
     // Without this the timeline ends with its last tween, and the scroll distance would shrink.
     timeline.set({}, {}, total);

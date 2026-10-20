@@ -55,13 +55,14 @@ export function Home({
         projects={projects}
       />
       <TechnologyBand messages={messages.marquee} />
-      <SkillsSection index={position("skills")} title={title.skills} messages={messages.skills} />
-      <LandingSection id="gallery" index={position("gallery")} title={title.gallery} tone="muted" />
-      <ContactSection
-        title={title.contact}
-        messages={messages.contact}
+      <SkillsSection
+        index={position("skills")}
+        title={title.skills}
+        messages={messages.skills}
         photo={messages.photos.closing}
-      >
+      />
+      <LandingSection id="gallery" index={position("gallery")} title={title.gallery} tone="muted" />
+      <ContactSection title={title.contact} messages={messages.contact}>
         {contact}
       </ContactSection>
     </main>
