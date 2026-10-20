@@ -19,6 +19,7 @@
     },
     "skip": "Zum Inhalt springen",
     "cta": "Lass uns reden",
+    "cv": "Lebenslauf",
     "menu": {
       "open": "Menü",
       "close": "Schliessen"
@@ -115,6 +116,11 @@
         "englishCountries": "Länder im Team, Zusammenarbeit auf Englisch"
       },
       "certificationsLead": "Unabhängige Bestätigung meiner Cloud-, Kubernetes- und Scrum-Kenntnisse.",
+      "certificationDates": {
+        "ckad": "Mai 2026",
+        "psm": "2025",
+        "aws": "2025"
+      },
       "closing": {
         "eyebrow": "Und danach?",
         "statement": "Ich suche eine Stelle als Full-Stack-Entwickler in der Schweiz."

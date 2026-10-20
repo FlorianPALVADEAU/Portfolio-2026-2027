@@ -37,8 +37,11 @@ const DEPTH_DRIFT = 240;
  * negative bottom margin pulls the next section up by that viewport, over the end of the track.
  */
 const TRACK = `calc(var(--sequence) + ${REVEAL_PX + HOLD_PX}px + 200svh)`;
-/** What the stage becomes while the next section covers it: pushed back along Z, smaller, rounded. */
-const RECEDE = { z: -320, scale: 0.9, radius: 40, perspective: 900 };
+/**
+ * What the stage becomes while the next section covers it: it pivots on its bottom edge, so the
+ * top falls back along Z, and it shrinks and rounds.
+ */
+const RECEDE = { tilt: 10, scale: 0.92, radius: 36, perspective: 1100 };
 const SMALL_SCREEN = "(max-width: 767px)";
 
 type ScrollSequenceProps = {
@@ -53,8 +56,8 @@ type ScrollSequenceProps = {
  * bounce, so they should rest on a wrapper that holds their tilt. Those marked `data-depth` drift
  * with the pointer and the scroll, the more the bigger the number. A shade darkens the picture towards
  * the end so the copy stays readable. Without frames a placeholder sky zooms out instead.
- * While the next section slides over it, the stage recedes: it shrinks, moves back along Z and
- * rounds its corners. The next section must be opaque and above it (`z-10`). Under reduced motion the stage is not
+ * While the next section slides over it, the stage recedes: it pivots on its bottom edge so the
+ * top falls back along Z, shrinks and rounds its corners. The next section must be opaque and above it (`z-10`). Under reduced motion the stage is not
  * held and does not overlap: the last frame and all the copy are shown at once.
  */
 export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
@@ -141,18 +144,29 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
           sequencePx,
         );
       }
+      // Corners and size settle early in the cover, the tilt takes all of it.
+      const recedeAt = sequencePx + REVEAL_PX + HOLD_PX;
       timeline.fromTo(
         stage.current,
-        { z: 0, scale: 1, borderRadius: 0, transformPerspective: RECEDE.perspective },
         {
-          z: RECEDE.z,
-          scale: RECEDE.scale,
-          borderRadius: RECEDE.radius,
+          rotationX: 0,
           transformPerspective: RECEDE.perspective,
-          duration: recedePx,
-          ease: "power1.in",
+          transformOrigin: "50% 100%",
         },
-        sequencePx + REVEAL_PX + HOLD_PX,
+        { rotationX: RECEDE.tilt, duration: recedePx, ease: "power1.in" },
+        recedeAt,
+      );
+      timeline.fromTo(
+        stage.current,
+        { scale: 1 },
+        { scale: RECEDE.scale, duration: recedePx * 0.45, ease: "power2.out" },
+        recedeAt,
+      );
+      timeline.fromTo(
+        stage.current,
+        { borderRadius: 0 },
+        { borderRadius: RECEDE.radius, duration: recedePx * 0.25, ease: "power2.out" },
+        recedeAt,
       );
 
       // Elements marked `data-depth` follow the pointer by their own amount, a negative one in

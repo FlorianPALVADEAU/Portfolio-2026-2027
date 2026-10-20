@@ -19,6 +19,7 @@
     },
     "skip": "Aller au contenu",
     "cta": "Parlons-en",
+    "cv": "Mon CV",
     "menu": {
       "open": "Menu",
       "close": "Fermer"
@@ -110,6 +111,11 @@
         "englishCountries": "pays dans l'équipe, collaboration en anglais"
       },
       "certificationsLead": "Des validations indépendantes de mes compétences cloud, Kubernetes et Scrum.",
+      "certificationDates": {
+        "ckad": "mai 2026",
+        "psm": "2025",
+        "aws": "2025"
+      },
       "closing": {
         "eyebrow": "Et ensuite ?",
         "statement": "Je cherche un poste d'ingénieur full-stack en Suisse."

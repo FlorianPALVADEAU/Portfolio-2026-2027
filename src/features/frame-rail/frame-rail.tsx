@@ -67,11 +67,11 @@ export function FrameRail({ frames, children }: FrameRailProps) {
         <ol
           aria-hidden="true"
           data-rail-hud
-          className="absolute inset-x-(--gutter) bottom-6 z-10 hidden gap-3 in-data-[motion=rail]:flex"
+          className="absolute inset-x-(--gutter) bottom-5 z-10 max-md:bottom-4 hidden gap-3 in-data-[motion=rail]:flex"
         >
           {frames.map(({ id, label }, order) => (
             <li key={id} className="flex flex-1 flex-col gap-2 font-mono text-xs">
-              <span className="truncate">
+              <span className="truncate max-md:hidden">
                 {String(order + 1).padStart(2, "0")}
                 <span className="hidden md:inline">{` ${label}`}</span>
               </span>

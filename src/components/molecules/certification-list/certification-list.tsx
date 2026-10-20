@@ -4,14 +4,14 @@ import { Icon } from "@/components/atoms/icon";
 import { Link } from "@/components/atoms/link";
 import { Pop } from "@/components/atoms/pop";
 import { cn } from "@/lib/utils";
-import { TiltPlate } from "./tilt-plate";
 
 type CertificationListProps = {
   items: readonly {
     id: string;
     name: string;
     issuer: string;
-    year: number;
+    /** When it was obtained, as the reader's language writes it, such as `mai 2026`. */
+    issued: string;
     score: string | null;
     logo: string;
     /** Public identifier a verifier asks for, when the issuer gives one. */
@@ -24,27 +24,28 @@ type CertificationListProps = {
 const STAGGER_SECONDS = 0.15;
 
 /**
- * One plate per credential, hung at slightly different heights: the badge large on a glow, the
- * name beneath, and the score (or the year) as an outlined figure behind. The identifier and the
- * verification link show on hover or focus with a mouse, and always on a touch screen.
+ * One plate per credential, hung at slightly different heights: the badge large on a glow with
+ * the date as an outlined figure right behind it, and the name beneath. The identifier and the
+ * verification link show on hover or focus with a mouse, and always on a touch screen, where the
+ * plate lies flat as a row.
  */
 export function CertificationList({ items, labels }: CertificationListProps) {
   return (
-    <ul className="grid gap-4 md:grid-cols-3 md:gap-6">
+    <ul className="grid gap-3 md:grid-cols-3 md:gap-6">
       {items.map((item, order) => (
         <li key={item.id} className={cn(order === 1 && "md:mt-12")}>
           <Pop from="pop" delay={0.25 + order * STAGGER_SECONDS} className="h-full">
-            <TiltPlate className="group/plate relative flex h-full min-h-72 flex-col justify-between gap-6 overflow-hidden rounded-[2rem] border border-border bg-surface p-6 transition-[border-color,box-shadow] duration-(--duration-base) [transform-style:preserve-3d] hover:border-accent hover:shadow-lg md:min-h-[26rem]">
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute -top-4 -right-2 text-[clamp(6rem,11vw,10rem)] leading-none font-semibold tracking-tighter text-transparent select-none [-webkit-text-stroke:1px_var(--border)]"
-              >
-                {item.score ?? item.year}
-              </span>
-              <div className="relative flex flex-1 items-center justify-center">
+            <div className="group/plate relative flex h-full items-center gap-4 overflow-hidden rounded-[2rem] border border-border bg-surface p-4 transition-[border-color,box-shadow] duration-(--duration-base) hover:border-accent hover:shadow-lg md:min-h-[26rem] md:flex-col md:items-stretch md:justify-between md:gap-6 md:p-6">
+              <div className="relative flex size-28 shrink-0 items-center justify-center md:size-auto md:flex-1">
                 <span
                   aria-hidden="true"
-                  className="absolute size-40 rounded-full bg-accent/25 blur-3xl transition-transform duration-(--duration-slow) group-hover/plate:scale-125"
+                  className="pointer-events-none absolute inset-0 flex items-center justify-center text-center text-[2.25rem] leading-[0.85] font-semibold tracking-tighter text-transparent uppercase select-none [-webkit-text-stroke:1px_var(--border)] md:text-[clamp(4.5rem,8vw,7.5rem)]"
+                >
+                  <span className="max-w-[4ch] md:max-w-none">{item.issued}</span>
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="absolute size-20 rounded-full bg-accent/25 blur-3xl transition-transform duration-(--duration-slow) group-hover/plate:scale-125 md:size-40"
                 />
                 <Image
                   src={item.logo}
@@ -52,17 +53,17 @@ export function CertificationList({ items, labels }: CertificationListProps) {
                   width={160}
                   height={160}
                   unoptimized
-                  className="relative size-28 drop-shadow-2xl transition-transform duration-(--duration-slow) ease-out-expo group-hover/plate:scale-110 md:size-36"
+                  className="relative size-20 drop-shadow-2xl transition-transform duration-(--duration-slow) ease-out-expo group-hover/plate:scale-110 md:size-36"
                 />
               </div>
-              <div className="relative flex flex-col gap-1">
-                <p className="text-2xl font-semibold text-pretty">{item.name}</p>
+              <div className="relative flex min-w-0 flex-col gap-1">
+                <p className="text-xl font-semibold text-pretty md:text-2xl">{item.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {[item.issuer, item.year, item.score].filter(Boolean).join(" · ")}
+                  {[item.issuer, item.issued, item.score].filter(Boolean).join(" · ")}
                 </p>
                 <div className="grid transition-[grid-template-rows,opacity] duration-(--duration-base) pointer-fine:grid-rows-[0fr] pointer-fine:opacity-0 pointer-fine:group-focus-within/plate:grid-rows-[1fr] pointer-fine:group-focus-within/plate:opacity-100 pointer-fine:group-hover/plate:grid-rows-[1fr] pointer-fine:group-hover/plate:opacity-100">
                   <div className="flex flex-col gap-2 overflow-hidden">
-                    <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3 text-sm">
+                    <div className="mt-2 flex flex-col gap-1.5 border-t border-border pt-2 text-sm md:mt-3 md:gap-2 md:pt-3">
                       {item.credentialId && (
                         <p className="flex flex-wrap gap-x-2 font-mono text-xs break-all text-muted-foreground">
                           <span>{labels.credentialId}</span>
@@ -86,7 +87,7 @@ export function CertificationList({ items, labels }: CertificationListProps) {
                   </div>
                 </div>
               </div>
-            </TiltPlate>
+            </div>
           </Pop>
         </li>
       ))}

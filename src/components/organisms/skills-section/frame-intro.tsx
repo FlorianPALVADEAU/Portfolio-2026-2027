@@ -11,12 +11,22 @@ type FrameIntroProps = {
   title: string;
   lead: string;
   className?: string;
+  /** Classes for the lead, such as `max-md:hidden` where the screen has no room for it. */
+  leadClassName?: string;
 };
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
 /** Number, title and one line about a frame; each part rises in turn when the frame appears. */
-export function FrameIntro({ order, total, titleId, title, lead, className }: FrameIntroProps) {
+export function FrameIntro({
+  order,
+  total,
+  titleId,
+  title,
+  lead,
+  className,
+  leadClassName,
+}: FrameIntroProps) {
   return (
     <div className={cn("flex flex-col gap-3", className)}>
       <Pop>
@@ -29,7 +39,7 @@ export function FrameIntro({ order, total, titleId, title, lead, className }: Fr
           {title}
         </Heading>
       </Pop>
-      <Pop delay={0.16}>
+      <Pop delay={0.16} className={leadClassName}>
         <Text tone="muted" className="max-w-md text-pretty">
           {lead}
         </Text>

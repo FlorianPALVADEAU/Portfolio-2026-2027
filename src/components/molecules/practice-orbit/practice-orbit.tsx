@@ -31,8 +31,8 @@ const draw =
 /**
  * Practices placed evenly on a ring around a centrepiece. The ring draws itself, a spoke reaches
  * out to each practice, and each practice then pops in. Hovering, focusing or tapping a practice
- * lights its spoke and pops a note open beside it. On small screens the ring is dropped: the
- * practices wrap in a row and the note opens under them.
+ * lights its spoke and pops a note open beside it. On small screens there is no room for popovers:
+ * the ring is dropped and every practice is a row with its note showing.
  */
 export function PracticeOrbit({ practices, children }: PracticeOrbitProps) {
   const [active, setActive] = useState<number | null>(null);
@@ -55,8 +55,8 @@ export function PracticeOrbit({ practices, children }: PracticeOrbitProps) {
 
   const count = practices.length;
   return (
-    <div ref={root} className="flex flex-col gap-6">
-      <div className="relative mx-auto flex w-full flex-col items-center gap-8 md:aspect-square md:w-[min(34rem,100%,62svh)] md:justify-center md:gap-0">
+    <div ref={root} className="flex flex-col gap-4 md:gap-6">
+      <div className="relative mx-auto flex w-full flex-col items-center md:aspect-square md:w-[min(34rem,100%,62svh)] md:justify-center md:gap-0">
         <svg
           aria-hidden="true"
           focusable="false"
@@ -105,7 +105,7 @@ export function PracticeOrbit({ practices, children }: PracticeOrbitProps) {
         <Pop from="pop" delay={0.2} className="relative">
           {children}
         </Pop>
-        <ul className="flex flex-wrap justify-center gap-2 md:static md:contents">
+        <ul className="flex flex-wrap justify-center gap-2 max-md:hidden md:static md:contents">
           {practices.map(({ name, note }, order) => {
             const { x, y } = place(order, count);
             const open = active === order;
@@ -148,14 +148,18 @@ export function PracticeOrbit({ practices, children }: PracticeOrbitProps) {
           })}
         </ul>
       </div>
-      <Text
-        aria-live="polite"
-        size="sm"
-        tone="muted"
-        className="min-h-[4.5rem] rounded-2xl border border-border bg-surface p-4 md:hidden"
-      >
-        {active === null ? "" : practices[active]?.note}
-      </Text>
+      <ul className="flex flex-col md:hidden">
+        {practices.map(({ name, note }, order) => (
+          <li key={name} className="flex flex-col gap-0.5 border-t border-border py-2">
+            <Pop from="rise" delay={0.5 + order * 0.1}>
+              <p className="font-semibold">{name}</p>
+              <Text size="sm" tone="muted" className="text-pretty">
+                {note}
+              </Text>
+            </Pop>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

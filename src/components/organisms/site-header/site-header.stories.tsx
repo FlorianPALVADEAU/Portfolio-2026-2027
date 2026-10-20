@@ -21,6 +21,7 @@ const meta = {
       language: "Language",
       skip: "Skip to content",
       cta: "Let's talk",
+      cv: "My CV",
       menu: { open: "Menu", close: "Close" },
       nav: {
         label: "Sections",

@@ -11,7 +11,7 @@ export function DeliveryFrame({ order, total, messages }: GroupFrameProps) {
     <Frame
       numeral="03"
       aria-labelledby="skills-delivery"
-      className="gap-8 md:grid md:grid-cols-12 md:items-center md:gap-12"
+      className="gap-4 md:grid md:grid-cols-12 md:items-center md:gap-12"
     >
       <div className="md:order-2 md:col-span-5">
         <FrameIntro
@@ -32,7 +32,7 @@ export function DeliveryFrame({ order, total, messages }: GroupFrameProps) {
           <StatFigure
             value={skillStats.users}
             label={messages.stats.users}
-            className="max-w-48 text-center md:items-center"
+            className="max-md:flex-row max-md:items-baseline max-md:gap-3 md:max-w-48 md:items-center md:text-center"
           />
         </PracticeOrbit>
       </div>

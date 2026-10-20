@@ -33,7 +33,7 @@ export function EngineeringFrame({
     <Frame
       numeral="01"
       aria-labelledby="skills-engineering"
-      className="gap-8 md:grid md:grid-cols-12 md:items-center md:gap-12"
+      className="gap-6 md:grid md:grid-cols-12 md:items-center md:gap-12"
     >
       <div className="flex flex-col gap-6 md:col-span-5">
         {children}
@@ -43,12 +43,20 @@ export function EngineeringFrame({
           titleId="skills-engineering"
           title={messages.groups.engineering.title}
           lead={messages.groups.engineering.lead}
+          leadClassName="max-md:hidden"
         />
-        <div className="relative">
+        <Pop from="pop" delay={0.3} className="md:hidden">
+          <StatFigure
+            value={skillStats.features}
+            label={messages.stats.features}
+            className="flex-row items-baseline gap-3"
+          />
+        </Pop>
+        <div className="relative max-md:hidden">
           <Pop
             from="wipe"
             delay={0.3}
-            className="relative aspect-video overflow-hidden rounded-3xl md:aspect-4/3"
+            className="relative aspect-[5/2] overflow-hidden rounded-3xl md:aspect-4/3"
           >
             <div data-frame-parallax="0.09" className="absolute inset-y-0 -inset-x-[14%]">
               <Image
@@ -60,9 +68,12 @@ export function EngineeringFrame({
               />
             </div>
           </Pop>
-          <div data-frame-parallax="-0.1" className="absolute -right-6 -bottom-6">
+          <div
+            data-frame-parallax="-0.1"
+            className="absolute right-3 -bottom-4 md:-right-6 md:-bottom-6"
+          >
             <Pop from="pop" delay={0.9}>
-              <div className="rounded-2xl border border-border bg-surface p-5 shadow-lg transition-[translate] duration-(--duration-base) hover:-translate-y-1">
+              <div className="rounded-2xl border border-border bg-surface p-3 shadow-lg md:p-5 transition-[translate] duration-(--duration-base) hover:-translate-y-1">
                 <StatFigure value={skillStats.features} label={messages.stats.features} />
               </div>
             </Pop>

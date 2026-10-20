@@ -18,9 +18,10 @@ type SiteHeaderProps = {
   locale: Locale;
   messages: Messages["header"];
   palette: Messages["palette"];
+  cvHref?: string | null;
 };
 
-export function SiteHeader({ locale, messages, palette }: SiteHeaderProps) {
+export function SiteHeader({ locale, messages, palette, cvHref = null }: SiteHeaderProps) {
   return (
     <>
       <SkipLink href={`#${MAIN_ID}`}>{messages.skip}</SkipLink>
@@ -48,17 +49,7 @@ export function SiteHeader({ locale, messages, palette }: SiteHeaderProps) {
                 openLabel={messages.menu.open}
                 closeLabel={messages.menu.close}
                 navLabel={messages.nav.label}
-                action={
-                  <Button
-                    asChild
-                    size="lg"
-                    className="w-full rounded-full tracking-wider uppercase hover:text-accent-foreground"
-                  >
-                    <Link href={`/${locale}#contact`} className="no-underline">
-                      {messages.cta}
-                    </Link>
-                  </Button>
-                }
+                download={cvHref ? { href: cvHref, label: messages.cv } : null}
                 items={navSections.map((id) => ({
                   href: `/${locale}#${id}`,
                   label: messages.nav[id],

@@ -4,8 +4,13 @@ import { certifications } from "@/lib/landing";
 import { FrameIntro } from "./frame-intro";
 import type { GroupFrameProps } from "./frame-props";
 
-/** Frame 5: the credentials, as one card each under the title. */
+/** Frame 5: the credentials, one plate each under the title. */
 export function CertificationsFrame({ order, total, messages }: GroupFrameProps) {
+  const items = certifications.map((certification) => ({
+    ...certification,
+    issued: messages.certificationDates[certification.id],
+  }));
+
   return (
     <Frame numeral="05" aria-labelledby="skills-certifications" className="gap-5 md:gap-14">
       <FrameIntro
@@ -16,7 +21,7 @@ export function CertificationsFrame({ order, total, messages }: GroupFrameProps)
         lead={messages.certificationsLead}
       />
       <CertificationList
-        items={certifications}
+        items={items}
         labels={{ verify: messages.verify, credentialId: messages.credentialId }}
       />
     </Frame>
