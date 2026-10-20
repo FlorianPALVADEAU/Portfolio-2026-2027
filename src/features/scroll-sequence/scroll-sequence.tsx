@@ -13,11 +13,11 @@ gsap.registerPlugin(ScrollTrigger);
  * Pixels of scrolling that play the whole sequence, with the copy still hidden. Shorter on small
  * screens, where a thumb covers less distance. The track height in CSS must use the same values.
  */
-const SEQUENCE_PX = { small: 3000, large: 5000 };
+const SEQUENCE_PX = { small: 2000, large: 3000 };
 /** Pixels of scrolling, after the sequence, that reveal the copy. */
 const REVEAL_PX = 700;
 /** Pixels of scrolling, once the copy is shown, that keep it alone on screen before the next section. */
-const HOLD_PX = 1400;
+const HOLD_PX = 1000;
 /** Pixels over which the picture darkens, so that the copy can be read over the last frames. */
 const DARKEN_PX = 1400;
 const DARKEN_FROM = 0.3;
