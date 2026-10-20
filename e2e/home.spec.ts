@@ -317,7 +317,11 @@ test.describe("selected works", () => {
     await page.goto("/en");
 
     const works = page.getByRole("region", { name: "Selected works" });
-    await works.getByRole("link", { name: "Overbound" }).click();
+    const card = works.getByRole("link", { name: "Overbound" });
+    // The reel swaps the title for animated letters once hydrated; a click that straddles the swap
+    // is never fired, so wait for the real words to be tucked into their visually hidden copy.
+    await expect(card.locator(".sr-only")).toHaveCount(1);
+    await card.click();
 
     await expect(page).toHaveURL(/\/en\/projects\/overbound$/);
     await expect(page.getByRole("heading", { level: 1, name: "Overbound" })).toBeVisible();
