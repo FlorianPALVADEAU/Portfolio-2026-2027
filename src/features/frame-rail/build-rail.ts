@@ -85,12 +85,15 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
         trigger: runway,
         start: "top top",
         end: "bottom bottom",
-        scrub: 0.5,
+        scrub: 0.8,
+        // The delay lets the smooth scroll finish gliding before the rail settles, so the two never
+        // pull in different directions; the snap then follows the direction of the last gesture.
         snap: {
           snapTo: 1 / (frames.length - 1),
-          duration: { min: 0.2, max: 0.6 },
-          delay: 0.08,
-          ease: "power2.inOut",
+          duration: { min: 0.5, max: 1.1 },
+          delay: 0.2,
+          ease: "power3.inOut",
+          directional: true,
         },
         onUpdate: (self) => {
           reveal(frames[Math.round(self.progress * (frames.length - 1))]);

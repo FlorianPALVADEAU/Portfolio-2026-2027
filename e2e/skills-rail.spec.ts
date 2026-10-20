@@ -31,7 +31,13 @@ test.describe("skills rail", () => {
     const skills = page.getByRole("region", { name: "Skills" });
 
     await expect(skills.locator("[data-motion]")).toHaveAttribute("data-motion", "static");
-    for (const name of ["Engineering", "Infrastructure", "Delivery", "Collaboration"]) {
+    for (const name of [
+      "Engineering",
+      "Infrastructure",
+      "Delivery",
+      "Collaboration",
+      "Certifications",
+    ]) {
       await expect(skills.getByRole("heading", { name })).toBeVisible();
     }
   });

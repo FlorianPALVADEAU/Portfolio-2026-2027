@@ -10,12 +10,12 @@ describe("SkillsSection", () => {
     for (const name of ["Engineering", "Infrastructure", "Delivery", "Collaboration"]) {
       expect(screen.getByRole("heading", { name })).toBeInTheDocument();
     }
-    const certifications = screen.getByRole("heading", { name: "Certifications" }).parentElement;
-    const entries = within(certifications as HTMLElement).getAllByRole("listitem");
+    const certifications = screen.getByRole("region", { name: "Certifications" });
+    const entries = within(certifications).getAllByRole("listitem");
     expect(entries.map((entry) => entry.textContent)).toEqual([
-      "CKAD, 92%CNCF · 2026",
-      "PSM IScrum.org · 2025",
-      "AWS Developer AssociateAWS · 2025",
+      "CNCF · 202692%CKAD",
+      "Scrum.org · 2025PSM I",
+      "AWS · 2025AWS Developer Associate",
     ]);
     expect(screen.getByRole("region", { name: "Skills" })).toHaveAttribute("id", "skills");
   });

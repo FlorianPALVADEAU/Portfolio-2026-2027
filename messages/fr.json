@@ -101,7 +101,8 @@
         "users": "utilisateurs au quotidien sur deux applications",
         "countries": "pays couverts par les applications",
         "englishCountries": "pays dans l'équipe, collaboration en anglais"
-      }
+      },
+      "certificationsLead": "Des validations indépendantes de mes compétences cloud, Kubernetes et Scrum."
     },
     "about": {
       "hook": "Ingénieur logiciel le jour, organisateur de course à côté.",
