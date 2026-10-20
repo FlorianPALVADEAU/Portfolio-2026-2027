@@ -1,9 +1,9 @@
 import type { ComponentProps, ReactNode } from "react";
 import { AboutSection } from "@/components/organisms/about-section";
 import { ContactSection } from "@/components/organisms/contact-section";
+import { GallerySection } from "@/components/organisms/gallery-section";
 import { HeroSection } from "@/components/organisms/hero-section";
 import { IntroSection } from "@/components/organisms/intro-section";
-import { LandingSection } from "@/components/organisms/landing-section";
 import { SkillsSection } from "@/components/organisms/skills-section";
 import { TechnologyBand } from "@/components/organisms/technology-band";
 import { WorksSection } from "@/components/organisms/works-section";
@@ -56,7 +56,12 @@ export function Home({
       />
       <TechnologyBand messages={messages.marquee} />
       <SkillsSection index={position("skills")} title={title.skills} messages={messages.skills} />
-      <LandingSection id="gallery" index={position("gallery")} title={title.gallery} tone="muted" />
+      <GallerySection
+        index={position("gallery")}
+        title={title.gallery}
+        closingTitle={title.contact}
+        messages={messages.gallery}
+      />
       <ContactSection
         title={title.contact}
         messages={messages.contact}
