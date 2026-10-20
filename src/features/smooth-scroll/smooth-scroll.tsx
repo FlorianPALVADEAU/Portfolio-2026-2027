@@ -8,10 +8,12 @@ import {
   onReducedMotionChange,
   prefersReducedMotion,
   SMALL_SCREEN_QUERY,
+  setScroller,
 } from "@/lib/motion";
 
 /** Gentle inertia: a high lerp keeps the scroll close to native and never lags behind the input. */
 const LERP = 0.14;
+const SCROLL_TO_SECONDS = 1;
 /** A lerp of 1 reaches the target at once: the scroll is as native as Lenis can make it. */
 const NATIVE_LERP = 1;
 
@@ -38,12 +40,14 @@ function start(): () => void {
   const lenis = new Lenis({ autoRaf: false, lerp: LERP, anchors: true });
   const tick = (time: number) => lenis.raf(time * 1000);
   const release = yieldToNativeScroll(lenis);
+  setScroller((top) => lenis.scrollTo(top, { duration: SCROLL_TO_SECONDS }));
 
   gsap.ticker.add(tick);
   gsap.ticker.lagSmoothing(0);
 
   return () => {
     release();
+    setScroller(null);
     gsap.ticker.remove(tick);
     lenis.destroy();
   };

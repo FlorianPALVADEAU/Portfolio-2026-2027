@@ -40,7 +40,7 @@ export function PipelineDiagram({ stages, automation }: PipelineDiagramProps) {
           <li key={stage.id} className="relative md:min-h-60">
             <span
               aria-hidden="true"
-              className="absolute top-3 -left-[1.4rem] size-2 rounded-full bg-accent md:-top-[2.4rem] md:left-0 md:size-2.5"
+              className="absolute top-4 -left-[1.4rem] size-2 rounded-full bg-accent md:-top-[2.4rem] md:left-0 md:size-2.5"
             />
             <Pop from="rise" delay={0.2 + order * STAGGER_SECONDS} className="h-full">
               <PipelineStage order={order + 1} label={stage.label} note={stage.note}>

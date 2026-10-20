@@ -31,7 +31,7 @@ export function SkillsSection({ index, title, messages, photo }: SkillsSectionPr
 
   return (
     <Section id="skills" aria-labelledby="skills-title" className="scroll-mt-4 py-0">
-      <FrameRail frames={frames}>
+      <FrameRail frames={frames} navLabel={messages.navigation}>
         <EngineeringFrame order={1} {...props}>
           <SectionHeader index={index} title={title} titleId="skills-title" size="2xl" />
         </EngineeringFrame>

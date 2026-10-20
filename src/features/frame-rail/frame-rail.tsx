@@ -7,6 +7,8 @@ import { buildRail } from "./build-rail";
 type FrameRailProps = {
   /** One label per `Frame`, in the same order; they name the segments of the bar. */
   frames: readonly { id: string; label: string }[];
+  /** Names the bar, which doubles as navigation: each segment scrolls to its frame. */
+  navLabel: string;
   children: ReactNode;
 };
 
@@ -16,10 +18,11 @@ type FrameRailProps = {
  * screen per frame, with a pause before the first and after the last (see `buildRail`). The stage reports its mode in `data-motion`, which the
  * parts of the rail style themselves by.
  */
-export function FrameRail({ frames, children }: FrameRailProps) {
+export function FrameRail({ frames, navLabel, children }: FrameRailProps) {
   const runway = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
+  const goTo = useRef<(order: number) => void>(() => {});
 
   useLayoutEffect(() => {
     const parts = { runway: runway.current, stage: stage.current, track: track.current };
@@ -31,7 +34,9 @@ export function FrameRail({ frames, children }: FrameRailProps) {
     const signature = () => `${rail.stage.clientWidth}:${rail.track.scrollWidth}`;
     const mount = () => {
       teardown();
-      teardown = prefersReducedMotion() ? () => {} : buildRail(rail);
+      const active = prefersReducedMotion() ? null : buildRail(rail);
+      teardown = active?.destroy ?? (() => {});
+      goTo.current = active?.goTo ?? (() => {});
       built = signature();
     };
 
@@ -64,23 +69,30 @@ export function FrameRail({ frames, children }: FrameRailProps) {
         >
           {children}
         </div>
-        <ol
-          aria-hidden="true"
-          data-rail-hud
-          className="absolute inset-x-(--gutter) bottom-5 z-10 max-md:bottom-4 hidden gap-3 in-data-[motion=rail]:flex"
+        <nav
+          aria-label={navLabel}
+          className="absolute inset-x-(--gutter) bottom-1 z-10 hidden text-white mix-blend-difference in-data-[motion=rail]:block"
         >
-          {frames.map(({ id, label }, order) => (
-            <li key={id} className="flex flex-1 flex-col gap-2 font-mono text-xs">
-              <span className="truncate max-lg:hidden">
-                {String(order + 1).padStart(2, "0")}
-                <span className="hidden md:inline">{` ${label}`}</span>
-              </span>
-              <span className="block h-px bg-border">
-                <span data-frame-fill className="block size-full origin-left bg-foreground" />
-              </span>
-            </li>
-          ))}
-        </ol>
+          <ol className="flex gap-3">
+            {frames.map(({ id, label }, order) => (
+              <li key={id} className="flex-1">
+                <button
+                  type="button"
+                  onClick={() => goTo.current(order)}
+                  className="group/step flex min-h-11 w-full cursor-pointer flex-col justify-end gap-2 text-left font-mono text-xs"
+                >
+                  <span className="truncate max-lg:sr-only">
+                    {String(order + 1).padStart(2, "0")}
+                    {` ${label}`}
+                  </span>
+                  <span className="block h-0.5 bg-white/30 transition-[height] duration-(--duration-fast) group-hover/step:h-1">
+                    <span data-frame-fill className="block size-full origin-left bg-white" />
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </nav>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SMALL_SCREEN_QUERY } from "@/lib/motion";
+import { SMALL_SCREEN_QUERY, scrollToTop } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,6 +15,13 @@ const HOLD_RATIO = 0.6;
 
 /** Share of the screen height scrolled while a closing photo shrinks and its texts appear. */
 const FINALE_RATIO = 1.2;
+
+export type Rail = {
+  /** Undoes everything `buildRail` did. */
+  destroy: () => void;
+  /** Scrolls the page to where a frame, counted from 0, sits centred. */
+  goTo: (order: number) => void;
+};
 
 export type RailParts = {
   runway: HTMLElement;
@@ -98,12 +105,11 @@ function addProgressFills(
 /**
  * A frame may end the rail with a photo (`data-frame-finale`, holding a `data-frame-finale-image`)
  * that fills the screen, then shrinks into a rounded card while its `data-frame-finale-text`
- * lines appear one after the other. The bar underneath fades out as that frame slides in.
+ * lines appear one after the other.
  */
 function addFinale(
   timeline: gsap.core.Timeline,
   stage: HTMLElement,
-  viewport: number,
   start: number,
   duration: number,
 ) {
@@ -135,10 +141,6 @@ function addFinale(
       start + shrink + (order * (duration - shrink - lineDuration)) / Math.max(1, texts.length - 1),
     );
   });
-  const hud = stage.querySelector<HTMLElement>("[data-rail-hud]");
-  if (hud) {
-    timeline.to(hud, { autoAlpha: 0, duration: viewport * 0.4 }, start - viewport * 0.4);
-  }
 }
 
 /**
@@ -147,7 +149,7 @@ function addFinale(
  * timeline holds still for a moment, slides the track from frame to frame, then holds again.
  * The content of a frame is revealed the first time the frame reaches the middle of the screen.
  */
-export function buildRail({ runway, stage, track }: RailParts): () => void {
+export function buildRail({ runway, stage, track }: RailParts): Rail {
   stage.dataset.motion = "rail";
   const frames = pick<HTMLElement>(track, "[data-frame]");
   const viewport = stage.clientWidth;
@@ -159,7 +161,7 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
   };
   if (travel <= 0 || frames.length < 2) {
     undo();
-    return () => {};
+    return { destroy: () => {}, goTo: () => {} };
   }
   const hold = stage.clientHeight * HOLD_RATIO;
   const finale = stage.querySelector("[data-frame-finale]") ? stage.clientHeight * FINALE_RATIO : 0;
@@ -237,13 +239,19 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
 
     addParallax(timeline, frames, viewport, hold);
     addProgressFills(timeline, stage, viewport, travel, hold);
-    addFinale(timeline, stage, viewport, hold + travel, finale);
+    addFinale(timeline, stage, hold + travel, finale);
 
     // Without this the timeline ends with its last tween, and the scroll distance would shrink.
     timeline.set({}, {}, total);
   }, stage);
 
-  return () => {
+  const goTo = (order: number) => {
+    const start = runway.getBoundingClientRect().top + window.scrollY;
+    const position = gsap.utils.clamp(0, travel, order * viewport);
+    scrollToTop(start + (hold + position) * PACE);
+  };
+
+  const destroy = () => {
     context.revert();
     for (const frame of frames) {
       delete frame.dataset.reveal;
@@ -252,4 +260,5 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
     gsap.set(track, { clearProps: "transform" });
     undo();
   };
+  return { destroy, goTo };
 }

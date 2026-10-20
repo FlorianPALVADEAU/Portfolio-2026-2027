@@ -25,6 +25,31 @@ test.describe("skills rail", () => {
     await expect.poll(position).toBeLessThan(before - 200);
   });
 
+  test("jumps to a frame from the progress bar", async ({ page }) => {
+    await page.goto("/en");
+    const skills = page.getByRole("region", { name: "Skills" });
+    await skills.evaluate((section) => section.scrollIntoView());
+    // Let the smooth scroll settle, as it would before a person reaches for the bar.
+    await page.waitForTimeout(1000);
+
+    await skills
+      .getByRole("navigation", { name: "Parts of the section" })
+      .getByRole("button", { name: /Delivery/ })
+      .dispatchEvent("click");
+
+    // The frame is centred once its own heading is on screen and the previous one has left it.
+    const heading = skills.getByRole("heading", { name: "Delivery" });
+    const previous = skills.getByRole("heading", { name: "Infrastructure" });
+    const width = page.viewportSize()?.width ?? 0;
+    await expect
+      .poll(async () => {
+        const x = (await heading.boundingBox())?.x ?? -1;
+        const left = (await previous.boundingBox())?.x ?? 0;
+        return x >= 0 && x < width && left < 0;
+      })
+      .toBe(true);
+  });
+
   test("shows every frame stacked under reduced motion", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/en");

@@ -68,7 +68,7 @@ export function CollaborationFrame({ order, total, messages }: GroupFrameProps) 
       <Pop
         from="wipe"
         delay={0.2}
-        className="group/photo relative aspect-[5/2] overflow-hidden rounded-3xl md:col-span-6 md:aspect-auto md:h-[62svh]"
+        className="group/photo relative aspect-video overflow-hidden rounded-3xl md:col-span-6 md:aspect-auto md:h-[62svh]"
       >
         <div data-frame-parallax="0.1" className="absolute inset-y-0 -inset-x-[16%]">
           <Image

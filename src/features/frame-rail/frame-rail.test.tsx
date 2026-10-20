@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { Frame, FrameRail } from ".";
 
@@ -13,6 +13,7 @@ function mockMotion(reduced: boolean) {
 function renderRail() {
   return render(
     <FrameRail
+      navLabel="Parts"
       frames={[
         { id: "one", label: "First" },
         { id: "two", label: "Second" },
@@ -49,12 +50,12 @@ describe("FrameRail", () => {
     expect(container.querySelector("[data-motion]")).toHaveAttribute("data-motion", "static");
   });
 
-  it("hides the progress bar from assistive technology", () => {
+  it("offers the bar as navigation that names every frame", () => {
     mockMotion(true);
     renderRail();
 
-    const label = screen.getByText("Second", { selector: "span" });
-    expect(label.closest("[aria-hidden='true']")).not.toBeNull();
-    expect(screen.getByRole("heading", { name: "Second frame" })).toBeInTheDocument();
+    const nav = screen.getByRole("navigation", { name: "Parts" });
+    expect(within(nav).getAllByRole("button")).toHaveLength(2);
+    expect(within(nav).getByRole("button", { name: /Second/ })).toBeInTheDocument();
   });
 });
