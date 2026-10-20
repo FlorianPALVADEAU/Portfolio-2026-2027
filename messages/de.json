@@ -69,6 +69,25 @@
       "paragraph": "Ich entwerfe, entwickle und betreibe Webanwendungen in TypeScript, von Unternehmensintegrationen bis zur Ticketing-Plattform eines Rennens, das ich gegründet habe. Ich arbeite vom ersten Bedarf bis zum Produktivbetrieb, mit einer Architektur, die lesbar bleibt, und einer Auslieferung, die ruhig bleibt, damit sich Teams auf das Wesentliche konzentrieren können.",
       "clients": "Unternehmen, mit denen ich gearbeitet habe"
     },
+    "gallery": {
+      "hint": "Scrollen, um einzutauchen.",
+      "invitation": "Ab September 2027 bin ich offen für Full-Stack-Stellen in Genf und im Kanton Waadt. Wenn meine Arbeit für Ihr Team interessant ist, melden Sie sich über eines dieser Profile.",
+      "images": {
+        "peak": "Schneebedeckter Berggipfel bei Sonnenaufgang",
+        "meadow": "Grüne Wiese unter weitem Himmel",
+        "forest": "Hohe Bäume in einem Nebelwald",
+        "fog": "Hügel, die aus dem Nebel ragen",
+        "lake": "Ruhiger Bergsee in der Dämmerung",
+        "shore": "Wellen an einem Sandstrand",
+        "ocean": "Brechende dunkle Meereswelle",
+        "field": "Goldenes Feld im Abendlicht",
+        "ridge": "Zerklüfteter Bergkamm vor dem Himmel",
+        "falls": "Wasserfall in einer grünen Schlucht",
+        "valley": "Grünes Tal zwischen steilen Hügeln",
+        "road": "Feldweg durch einen Wald",
+        "light": "Sonnenstrahlen über einem weiten Feld"
+      }
+    },
     "skills": {
       "groups": {
         "engineering": {
@@ -155,7 +174,6 @@
       }
     },
     "contact": {
-      "invitation": "Ab September 2027 bin ich offen für Full-Stack-Stellen in Genf und im Kanton Waadt. Wenn meine Arbeit für Ihr Team interessant ist, melden Sie sich über eines dieser Profile.",
       "profiles": "Profile",
       "newTab": "öffnet in einem neuen Tab",
       "form": {

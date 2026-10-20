@@ -34,14 +34,14 @@ describe("Home", () => {
   it("renders every landing section with an anchor and a heading, in order", () => {
     render(<Home locale="en" messages={messages} projects={projects} />);
 
-    const headings = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
-    expect(headings).toEqual([
+    const headings = [
       "Software engineer by day, race organiser on the side.",
       "Selected works",
       "Skills",
       "Gallery",
       "Let's work together",
-    ]);
+    ].map((name) => screen.getByRole("heading", { level: 2, name }));
+    expect(screen.getAllByRole("heading", { level: 2 })).toEqual(headings);
     expect(screen.getByRole("region", { name: "Introduction" })).toHaveAttribute("id", "intro");
     expect(screen.getByRole("region", { name: "About me (IRL)" })).toHaveAttribute("id", "about");
     expect(screen.getByRole("region", { name: "Skills" })).toHaveAttribute("id", "skills");

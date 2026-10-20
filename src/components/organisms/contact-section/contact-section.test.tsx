@@ -6,7 +6,7 @@ import { ContactSection } from "./contact-section";
 describe("ContactSection", () => {
   it("links the approved profiles in a new tab and exposes the slot", () => {
     render(
-      <ContactSection title="Contact" messages={en.home.contact}>
+      <ContactSection title="Contact" messages={en.home.contact} photo={en.home.photos.closing}>
         <p>form slot</p>
       </ContactSection>,
     );
@@ -21,7 +21,9 @@ describe("ContactSection", () => {
   });
 
   it("publishes no email address or phone number", () => {
-    const { container } = render(<ContactSection title="Contact" messages={en.home.contact} />);
+    const { container } = render(
+      <ContactSection title="Contact" messages={en.home.contact} photo={en.home.photos.closing} />,
+    );
 
     expect(container.innerHTML).not.toMatch(/@[\w-]+\.\w+|mailto:|tel:/);
   });

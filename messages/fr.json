@@ -64,6 +64,25 @@
       "paragraph": "Je conçois, développe et exploite des applications web en TypeScript, des intégrations d'entreprise à la billetterie d'une course que j'ai fondée. Je travaille du premier besoin à la mise en production, avec une architecture qui reste lisible et une livraison qui reste sereine, pour que les équipes se concentrent sur l'essentiel.",
       "clients": "Entreprises avec lesquelles j'ai travaillé"
     },
+    "gallery": {
+      "hint": "Faites défiler pour plonger.",
+      "invitation": "Je suis ouvert aux postes full-stack à Genève et dans le canton de Vaud à partir de septembre 2027. Si mon travail peut intéresser votre équipe, écrivez-moi via l'un de ces profils.",
+      "images": {
+        "peak": "Sommet enneigé au lever du soleil",
+        "meadow": "Prairie verte sous un grand ciel",
+        "forest": "Grands arbres dans une forêt brumeuse",
+        "fog": "Collines émergeant de la brume",
+        "lake": "Lac de montagne calme au crépuscule",
+        "shore": "Vagues sur une plage de sable",
+        "ocean": "Vague sombre qui se brise",
+        "field": "Champ doré dans la lumière du soir",
+        "ridge": "Crête de montagne déchiquetée contre le ciel",
+        "falls": "Cascade tombant dans une gorge verte",
+        "valley": "Vallée verte entre des collines abruptes",
+        "road": "Chemin de terre à travers une forêt",
+        "light": "Rayons de soleil sur un grand champ"
+      }
+    },
     "skills": {
       "groups": {
         "engineering": {
@@ -150,7 +169,6 @@
       }
     },
     "contact": {
-      "invitation": "Je suis ouvert aux postes full-stack à Genève et dans le canton de Vaud à partir de septembre 2027. Si mon travail peut intéresser votre équipe, écrivez-moi via l'un de ces profils.",
       "profiles": "Profils",
       "newTab": "s'ouvre dans un nouvel onglet",
       "form": {
