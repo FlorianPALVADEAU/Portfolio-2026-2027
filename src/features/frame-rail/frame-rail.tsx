@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode, useLayoutEffect, useRef } from "react";
-import { onReducedMotionChange, prefersReducedMotion } from "@/lib/motion";
+import { NATIVE_SCROLL_ATTRIBUTE, onReducedMotionChange, prefersReducedMotion } from "@/lib/motion";
 import { buildRail } from "./build-rail";
 
 type FrameRailProps = {
@@ -52,7 +52,7 @@ export function FrameRail({ frames, children }: FrameRailProps) {
   }, []);
 
   return (
-    <div ref={runway}>
+    <div ref={runway} {...{ [NATIVE_SCROLL_ATTRIBUTE]: "" }}>
       <div
         ref={stage}
         data-motion="static"

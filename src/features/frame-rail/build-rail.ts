@@ -1,5 +1,6 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SMALL_SCREEN_QUERY } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,8 +15,6 @@ const HOLD_RATIO = 0.6;
 
 /** Share of the screen height scrolled while a closing photo shrinks and its texts appear. */
 const FINALE_RATIO = 1.2;
-/** Below this width the rail snaps to each frame: a thumb cannot land one precisely. */
-const SNAP_BELOW = "(max-width: 999px)";
 
 export type RailParts = {
   runway: HTMLElement;
@@ -204,7 +203,7 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
         start: "top top",
         end: "bottom bottom",
         scrub: 0.6,
-        ...(window.matchMedia(SNAP_BELOW).matches && {
+        ...(window.matchMedia(SMALL_SCREEN_QUERY).matches && {
           snap: {
             snapTo: snapPoints,
             inertia: false,
