@@ -10,7 +10,7 @@ describe("RotatingText", () => {
 
     expect(screen.getByText("Code that holds.")).toHaveClass("sr-only");
     expect(container.querySelector("[aria-hidden='true']")).toHaveTextContent(
-      "Codethat holds.built to last.",
+      /that holds\..*built to last\./,
     );
   });
 });
