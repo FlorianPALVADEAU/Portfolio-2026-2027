@@ -1,0 +1,140 @@
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/** Pixels of scrolling for each pixel the track travels; under 1 so a frame never drags on. */
+const PACE = 0.8;
+const MAX_SKEW_DEG = 3;
+/** Scroll velocity, in pixels per second, that adds one degree of skew. */
+const VELOCITY_PER_DEG = 900;
+const COUNT_SECONDS = 1.6;
+
+export type RailParts = {
+  runway: HTMLElement;
+  stage: HTMLElement;
+  track: HTMLElement;
+};
+
+function pick<T extends Element>(root: ParentNode, selector: string): T[] {
+  return Array.from(root.querySelectorAll<T>(selector));
+}
+
+/** Figures read their final value without JavaScript; once pinned they count up when revealed. */
+function setCounters(frame: HTMLElement, value: (target: number) => string) {
+  for (const counter of pick<HTMLElement>(frame, "[data-count-to]")) {
+    counter.textContent = value(Number(counter.dataset.countTo));
+  }
+}
+
+function countUp(frame: HTMLElement) {
+  for (const counter of pick<HTMLElement>(frame, "[data-count-to]")) {
+    const state = { value: 0 };
+    gsap.to(state, {
+      value: Number(counter.dataset.countTo),
+      duration: COUNT_SECONDS,
+      ease: "power2.out",
+      onUpdate: () => {
+        counter.textContent = String(Math.round(state.value));
+      },
+    });
+  }
+}
+
+/**
+ * Turns the stage into a pinned horizontal rail and returns a function that undoes it. The runway
+ * is as tall as the scrolling asked for, the stage sticks to the top of it, and one scrubbed
+ * timeline slides the track from frame to frame, settling on a frame whenever scrolling stops.
+ * The content of a frame is revealed the first time the frame reaches the middle of the screen.
+ */
+export function buildRail({ runway, stage, track }: RailParts): () => void {
+  stage.dataset.motion = "rail";
+  const frames = pick<HTMLElement>(track, "[data-frame]");
+  const viewport = stage.clientWidth;
+  const travel = track.scrollWidth - viewport;
+
+  const undo = () => {
+    runway.style.removeProperty("height");
+    stage.dataset.motion = "static";
+  };
+  if (travel <= 0 || frames.length < 2) {
+    undo();
+    return () => {};
+  }
+  runway.style.height = `${travel * PACE + stage.clientHeight}px`;
+
+  for (const frame of frames) {
+    frame.dataset.reveal = "off";
+    setCounters(frame, () => "0");
+  }
+
+  const context = gsap.context(() => {
+    const reveal = (frame: HTMLElement | undefined) => {
+      if (!frame || frame.dataset.reveal === "on") return;
+      frame.dataset.reveal = "on";
+      countUp(frame);
+    };
+    reveal(frames[0]);
+
+    const skew = { value: 0 };
+    const clampSkew = gsap.utils.clamp(-MAX_SKEW_DEG, MAX_SKEW_DEG);
+    const applySkew = () => gsap.set(track, { skewX: skew.value });
+    const timeline = gsap.timeline({
+      defaults: { ease: "none" },
+      scrollTrigger: {
+        trigger: runway,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.5,
+        snap: {
+          snapTo: 1 / (frames.length - 1),
+          duration: { min: 0.2, max: 0.6 },
+          delay: 0.08,
+          ease: "power2.inOut",
+        },
+        onUpdate: (self) => {
+          reveal(frames[Math.round(self.progress * (frames.length - 1))]);
+          const target = clampSkew(-self.getVelocity() / VELOCITY_PER_DEG);
+          if (Math.abs(target) <= Math.abs(skew.value)) return;
+          skew.value = target;
+          applySkew();
+          gsap.to(skew, {
+            value: 0,
+            duration: 0.8,
+            ease: "power3.out",
+            overwrite: true,
+            onUpdate: applySkew,
+          });
+        },
+      },
+    });
+
+    // Every position and duration below is in pixels of travel.
+    timeline.to(track, { x: -travel, duration: travel }, 0);
+
+    for (const layer of pick<HTMLElement>(track, "[data-frame-parallax]")) {
+      const reach = Number(layer.dataset.frameParallax) * viewport;
+      timeline.fromTo(layer, { x: reach }, { x: -reach, duration: travel }, 0);
+    }
+
+    // A frame fills its segment of the bar from the moment it is half way in until it is half way out.
+    pick<HTMLElement>(stage, "[data-frame-fill]").forEach((fill, order) => {
+      const from = Math.max(0, (order - 0.5) * viewport);
+      const to = Math.min(travel, (order + 0.5) * viewport);
+      timeline.fromTo(fill, { scaleX: 0 }, { scaleX: 1, duration: Math.max(1, to - from) }, from);
+    });
+
+    // Without this the timeline ends with its last tween, and the scroll distance would shrink.
+    timeline.set({}, {}, travel);
+  }, stage);
+
+  return () => {
+    context.revert();
+    for (const frame of frames) {
+      delete frame.dataset.reveal;
+      setCounters(frame, String);
+    }
+    gsap.set(track, { clearProps: "transform" });
+    undo();
+  };
+}

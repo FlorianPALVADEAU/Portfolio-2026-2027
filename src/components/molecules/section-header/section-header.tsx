@@ -7,7 +7,7 @@ type SectionHeaderProps = {
   title: string;
   /** Id of the heading, so the section can be labelled by it. */
   titleId: string;
-  size?: "3xl" | "display";
+  size?: "2xl" | "3xl" | "display";
 };
 
 export function SectionHeader({ index, title, titleId, size = "3xl" }: SectionHeaderProps) {

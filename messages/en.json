@@ -66,22 +66,42 @@
     "skills": {
       "groups": {
         "engineering": {
-          "title": "Engineering"
+          "title": "Engineering",
+          "lead": "Complete products, from the database to the interface."
         },
         "infrastructure": {
-          "title": "Infrastructure"
+          "title": "Infrastructure",
+          "lead": "From commit to production: automated tests, images and Kubernetes deployments."
         },
         "delivery": {
           "title": "Delivery",
-          "items": ["Scrum", "Hexagonal architecture", "SOLID", "Microservices", "Planning"]
+          "items": ["Scrum", "Hexagonal architecture", "SOLID", "Microservices", "Planning"],
+          "lead": "Shipping as a team without wearing down the architecture."
         },
         "collaboration": {
           "title": "Collaboration",
-          "items": ["International teams in English", "Requirements gathering"]
+          "items": ["International teams in English", "Requirements gathering"],
+          "lead": "Working with international teams and turning needs into product."
         }
       },
       "certifications": "Certifications",
-      "hint": "Keep scrolling"
+      "experiences": {
+        "neurones": "Full-stack developer",
+        "jcdecaux": "Software engineer",
+        "overbound": "Founder"
+      },
+      "pipeline": {
+        "push": "Push",
+        "test": "Tests",
+        "build": "Build",
+        "deploy": "Deploy"
+      },
+      "stats": {
+        "features": "features shipped",
+        "users": "daily users across two applications",
+        "countries": "countries covered by the applications",
+        "englishCountries": "countries on the team, collaborating in English"
+      }
     },
     "about": {
       "hook": "Software engineer by day, race organiser on the side.",

@@ -11,5 +11,5 @@ const meta = {
 
 export default meta;
 
-/** Scroll the canvas: the section pins and slides sideways while a wave is drawn through the skills. */
+/** Scroll the canvas: the section pins and slides from frame to frame, each revealing its content. */
 export const Default: StoryObj<typeof meta> = {};
