@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { type CSSProperties, type ReactNode, useLayoutEffect, useRef } from "react";
 import type { FrameSources } from "@/lib/landing";
-import { prefersReducedMotion } from "@/lib/motion";
+import { clearScrollHint, markScrollHint, prefersReducedMotion } from "@/lib/motion";
 import { createFramePlayer } from "./frame-player";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -84,7 +84,8 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
       return () => player?.destroy();
     }
 
-    const cleanups: (() => void)[] = [];
+    markScrollHint(element, sequencePx + REVEAL_PX, "7rem");
+    const cleanups: (() => void)[] = [() => clearScrollHint(element)];
     const context = gsap.context(() => {
       // Every position and duration below is in pixels of scrolling.
       const state = { progress: 0 };

@@ -59,7 +59,7 @@
       "base": "Code",
       "phrases": ["that holds.", "built to last.", "cleanly structured.", "of real quality."]
     },
-    "scroll": "Scroll to begin",
+    "scrollHint": "Scroll",
     "intro": {
       "paragraph": "I design, build and run web applications in TypeScript, from enterprise integrations to the ticketing platform of a race I founded. I work from the first requirement to production, with an architecture that stays readable and a delivery that stays calm, so that teams can focus on what matters.",
       "clients": "Companies I have worked with"

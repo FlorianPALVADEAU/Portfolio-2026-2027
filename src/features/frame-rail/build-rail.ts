@@ -1,6 +1,6 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SMALL_SCREEN_QUERY, scrollToTop } from "@/lib/motion";
+import { clearScrollHint, markScrollHint, SMALL_SCREEN_QUERY, scrollToTop } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -172,6 +172,10 @@ export function buildRail({ runway, stage, track }: RailParts): Rail {
   const pace = small ? SMALL_SCREEN_PACE : PACE;
   runway.style.height = `${total * pace + stage.clientHeight}px`;
 
+  // A frame taller than the screen scrolls inside itself, so the keyboard has to be able to reach it.
+  const scrollable = frames.filter((frame) => frame.scrollHeight > frame.clientHeight);
+  for (const frame of scrollable) frame.tabIndex = 0;
+
   for (const frame of frames) {
     frame.dataset.reveal = "off";
     setCounters(frame, () => "0");
@@ -195,6 +199,8 @@ export function buildRail({ runway, stage, track }: RailParts): Rail {
     );
   const snapNearby = (progress: number) =>
     snapPoints[gsap.utils.clamp(resting - 1, resting + 1, nearest(progress))] ?? progress;
+
+  markScrollHint(runway, (hold + travel + finale) * pace, "3.25rem");
 
   const context = gsap.context(() => {
     const reveal = (frame: HTMLElement | undefined) => {
@@ -271,7 +277,9 @@ export function buildRail({ runway, stage, track }: RailParts): Rail {
   };
 
   const destroy = () => {
+    clearScrollHint(runway);
     context.revert();
+    for (const frame of scrollable) frame.removeAttribute("tabindex");
     for (const frame of frames) {
       delete frame.dataset.reveal;
       setCounters(frame, String);

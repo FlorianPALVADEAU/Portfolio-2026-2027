@@ -31,7 +31,13 @@ export function FrameRail({ frames, navLabel, children }: FrameRailProps) {
 
     let teardown = () => {};
     let built = "";
-    const signature = () => `${rail.stage.clientWidth}:${rail.track.scrollWidth}`;
+    const contents = Array.from(rail.track.querySelectorAll("[data-frame] > div"));
+    // Which frames overflow decides which ones the keyboard must be able to reach.
+    const overflowing = () =>
+      Array.from(rail.track.querySelectorAll("[data-frame]")).filter(
+        (frame) => frame.scrollHeight > frame.clientHeight,
+      ).length;
+    const signature = () => `${rail.stage.clientWidth}:${rail.track.scrollWidth}:${overflowing()}`;
     const mount = () => {
       teardown();
       const active = prefersReducedMotion() ? null : buildRail(rail);
@@ -47,6 +53,7 @@ export function FrameRail({ frames, navLabel, children }: FrameRailProps) {
     });
     observer.observe(rail.stage);
     observer.observe(rail.track);
+    for (const content of contents) observer.observe(content);
     const stopListening = onReducedMotionChange(mount);
 
     return () => {
