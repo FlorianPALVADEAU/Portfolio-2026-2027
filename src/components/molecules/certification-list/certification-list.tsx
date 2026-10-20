@@ -37,12 +37,12 @@ export function CertificationList({ items, labels }: CertificationListProps) {
           <Pop from="pop" delay={0.25 + order * STAGGER_SECONDS} className="h-full">
             <div className="group/plate relative flex h-full items-center gap-3 overflow-hidden rounded-3xl border border-border bg-surface p-3 transition-[border-color,box-shadow] duration-(--duration-base) hover:border-accent hover:shadow-lg md:min-h-[26rem] md:flex-col md:items-stretch md:justify-between md:gap-6 md:p-6">
               <div className="relative flex size-24 shrink-0 items-center justify-center md:size-auto md:flex-1">
+                {/* Drawn from a pseudo-element: the date is already in the text below, and an outlined glyph is not text a contrast audit can judge. */}
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-x-0 top-0 flex justify-center text-center text-[1.1rem] leading-none font-semibold tracking-tighter whitespace-nowrap text-transparent uppercase select-none [-webkit-text-stroke:1px_color-mix(in_oklch,var(--foreground)_35%,transparent)] md:top-2 md:text-[clamp(2.25rem,4vw,4.5rem)]"
-                >
-                  <span>{item.issued}</span>
-                </span>
+                  data-date={item.issued}
+                  className="pointer-events-none absolute inset-x-0 top-0 flex justify-center text-center text-[1.1rem] leading-none font-semibold tracking-tighter whitespace-nowrap text-transparent uppercase select-none before:content-[attr(data-date)] before:[-webkit-text-stroke:1px_color-mix(in_oklch,var(--foreground)_35%,transparent)] md:top-2 md:text-[clamp(2.25rem,4vw,4.5rem)]"
+                />
                 <span
                   aria-hidden="true"
                   className="absolute size-16 rounded-full bg-accent/25 blur-3xl transition-transform duration-(--duration-slow) group-hover/plate:scale-125 md:size-40"

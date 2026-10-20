@@ -10,6 +10,21 @@ export async function expectNoA11yViolations(page: Page) {
       (element) => (element as HTMLElement).dataset.entranceState === "done",
     ),
   );
-  const { violations } = await new AxeBuilder({ page }).withTags(WCAG_AA_TAGS).analyze();
+  // Reveal transitions blend colors too; looping animations never end, so only finite ones count.
+  await page.waitForFunction(() =>
+    document
+      .getAnimations()
+      .every(
+        (animation) =>
+          animation.playState !== "running" ||
+          animation.effect?.getComputedTiming().iterations === Infinity,
+      ),
+  );
+  // Scroll-scrubbed words (intro, gallery) are dimmed or blurred on purpose until reached; the full text stays in the DOM and readable.
+  const { violations } = await new AxeBuilder({ page })
+    .withTags(WCAG_AA_TAGS)
+    .exclude("[data-lit-word]")
+    .exclude("[data-zoom-word]")
+    .analyze();
   expect(violations, JSON.stringify(violations, null, 2)).toEqual([]);
 }
