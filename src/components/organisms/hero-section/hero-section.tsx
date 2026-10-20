@@ -1,13 +1,14 @@
 import Image from "next/image";
 import { Button } from "@/components/atoms/button";
 import { Heading } from "@/components/atoms/heading";
+import { RotatingText } from "@/features/rotating-text";
 import { ScrollSequence } from "@/features/scroll-sequence";
 import type { Messages } from "@/lib/i18n";
 import { genevaAscent, heroPhotoSlots } from "@/lib/landing";
 import { cn } from "@/lib/utils";
 
 type HeroSectionProps = {
-  messages: Pick<Messages["home"], "badge" | "role" | "headline" | "cv" | "scroll">;
+  messages: Pick<Messages["home"], "badge" | "role" | "headline" | "cv" | "scroll" | "opening">;
   /** Public URL of the CV in the visitor's language; omitted when none has been added. */
   cvHref?: string | null;
   /** Public URLs of the photos to scatter around the headline; the first ones fill the slots. */
@@ -30,6 +31,7 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
               <div
                 key={src}
                 aria-hidden="true"
+                data-depth={slot.depth}
                 style={{ rotate: `${slot.tilt}deg` }}
                 className={cn("absolute", slot.className)}
               >
@@ -49,7 +51,10 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
             )
           );
         })}
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 px-(--gutter) text-center">
+        <div
+          data-depth={-0.3}
+          className="absolute inset-0 flex flex-col items-center justify-center gap-5 px-(--gutter) text-center"
+        >
           <Heading level={1} size="display" data-sequence-reveal className="max-w-4xl">
             <span className="sr-only">Florian Palvadeau.</span> {messages.headline}
           </Heading>
@@ -60,11 +65,30 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
             {messages.role}
           </p>
         </div>
-        <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-3 px-(--gutter) md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-4 pb-6 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+        <div
+          data-sequence-fade
+          className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-(--gutter) text-center"
+        >
+          <p className="font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
+            Florian Palvadeau
+          </p>
+          <RotatingText
+            base={messages.opening.base}
+            phrases={messages.opening.phrases}
+            className="max-w-5xl text-[clamp(2.5rem,1rem+6vw,7rem)] leading-[0.95] font-semibold tracking-tight text-balance"
+          />
+        </div>
+        <div
+          aria-hidden="true"
+          data-sequence-fade
+          className="absolute inset-x-0 bottom-28 flex flex-col items-center gap-3 font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)] md:bottom-20"
+        >
+          <span>{messages.scroll}</span>
+          <span className="h-10 w-px origin-top animate-pulse bg-current motion-reduce:animate-none" />
+        </div>
+        <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-3 px-(--gutter) md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-4 pb-6 font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
           <span>{messages.badge}</span>
-          <span aria-hidden="true" data-sequence-fade className="hidden md:block">
-            {messages.scroll}
-          </span>
+          <span aria-hidden="true" className="hidden md:block" />
           <span className="md:justify-self-end">
             {cvHref && (
               <Button asChild size="sm" variant="outline">

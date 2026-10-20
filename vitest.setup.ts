@@ -15,3 +15,12 @@ if (typeof window !== "undefined" && !window.matchMedia) {
       removeEventListener: () => {},
     }) as unknown as MediaQueryList;
 }
+
+// jsdom has no ResizeObserver either; the frame player only needs it to exist.
+if (typeof window !== "undefined" && !window.ResizeObserver) {
+  window.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
