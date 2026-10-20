@@ -21,7 +21,7 @@ test.describe("skills rail", () => {
       })
       .toBe(true);
 
-    await page.mouse.wheel(0, 900);
+    await page.mouse.wheel(0, 2400);
     await expect.poll(position).toBeLessThan(before - 200);
   });
 

@@ -1,15 +1,20 @@
 import type { SkillIcon } from "@/lib/landing";
 
 type SkillChipProps = {
+  /** Shows the chip as picked, as hovering does; for chips that open something. */
+  active?: boolean;
   name: string;
   /** Logo of the technology; practices and tools without one show the name alone. */
   icon: SkillIcon | null;
 };
 
 /** A pill with the logo and name of a skill. It lifts and takes the accent colour on hover. */
-export function SkillChip({ name, icon }: SkillChipProps) {
+export function SkillChip({ name, icon, active = false }: SkillChipProps) {
   return (
-    <span className="group/chip inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-sm font-medium transition-[translate,border-color,box-shadow] duration-(--duration-base) hover:-translate-y-0.5 hover:border-accent hover:shadow-lg">
+    <span
+      data-active={active || undefined}
+      className="group/chip inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-sm font-medium transition-[translate,border-color,box-shadow] duration-(--duration-base) hover:-translate-y-0.5 hover:border-accent hover:shadow-lg data-active:-translate-y-0.5 data-active:border-accent data-active:shadow-lg"
+    >
       {icon && (
         <svg
           aria-hidden="true"

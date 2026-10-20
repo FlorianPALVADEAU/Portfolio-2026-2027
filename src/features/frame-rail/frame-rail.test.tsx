@@ -17,7 +17,6 @@ function renderRail() {
         { id: "one", label: "First" },
         { id: "two", label: "Second" },
       ]}
-      header={<h2>Skills</h2>}
     >
       <Frame aria-labelledby="one">
         <h3 id="one">First frame</h3>

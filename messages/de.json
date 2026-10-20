@@ -81,7 +81,14 @@
         "delivery": {
           "title": "Delivery",
           "items": ["Scrum", "Hexagonale Architektur", "SOLID", "Microservices", "Planung"],
-          "lead": "Im Team liefern, ohne die Architektur auszuhöhlen."
+          "lead": "Im Team liefern, ohne die Architektur auszuhöhlen.",
+          "notes": [
+            "Kurze Sprints und regelmässige Reviews: das Team liefert in kleinen Schritten und steuert schnell nach. PSM-I-zertifiziert.",
+            "Die Fachlogik steht im Zentrum, über Ports und Adapter von Datenbank und Frameworks getrennt. Leichter zu testen und weiterzuentwickeln.",
+            "Fünf Prinzipien für lesbaren Code: eine Verantwortung pro Klasse, offen für Erweiterung, umgekehrte Abhängigkeiten.",
+            "Kleine, unabhängige Services, getrennt ausgeliefert. Im Monorepo der JCDecaux-Anwendungen praktiziert.",
+            "Zerlegen, schätzen, ordnen: wissen, was wann erscheint, und sofort Bescheid geben, wenn es rutscht."
+          ]
         },
         "collaboration": {
           "title": "Zusammenarbeit",
@@ -109,7 +116,13 @@
       },
       "certificationsLead": "Unabhängige Bestätigung meiner Cloud-, Kubernetes- und Scrum-Kenntnisse.",
       "verify": "Prüfen",
-      "credentialId": "Zertifikats-ID"
+      "credentialId": "Zertifikats-ID",
+      "pipelineNotes": {
+        "push": "Jede Änderung beginnt auf einem Branch mit geprüftem Pull Request.",
+        "test": "Tests laufen automatisch: bei roten Tests geht nichts durch.",
+        "build": "Die Anwendung wird gebaut und als Image verpackt, jedes Mal auf dieselbe Weise.",
+        "deploy": "Das Image geht auf Kubernetes, bei AWS."
+      }
     },
     "about": {
       "hook": "Tagsüber Softwareingenieur, nebenbei Rennveranstalter.",

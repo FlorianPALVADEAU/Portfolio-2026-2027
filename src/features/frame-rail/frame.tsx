@@ -8,13 +8,13 @@ type FrameProps = ComponentPropsWithoutRef<"section"> & {
 
 /**
  * One screen of the rail. Pinned, it fills the viewport and centres its content; stacked, it is
- * an ordinary block. Give it `aria-labelledby` so each frame is a named region.
+ * an ordinary block. Content taller than the screen, as on a small phone, scrolls inside it. Give it `aria-labelledby` so each frame is a named region.
  */
 export function Frame({ numeral, className, children, ...props }: FrameProps) {
   return (
     <section
       data-frame
-      className="relative px-(--gutter) in-data-[motion=rail]:h-full in-data-[motion=rail]:w-screen in-data-[motion=rail]:shrink-0 in-data-[motion=rail]:pt-24 in-data-[motion=rail]:pb-14 md:in-data-[motion=rail]:pt-28 md:in-data-[motion=rail]:pb-16"
+      className="relative px-(--gutter) in-data-[motion=rail]:h-full in-data-[motion=rail]:w-screen in-data-[motion=rail]:shrink-0 in-data-[motion=rail]:overflow-y-auto in-data-[motion=rail]:pt-24 in-data-[motion=rail]:pb-16 in-data-[motion=rail]:[scrollbar-width:none]"
       {...props}
     >
       {numeral && (
@@ -28,7 +28,7 @@ export function Frame({ numeral, className, children, ...props }: FrameProps) {
       )}
       <div
         className={cn(
-          "relative mx-auto flex w-full max-w-(--container-max) flex-col in-data-[motion=rail]:h-full in-data-[motion=rail]:justify-center",
+          "relative mx-auto flex w-full max-w-(--container-max) flex-col in-data-[motion=rail]:min-h-full in-data-[motion=rail]:justify-center",
           className,
         )}
       >

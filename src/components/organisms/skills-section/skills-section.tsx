@@ -28,11 +28,10 @@ export function SkillsSection({ index, title, messages }: SkillsSectionProps) {
 
   return (
     <Section id="skills" aria-labelledby="skills-title" className="scroll-mt-4 py-0">
-      <FrameRail
-        frames={frames}
-        header={<SectionHeader index={index} title={title} titleId="skills-title" size="2xl" />}
-      >
-        <EngineeringFrame order={1} {...props} />
+      <FrameRail frames={frames}>
+        <EngineeringFrame order={1} {...props}>
+          <SectionHeader index={index} title={title} titleId="skills-title" size="2xl" />
+        </EngineeringFrame>
         <InfrastructureFrame order={2} {...props} />
         <DeliveryFrame order={3} {...props} />
         <CollaborationFrame order={4} {...props} />

@@ -3,7 +3,8 @@ import Image from "next/image";
 import { Icon } from "@/components/atoms/icon";
 import { Link } from "@/components/atoms/link";
 import { Pop } from "@/components/atoms/pop";
-import { Text } from "@/components/atoms/text";
+import { cn } from "@/lib/utils";
+import { TiltPlate } from "./tilt-plate";
 
 type CertificationListProps = {
   items: readonly {
@@ -23,59 +24,69 @@ type CertificationListProps = {
 const STAGGER_SECONDS = 0.15;
 
 /**
- * One card per credential: the badge, issuer and year, the name and score, the identifier, and a
- * link to the issuer's page that checks it. The badge turns and grows on hover.
+ * One plate per credential, hung at slightly different heights: the badge large on a glow, the
+ * name beneath, and the score (or the year) as an outlined figure behind. The identifier and the
+ * verification link show on hover or focus with a mouse, and always on a touch screen.
  */
 export function CertificationList({ items, labels }: CertificationListProps) {
   return (
-    <ul className="grid gap-3 md:grid-cols-3 md:gap-5">
+    <ul className="grid gap-4 md:grid-cols-3 md:gap-6">
       {items.map((item, order) => (
-        <li key={item.id}>
+        <li key={item.id} className={cn(order === 1 && "md:mt-12")}>
           <Pop from="pop" delay={0.25 + order * STAGGER_SECONDS} className="h-full">
-            <div className="group/cert flex h-full flex-col justify-between gap-2 rounded-3xl border border-border bg-surface p-3.5 md:gap-6 transition-[translate,border-color,box-shadow] duration-(--duration-base) hover:-translate-y-1 hover:border-accent hover:shadow-lg md:min-h-72 md:p-6">
-              <div className="flex items-start justify-between gap-4">
+            <TiltPlate className="group/plate relative flex h-full min-h-72 flex-col justify-between gap-6 overflow-hidden rounded-[2rem] border border-border bg-surface p-6 transition-[border-color,box-shadow] duration-(--duration-base) [transform-style:preserve-3d] hover:border-accent hover:shadow-lg md:min-h-[26rem]">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-4 -right-2 text-[clamp(6rem,11vw,10rem)] leading-none font-semibold tracking-tighter text-transparent select-none [-webkit-text-stroke:1px_var(--border)]"
+              >
+                {item.score ?? item.year}
+              </span>
+              <div className="relative flex flex-1 items-center justify-center">
+                <span
+                  aria-hidden="true"
+                  className="absolute size-40 rounded-full bg-accent/25 blur-3xl transition-transform duration-(--duration-slow) group-hover/plate:scale-125"
+                />
                 <Image
                   src={item.logo}
                   alt=""
-                  width={80}
-                  height={80}
+                  width={160}
+                  height={160}
                   unoptimized
-                  className="size-12 rounded-xl transition-transform duration-(--duration-slow) ease-out-expo group-hover/cert:scale-110 group-hover/cert:-rotate-6 md:size-20"
+                  className="relative size-28 drop-shadow-2xl transition-transform duration-(--duration-slow) ease-out-expo group-hover/plate:scale-110 md:size-36"
                 />
-                <Text as="span" size="sm" tone="muted" className="font-mono">
-                  {`${item.issuer} · ${item.year}`}
-                </Text>
               </div>
-              <div className="flex flex-col gap-2 md:gap-4">
-                <div className="flex flex-col gap-1">
-                  {item.score && (
-                    <p className="text-3xl font-semibold tracking-tighter text-accent md:text-5xl tabular-nums">
-                      {item.score}
-                    </p>
-                  )}
-                  <p className="text-xl font-semibold text-pretty">{item.name}</p>
+              <div className="relative flex flex-col gap-1">
+                <p className="text-2xl font-semibold text-pretty">{item.name}</p>
+                <p className="text-sm text-muted-foreground">
+                  {[item.issuer, item.year, item.score].filter(Boolean).join(" · ")}
+                </p>
+                <div className="grid transition-[grid-template-rows,opacity] duration-(--duration-base) pointer-fine:grid-rows-[0fr] pointer-fine:opacity-0 pointer-fine:group-focus-within/plate:grid-rows-[1fr] pointer-fine:group-focus-within/plate:opacity-100 pointer-fine:group-hover/plate:grid-rows-[1fr] pointer-fine:group-hover/plate:opacity-100">
+                  <div className="flex flex-col gap-2 overflow-hidden">
+                    <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3 text-sm">
+                      {item.credentialId && (
+                        <p className="flex flex-wrap gap-x-2 font-mono text-xs break-all text-muted-foreground">
+                          <span>{labels.credentialId}</span>
+                          <span className="text-foreground">{item.credentialId}</span>
+                        </p>
+                      )}
+                      <Link
+                        href={item.verifyUrl}
+                        external
+                        className="group/verify inline-flex w-fit items-center gap-1.5 font-medium"
+                      >
+                        {labels.verify}
+                        <Icon
+                          icon={ArrowUpRight}
+                          size="sm"
+                          className="transition-transform duration-(--duration-base) group-hover/verify:translate-x-0.5 group-hover/verify:-translate-y-0.5"
+                        />
+                        <span className="sr-only">{`${item.name}, ${item.issuer}`}</span>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-                {item.credentialId && (
-                  <p className="flex flex-wrap gap-x-2 font-mono text-xs break-all text-muted-foreground md:flex-col md:gap-x-0 md:gap-y-0.5">
-                    <span>{labels.credentialId}</span>
-                    <span className="text-foreground">{item.credentialId}</span>
-                  </p>
-                )}
-                <Link
-                  href={item.verifyUrl}
-                  external
-                  className="group/verify inline-flex w-fit items-center gap-1.5 text-sm font-medium"
-                >
-                  {labels.verify}
-                  <Icon
-                    icon={ArrowUpRight}
-                    size="sm"
-                    className="transition-transform duration-(--duration-base) group-hover/verify:translate-x-0.5 group-hover/verify:-translate-y-0.5"
-                  />
-                  <span className="sr-only">{`${item.name}, ${item.issuer}`}</span>
-                </Link>
               </div>
-            </div>
+            </TiltPlate>
           </Pop>
         </li>
       ))}

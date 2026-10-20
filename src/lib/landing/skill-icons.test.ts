@@ -11,6 +11,6 @@ describe("skillIcon", () => {
   it("covers every labelled technology but the few without a public logo", () => {
     const labelled = skillGroups.flatMap(({ items }) => items ?? []);
     const missing = labelled.filter((label) => !skillIcon(label));
-    expect(missing).toEqual(["BullMQ", "AWS", "CI/CD"]);
+    expect(missing).toEqual(["BullMQ", "CI/CD"]);
   });
 });

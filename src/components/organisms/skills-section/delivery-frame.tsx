@@ -23,7 +23,12 @@ export function DeliveryFrame({ order, total, messages }: GroupFrameProps) {
         />
       </div>
       <div className="md:order-1 md:col-span-7">
-        <PracticeOrbit practices={messages.groups.delivery.items}>
+        <PracticeOrbit
+          practices={messages.groups.delivery.items.map((name, index) => ({
+            name,
+            note: messages.groups.delivery.notes[index] ?? "",
+          }))}
+        >
           <StatFigure
             value={skillStats.users}
             label={messages.stats.users}

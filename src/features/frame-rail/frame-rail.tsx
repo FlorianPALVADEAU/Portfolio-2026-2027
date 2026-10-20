@@ -7,18 +7,16 @@ import { buildRail } from "./build-rail";
 type FrameRailProps = {
   /** One label per `Frame`, in the same order; they name the segments of the bar. */
   frames: readonly { id: string; label: string }[];
-  /** The title of the section, kept on screen while the frames slide by. */
-  header: ReactNode;
   children: ReactNode;
 };
 
 /**
  * Stacks its frames, which is what remains without JavaScript or under reduced motion. Otherwise
  * the stage sticks to the top while the page scrolls and the track slides sideways, one full
- * screen per frame (see `buildRail`). The stage reports its mode in `data-motion`, which the
+ * screen per frame, with a pause before the first and after the last (see `buildRail`). The stage reports its mode in `data-motion`, which the
  * parts of the rail style themselves by.
  */
-export function FrameRail({ frames, header, children }: FrameRailProps) {
+export function FrameRail({ frames, children }: FrameRailProps) {
   const runway = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
@@ -60,9 +58,6 @@ export function FrameRail({ frames, header, children }: FrameRailProps) {
         data-motion="static"
         className="relative py-(--section-space) data-[motion=rail]:sticky data-[motion=rail]:top-0 data-[motion=rail]:h-svh data-[motion=rail]:overflow-hidden data-[motion=rail]:py-0"
       >
-        <div className="mx-auto mb-12 max-w-(--container-max) px-(--gutter) in-data-[motion=rail]:absolute in-data-[motion=rail]:inset-x-0 in-data-[motion=rail]:top-6 in-data-[motion=rail]:z-10 in-data-[motion=rail]:mb-0 in-data-[motion=rail]:max-w-none">
-          {header}
-        </div>
         <div
           ref={track}
           className="mx-auto flex max-w-(--container-max) flex-col gap-24 in-data-[motion=rail]:mx-0 in-data-[motion=rail]:h-full in-data-[motion=rail]:w-[max-content] in-data-[motion=rail]:max-w-none in-data-[motion=rail]:flex-row in-data-[motion=rail]:gap-0"

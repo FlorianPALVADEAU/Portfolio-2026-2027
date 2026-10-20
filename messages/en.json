@@ -76,7 +76,14 @@
         "delivery": {
           "title": "Delivery",
           "items": ["Scrum", "Hexagonal architecture", "SOLID", "Microservices", "Planning"],
-          "lead": "Shipping as a team without wearing down the architecture."
+          "lead": "Shipping as a team without wearing down the architecture.",
+          "notes": [
+            "Short sprints and regular reviews: the team ships in small steps and corrects course fast. PSM I certified.",
+            "The business logic sits at the centre, isolated from the database and frameworks by ports and adapters. Easier to test and to evolve.",
+            "Five principles to keep code readable: one responsibility per class, open to extension, inverted dependencies.",
+            "Small, independent services deployed separately. Practised in a monorepo on the JCDecaux applications.",
+            "Break down, estimate, order: know what ships and when, and say so as soon as it slips."
+          ]
         },
         "collaboration": {
           "title": "Collaboration",
@@ -104,7 +111,13 @@
       },
       "certificationsLead": "Independent validation of my cloud, Kubernetes and Scrum skills.",
       "verify": "Verify",
-      "credentialId": "Credential ID"
+      "credentialId": "Credential ID",
+      "pipelineNotes": {
+        "push": "Every change starts from a branch and a reviewed pull request.",
+        "test": "Tests run automatically: nothing goes through while they are red.",
+        "build": "The application is built and packaged as an image, the same way every time.",
+        "deploy": "The image ships to Kubernetes, on AWS."
+      }
     },
     "about": {
       "hook": "Software engineer by day, race organiser on the side.",

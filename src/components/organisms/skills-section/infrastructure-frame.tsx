@@ -13,6 +13,7 @@ export function InfrastructureFrame({ order, total, messages }: GroupFrameProps)
   const stages = pipelineStages.map(({ id, tools }) => ({
     id,
     label: messages.pipeline[id],
+    note: messages.pipelineNotes[id],
     icon: stageIcons[id],
     tools: tools.map((tool) => ({ name: tool, icon: skillIcon(tool) })),
   }));

@@ -9,6 +9,8 @@ const MAX_SKEW_DEG = 3;
 /** Scroll velocity, in pixels per second, that adds one degree of skew. */
 const VELOCITY_PER_DEG = 900;
 const COUNT_SECONDS = 1.6;
+/** Share of the screen height scrolled while the first and last frames stay still. */
+const HOLD_RATIO = 0.6;
 
 export type RailParts = {
   runway: HTMLElement;
@@ -46,7 +48,12 @@ function countUp(frame: HTMLElement) {
  * -reach as it leaves, and rests where it was laid out when the frame is centred. A negative
  * reach drifts the other way, so layers at different depths slide against each other.
  */
-function addParallax(timeline: gsap.core.Timeline, frames: HTMLElement[], viewport: number) {
+function addParallax(
+  timeline: gsap.core.Timeline,
+  frames: HTMLElement[],
+  viewport: number,
+  hold: number,
+) {
   frames.forEach((frame, order) => {
     const enters = order > 0;
     const leaves = order < frames.length - 1;
@@ -58,7 +65,7 @@ function addParallax(timeline: gsap.core.Timeline, frames: HTMLElement[], viewpo
         layer,
         { x: enters ? reach : 0 },
         { x: leaves ? -reach : 0, duration: to - from },
-        from,
+        hold + from,
       );
     }
   });
@@ -70,18 +77,24 @@ function addProgressFills(
   stage: HTMLElement,
   viewport: number,
   travel: number,
+  hold: number,
 ) {
   pick<HTMLElement>(stage, "[data-frame-fill]").forEach((fill, order) => {
     const from = Math.max(0, (order - 0.5) * viewport);
     const to = Math.min(travel, (order + 0.5) * viewport);
-    timeline.fromTo(fill, { scaleX: 0 }, { scaleX: 1, duration: Math.max(1, to - from) }, from);
+    timeline.fromTo(
+      fill,
+      { scaleX: 0 },
+      { scaleX: 1, duration: Math.max(1, to - from) },
+      hold + from,
+    );
   });
 }
 
 /**
  * Turns the stage into a pinned horizontal rail and returns a function that undoes it. The runway
  * is as tall as the scrolling asked for, the stage sticks to the top of it, and one scrubbed
- * timeline slides the track from frame to frame.
+ * timeline holds still for a moment, slides the track from frame to frame, then holds again.
  * The content of a frame is revealed the first time the frame reaches the middle of the screen.
  */
 export function buildRail({ runway, stage, track }: RailParts): () => void {
@@ -98,7 +111,9 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
     undo();
     return () => {};
   }
-  runway.style.height = `${travel * PACE + stage.clientHeight}px`;
+  const hold = stage.clientHeight * HOLD_RATIO;
+  const total = travel + hold * 2;
+  runway.style.height = `${total * PACE + stage.clientHeight}px`;
 
   for (const frame of frames) {
     frame.dataset.reveal = "off";
@@ -124,7 +139,8 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
         end: "bottom bottom",
         scrub: 0.6,
         onUpdate: (self) => {
-          reveal(frames[Math.round(self.progress * (frames.length - 1))]);
+          const position = gsap.utils.clamp(0, travel, self.progress * total - hold);
+          reveal(frames[Math.round(position / viewport)]);
           const target = clampSkew(-self.getVelocity() / VELOCITY_PER_DEG);
           if (Math.abs(target) <= Math.abs(skew.value)) return;
           skew.value = target;
@@ -140,14 +156,14 @@ export function buildRail({ runway, stage, track }: RailParts): () => void {
       },
     });
 
-    // Every position and duration below is in pixels of travel.
-    timeline.to(track, { x: -travel, duration: travel }, 0);
+    // Every position and duration below is in pixels of travel, after a pause of `hold`.
+    timeline.to(track, { x: -travel, duration: travel }, hold);
 
-    addParallax(timeline, frames, viewport);
-    addProgressFills(timeline, stage, viewport, travel);
+    addParallax(timeline, frames, viewport, hold);
+    addProgressFills(timeline, stage, viewport, travel, hold);
 
     // Without this the timeline ends with its last tween, and the scroll distance would shrink.
-    timeline.set({}, {}, travel);
+    timeline.set({}, {}, total);
   }, stage);
 
   return () => {

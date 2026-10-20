@@ -17,7 +17,7 @@ export const experiences = [
     href: "https://www.jcdecaux.com",
     from: 2023.7,
     to: null,
-    stack: ["TypeScript", "React", "NestJS", "PostgreSQL", "Redis", "BullMQ"],
+    stack: ["TypeScript", "React", "NestJS", "PostgreSQL", "Redis", "AWS", "Kubernetes"],
   },
   {
     id: "overbound",
