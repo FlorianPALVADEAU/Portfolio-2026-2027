@@ -19,6 +19,7 @@
     },
     "skip": "Skip to content",
     "cta": "Let's talk",
+    "cv": "My CV",
     "menu": {
       "open": "Menu",
       "close": "Close"
@@ -58,7 +59,7 @@
       "base": "Code",
       "phrases": ["that holds.", "built to last.", "cleanly structured.", "of real quality."]
     },
-    "scroll": "Scroll to begin",
+    "scrollHint": "Scroll",
     "intro": {
       "paragraph": "I design, build and run web applications in TypeScript, from enterprise integrations to the ticketing platform of a race I founded. I work from the first requirement to production, with an architecture that stays readable and a delivery that stays calm, so that teams can focus on what matters.",
       "clients": "Companies I have worked with"
@@ -85,21 +86,68 @@
     "skills": {
       "groups": {
         "engineering": {
-          "title": "Engineering"
+          "title": "Engineering",
+          "lead": "Complete products, from the database to the interface."
         },
         "infrastructure": {
-          "title": "Infrastructure"
+          "title": "Infrastructure",
+          "lead": "From commit to production: automated tests, images and Kubernetes deployments."
         },
         "delivery": {
           "title": "Delivery",
-          "items": ["Scrum", "Hexagonal architecture", "SOLID", "Microservices", "Planning"]
+          "items": ["Scrum", "Hexagonal architecture", "SOLID", "Microservices", "Planning"],
+          "lead": "Shipping as a team without wearing down the architecture.",
+          "notes": [
+            "Short sprints and regular reviews: the team ships in small steps and corrects course fast. PSM I certified.",
+            "The business logic sits at the centre, isolated from the database and frameworks by ports and adapters. Easier to test and to evolve.",
+            "Five principles to keep code readable: one responsibility per class, open to extension, inverted dependencies.",
+            "Small, independent services deployed separately. Practised in a monorepo on the JCDecaux applications.",
+            "Break down, estimate, order: know what ships and when, and say so as soon as it slips."
+          ]
         },
         "collaboration": {
           "title": "Collaboration",
-          "items": ["International teams in English", "Requirements gathering"]
+          "items": ["International teams in English", "Requirements gathering"],
+          "lead": "Working with international teams and turning needs into product."
         }
       },
-      "certifications": "Certifications"
+      "certifications": "Certifications",
+      "experiences": {
+        "neurones": "Full-stack developer",
+        "jcdecaux": "Software engineer",
+        "overbound": "Founder"
+      },
+      "pipeline": {
+        "push": "Push",
+        "test": "Tests",
+        "build": "Build",
+        "deploy": "Deploy"
+      },
+      "stats": {
+        "features": "features shipped",
+        "users": "daily users across two applications",
+        "countries": "countries covered by the applications",
+        "englishCountries": "countries on the team, collaborating in English"
+      },
+      "certificationsLead": "Independent validation of my cloud, Kubernetes and Scrum skills.",
+      "navigation": "Parts of the section",
+      "certificationDates": {
+        "ckad": "May 2026",
+        "psm": "2025",
+        "aws": "2025"
+      },
+      "closing": {
+        "eyebrow": "What comes next?",
+        "statement": "I am looking for a full-stack engineering role in Switzerland."
+      },
+      "verify": "Verify",
+      "credentialId": "Credential ID",
+      "pipelineNotes": {
+        "push": "Every change starts from a branch and a reviewed pull request.",
+        "test": "Tests run automatically: nothing goes through while they are red.",
+        "build": "The application is built and packaged as an image, the same way every time.",
+        "deploy": "The image ships to Kubernetes, on AWS."
+      }
     },
     "about": {
       "hook": "Software engineer by day, race organiser on the side.",

@@ -11,7 +11,6 @@ const meta = {
       role: "Full-stack software engineer",
       headline: "From Geneva, I build software that holds.",
       cv: "Download CV (PDF)",
-      scroll: "Scroll to begin",
       opening: { base: "Code", phrases: ["that holds.", "built to last."] },
     },
   },

@@ -8,7 +8,7 @@ import { genevaAscent, heroPhotoSlots } from "@/lib/landing";
 import { cn } from "@/lib/utils";
 
 type HeroSectionProps = {
-  messages: Pick<Messages["home"], "badge" | "role" | "headline" | "cv" | "scroll" | "opening">;
+  messages: Pick<Messages["home"], "badge" | "role" | "headline" | "cv" | "opening">;
   /** Public URL of the CV in the visitor's language; omitted when none has been added. */
   cvHref?: string | null;
   /** Public URLs of the photos to scatter around the headline; the first ones fill the slots. */
@@ -77,14 +77,6 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
             phrases={messages.opening.phrases}
             className="max-w-5xl text-[clamp(2.5rem,1rem+6vw,7rem)] leading-[0.95] font-semibold tracking-tight text-balance"
           />
-        </div>
-        <div
-          aria-hidden="true"
-          data-sequence-fade
-          className="absolute inset-x-0 bottom-28 flex flex-col items-center gap-3 font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)] md:bottom-20"
-        >
-          <span>{messages.scroll}</span>
-          <span className="h-10 w-px origin-top animate-pulse bg-current motion-reduce:animate-none" />
         </div>
         <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-3 px-(--gutter) md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-4 pb-6 font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
           <span>{messages.badge}</span>

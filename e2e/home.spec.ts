@@ -349,7 +349,7 @@ test.describe("skills", () => {
       const skills = page.locator("#skills");
       await expect(skills.getByRole("heading", { name: group })).toBeVisible();
       await expect(skills.getByRole("heading", { name: certifications })).toBeVisible();
-      await expect(skills.getByText("CKAD, 92%")).toBeVisible();
+      await expect(skills.getByText(/92%/)).toBeVisible();
       await expectNoA11yViolations(page);
     });
   }

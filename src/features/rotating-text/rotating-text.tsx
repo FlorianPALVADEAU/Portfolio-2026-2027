@@ -6,9 +6,9 @@ import { prefersReducedMotion } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 /** Seconds a phrase stays still before the next one turns in. */
-const HOLD = 2.6;
+const HOLD = 1;
 /** Seconds before the first turn, so the opening line is read as it is first. */
-const FIRST_HOLD = 3;
+const FIRST_HOLD = 1.2;
 const LEAVE = 0.55;
 const ENTER = 1;
 /** Delay between two neighbouring letters, which makes the turn travel along the line as a wave. */

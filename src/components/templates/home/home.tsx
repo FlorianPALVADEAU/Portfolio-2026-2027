@@ -8,6 +8,7 @@ import { SkillsSection } from "@/components/organisms/skills-section";
 import { TechnologyBand } from "@/components/organisms/technology-band";
 import { WorksSection } from "@/components/organisms/works-section";
 import { MAIN_ID } from "@/features/route-focus";
+import { ScrollHint } from "@/features/scroll-hint";
 import type { Locale, Messages } from "@/lib/i18n";
 import { landingSections } from "@/lib/landing";
 
@@ -39,6 +40,7 @@ export function Home({
 
   return (
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
+      <ScrollHint label={messages.scrollHint} />
       <HeroSection messages={messages} cvHref={cvHref ?? null} photos={heroPhotos ?? []} />
       <IntroSection title={title.intro} messages={messages.intro} controls={messages.marquee} />
       <AboutSection
@@ -55,7 +57,12 @@ export function Home({
         projects={projects}
       />
       <TechnologyBand messages={messages.marquee} />
-      <SkillsSection index={position("skills")} title={title.skills} messages={messages.skills} />
+      <SkillsSection
+        index={position("skills")}
+        title={title.skills}
+        messages={messages.skills}
+        photo={messages.photos.closing}
+      />
       <GallerySection
         index={position("gallery")}
         title={title.gallery}

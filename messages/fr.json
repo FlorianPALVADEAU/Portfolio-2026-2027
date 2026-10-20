@@ -19,6 +19,7 @@
     },
     "skip": "Aller au contenu",
     "cta": "Parlons-en",
+    "cv": "Mon CV",
     "menu": {
       "open": "Menu",
       "close": "Fermer"
@@ -58,7 +59,7 @@
       "base": "Du code",
       "phrases": ["qui tient.", "conçu pour durer.", "proprement structuré.", "de qualité."]
     },
-    "scroll": "Scrolle pour commencer",
+    "scrollHint": "Scroll",
     "intro": {
       "paragraph": "Je conçois, développe et exploite des applications web en TypeScript, des intégrations d'entreprise à la billetterie d'une course que j'ai fondée. Je travaille du premier besoin à la mise en production, avec une architecture qui reste lisible et une livraison qui reste sereine, pour que les équipes se concentrent sur l'essentiel.",
       "clients": "Entreprises avec lesquelles j'ai travaillé"
@@ -85,21 +86,68 @@
     "skills": {
       "groups": {
         "engineering": {
-          "title": "Ingénierie"
+          "title": "Ingénierie",
+          "lead": "Des produits complets, de la base de données à l'interface."
         },
         "infrastructure": {
-          "title": "Infrastructure"
+          "title": "Infrastructure",
+          "lead": "Du commit à la production : tests automatisés, images et déploiements Kubernetes."
         },
         "delivery": {
           "title": "Delivery",
-          "items": ["Scrum", "Architecture hexagonale", "SOLID", "Microservices", "Planification"]
+          "items": ["Scrum", "Architecture hexagonale", "SOLID", "Microservices", "Planification"],
+          "lead": "Livrer à plusieurs sans abîmer l'architecture.",
+          "notes": [
+            "Sprints courts et revues régulières : l'équipe livre par petits pas et corrige vite le tir. Certifié PSM I.",
+            "Le métier au centre, isolé de la base de données et des frameworks par des ports et des adaptateurs. Plus simple à tester et à faire évoluer.",
+            "Cinq principes pour garder un code lisible : une responsabilité par classe, ouvert à l'extension, dépendances inversées.",
+            "Des services petits et indépendants, déployés séparément. Pratiqué en monorepo sur les applications JCDecaux.",
+            "Découper, estimer, ordonner : savoir ce qui sort et quand, et prévenir dès que ça glisse."
+          ]
         },
         "collaboration": {
           "title": "Collaboration",
-          "items": ["Équipes internationales en anglais", "Recueil des besoins"]
+          "items": ["Équipes internationales en anglais", "Recueil des besoins"],
+          "lead": "Travailler avec des équipes internationales et traduire les besoins en produit."
         }
       },
-      "certifications": "Certifications"
+      "certifications": "Certifications",
+      "experiences": {
+        "neurones": "Développeur full-stack",
+        "jcdecaux": "Ingénieur logiciel",
+        "overbound": "Fondateur"
+      },
+      "pipeline": {
+        "push": "Push",
+        "test": "Tests",
+        "build": "Build",
+        "deploy": "Déploiement"
+      },
+      "stats": {
+        "features": "fonctionnalités livrées",
+        "users": "utilisateurs au quotidien sur deux applications",
+        "countries": "pays couverts par les applications",
+        "englishCountries": "pays dans l'équipe, collaboration en anglais"
+      },
+      "certificationsLead": "Des validations indépendantes de mes compétences cloud, Kubernetes et Scrum.",
+      "navigation": "Parties de la section",
+      "certificationDates": {
+        "ckad": "mai 2026",
+        "psm": "2025",
+        "aws": "2025"
+      },
+      "closing": {
+        "eyebrow": "Et ensuite ?",
+        "statement": "Je cherche un poste d'ingénieur full-stack en Suisse."
+      },
+      "verify": "Vérifier",
+      "credentialId": "Identifiant",
+      "pipelineNotes": {
+        "push": "Chaque changement part d'une branche et d'une pull request relue.",
+        "test": "Les tests tournent automatiquement : rien ne passe s'ils sont rouges.",
+        "build": "L'application est construite et empaquetée en image, toujours de la même façon.",
+        "deploy": "L'image part sur Kubernetes, sur AWS."
+      }
     },
     "about": {
       "hook": "Ingénieur logiciel le jour, organisateur de course à côté.",

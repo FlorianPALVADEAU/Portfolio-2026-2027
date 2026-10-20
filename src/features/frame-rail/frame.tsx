@@ -1,0 +1,45 @@
+import type { ComponentPropsWithoutRef } from "react";
+import { cn } from "@/lib/utils";
+
+type FrameProps = ComponentPropsWithoutRef<"section"> & {
+  /** Oversized outline figure behind the content, such as `01`; decorative, pinned rail only. */
+  numeral?: string;
+  /** Pinned, drops the padding and the width limit so the content can fill the whole screen. */
+  bleed?: boolean;
+};
+
+/**
+ * One screen of the rail. Pinned, it fills the viewport and centres its content; stacked, it is
+ * an ordinary block. Content taller than the screen, as on a small phone, scrolls inside it. Give it `aria-labelledby` so each frame is a named region.
+ */
+export function Frame({ numeral, bleed = false, className, children, ...props }: FrameProps) {
+  return (
+    <section
+      data-frame
+      className={cn(
+        "relative px-(--gutter) in-data-[motion=rail]:h-full in-data-[motion=rail]:w-screen in-data-[motion=rail]:shrink-0 in-data-[motion=rail]:overflow-x-hidden in-data-[motion=rail]:overflow-y-auto in-data-[motion=rail]:pt-24 in-data-[motion=rail]:pb-16 in-data-[motion=rail]:[scrollbar-width:none] focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-accent",
+        bleed && "in-data-[motion=rail]:p-0",
+      )}
+      {...props}
+    >
+      {numeral && (
+        <span
+          aria-hidden="true"
+          data-frame-parallax="0.18"
+          className="pointer-events-none absolute right-[4vw] bottom-[8vh] hidden md:in-data-[motion=rail]:block text-[clamp(10rem,30vw,28rem)] leading-none font-semibold tracking-tighter text-transparent select-none [-webkit-text-stroke:1px_var(--border)]"
+        >
+          {numeral}
+        </span>
+      )}
+      <div
+        className={cn(
+          "relative mx-auto flex w-full max-w-(--container-max) flex-col in-data-[motion=rail]:min-h-full in-data-[motion=rail]:justify-center",
+          bleed && "in-data-[motion=rail]:max-w-none",
+          className,
+        )}
+      >
+        {children}
+      </div>
+    </section>
+  );
+}

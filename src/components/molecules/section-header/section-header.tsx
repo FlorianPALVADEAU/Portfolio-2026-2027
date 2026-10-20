@@ -7,9 +7,10 @@ type SectionHeaderProps = {
   title: string;
   /** Id of the heading, so the section can be labelled by it. */
   titleId: string;
+  size?: "2xl" | "3xl" | "display";
 };
 
-export function SectionHeader({ index, title, titleId }: SectionHeaderProps) {
+export function SectionHeader({ index, title, titleId, size = "3xl" }: SectionHeaderProps) {
   return (
     <div className="flex flex-col gap-2">
       {index !== undefined && (
@@ -17,7 +18,7 @@ export function SectionHeader({ index, title, titleId }: SectionHeaderProps) {
           {`[${String(index).padStart(2, "0")}]`}
         </Text>
       )}
-      <Heading level={2} size="3xl" id={titleId}>
+      <Heading level={2} size={size} id={titleId}>
         {title}
       </Heading>
     </div>

@@ -8,8 +8,12 @@ import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Opacity of a word that has not been reached yet; it keeps the 3:1 contrast large text needs. */
-const DIM = 0.4;
+/** Opacity of a word that has not been reached yet; low enough that only the lit words read. */
+const DIM = 0.12;
+/** Share of the scroll that lights the words; the stage fades out over the rest. */
+const LIGHT_SPAN = 0.8;
+/** How many neighbouring words are mid-fade at once: higher is softer, lower is more word by word. */
+const WORD_OVERLAP = 2.5;
 /** Viewport heights of scrolling, with the stage held in place, that light the whole text. */
 const TRAVEL = 1.5;
 const TRACK = `${(TRAVEL + 1) * 100}svh`;
@@ -50,12 +54,16 @@ export function LitText({ text, className, stageClassName, children }: LitTextPr
           scrub: 0.4,
         },
       });
+      const words = gsap.utils.toArray<HTMLElement>("[data-lit-word]", element);
+      // Each word fades over a few word-slots, so words light one after another with a soft edge.
+      const slot = LIGHT_SPAN / (words.length - 1 + WORD_OVERLAP);
       timeline.fromTo(
-        "[data-lit-word]",
+        words,
         { opacity: DIM },
-        { opacity: 1, duration: 0.2, stagger: { amount: 0.5 } },
+        { opacity: 1, duration: slot * WORD_OVERLAP, ease: "power1.out", stagger: slot },
+        0,
       );
-      timeline.to(stage.current, { opacity: 0, duration: 0.2 }, 0.8);
+      timeline.to(stage.current, { opacity: 0, duration: 1 - LIGHT_SPAN }, LIGHT_SPAN);
     }, element);
 
     return () => context.revert();

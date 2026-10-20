@@ -14,6 +14,7 @@ import { UiSound } from "@/features/ui-sound";
 import { getMessages, isLocale, locales } from "@/lib/i18n";
 import { languageAlternates, openGraphLocale } from "@/lib/seo";
 import { siteName, siteUrl } from "@/lib/site";
+import { cvHref } from "@/server/infrastructure/cv";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -62,7 +63,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
 
   return (
     <Document lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
-      <SiteHeader locale={locale} messages={messages.header} palette={messages.palette} />
+      <SiteHeader
+        locale={locale}
+        messages={messages.header}
+        palette={messages.palette}
+        cvHref={await cvHref(locale)}
+      />
       {children}
       <SiteFooter locale={locale} nav={messages.header.nav} messages={messages.footer} />
       <RouteFocus />

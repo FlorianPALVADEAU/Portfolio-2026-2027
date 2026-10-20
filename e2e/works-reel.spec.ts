@@ -9,7 +9,10 @@ test.describe("works reel", () => {
     await works.scrollIntoViewIfNeeded();
 
     await expect(works.getByRole("link", { name: "Overbound" })).toBeVisible();
-    await expect(works.locator("[data-reel-title] .sr-only").first()).toHaveText("Overbound");
+    // The reel scrolls with the page, so any title can lead; the real one must exist for every project.
+    await expect(
+      works.locator("[data-reel-title] .sr-only").filter({ hasText: "Overbound" }),
+    ).toBeAttached();
     await expect(works.locator("[data-reel-title] [aria-hidden='true']").first()).toBeAttached();
     await expectNoA11yViolations(page);
   });

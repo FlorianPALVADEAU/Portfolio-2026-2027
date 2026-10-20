@@ -1,7 +1,7 @@
 "use client";
 
 import { gsap } from "gsap";
-import { Plus } from "lucide-react";
+import { Download, Plus } from "lucide-react";
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import { FlipText } from "@/components/atoms/flip-text";
 import { Icon } from "@/components/atoms/icon";
@@ -10,16 +10,20 @@ import { prefersReducedMotion } from "@/lib/motion";
 import { playIfEnabled } from "@/lib/sound";
 import { cn } from "@/lib/utils";
 
+/** Shared by every row of the panel so links and downloads render alike. */
+const ROW_CLASS =
+  "group flip-host flex min-h-14 items-center justify-between rounded-2xl px-4 text-2xl md:text-2xl font-medium tracking-tight no-underline transition-transform duration-(--duration-fast) hover:translate-x-1 hover:text-foreground";
+
 /** Each card rests slightly off-square: the type stays exact, the objects do not. */
-const CARD_TILTS = [-1.2, 0.8, 1.4] as const;
+const CARD_TILTS = [-1.2, 1, -0.8] as const;
 
 type SiteMenuProps = {
   openLabel: string;
   closeLabel: string;
   navLabel: string;
   items: readonly { href: string; label: string }[];
-  /** Primary call to action, shown in the panel only where the header has no room for it. */
-  action: ReactNode;
+  /** Downloadable file, listed under the sections; absent until the file exists. */
+  download?: { href: string; label: string } | null;
   /** Last card, for preferences such as theme and sound. */
   children: ReactNode;
 };
@@ -33,7 +37,7 @@ export function SiteMenu({
   closeLabel,
   navLabel,
   items,
-  action,
+  download = null,
   children,
 }: SiteMenuProps) {
   const [open, setOpen] = useState(false);
@@ -120,7 +124,7 @@ export function SiteMenu({
         ref={panel}
         id={panelId}
         className={cn(
-          "absolute top-full right-0 left-0 z-50 mt-3 max-h-[calc(100dvh-6.5rem)] flex-col gap-3 overflow-y-auto overscroll-contain px-1 pb-3 md:left-auto md:w-96 md:overflow-visible",
+          "absolute top-full right-0 left-0 z-50 mt-2 max-h-[calc(100dvh-6rem)] flex-col gap-2 overflow-y-auto md:gap-3 overscroll-contain px-1 pb-3 md:left-auto md:w-96 md:overflow-visible",
           open ? "flex" : "hidden",
         )}
       >
@@ -133,10 +137,7 @@ export function SiteMenu({
           <ul>
             {items.map((item) => (
               <li key={item.href} data-item="">
-                <Link
-                  href={item.href}
-                  className="group flip-host flex min-h-16 items-center justify-between rounded-2xl px-4 text-3xl md:min-h-14 md:text-2xl font-medium tracking-tight no-underline transition-transform duration-(--duration-fast) hover:translate-x-1 hover:text-foreground"
-                >
+                <Link href={item.href} className={ROW_CLASS}>
                   <FlipText>{item.label}</FlipText>
                   <span
                     aria-hidden="true"
@@ -147,9 +148,24 @@ export function SiteMenu({
             ))}
           </ul>
         </nav>
-        <div data-card="" style={{ rotate: `${CARD_TILTS[1]}deg` }} className="md:hidden">
-          {action}
-        </div>
+        {download && (
+          <div
+            data-card=""
+            style={{ rotate: `${CARD_TILTS[1]}deg` }}
+            className="rounded-3xl border border-border bg-surface p-3 shadow-lg"
+          >
+            <div data-item="">
+              <a
+                href={download.href}
+                download
+                className={cn(ROW_CLASS, "min-h-12 text-base md:text-base")}
+              >
+                <FlipText>{download.label}</FlipText>
+                <Icon icon={Download} size="sm" className="text-accent" />
+              </a>
+            </div>
+          </div>
+        )}
         <div
           data-card=""
           style={{ rotate: `${CARD_TILTS[2]}deg` }}

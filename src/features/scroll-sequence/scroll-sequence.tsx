@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { type CSSProperties, type ReactNode, useLayoutEffect, useRef } from "react";
 import type { FrameSources } from "@/lib/landing";
-import { prefersReducedMotion } from "@/lib/motion";
+import { clearScrollHint, markScrollHint, prefersReducedMotion } from "@/lib/motion";
 import { createFramePlayer } from "./frame-player";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -37,6 +37,11 @@ const DEPTH_DRIFT = 240;
  * negative bottom margin pulls the next section up by that viewport, over the end of the track.
  */
 const TRACK = `calc(var(--sequence) + ${REVEAL_PX + HOLD_PX}px + 200svh)`;
+/**
+ * What the stage becomes while the next section covers it: it pivots on its bottom edge, so the
+ * top falls back along Z, and it shrinks and rounds.
+ */
+const RECEDE = { tilt: 10, scale: 0.92, radius: 36, perspective: 1100 };
 const SMALL_SCREEN = "(max-width: 767px)";
 
 type ScrollSequenceProps = {
@@ -51,7 +56,8 @@ type ScrollSequenceProps = {
  * bounce, so they should rest on a wrapper that holds their tilt. Those marked `data-depth` drift
  * with the pointer and the scroll, the more the bigger the number. A shade darkens the picture towards
  * the end so the copy stays readable. Without frames a placeholder sky zooms out instead.
- * The next section must be opaque and above it (`z-10`). Under reduced motion the stage is not
+ * While the next section slides over it, the stage recedes: it pivots on its bottom edge so the
+ * top falls back along Z, shrinks and rounds its corners. The next section must be opaque and above it (`z-10`). Under reduced motion the stage is not
  * held and does not overlap: the last frame and all the copy are shown at once.
  */
 export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
@@ -59,6 +65,7 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const sky = useRef<HTMLDivElement>(null);
   const shade = useRef<HTMLDivElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const element = track.current;
@@ -67,6 +74,8 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
 
     const small = window.matchMedia(SMALL_SCREEN).matches;
     const sequencePx = small ? SEQUENCE_PX.small : SEQUENCE_PX.large;
+    // The next section rises over one viewport once the copy is held; the stage recedes meanwhile.
+    const recedePx = window.innerHeight;
     const set = frames && (small ? frames.mobile : frames.desktop);
     const player = set ? createFramePlayer(surface, set) : null;
 
@@ -75,7 +84,8 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
       return () => player?.destroy();
     }
 
-    const cleanups: (() => void)[] = [];
+    markScrollHint(element, sequencePx + REVEAL_PX, "7rem");
+    const cleanups: (() => void)[] = [() => clearScrollHint(element)];
     const context = gsap.context(() => {
       // Every position and duration below is in pixels of scrolling.
       const state = { progress: 0 };
@@ -84,7 +94,7 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
         scrollTrigger: {
           trigger: element,
           start: "top top",
-          end: `+=${sequencePx + REVEAL_PX + HOLD_PX}`,
+          end: `+=${sequencePx + REVEAL_PX + HOLD_PX + recedePx}`,
           scrub: 0.4,
         },
       });
@@ -135,8 +145,30 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
           sequencePx,
         );
       }
-      // Without this the timeline ends with its last tween, and the hold would stretch it.
-      timeline.set({}, {}, sequencePx + REVEAL_PX + HOLD_PX);
+      // Corners and size settle early in the cover, the tilt takes all of it.
+      const recedeAt = sequencePx + REVEAL_PX + HOLD_PX;
+      timeline.fromTo(
+        stage.current,
+        {
+          rotationX: 0,
+          transformPerspective: RECEDE.perspective,
+          transformOrigin: "50% 100%",
+        },
+        { rotationX: RECEDE.tilt, duration: recedePx, ease: "power1.in" },
+        recedeAt,
+      );
+      timeline.fromTo(
+        stage.current,
+        { scale: 1 },
+        { scale: RECEDE.scale, duration: recedePx * 0.45, ease: "power2.out" },
+        recedeAt,
+      );
+      timeline.fromTo(
+        stage.current,
+        { borderRadius: 0 },
+        { borderRadius: RECEDE.radius, duration: recedePx * 0.25, ease: "power2.out" },
+        recedeAt,
+      );
 
       // Elements marked `data-depth` follow the pointer by their own amount, a negative one in
       // the opposite direction, so the layers seem to sit at different distances.
@@ -172,7 +204,10 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
       style={{ "--track": TRACK } as CSSProperties}
       className="-mb-[100svh] [--sequence:2000px] md:[--sequence:3000px] h-(--track) motion-reduce:mb-0 motion-reduce:h-svh"
     >
-      <div className="sticky top-0 h-svh overflow-hidden motion-reduce:static">
+      <div
+        ref={stage}
+        className="sticky top-0 h-svh overflow-hidden will-change-transform motion-reduce:static"
+      >
         <div aria-hidden="true" className="absolute inset-0">
           <canvas ref={canvas} className="size-full" />
         </div>
