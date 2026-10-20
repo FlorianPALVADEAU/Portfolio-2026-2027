@@ -10,11 +10,13 @@ type ScrollHintProps = {
   label: string;
 };
 
+/** A narrower window is a phone or a small tablet, which gets the fixed label whatever its pointer. */
+const BESIDE_POINTER_MIN_WIDTH = 768;
 const INTERACTIVE = "a, button, input, textarea, select, summary, [role='button']";
 
 /**
  * Tells the visitor to keep scrolling while a pinned block (see `markScrollHint`) is not over. With
- * a mouse the pointer turns into a round "scroll" label, except over what can be clicked; on a
+ * a mouse a small "scroll" label trails the pointer, except over what can be clicked, while the native pointer stays; on a
  * touch screen a pill stays fixed at the bottom of the screen. Both are decoration: nothing is
  * announced, and without a marked block, as under reduced motion, nothing shows.
  */
@@ -26,15 +28,15 @@ export function ScrollHint({ label }: ScrollHintProps) {
     const roundLabel = bubble.current;
     const fixedLabel = pill.current;
     if (!(roundLabel && fixedLabel) || prefersReducedMotion()) return;
-    const fine = hasFinePointer();
+    const beside = () => hasFinePointer() && window.innerWidth >= BESIDE_POINTER_MIN_WIDTH;
 
     let active = false;
     let overInteractive = false;
     let inWindow = false;
     const render = () => {
+      const fine = beside();
       const lit = active && fine && inWindow && !overInteractive;
       gsap.to(roundLabel, { scale: lit ? 1 : 0, duration: 0.3, ease: "power3.out" });
-      document.body.style.cursor = lit ? "none" : "";
       gsap.to(fixedLabel, { autoAlpha: active && !fine ? 1 : 0, duration: 0.4 });
     };
     const check = () => {
@@ -79,7 +81,6 @@ export function ScrollHint({ label }: ScrollHintProps) {
       window.removeEventListener("resize", check);
       document.removeEventListener("pointermove", onMove);
       document.documentElement.removeEventListener("pointerleave", onLeave);
-      document.body.style.cursor = "";
       gsap.killTweensOf([roundLabel, fixedLabel]);
     };
   }, []);
@@ -88,15 +89,15 @@ export function ScrollHint({ label }: ScrollHintProps) {
     <div aria-hidden="true">
       <div
         ref={bubble}
-        className="pointer-events-none fixed top-0 left-0 z-(--z-overlay) -mt-10 -ml-10 flex size-20 scale-0 flex-col items-center justify-center gap-0.5 rounded-full bg-accent font-mono text-[0.65rem] tracking-widest text-accent-foreground uppercase max-md:hidden pointer-coarse:hidden"
+        className="pointer-events-none fixed top-0 left-0 z-(--z-overlay) mt-4 ml-4 flex scale-0 origin-top-left items-center gap-1 rounded-full bg-accent px-2.5 py-1 font-mono text-[0.625rem] tracking-widest text-accent-foreground uppercase"
       >
         {label}
-        <Icon icon={ArrowDown} size="sm" className="motion-safe:animate-bounce" />
+        <Icon icon={ArrowDown} size="sm" className="size-3 motion-safe:animate-bounce" />
       </div>
       <div
         ref={pill}
         style={{ bottom: "var(--hint-bottom, 1rem)" }}
-        className="pointer-events-none fixed left-1/2 z-(--z-overlay) flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-border bg-background/80 px-3 py-1.5 font-mono text-xs tracking-widest uppercase backdrop-blur pointer-fine:hidden"
+        className="pointer-events-none fixed left-1/2 z-(--z-overlay) flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-border bg-background/80 px-3 py-1.5 font-mono text-xs tracking-widest uppercase backdrop-blur"
       >
         {label}
         <Icon icon={ArrowDown} size="sm" className="motion-safe:animate-bounce" />

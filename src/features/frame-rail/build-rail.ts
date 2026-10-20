@@ -200,7 +200,7 @@ export function buildRail({ runway, stage, track }: RailParts): Rail {
   const snapNearby = (progress: number) =>
     snapPoints[gsap.utils.clamp(resting - 1, resting + 1, nearest(progress))] ?? progress;
 
-  markScrollHint(runway, (hold + travel + finale) * pace, "3.25rem");
+  markScrollHint(runway, (hold + travel + finale) * pace, "5.5rem");
 
   const context = gsap.context(() => {
     const reveal = (frame: HTMLElement | undefined) => {
@@ -264,6 +264,11 @@ export function buildRail({ runway, stage, track }: RailParts): Rail {
     addParallax(timeline, frames, viewport, hold);
     addProgressFills(timeline, stage, viewport, travel, hold);
     addFinale(timeline, stage, hold + travel, finale);
+    // Once the closing photo slides in the steps are out of the way for good.
+    const hud = stage.querySelector<HTMLElement>("[data-rail-hud]");
+    if (hud && finale > 0) {
+      timeline.to(hud, { autoAlpha: 0, duration: viewport * 0.4 }, hold + travel - viewport * 0.4);
+    }
 
     // Without this the timeline ends with its last tween, and the scroll distance would shrink.
     timeline.set({}, {}, total);
