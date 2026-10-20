@@ -7,7 +7,7 @@ import { genevaAscent, heroPhotoSlots } from "@/lib/landing";
 import { cn } from "@/lib/utils";
 
 type HeroSectionProps = {
-  messages: Pick<Messages["home"], "badge" | "role" | "headline" | "cv" | "scroll">;
+  messages: Pick<Messages["home"], "badge" | "role" | "headline" | "cv" | "scroll" | "opening">;
   /** Public URL of the CV in the visitor's language; omitted when none has been added. */
   cvHref?: string | null;
   /** Public URLs of the photos to scatter around the headline; the first ones fill the slots. */
@@ -60,11 +60,28 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
             {messages.role}
           </p>
         </div>
-        <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-3 px-(--gutter) md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-4 pb-6 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+        <div
+          data-sequence-fade
+          className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-(--gutter) text-center"
+        >
+          <p className="font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
+            Florian Palvadeau
+          </p>
+          <p className="max-w-4xl text-display font-semibold tracking-tight text-balance">
+            {messages.opening}
+          </p>
+        </div>
+        <div
+          aria-hidden="true"
+          data-sequence-fade
+          className="absolute inset-x-0 bottom-28 flex flex-col items-center gap-3 font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)] md:bottom-20"
+        >
+          <span>{messages.scroll}</span>
+          <span className="h-10 w-px origin-top animate-pulse bg-current motion-reduce:animate-none" />
+        </div>
+        <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-3 px-(--gutter) md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-4 pb-6 font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
           <span>{messages.badge}</span>
-          <span aria-hidden="true" data-sequence-fade className="hidden md:block">
-            {messages.scroll}
-          </span>
+          <span aria-hidden="true" className="hidden md:block" />
           <span className="md:justify-self-end">
             {cvHref && (
               <Button asChild size="sm" variant="outline">

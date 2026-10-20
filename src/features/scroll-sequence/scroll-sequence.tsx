@@ -9,20 +9,23 @@ import { createFramePlayer } from "./frame-player";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Pixels of scrolling that play the whole sequence, with the copy still hidden. */
-const SEQUENCE_PX = 5000;
+/**
+ * Pixels of scrolling that play the whole sequence, with the copy still hidden. Shorter on small
+ * screens, where a thumb covers less distance. The track height in CSS must use the same values.
+ */
+const SEQUENCE_PX = { small: 3000, large: 5000 };
 /** Pixels of scrolling, after the sequence, that reveal the copy. */
 const REVEAL_PX = 700;
 /** Pixels over which the picture darkens, so that the copy can be read over the last frames. */
 const DARKEN_PX = 1400;
-const DARKEN_FROM = 0.2;
+const DARKEN_FROM = 0.3;
 const DARKEN_TO = 0.85;
 /**
  * The stage stays stuck for one more viewport after the scrolling, while the next section slides
  * over it. The track is tall enough for the scrolling, that viewport and the stage itself; its
  * negative bottom margin pulls the next section up by that viewport, over the end of the track.
  */
-const TRACK = `calc(${SEQUENCE_PX + REVEAL_PX}px + 200svh)`;
+const TRACK = `calc(var(--sequence) + ${REVEAL_PX}px + 200svh)`;
 const SMALL_SCREEN = "(max-width: 767px)";
 
 type ScrollSequenceProps = {
@@ -50,8 +53,9 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
     const surface = canvas.current;
     if (!(element && surface)) return;
 
-    const set =
-      frames && (window.matchMedia(SMALL_SCREEN).matches ? frames.mobile : frames.desktop);
+    const small = window.matchMedia(SMALL_SCREEN).matches;
+    const sequencePx = small ? SEQUENCE_PX.small : SEQUENCE_PX.large;
+    const set = frames && (small ? frames.mobile : frames.desktop);
     const player = set ? createFramePlayer(surface, set) : null;
 
     if (prefersReducedMotion()) {
@@ -67,31 +71,31 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
         scrollTrigger: {
           trigger: element,
           start: "top top",
-          end: `+=${SEQUENCE_PX + REVEAL_PX}`,
+          end: `+=${sequencePx + REVEAL_PX}`,
           scrub: 0.4,
         },
       });
 
       timeline.to(
         state,
-        { progress: 1, duration: SEQUENCE_PX, onUpdate: () => player?.show(state.progress) },
+        { progress: 1, duration: sequencePx, onUpdate: () => player?.show(state.progress) },
         0,
       );
       if (!player) {
-        timeline.fromTo(sky.current, { scale: 2.4 }, { scale: 1, duration: SEQUENCE_PX }, 0);
+        timeline.fromTo(sky.current, { scale: 2.4 }, { scale: 1, duration: sequencePx }, 0);
       }
       timeline.fromTo(
         shade.current,
         { opacity: DARKEN_FROM },
         { opacity: DARKEN_TO, duration: DARKEN_PX },
-        SEQUENCE_PX - DARKEN_PX + 200,
+        sequencePx - DARKEN_PX + 200,
       );
       timeline.to("[data-sequence-fade]", { autoAlpha: 0, duration: 400 }, 0);
       timeline.fromTo(
         "[data-sequence-reveal]",
         { opacity: 0, y: 56 },
         { opacity: 1, y: 0, duration: 300, stagger: 40, ease: "power2.out" },
-        SEQUENCE_PX,
+        sequencePx,
       );
       for (const [order, photo] of gsap.utils
         .toArray<HTMLElement>("[data-sequence-photo]")
@@ -100,7 +104,7 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
           photo,
           { opacity: 0, scale: 0.6, y: 90, rotation: -14 },
           { opacity: 1, scale: 1, y: 0, rotation: 0, duration: 300, ease: "back.out(1.7)" },
-          SEQUENCE_PX + 60 + order * 60,
+          sequencePx + 60 + order * 60,
         );
       }
     }, element);
@@ -115,7 +119,7 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
     <div
       ref={track}
       style={{ "--track": TRACK } as CSSProperties}
-      className="-mb-[100svh] h-(--track) motion-reduce:mb-0 motion-reduce:h-svh"
+      className="-mb-[100svh] [--sequence:3000px] md:[--sequence:5000px] h-(--track) motion-reduce:mb-0 motion-reduce:h-svh"
     >
       <div className="sticky top-0 h-svh overflow-hidden motion-reduce:static">
         <div aria-hidden="true" className="absolute inset-0">

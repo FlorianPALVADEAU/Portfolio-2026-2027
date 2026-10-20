@@ -11,7 +11,8 @@ const meta = {
       role: "Full-stack software engineer",
       headline: "From Geneva, I build software that holds.",
       cv: "Download CV (PDF)",
-      scroll: "Scroll",
+      scroll: "Scroll to climb",
+      opening: "Let's go up.",
     },
   },
 } satisfies Meta<typeof HeroSection>;
