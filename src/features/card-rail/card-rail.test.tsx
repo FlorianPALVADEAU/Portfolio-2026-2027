@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { RailNode, RailNodes, RailSlide, WaveRail } from ".";
+import { CardRail, RailCard, RailCards, RailChapter, RailPanel } from ".";
 
 function mockMotion(reduced: boolean) {
   window.matchMedia = vi.fn().mockReturnValue({
@@ -12,26 +12,29 @@ function mockMotion(reduced: boolean) {
 
 function renderRail() {
   return render(
-    <WaveRail chapters={[{ id: "engineering", label: "Engineering" }]}>
-      <RailSlide ghost="Engineering" tone="oklch(0.68 0.16 255)" heading={<h3>Engineering</h3>}>
-        <RailNodes>
-          <RailNode index={1} label="TypeScript" />
-          <RailNode index={2} label="React" />
-        </RailNodes>
-      </RailSlide>
-    </WaveRail>,
+    <CardRail chapters={[{ id: "engineering", label: "Engineering" }]}>
+      <RailPanel>
+        <h2>Skills</h2>
+      </RailPanel>
+      <RailChapter numeral="01" heading={<h3>Engineering</h3>}>
+        <RailCards>
+          <RailCard>TypeScript</RailCard>
+          <RailCard>React</RailCard>
+        </RailCards>
+      </RailChapter>
+    </CardRail>,
   );
 }
 
-describe("WaveRail", () => {
+describe("CardRail", () => {
   it("keeps a plain, readable list under reduced motion", () => {
     mockMotion(true);
     const { container } = renderRail();
 
     expect(container.querySelector("[data-motion]")).toHaveAttribute("data-motion", "static");
     expect(screen.getAllByRole("listitem").map((item) => item.textContent)).toEqual([
-      "01TypeScript",
-      "02React",
+      "TypeScript",
+      "React",
     ]);
   });
 
@@ -44,12 +47,16 @@ describe("WaveRail", () => {
 
   it("hides the decorations from assistive technology", () => {
     mockMotion(true);
-    const { container } = renderRail();
+    renderRail();
 
-    expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
-    const copies = screen.getAllByText("Engineering").filter((node) => node.tagName !== "H3");
-    expect(copies.length).toBeGreaterThan(0);
-    for (const copy of copies) expect(copy.closest("[aria-hidden='true']")).not.toBeNull();
+    const decorations = [
+      ...screen.getAllByText("01", { selector: "span" }),
+      ...screen.getAllByText("Engineering", { selector: "span" }),
+    ];
+    expect(decorations.length).toBeGreaterThan(0);
+    for (const decoration of decorations) {
+      expect(decoration.closest("[aria-hidden='true']")).not.toBeNull();
+    }
     expect(screen.getByRole("heading", { name: "Engineering" })).toBeInTheDocument();
   });
 });
