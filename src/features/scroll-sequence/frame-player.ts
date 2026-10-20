@@ -21,20 +21,54 @@ function paintCover(context: CanvasRenderingContext2D, image: HTMLImageElement) 
   );
 }
 
+/** Frames requested at once; enough to fill the connection without starving the first ones. */
+const CONCURRENCY = 6;
+const STRIDES = [16, 4, 1];
+
+/** Frame indexes ordered coarse to fine, so the whole length can be scrubbed after a few loads. */
+function loadOrder(count: number) {
+  const order: number[] = [];
+  const queued = new Set<number>();
+  for (const stride of STRIDES) {
+    for (let index = 0; index < count; index += stride) {
+      if (!queued.has(index)) {
+        queued.add(index);
+        order.push(index);
+      }
+    }
+    if (!queued.has(count - 1)) {
+      queued.add(count - 1);
+      order.push(count - 1);
+    }
+  }
+  return order;
+}
+
 /**
- * Loads every frame at once and draws the nearest one already decoded, so a fast scroll over
- * frames still in flight shows an earlier picture instead of a blank canvas.
+ * Loads the frames coarse to fine and draws the nearest one already decoded, so a slow connection
+ * or a fast scroll over frames still in flight shows an earlier picture instead of a blank canvas.
  */
 export function createFramePlayer(canvas: HTMLCanvasElement, set: FrameSet): FramePlayer {
   const context = canvas.getContext("2d");
   let progress = 0;
+  let destroyed = false;
 
-  const images = Array.from({ length: set.count }, (_, index) => {
+  const images: (HTMLImageElement | undefined)[] = Array.from({ length: set.count });
+  const pending = loadOrder(set.count);
+
+  function loadNext() {
+    const index = pending.shift();
+    if (destroyed || index === undefined) return;
     const image = new Image();
     image.decoding = "async";
-    image.src = set.src(index);
-    return image;
-  });
+    image.onload = () => {
+      draw();
+      loadNext();
+    };
+    image.onerror = loadNext;
+    image.src = `${set.directory}/${String(index).padStart(4, "0")}.webp`;
+    images[index] = image;
+  }
 
   function draw() {
     if (!context) return;
@@ -56,7 +90,7 @@ export function createFramePlayer(canvas: HTMLCanvasElement, set: FrameSet): Fra
 
   const observer = new ResizeObserver(fit);
   observer.observe(canvas);
-  for (const image of images) image.addEventListener("load", draw);
+  for (let slot = 0; slot < CONCURRENCY; slot++) loadNext();
 
   return {
     show(next) {
@@ -64,8 +98,8 @@ export function createFramePlayer(canvas: HTMLCanvasElement, set: FrameSet): Fra
       draw();
     },
     destroy() {
+      destroyed = true;
       observer.disconnect();
-      for (const image of images) image.removeEventListener("load", draw);
     },
   };
 }
