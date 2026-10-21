@@ -6,17 +6,6 @@ const meta = {
   component: SiteHeader,
   args: {
     locale: "en",
-    palette: {
-      trigger: "Commands",
-      title: "Command palette",
-      placeholder: "Type a command",
-      empty: "No matching command",
-      home: "Go to home",
-      theme: "Theme",
-      language: "Language",
-      soundOn: "Turn sound on",
-      soundOff: "Turn sound off",
-    },
     messages: {
       language: "Language",
       skip: "Skip to content",

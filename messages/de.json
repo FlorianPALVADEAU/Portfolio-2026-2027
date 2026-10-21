@@ -33,17 +33,6 @@
       "contact": "Kontakt"
     }
   },
-  "palette": {
-    "trigger": "Befehle",
-    "title": "Befehlspalette",
-    "placeholder": "Befehl eingeben",
-    "empty": "Kein passender Befehl",
-    "home": "Zur Startseite",
-    "theme": "Thema",
-    "language": "Sprache",
-    "soundOn": "Ton einschalten",
-    "soundOff": "Ton ausschalten"
-  },
   "home": {
     "badge": "Offen für Stellen, Schweiz",
     "role": "Full-Stack-Softwareentwickler",

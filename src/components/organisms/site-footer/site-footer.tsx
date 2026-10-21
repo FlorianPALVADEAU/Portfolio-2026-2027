@@ -135,7 +135,9 @@ export function SiteFooter({ locale, nav, availability, cv, messages }: SiteFoot
                   size="lg"
                   className="bg-background text-foreground hover:bg-background hover:opacity-90"
                 >
-                  <NextLink href={`/${locale}#contact`}>{messages.cta}</NextLink>
+                  <NextLink href={`/${locale}#contact`} data-jump="">
+                    {messages.cta}
+                  </NextLink>
                 </Button>
               </Magnetic>
             </Rise>
@@ -191,7 +193,7 @@ export function SiteFooter({ locale, nav, availability, cv, messages }: SiteFoot
                   <ul className="flex flex-wrap gap-x-6 gap-y-2">
                     {navSections.map((id) => (
                       <li key={id}>
-                        <Link href={`/${locale}#${id}`} className={linkClass}>
+                        <Link href={`/${locale}#${id}`} data-jump="" className={linkClass}>
                           {nav[id]}
                         </Link>
                       </li>

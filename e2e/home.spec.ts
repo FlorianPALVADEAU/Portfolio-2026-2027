@@ -5,6 +5,12 @@ async function openMenu(page: Page) {
   await page.getByRole("button", { name: "Menu" }).click();
 }
 
+// Below md the menu lists the themes inline and leaves Swiss out, a desktop-only look.
+async function chooseTheme(page: Page, name: "Light" | "Swiss", isMobile: boolean) {
+  if (!isMobile) await page.getByRole("button", { name: "Theme: Dark" }).click();
+  await page.getByRole("button", { name: isMobile ? "Light" : name }).click();
+}
+
 // Below md the language flags live in the menu; from md up they sit behind a header dropdown.
 async function openLanguage(page: Page) {
   const dropdown = page.getByRole("button", { name: /^Language:/ });
@@ -39,19 +45,21 @@ test("unknown locale returns 404", async ({ page }) => {
   expect(response?.status()).toBe(404);
 });
 
-test("chosen theme persists across reloads without a flash", async ({ page }) => {
+test("chosen theme persists across reloads without a flash", async ({ page, isMobile }) => {
+  const theme = isMobile ? "light" : "swiss";
   await page.goto("/en");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 
   await openMenu(page);
-  await page.getByRole("button", { name: "Theme: Dark" }).click();
-  await page.getByRole("button", { name: "Swiss" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "swiss");
+  await chooseTheme(page, "Swiss", isMobile);
+  await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
 
   await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "swiss");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
   await openMenu(page);
-  await expect(page.getByRole("button", { name: "Theme: Swiss" })).toBeVisible();
+  if (!isMobile) {
+    await expect(page.getByRole("button", { name: "Theme: Swiss" })).toBeVisible();
+  }
 });
 
 test("skip link is the first tab stop and moves focus to main", async ({ page }) => {
@@ -130,47 +138,10 @@ test("sound is muted by default and the opt-in persists", async ({ page, isMobil
   await expect(page.getByRole("button", { name: "Sound: on" })).toBeVisible();
 });
 
-test.describe("command palette", () => {
-  test("opens with the keyboard, runs a command and restores focus on Escape", async ({ page }) => {
-    await page.goto("/en");
-    await openMenu(page);
-    const trigger = page.getByRole("button", { name: "Commands" });
-    await trigger.focus();
-
-    await page.keyboard.press("Control+k");
-    const combobox = page.getByRole("combobox", { name: "Type a command" });
-    await expect(combobox).toBeFocused();
-
-    await page.keyboard.press("Escape");
-    await expect(combobox).toBeHidden();
-    await expect(trigger).toBeFocused();
-
-    await trigger.click();
-    await combobox.fill("swiss");
-    await page.keyboard.press("Enter");
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "swiss");
-  });
-
-  test("switches locale and filters out non-matching commands", async ({ page }) => {
-    await page.goto("/en");
-    await openMenu(page);
-    await page.getByRole("button", { name: "Commands" }).click();
-    const combobox = page.getByRole("combobox", { name: "Type a command" });
-
-    await combobox.fill("zzz");
-    await expect(page.getByText("No matching command")).toBeVisible();
-
-    await combobox.fill("deutsch");
-    await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/\/de$/);
-  });
-
-  test("has no accessibility violations while open", async ({ page }) => {
-    await page.goto("/en");
-    await openMenu(page);
-    await page.getByRole("button", { name: "Commands" }).click();
-    await expectNoA11yViolations(page);
-  });
+test("has no accessibility violations while the menu is open", async ({ page }) => {
+  await page.goto("/en");
+  await openMenu(page);
+  await expectNoA11yViolations(page);
 });
 
 test.describe("seo", () => {
@@ -249,7 +220,7 @@ test.describe("project page", () => {
 });
 
 test.describe("landing sections", () => {
-  test("header navigation jumps to a section without a page transition", async ({ page }) => {
+  test("header navigation jumps to a section and updates the address", async ({ page }) => {
     await page.goto("/en");
     await openMenu(page);
 
@@ -453,11 +424,10 @@ test("the now playing route answers with no content when Spotify is not configur
   await expect(page.getByRole("contentinfo").getByText(/Now playing|Last played/)).toHaveCount(0);
 });
 
-test("changing language keeps the theme and the scroll position", async ({ page }) => {
+test("changing language keeps the theme and the scroll position", async ({ page, isMobile }) => {
   await page.goto("/en");
   await openMenu(page);
-  await page.getByRole("button", { name: "Theme: Dark" }).click();
-  await page.getByRole("button", { name: "Light" }).click();
+  await chooseTheme(page, "Light", isMobile);
   await page.evaluate(() => window.scrollTo(0, 1200));
   const before = await page.evaluate(() => window.scrollY);
 
@@ -466,5 +436,6 @@ test("changing language keeps the theme and the scroll position", async ({ page 
 
   await expect(page).toHaveURL(/\/fr$/);
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(before / 2);
+  // The new page restores the scroll shortly after it mounts, so wait for it rather than read once.
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(before / 2);
 });

@@ -33,17 +33,6 @@
       "contact": "Contact"
     }
   },
-  "palette": {
-    "trigger": "Commands",
-    "title": "Command palette",
-    "placeholder": "Type a command",
-    "empty": "No matching command",
-    "home": "Go to home",
-    "theme": "Theme",
-    "language": "Language",
-    "soundOn": "Turn sound on",
-    "soundOff": "Turn sound off"
-  },
   "home": {
     "badge": "Open to positions, Switzerland",
     "role": "Full-stack software engineer",

@@ -40,7 +40,12 @@ function start(): () => void {
   const lenis = new Lenis({ autoRaf: false, lerp: LERP, anchors: true });
   const tick = (time: number) => lenis.raf(time * 1000);
   const release = yieldToNativeScroll(lenis);
-  setScroller((top) => lenis.scrollTo(top, { duration: SCROLL_TO_SECONDS }));
+  setScroller((top, immediate) =>
+    lenis.scrollTo(
+      top,
+      immediate ? { immediate: true, force: true } : { duration: SCROLL_TO_SECONDS },
+    ),
+  );
 
   gsap.ticker.add(tick);
   gsap.ticker.lagSmoothing(0);

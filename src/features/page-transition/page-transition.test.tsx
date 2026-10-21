@@ -5,7 +5,7 @@ const push = vi.fn();
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push }), usePathname: () => "/en" }));
 
 const to = vi.fn((_: unknown, vars: { onComplete?: () => void }) => vars.onComplete?.());
-vi.mock("gsap", () => ({ gsap: { to, set: vi.fn(), killTweensOf: vi.fn() } }));
+vi.mock("gsap", () => ({ gsap: { to, fromTo: vi.fn(), set: vi.fn(), killTweensOf: vi.fn() } }));
 
 let reduced = false;
 

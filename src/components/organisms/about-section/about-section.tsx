@@ -30,11 +30,11 @@ export function AboutSection({ index, title, messages, trailPhotos = [] }: About
       data-theme="dark"
       className="relative z-10 scroll-mt-4 bg-[linear-gradient(to_bottom,transparent_100svh,black_100svh)] py-0 text-foreground motion-reduce:bg-black"
     >
-      <PortraitReveal className="grid content-center gap-6 px-(--gutter) motion-reduce:min-h-svh motion-reduce:py-(--section-space) md:grid-cols-12 md:items-center md:gap-10">
+      <PortraitReveal className="grid content-center gap-4 px-(--gutter) pt-20 pb-6 motion-reduce:min-h-svh motion-reduce:py-(--section-space) md:grid-cols-12 md:items-center md:gap-10 md:py-0">
         <PhotoTrail photos={trailPhotos} />
         <figure
           data-portrait-frame
-          className="group relative m-0 aspect-[4/5] h-[34svh] justify-self-center overflow-hidden md:col-span-5 md:col-start-2 md:h-[68svh] md:justify-self-end motion-reduce:h-auto motion-reduce:w-full motion-reduce:max-w-sm"
+          className="group relative m-0 aspect-[4/5] h-[26svh] justify-self-center overflow-hidden md:col-span-5 md:col-start-2 md:h-[68svh] md:justify-self-end motion-reduce:h-auto motion-reduce:w-full motion-reduce:max-w-sm"
         >
           <Image
             data-portrait-image
@@ -64,10 +64,14 @@ export function AboutSection({ index, title, messages, trailPhotos = [] }: About
           >
             {messages.hook}
           </Heading>
-          <Text data-portrait-line tone="muted" className="max-w-prose">
+          <Text
+            data-portrait-line
+            tone="muted"
+            className="max-w-prose text-sm leading-relaxed md:text-base"
+          >
             {messages.text}
           </Text>
-          <div data-portrait-line className="mt-2 border-t border-border pt-5">
+          <div data-portrait-line className="mt-1 border-t border-border pt-4 md:mt-2 md:pt-5">
             <dl className="grid grid-cols-3 gap-4">
               {factKeys.map((key) => (
                 <div
@@ -76,7 +80,7 @@ export function AboutSection({ index, title, messages, trailPhotos = [] }: About
                   className="flex flex-col-reverse justify-end gap-1"
                 >
                   <dt className="text-xs text-muted-foreground">{messages.facts[key].label}</dt>
-                  <dd className="m-0 text-lg font-medium whitespace-nowrap md:text-xl">
+                  <dd className="m-0 text-base font-medium whitespace-nowrap md:text-xl">
                     {messages.facts[key].value}
                   </dd>
                 </div>

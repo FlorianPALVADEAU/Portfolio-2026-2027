@@ -10,6 +10,7 @@ import { GridOverlay } from "@/features/grid-overlay";
 import { IntroLoader } from "@/features/intro-loader";
 import { PageTransition } from "@/features/page-transition";
 import { RouteFocus } from "@/features/route-focus";
+import { ScrollIndicator } from "@/features/scroll-indicator";
 import { ScrollRestore } from "@/features/scroll-restore";
 import { SmoothScroll } from "@/features/smooth-scroll";
 import { UiSound } from "@/features/ui-sound";
@@ -65,12 +66,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
 
   return (
     <Document lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
-      <SiteHeader
-        locale={locale}
-        messages={messages.header}
-        palette={messages.palette}
-        cvHref={await cvHref(locale)}
-      />
+      <SiteHeader locale={locale} messages={messages.header} cvHref={await cvHref(locale)} />
       {children}
       <SiteFooter
         locale={locale}
@@ -81,6 +77,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       />
       <RouteFocus />
       <ScrollRestore />
+      <ScrollIndicator />
       <SmoothScroll />
       <PageTransition />
       <IntroLoader label={messages.loader.label} welcome={messages.loader.welcome} />

@@ -33,17 +33,6 @@
       "contact": "Contact"
     }
   },
-  "palette": {
-    "trigger": "Commandes",
-    "title": "Palette de commandes",
-    "placeholder": "Saisir une commande",
-    "empty": "Aucune commande trouvée",
-    "home": "Aller à l'accueil",
-    "theme": "Thème",
-    "language": "Langue",
-    "soundOn": "Activer le son",
-    "soundOff": "Couper le son"
-  },
   "home": {
     "badge": "Ouvert aux opportunités, Suisse",
     "role": "Ingénieur logiciel full-stack",
