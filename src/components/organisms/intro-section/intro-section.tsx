@@ -30,10 +30,7 @@ export function IntroSection({ title, messages }: IntroSectionProps) {
         className="mx-auto max-w-5xl text-center text-[clamp(1.75rem,3.8vw,3.5rem)] leading-[1.15] tracking-tight text-balance"
       >
         <div className="flex flex-col items-center gap-6 md:flex-row md:gap-10">
-          <TrustBadge
-            text={messages.trust.replace("{count}", String(clients.length))}
-            className="shrink-0"
-          />
+          <TrustBadge text={messages.trust} className="shrink-0" />
           <Marquee
             items={clients.map(({ id, name, width, height, onWhite }) => ({
               id,

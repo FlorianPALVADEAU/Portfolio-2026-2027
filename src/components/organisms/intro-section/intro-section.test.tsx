@@ -25,9 +25,9 @@ describe("IntroSection", () => {
 });
 
 describe("IntroSection trust line", () => {
-  it("counts the companies it lists", () => {
+  it("states services, not a headcount", () => {
     render(<IntroSection title="Introduction" messages={en.home.intro} />);
 
-    expect(screen.getByText(/Trusted by 8 organizations/)).toBeInTheDocument();
+    expect(screen.getByText("Services delivered for teams at")).toBeInTheDocument();
   });
 });
