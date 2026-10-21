@@ -1,6 +1,8 @@
-type Scroller = (top: number) => void;
+/** `immediate` lands on the position at once instead of gliding there. */
+type Scroller = (top: number, immediate: boolean) => void;
 
-const nativeScroller: Scroller = (top) => window.scrollTo({ top, behavior: "smooth" });
+const nativeScroller: Scroller = (top, immediate) =>
+  window.scrollTo({ top, behavior: immediate ? "instant" : "smooth" });
 
 let current: Scroller = nativeScroller;
 
@@ -11,5 +13,10 @@ export function setScroller(scroller: Scroller | null) {
 
 /** Scrolls the page to a position in pixels, through the smooth scroll when there is one. */
 export function scrollToTop(top: number) {
-  current(top);
+  current(top, false);
+}
+
+/** Puts the page at a position in pixels without gliding, keeping the smooth scroll in step. */
+export function jumpToTop(top: number) {
+  current(top, true);
 }

@@ -37,10 +37,10 @@ export function UiSound() {
     };
 
     document.addEventListener("pointerover", onPointerOver);
-    document.addEventListener("click", onClick);
+    document.addEventListener("click", onClick, true);
     return () => {
       document.removeEventListener("pointerover", onPointerOver);
-      document.removeEventListener("click", onClick);
+      document.removeEventListener("click", onClick, true);
     };
   }, []);
 
