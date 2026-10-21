@@ -1,4 +1,5 @@
 import { gsap } from "gsap";
+import { CustomEase } from "gsap/CustomEase";
 import { LETTERS, MARKS_CENTER, type MarkId } from "./marks";
 
 /** Marks arrive in this order, each from its own side. */
@@ -8,11 +9,12 @@ const ARRIVALS: ReadonlyArray<{ id: MarkId; axis: "x" | "y"; sign: 1 | -1 }> = [
   { id: "tl", axis: "x", sign: -1 },
   { id: "tr", axis: "y", sign: -1 },
 ];
-/** Falls at full speed and hits the centre like a crash, then rebounds and settles. */
-const ENTER_EASE = "bounce.out";
+gsap.registerPlugin(CustomEase);
+/** cubic-bezier(0.08, 0.82, 0.17, 1): launched at full speed, then a long soft settle with no rebound. */
+const ENTER_EASE = CustomEase.create("intro-crash", "M0,0 C0.08,0.82 0.17,1 1,1");
 const ENTER_SECONDS = 0.8;
-/** Where bounce.out first touches its target, as a share of the duration. */
-const FIRST_HIT = 1 / 2.75;
+/** Share of the duration at which the mark has covered nearly all of its distance. */
+const FIRST_HIT = 0.2;
 /** Wide enough that each mark lands on its own, one after the other. */
 const ENTER_STAGGER = 0.3;
 const SETTLE_SECONDS = 0.35;
