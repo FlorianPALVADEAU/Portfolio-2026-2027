@@ -5,68 +5,77 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { hasPlayedIntro, openIntro } from "@/lib/intro";
 import { prefersReducedMotion } from "@/lib/motion";
 import { buildIntro } from "./build-intro";
-import { MARK_SIZE, MARKS } from "./marks";
+import { LETTERS, LOGO_HEIGHT, LOGO_WIDTH, MARKS, MARKS_CENTER } from "./marks";
 
-const HOLE_ID = "intro-loader-hole";
-/** The marks span this share of the smaller viewport side, in the 100-unit view box below. */
-const MARK_VIEW_SIZE = 26;
-const MARK_SCALE = MARK_VIEW_SIZE / MARK_SIZE;
-const VIEW_HALF = 50;
-const MASK_EXTENT = 5000;
+/** The logo spans this much of the smaller viewport side, in the 100-unit view box below. */
+const LOGO_VIEW_WIDTH = 64;
+const LOGO_SCALE = LOGO_VIEW_WIDTH / LOGO_WIDTH;
+const VIEW_SIZE = 100;
+/** Where the letters first touch the marks while the marks still sit alone at the centre. */
+const LETTERS_RIGHT_EDGE = 76.66;
+const MARKS_LEFT_EDGE = 84.5;
 /** A slow font or image must not trap the visitor behind the loader. */
 const GIVE_UP_MS = 4000;
 const REDUCED_HOLD_MS = 600;
 const REDUCED_FADE_SECONDS = 0.4;
 
+const MARKS_SHIFT = MARKS_CENTER.x - LOGO_WIDTH / 2;
+const CONTACT_TRAVEL = LETTERS_RIGHT_EDGE - (MARKS_LEFT_EDGE - MARKS_SHIFT);
+
 function pageReady(): Promise<void> {
   const loaded =
     document.readyState === "complete"
       ? Promise.resolve()
-      : new Promise<void>((resolve) =>
-          window.addEventListener("load", () => resolve(), { once: true }),
-        );
+      : new Promise<void>((resolve) => {
+          window.addEventListener("load", () => resolve(), { once: true });
+        });
   const settled = Promise.all([document.fonts.ready, loaded]).then(() => undefined);
   const giveUp = new Promise<void>((resolve) => setTimeout(resolve, GIVE_UP_MS));
   return Promise.race([settled, giveUp]);
 }
 
-function Marks({ layer }: { layer: "fill" | "hole" }) {
+const hidden = { visibility: "hidden" } as const;
+
+function Logo({ edge }: { edge: "top" | "bottom" }) {
   return (
-    <g
-      transform={`translate(${-(MARK_SIZE / 2) * MARK_SCALE} ${-(MARK_SIZE / 2) * MARK_SCALE}) scale(${MARK_SCALE})`}
+    <svg
+      aria-hidden="true"
+      viewBox={`${-VIEW_SIZE / 2} ${-VIEW_SIZE / 2} ${VIEW_SIZE} ${VIEW_SIZE}`}
+      preserveAspectRatio="xMidYMid meet"
+      className={`absolute inset-x-0 ${edge === "top" ? "top-0" : "bottom-0"} h-[200%] w-full fill-foreground stroke-foreground`}
+      strokeWidth={1}
     >
-      <g data-spin>
-        {MARKS.map(({ id, d }) => (
-          <path
-            key={id}
-            d={d}
-            data-layer={layer}
-            data-mark={id}
-            strokeWidth={1}
-            style={{ visibility: "hidden" }}
-            {...(layer === "fill"
-              ? { className: "fill-foreground stroke-foreground" }
-              : { fill: "black", stroke: "black" })}
-          />
-        ))}
+      <g
+        transform={`translate(${(-LOGO_WIDTH / 2) * LOGO_SCALE} ${(-LOGO_HEIGHT / 2) * LOGO_SCALE}) scale(${LOGO_SCALE})`}
+      >
+        <g data-letters>
+          {LETTERS.map(({ id, d }) => (
+            <path key={id} d={d} data-letter={id} style={hidden} />
+          ))}
+        </g>
+        <g data-marks>
+          <g data-spin>
+            {MARKS.map(({ id, d }) => (
+              <path key={id} d={d} data-mark={id} style={hidden} />
+            ))}
+          </g>
+        </g>
       </g>
-    </g>
+    </svg>
   );
 }
 
 /**
- * Opens the first visit of a session: the four logo marks fly in, spin, then the page shows through
- * them. The SVG mask is what makes the opening take the shape of the logo.
+ * Opens the first visit: the four logo marks fly in and spin, the letters knock into them, then the
+ * screen parts in two. Each half carries its own copy of the logo so the seam cuts through it.
  */
 export function IntroLoader({ label }: { label: string }) {
   const overlay = useRef<HTMLDivElement>(null);
-  const svg = useRef<SVGSVGElement>(null);
   const [done, setDone] = useState(false);
 
   useLayoutEffect(() => {
     const element = overlay.current;
-    const root = svg.current;
-    if (!(element && root)) return;
+    if (!element) return;
     if (hasPlayedIntro()) {
       setDone(true);
       return;
@@ -82,7 +91,8 @@ export function IntroLoader({ label }: { label: string }) {
 
     if (prefersReducedMotion()) {
       let cancelled = false;
-      gsap.set("[data-layer='fill']", { visibility: "visible" });
+      gsap.set("[data-mark], [data-letter]", { visibility: "visible" });
+      gsap.set("[data-marks]", { x: 0 });
       const hold = new Promise<void>((resolve) => setTimeout(resolve, REDUCED_HOLD_MS));
       void Promise.all([pageReady(), hold]).then(() => {
         if (cancelled) return;
@@ -96,12 +106,14 @@ export function IntroLoader({ label }: { label: string }) {
       };
     }
 
-    const { width, height } = root.getBoundingClientRect();
-    const viewScale = Math.min(width, height) / (VIEW_HALF * 2);
+    const { width, height } = element.getBoundingClientRect();
+    const viewScale = Math.min(width, height) / VIEW_SIZE;
     const halfExtent = Math.max(width, height) / viewScale / 2;
     const cleanup = buildIntro({
-      root,
-      offscreen: (halfExtent + MARK_VIEW_SIZE) / MARK_SCALE,
+      root: element,
+      offscreen: (halfExtent + LOGO_VIEW_WIDTH) / LOGO_SCALE,
+      markShift: MARKS_SHIFT,
+      contactTravel: CONTACT_TRAVEL,
       ready: pageReady(),
       onPageCue: openIntro,
       onDone: finish,
@@ -119,42 +131,18 @@ export function IntroLoader({ label }: { label: string }) {
       <noscript>
         <style>{"[data-intro-loader]{display:none}"}</style>
       </noscript>
-      <svg
-        ref={svg}
-        aria-hidden="true"
-        viewBox={`${-VIEW_HALF} ${-VIEW_HALF} ${VIEW_HALF * 2} ${VIEW_HALF * 2}`}
-        preserveAspectRatio="xMidYMid meet"
-        className="size-full"
+      <div
+        data-panel="top"
+        className="absolute inset-x-0 top-0 h-1/2 overflow-hidden bg-background"
       >
-        <defs>
-          <mask
-            id={HOLE_ID}
-            maskUnits="userSpaceOnUse"
-            x={-MASK_EXTENT}
-            y={-MASK_EXTENT}
-            width={MASK_EXTENT * 2}
-            height={MASK_EXTENT * 2}
-          >
-            <rect
-              x={-MASK_EXTENT}
-              y={-MASK_EXTENT}
-              width={MASK_EXTENT * 2}
-              height={MASK_EXTENT * 2}
-              fill="white"
-            />
-            <Marks layer="hole" />
-          </mask>
-        </defs>
-        <rect
-          x={-MASK_EXTENT}
-          y={-MASK_EXTENT}
-          width={MASK_EXTENT * 2}
-          height={MASK_EXTENT * 2}
-          className="fill-background"
-          mask={`url(#${HOLE_ID})`}
-        />
-        <Marks layer="fill" />
-      </svg>
+        <Logo edge="top" />
+      </div>
+      <div
+        data-panel="bottom"
+        className="absolute inset-x-0 bottom-0 h-1/2 overflow-hidden bg-background"
+      >
+        <Logo edge="bottom" />
+      </div>
       <span role="status" className="sr-only">
         {label}
       </span>

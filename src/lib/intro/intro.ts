@@ -1,29 +1,26 @@
 import { prefersReducedMotion } from "@/lib/motion";
 
-const PLAYED_KEY = "intro-played";
 const INTRO_OPEN_EVENT = "intro:open";
 
+/**
+ * Kept in memory so the intro plays on every full load while the site is in development.
+ * Persisting it in `sessionStorage` is what turns it into a once-per-session intro.
+ */
+let played = false;
+
 export function hasPlayedIntro(): boolean {
-  try {
-    return window.sessionStorage.getItem(PLAYED_KEY) === "1";
-  } catch {
-    return false;
-  }
+  return played;
 }
 
-/** Remembers the intro for the session and tells the page it can start its own entrance. */
+/** Remembers the intro and tells the page it can start its own entrance. */
 export function openIntro(): void {
-  try {
-    window.sessionStorage.setItem(PLAYED_KEY, "1");
-  } catch {
-    // Private mode: the intro simply replays on the next full load.
-  }
+  played = true;
   window.dispatchEvent(new Event(INTRO_OPEN_EVENT));
 }
 
 /** Runs `callback` once the intro has opened, or right away when there is no intro to wait for. */
 export function whenIntroOpen(callback: () => void): () => void {
-  if (hasPlayedIntro() || prefersReducedMotion()) {
+  if (played || prefersReducedMotion()) {
     callback();
     return () => {};
   }
