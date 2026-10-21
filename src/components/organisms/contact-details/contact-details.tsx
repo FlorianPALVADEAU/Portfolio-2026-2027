@@ -1,5 +1,7 @@
 import { Heading } from "@/components/atoms/heading";
 import { Link } from "@/components/atoms/link";
+import { Rise } from "@/components/atoms/rise";
+import { RiseText } from "@/components/atoms/rise-text";
 import { Text } from "@/components/atoms/text";
 import { LocalTime } from "@/components/molecules/local-time";
 import type { Locale, Messages } from "@/lib/i18n";
@@ -30,38 +32,44 @@ export function ContactDetails({ locale, messages, timeZone, phone }: ContactDet
       <div className="flex flex-col gap-8 md:col-span-5">
         <div className="flex flex-col gap-4">
           <Heading level={3} size="xl">
-            {messages.title}
+            <RiseText>{messages.title}</RiseText>
           </Heading>
-          <Text tone="muted" className="max-w-[40ch]">
-            {messages.text}
-          </Text>
+          <Rise>
+            <Text tone="muted" className="max-w-[40ch]">
+              {messages.text}
+            </Text>
+          </Rise>
         </div>
-        <dl className="flex flex-col font-mono text-sm tracking-widest uppercase">
-          <div className="flex items-baseline justify-between gap-4 border-t border-border py-3">
-            <dt className="text-muted-foreground">{messages.time}</dt>
-            <dd>
-              <LocalTime locale={locale} timeZone={timeZone} />
-            </dd>
-          </div>
-          {phone && (
+        <Rise>
+          <dl className="flex flex-col font-mono text-sm tracking-widest uppercase">
             <div className="flex items-baseline justify-between gap-4 border-t border-border py-3">
-              <dt className="text-muted-foreground">{messages.phone}</dt>
+              <dt className="text-muted-foreground">{messages.time}</dt>
               <dd>
-                <Link href={`tel:${dialled(phone)}`} className="no-underline">
-                  {phone}
-                </Link>
+                <LocalTime locale={locale} timeZone={timeZone} />
               </dd>
             </div>
-          )}
-        </dl>
+            {phone && (
+              <div className="flex items-baseline justify-between gap-4 border-t border-border py-3">
+                <dt className="text-muted-foreground">{messages.phone}</dt>
+                <dd>
+                  <Link href={`tel:${dialled(phone)}`} className="no-underline">
+                    {phone}
+                  </Link>
+                </dd>
+              </div>
+            )}
+          </dl>
+        </Rise>
       </div>
-      <iframe
-        src={MAP}
-        title={messages.map}
-        loading="lazy"
-        referrerPolicy="no-referrer"
-        className="h-[22rem] w-full border border-muted-foreground grayscale contrast-125 md:col-span-6 md:col-start-7 md:h-[26rem]"
-      />
+      <Rise className="md:col-span-6 md:col-start-7">
+        <iframe
+          src={MAP}
+          title={messages.map}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          className="h-[22rem] w-full border border-muted-foreground grayscale contrast-125 md:h-[26rem]"
+        />
+      </Rise>
     </div>
   );
 }

@@ -12,6 +12,8 @@ import {
 import { Button } from "@/components/atoms/button";
 import { Heading } from "@/components/atoms/heading";
 import { Icon } from "@/components/atoms/icon";
+import { Rise } from "@/components/atoms/rise";
+import { RiseText } from "@/components/atoms/rise-text";
 import { Text } from "@/components/atoms/text";
 import { InputField, TextAreaField } from "@/components/molecules/form-field";
 import { TurnstileField } from "@/components/molecules/turnstile-field";
@@ -43,11 +45,13 @@ function Intro({ messages }: { messages: FormMessages }) {
   return (
     <div className={INTRO}>
       <Heading level={3} size="3xl">
-        {messages.title}
+        <RiseText>{messages.title}</RiseText>
       </Heading>
-      <Text tone="muted" className="max-w-[40ch]">
-        {messages.intro}
-      </Text>
+      <Rise>
+        <Text tone="muted" className="max-w-[40ch]">
+          {messages.intro}
+        </Text>
+      </Rise>
     </div>
   );
 }
@@ -57,7 +61,7 @@ function Confirmation({ messages, onAgain }: { messages: FormMessages; onAgain: 
   useEffect(() => card.current?.focus(), []);
 
   return (
-    <div className={BODY}>
+    <div>
       <div
         ref={card}
         role="status"
@@ -143,7 +147,7 @@ function Form({
       onSubmit={onSubmit}
       noValidate
       aria-busy={pending}
-      className={`${BODY} flex flex-col gap-6`}
+      className="flex flex-col gap-6"
     >
       <Text tone="muted" size="sm">
         {messages.required}
@@ -226,9 +230,9 @@ export function ContactForm(props: ContactFormProps) {
     return (
       <div className={GRID}>
         <Intro messages={messages} />
-        <Text tone="muted" className={BODY}>
-          {messages.unconfigured}
-        </Text>
+        <Rise className={BODY}>
+          <Text tone="muted">{messages.unconfigured}</Text>
+        </Rise>
       </div>
     );
   }
@@ -236,17 +240,19 @@ export function ContactForm(props: ContactFormProps) {
   return (
     <div className={GRID}>
       <Intro messages={messages} />
-      {sent ? (
-        <Confirmation
-          messages={messages}
-          onAgain={() => {
-            setSent(false);
-            setAttempt((count) => count + 1);
-          }}
-        />
-      ) : (
-        <Form key={attempt} {...props} onSent={() => setSent(true)} />
-      )}
+      <Rise className={BODY}>
+        {sent ? (
+          <Confirmation
+            messages={messages}
+            onAgain={() => {
+              setSent(false);
+              setAttempt((count) => count + 1);
+            }}
+          />
+        ) : (
+          <Form key={attempt} {...props} onSent={() => setSent(true)} />
+        )}
+      </Rise>
     </div>
   );
 }

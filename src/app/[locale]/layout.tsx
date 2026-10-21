@@ -6,7 +6,6 @@ import { SiteHeader } from "@/components/organisms/site-header";
 import { Document } from "@/components/templates/document";
 import { Analytics } from "@/features/analytics";
 import { BackgroundMusic } from "@/features/background-music";
-import { CustomCursor } from "@/features/custom-cursor";
 import { GridOverlay } from "@/features/grid-overlay";
 import { PageTransition } from "@/features/page-transition";
 import { RouteFocus } from "@/features/route-focus";
@@ -79,7 +78,6 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
         messages={messages.footer}
       />
       <RouteFocus />
-      <CustomCursor labels={{ scroll: messages.home.scrollHint, view: messages.home.works.view }} />
       <SmoothScroll />
       <PageTransition />
       <UiSound />

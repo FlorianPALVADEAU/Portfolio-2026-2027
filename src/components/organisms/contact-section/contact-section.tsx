@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import { Container } from "@/components/atoms/container";
+import { Rise } from "@/components/atoms/rise";
 import { Section } from "@/components/atoms/section";
 import { ProfileRow } from "@/components/molecules/profile-row";
-import { Reveal } from "@/features/reveal";
+import { RiseReveal } from "@/features/rise-reveal";
 import type { Messages } from "@/lib/i18n";
 import { profiles } from "@/lib/landing";
 
@@ -38,22 +39,24 @@ export function ContactSection({
       className="relative scroll-mt-4 bg-background py-0 text-foreground"
     >
       <Container className="pt-12 pb-(--section-space) md:pt-20">
-        <Reveal className="flex flex-col gap-16 md:gap-20">
+        <RiseReveal className="flex flex-col gap-16 md:gap-20">
           <div className="flex flex-col gap-12 md:gap-16">
-            <p className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 font-mono text-sm tracking-widest uppercase">
-              <span aria-hidden="true">{`[${String(index).padStart(2, "0")}]`}</span>
-              <span>{messages.availability}</span>
-              <span>{messages.location}</span>
-            </p>
+            <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 font-mono text-sm tracking-widest uppercase">
+              <Rise aria-hidden="true">{`[${String(index).padStart(2, "0")}]`}</Rise>
+              <Rise>{messages.availability}</Rise>
+              <Rise>{messages.location}</Rise>
+            </div>
             <ul aria-label={messages.profiles} className="border-b border-border">
               {profiles.map(({ id, label, href }, position) => (
                 <li key={id}>
-                  <ProfileRow
-                    order={position + 1}
-                    label={label}
-                    href={href}
-                    newTab={messages.newTab}
-                  />
+                  <Rise>
+                    <ProfileRow
+                      order={position + 1}
+                      label={label}
+                      href={href}
+                      newTab={messages.newTab}
+                    />
+                  </Rise>
                 </li>
               ))}
             </ul>
@@ -61,7 +64,7 @@ export function ContactSection({
           {form}
           {details}
           {activity}
-        </Reveal>
+        </RiseReveal>
       </Container>
     </Section>
   );
