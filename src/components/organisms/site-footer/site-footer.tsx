@@ -21,6 +21,8 @@ type SiteFooterProps = {
   nav: Messages["header"]["nav"];
   /** The availability line of the contact section, repeated here as the footer's first line. */
   availability: string;
+  /** The CV in the visitor's language; the button is left out when no file has been added. */
+  cv: { label: string; href: string | null };
   messages: Messages["footer"];
 };
 
@@ -49,7 +51,7 @@ const bannerItems = [0, 1, 2].map((copy) => ({
  * screen. The closing line rises in word by word as the card scrolls into view, and nothing here
  * holds the scroll.
  */
-export function SiteFooter({ locale, nav, availability, messages }: SiteFooterProps) {
+export function SiteFooter({ locale, nav, availability, cv, messages }: SiteFooterProps) {
   const { credits } = messages;
 
   return (
@@ -137,6 +139,22 @@ export function SiteFooter({ locale, nav, availability, messages }: SiteFooterPr
                 </Button>
               </Magnetic>
             </Rise>
+            {cv.href && (
+              <Rise>
+                <Magnetic strength={0.25}>
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="border-background/30 text-background hover:bg-background/10"
+                  >
+                    <a href={cv.href} download className="no-underline">
+                      {cv.label}
+                    </a>
+                  </Button>
+                </Magnetic>
+              </Rise>
+            )}
             <Rise>
               <ul aria-label={messages.profiles} className="flex items-center gap-3">
                 {profiles.map(({ id, label, href }) => (

@@ -74,6 +74,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       <SiteFooter
         locale={locale}
         nav={messages.header.nav}
+        cv={{ label: messages.home.cv, href: await cvHref(locale) }}
         availability={messages.home.contact.availability}
         messages={messages.footer}
       />

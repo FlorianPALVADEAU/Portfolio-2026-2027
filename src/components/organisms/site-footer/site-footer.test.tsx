@@ -31,7 +31,15 @@ const messages = {
 
 describe("SiteFooter", () => {
   it("renders a contentinfo landmark with the name, navigation and picture credits", () => {
-    render(<SiteFooter locale="en" nav={nav} availability="Available" messages={messages} />);
+    render(
+      <SiteFooter
+        locale="en"
+        nav={nav}
+        availability="Available"
+        cv={{ label: "Download CV", href: "/cv/cv-en.pdf" }}
+        messages={messages}
+      />,
+    );
 
     expect(screen.getByRole("contentinfo")).toHaveTextContent("Florian Palvadeau");
     expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute("href", "/en#works");
@@ -45,6 +53,24 @@ describe("SiteFooter", () => {
       "/en#contact",
     );
     expect(screen.getByRole("link", { name: /GitHub/ })).toHaveAttribute("target", "_blank");
+    expect(screen.getByRole("link", { name: "Download CV" })).toHaveAttribute(
+      "href",
+      "/cv/cv-en.pdf",
+    );
     expect(screen.getByRole("button", { name: "Back to top" })).toBeVisible();
+  });
+
+  it("leaves the CV button out when no file exists", () => {
+    render(
+      <SiteFooter
+        locale="en"
+        nav={nav}
+        availability="Available"
+        cv={{ label: "Download CV", href: null }}
+        messages={messages}
+      />,
+    );
+
+    expect(screen.queryByRole("link", { name: "Download CV" })).not.toBeInTheDocument();
   });
 });
