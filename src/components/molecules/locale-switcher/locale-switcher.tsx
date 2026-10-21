@@ -48,7 +48,7 @@ export function LocaleSwitcher({ current, label, layout = "dropdown" }: LocaleSw
   return (
     <Dropdown
       label={`${label}: ${localeNames[current]}`}
-      trigger={<Flag locale={current} />}
+      trigger={<Flag locale={current} className="size-7" />}
       align="start"
     >
       <nav aria-label={label}>

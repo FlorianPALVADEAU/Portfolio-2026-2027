@@ -11,7 +11,7 @@ const HUMANIZE = 0.016;
 const LOOKAHEAD = 0.4;
 const TICK_MS = 100;
 const MASTER_VOLUME = 0.42;
-const FADE_SECONDS = 2.5;
+const FADE_SECONDS = 0.35;
 const REVERB_SECONDS = 2.4;
 
 // Eight bars so the loop takes ~19 seconds to come around: the ear stops predicting it.

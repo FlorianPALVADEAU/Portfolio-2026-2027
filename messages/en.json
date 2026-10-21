@@ -63,7 +63,8 @@
     "scrollHint": "Scroll",
     "intro": {
       "paragraph": "I design, build and run web applications in TypeScript, from enterprise integrations to the ticketing platform of a race I founded. I work from the first requirement to production, with an architecture that stays readable and a delivery that stays calm, so that teams can focus on what matters.",
-      "clients": "Companies I have worked with"
+      "clients": "Organizations I have delivered services for",
+      "trust": "Services delivered for teams at"
     },
     "gallery": {
       "hint": "Scroll to dive in.",
@@ -174,6 +175,7 @@
       "newTab": "opens in a new tab",
       "location": "Geneva, Switzerland",
       "availability": "Available from September 2027",
+      "clients": "Services and mission contexts",
       "form": {
         "title": "Write to me",
         "intro": "I read every message myself and answer from my own address. Your email is used only to reply to you.",

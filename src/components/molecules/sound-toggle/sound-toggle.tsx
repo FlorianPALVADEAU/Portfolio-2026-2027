@@ -9,6 +9,7 @@ import {
   getSoundEnabled,
   setSoundEnabled,
   subscribeSound,
+  warmMusic,
 } from "@/lib/sound";
 
 const WIDTH = 24;
@@ -70,6 +71,8 @@ export function SoundToggle({ onLabel, offLabel }: SoundToggleProps) {
       variant="secondary"
       size="icon"
       aria-label={enabled ? onLabel : offLabel}
+      onPointerEnter={warmMusic}
+      onFocus={warmMusic}
       onClick={() => setSoundEnabled(!enabled)}
     >
       <svg
