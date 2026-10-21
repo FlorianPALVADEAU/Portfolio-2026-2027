@@ -15,7 +15,8 @@
     },
     "sound": {
       "on": "Sound: on",
-      "off": "Sound: off"
+      "off": "Sound: off",
+      "hint": "Turn the sound on"
     },
     "skip": "Skip to content",
     "cta": "Let's talk",

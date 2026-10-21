@@ -15,7 +15,8 @@
     },
     "sound": {
       "on": "Son : activé",
-      "off": "Son : coupé"
+      "off": "Son : coupé",
+      "hint": "Active le son"
     },
     "skip": "Aller au contenu",
     "cta": "Parlons-en",

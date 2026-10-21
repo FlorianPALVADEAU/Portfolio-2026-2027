@@ -15,7 +15,8 @@
     },
     "sound": {
       "on": "Ton: an",
-      "off": "Ton: aus"
+      "off": "Ton: aus",
+      "hint": "Ton einschalten"
     },
     "skip": "Zum Inhalt springen",
     "cta": "Lass uns reden",

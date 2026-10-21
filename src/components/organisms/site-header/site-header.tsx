@@ -9,6 +9,7 @@ import { ThemeSwitcher } from "@/components/molecules/theme-switcher";
 import { CommandPalette } from "@/features/command-palette";
 import { MAIN_ID } from "@/features/route-focus";
 import { SiteMenu } from "@/features/site-menu";
+import { SoundHint } from "@/features/sound-hint";
 import type { Locale, Messages } from "@/lib/i18n";
 import { navSections } from "@/lib/landing";
 import { siteName } from "@/lib/site";
@@ -33,7 +34,10 @@ export function SiteHeader({ locale, messages, palette, cvHref = null }: SiteHea
             <div className="flex items-center gap-1 sm:gap-2">
               {/* Touch screens have no hover, so the sound controls only exist from md up. */}
               <div className="hidden items-center gap-2 md:flex">
-                <SoundToggle onLabel={messages.sound.on} offLabel={messages.sound.off} />
+                <div className="relative">
+                  <SoundToggle onLabel={messages.sound.on} offLabel={messages.sound.off} />
+                  <SoundHint label={messages.sound.hint} />
+                </div>
                 <LocaleSwitcher current={locale} label={messages.language} />
               </div>
               <Button
