@@ -16,6 +16,8 @@ function embedUrl(url: string): string {
   const frame = new URL(url);
   frame.searchParams.set("embed_domain", window.location.hostname);
   frame.searchParams.set("embed_type", "Inline");
+  // Calendly's own cookie banner would cover the top of the calendar inside the frame.
+  frame.searchParams.set("hide_gdpr_banner", "1");
   return frame.toString();
 }
 
@@ -34,9 +36,9 @@ export function BookingEmbed({ messages, url }: BookingEmbedProps) {
   if (!url) return null;
 
   return (
-    <div className="grid gap-10 border-t border-border pt-10 md:grid-cols-12">
+    <div className="grid gap-8 border-t border-border pt-8 md:grid-cols-12">
       <div className="flex flex-col items-start gap-4 md:col-span-5">
-        <Heading level={3} size="2xl">
+        <Heading level={3} size="xl">
           {messages.title}
         </Heading>
         <Text tone="muted" className="max-w-[40ch]">

@@ -42,7 +42,7 @@ const BODY = "md:col-span-6 md:col-start-7";
 function Intro({ messages }: { messages: FormMessages }) {
   return (
     <div className={INTRO}>
-      <Heading level={3} size="2xl">
+      <Heading level={3} size="3xl">
         {messages.title}
       </Heading>
       <Text tone="muted" className="max-w-[40ch]">

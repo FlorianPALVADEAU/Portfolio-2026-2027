@@ -19,6 +19,7 @@ describe("BookingEmbed", () => {
     const frame = screen.getByTitle(messages.frame);
     expect(frame).toHaveAttribute("src", expect.stringContaining(url));
     expect(frame.getAttribute("src")).toContain("embed_type=Inline");
+    expect(frame.getAttribute("src")).toContain("hide_gdpr_banner=1");
     expect(frame).toHaveAttribute("loading", "lazy");
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });

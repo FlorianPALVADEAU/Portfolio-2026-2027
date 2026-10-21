@@ -44,8 +44,8 @@ export function ContactSection({
       className="relative scroll-mt-4 bg-background py-0 text-foreground"
     >
       <Container className="pt-12 pb-(--section-space) md:pt-20">
-        <Reveal className="flex flex-col gap-24 md:gap-32">
-          <div className="flex flex-col gap-16 md:gap-24">
+        <Reveal className="flex flex-col gap-16 md:gap-20">
+          <div className="flex flex-col gap-12 md:gap-16">
             <p className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 font-mono text-sm tracking-widest uppercase">
               <span aria-hidden="true">{`[${String(index).padStart(2, "0")}]`}</span>
               <span>{messages.availability}</span>
