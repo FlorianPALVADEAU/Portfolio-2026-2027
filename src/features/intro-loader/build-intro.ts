@@ -12,27 +12,28 @@ const ARRIVALS: ReadonlyArray<{ id: MarkId; axis: "x" | "y"; sign: 1 | -1 }> = [
 gsap.registerPlugin(CustomEase);
 /** cubic-bezier(0.08, 0.82, 0.17, 1): launched at full speed, then a long soft settle with no rebound. */
 const ENTER_EASE = CustomEase.create("intro-crash", "M0,0 C0.08,0.82 0.17,1 1,1");
-const ENTER_SECONDS = 0.8;
+const ENTER_SECONDS = 0.65;
 /** Share of the duration at which the mark has covered nearly all of its distance. */
 const FIRST_HIT = 0.2;
 /** Wide enough that each mark lands on its own, one after the other. */
-const ENTER_STAGGER = 0.3;
-const SETTLE_SECONDS = 0.35;
+const ENTER_STAGGER = 0.2;
+const SETTLE_SECONDS = 0.1;
 const MARK_SHAKE_PX = 10;
 const LETTERS_SHAKE_PX = 16;
 const SHAKE_SECONDS = 0.28;
-const SPIN_SECONDS = 0.8;
+const SPIN_SECONDS = 0.6;
 const SHRINK_SCALE = 0.55;
-const SHRINK_SECONDS = 0.4;
-const REGROW_SECONDS = 0.9;
+const SHRINK_SECONDS = 0.28;
+const REGROW_SECONDS = 0.7;
 const REGROW_EASE = "elastic.out(1, 0.45)";
-const SLIDE_SECONDS = 0.45;
-const PUSH_SECONDS = 1;
+const SLIDE_SECONDS = 0.35;
+const PUSH_SECONDS = 0.8;
 const TUMBLE_DEGREES = 18;
-const WELCOME_DELAY = 0.4;
-const WELCOME_SECONDS = 0.5;
-const WELCOME_RISE_PX = 14;
-const OPEN_SECONDS = 1;
+/** Same rise as the footer: the line slides up from behind its own edge. */
+const WELCOME_DELAY = 0.15;
+const WELCOME_SECONDS = 0.8;
+const WELCOME_START_PERCENT = 110;
+const OPEN_SECONDS = 0.85;
 /** The page entrance starts once the halves have parted enough to show it. */
 const PAGE_CUE_SECONDS = 0.3;
 
@@ -99,7 +100,7 @@ export function buildIntro({
     gsap.set(spin, { svgOrigin: `${MARKS_CENTER.x} ${MARKS_CENTER.y}` });
     gsap.set("[data-marks]", { x: -markShift });
     gsap.set("[data-letters]", { x: -offscreen });
-    gsap.set("[data-welcome]", { autoAlpha: 0, y: WELCOME_RISE_PX });
+    gsap.set("[data-welcome]", { yPercent: WELCOME_START_PERCENT, visibility: "visible" });
 
     ARRIVALS.forEach(({ id, axis, sign }, index) => {
       const at = index * ENTER_STAGGER;
@@ -113,12 +114,12 @@ export function buildIntro({
     const lastLanding = (ARRIVALS.length - 1) * ENTER_STAGGER + ENTER_SECONDS * FIRST_HIT;
     const spinAt = lastLanding + SETTLE_SECONDS;
     const regrowAt = spinAt + SHRINK_SECONDS;
-    const slideAt = regrowAt + 0.15;
+    const slideAt = regrowAt + 0.05;
     const impactAt = slideAt + SLIDE_SECONDS;
     shake(enter, impactAt, "x", LETTERS_SHAKE_PX);
     enter.to(
       "[data-welcome]",
-      { autoAlpha: 1, y: 0, duration: WELCOME_SECONDS, ease: "power3.out" },
+      { yPercent: 0, duration: WELCOME_SECONDS, ease: "expo.out" },
       impactAt + WELCOME_DELAY,
     );
     enter

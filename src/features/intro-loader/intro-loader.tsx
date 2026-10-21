@@ -66,12 +66,10 @@ function Logo({ edge, welcome }: { edge: "top" | "bottom"; welcome: string }) {
         </g>
       </svg>
       <div aria-hidden="true" className={`${placement} flex items-center justify-center`}>
-        <p
-          data-welcome
-          style={hidden}
-          className="relative top-[14vmin] font-mono text-[clamp(0.7rem,2.4vmin,1rem)] text-foreground uppercase tracking-[0.35em]"
-        >
-          {welcome}
+        <p className="relative top-[14vmin] overflow-hidden font-mono text-[clamp(0.7rem,2.4vmin,1rem)] text-foreground uppercase tracking-[0.35em]">
+          <span data-welcome style={hidden} className="block">
+            {welcome}
+          </span>
         </p>
       </div>
     </>
@@ -104,7 +102,8 @@ export function IntroLoader({ label, welcome }: { label: string; welcome: string
 
     if (prefersReducedMotion()) {
       let cancelled = false;
-      gsap.set("[data-mark], [data-letter], [data-welcome]", { visibility: "visible" });
+      gsap.set("[data-mark], [data-letter]", { visibility: "visible" });
+      gsap.set("[data-welcome]", { yPercent: 0, visibility: "visible" });
       gsap.set("[data-marks]", { x: 0 });
       const hold = new Promise<void>((resolve) => setTimeout(resolve, REDUCED_HOLD_MS));
       void Promise.all([pageReady(), hold]).then(() => {
