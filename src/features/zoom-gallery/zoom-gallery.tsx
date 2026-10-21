@@ -2,7 +2,7 @@
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { type CSSProperties, type ReactNode, useLayoutEffect, useRef } from "react";
+import { type CSSProperties, type ReactNode, useLayoutEffect, useRef, useState } from "react";
 import type { GalleryItem } from "@/lib/landing";
 import { hasFinePointer, prefersReducedMotion } from "@/lib/motion";
 import { ZoomMedia } from "./zoom-media";
@@ -10,8 +10,10 @@ import { pose, smoothstep, wordReveal } from "./zoom-pose";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Viewport heights the section lasts: three of scrolling plus the one it is held on. */
-const TRACK = "400svh";
+/** Viewport heights the section lasts: three for the dive, a half more holding the closing text. */
+const TRACK = "450svh";
+/** Share of the scroll the dive itself takes, so the hold after it does not slow the photos. */
+const SCENE_END = 300 / 350;
 /** Share of the remaining distance the scroll and the pointer cover per frame at 60 fps. */
 const EASING = 0.1;
 /** Below this stage width the photos are enlarged, so they stay legible on a phone. */
@@ -20,6 +22,10 @@ const SMALL_STAGE_ZOOM = 1.7;
 /** Scroll progress over which the title leaves, and over which the closing text arrives. */
 const INTRO_END = 0.16;
 const OUTRO = [0.8, 0.99] as const;
+/** The closing text is complete from `OUTRO[1]`; the black turns to paper this long after. */
+const HANDOVER_DELAY = 700;
+/** Scrolling back above this brings the black back, so the handover does not flicker at the edge. */
+const HANDOVER_RELEASE = 0.95;
 /** Resting sway of a touch screen, which has no pointer to follow. */
 const SWAY = { x: 0.5, y: 0.35, period: 8 } as const;
 
@@ -53,13 +59,16 @@ function paint(figure: HTMLElement, next: Pose) {
  * A scene of photos and videos that the visitor flies into by scrolling. The section is held on
  * screen for a few viewport heights; the scroll moves the viewer forward, so the photos at the
  * back grow, drift out past the frame and blur as they go, others come out of the distance, and
- * the closing text fades in last. The pointer, or a slow sway on touch screens, shifts near photos
+ * the closing text fades in last. Once that text is complete and held a moment, the black background
+ * turns to paper (the light colours of a dark page, the page's own otherwise) and the section
+ * that follows carries on from there. The pointer, or a slow sway on touch screens, shifts near photos
  * more than far ones. Videos play only while they are visible.
  *
  * Without JavaScript, or under reduced motion, the section is a plain grid between the two texts.
  */
 export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
   const track = useRef<HTMLDivElement>(null);
+  const [paper, setPaper] = useState(false);
 
   useLayoutEffect(() => {
     const root = track.current;
@@ -77,6 +86,25 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     let progress = 0;
     let visible = true;
     let dirty = true;
+    let handover: number | undefined;
+    let onPaper = false;
+
+    function setBackground(next: boolean) {
+      if (next === onPaper) return;
+      onPaper = next;
+      setPaper(next);
+    }
+
+    function follow(scroll: number) {
+      raw = Math.min(1, scroll / SCENE_END);
+      if (raw >= OUTRO[1]) {
+        handover ??= window.setTimeout(() => setBackground(true), HANDOVER_DELAY);
+      } else if (raw < HANDOVER_RELEASE) {
+        window.clearTimeout(handover);
+        handover = undefined;
+        setBackground(false);
+      }
+    }
 
     root.dataset.mode = "live";
 
@@ -148,11 +176,9 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
       trigger: root,
       start: "top top",
       end: "bottom bottom",
-      onUpdate: (self) => {
-        raw = self.progress;
-      },
+      onUpdate: (self) => follow(self.progress),
     });
-    raw = trigger.progress;
+    follow(trigger.progress);
     progress = raw;
     const resize = new ResizeObserver(measure);
     resize.observe(stage);
@@ -168,6 +194,7 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
 
     return () => {
       gsap.ticker.remove(tick);
+      window.clearTimeout(handover);
       root.removeEventListener("pointermove", onMove);
       root.removeEventListener("pointerleave", onLeave);
       observer.disconnect();
@@ -184,8 +211,10 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     <div
       ref={track}
       data-mode="static"
+      data-theme={paper ? undefined : "dark"}
+      data-paper={paper ? "" : undefined}
       style={{ "--track": TRACK } as CSSProperties}
-      className="group/zoom data-[mode=live]:h-(--track)"
+      className="group/zoom bg-black text-foreground transition-colors duration-1000 ease-(--ease-in-out-quart) data-paper:bg-background data-[mode=live]:h-(--track)"
     >
       <div className="flex flex-col gap-10 px-(--gutter) py-(--section-space) group-data-[mode=live]/zoom:sticky group-data-[mode=live]/zoom:top-0 group-data-[mode=live]/zoom:block group-data-[mode=live]/zoom:h-svh group-data-[mode=live]/zoom:overflow-clip group-data-[mode=live]/zoom:p-0">
         <div

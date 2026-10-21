@@ -17,7 +17,9 @@
   --shadow-color: 0 0 0;
 }
 
-[data-theme="light"] {
+/* Paper: what a dark page hands over to once its black closing section ends. */
+[data-theme="light"],
+[data-theme="dark"] [data-paper] {
   color-scheme: light;
   --background: #fafaf9;
   --foreground: #0c0a09;

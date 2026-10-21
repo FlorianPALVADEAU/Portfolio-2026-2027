@@ -35,16 +35,21 @@ export function BookingFacade({ messages, url }: BookingFacadeProps) {
   if (!url) return null;
 
   return (
-    <div className="mt-24 grid gap-10 md:grid-cols-12">
+    <div className="grid gap-10 border-t border-border pt-10 md:grid-cols-12">
       <div className="flex flex-col items-start gap-4 md:col-span-5">
-        <Heading level={3} size="xl">
+        <Heading level={3} size="2xl">
           {messages.title}
         </Heading>
         <Text tone="muted" className="max-w-[40ch]">
           {messages.text}
         </Text>
         {!source && (
-          <Button variant="outline" onClick={() => setSource(embedUrl(url))}>
+          <Button
+            variant="outline"
+            size="lg"
+            className="rounded-full"
+            onClick={() => setSource(embedUrl(url))}
+          >
             {messages.action}
           </Button>
         )}
@@ -54,7 +59,7 @@ export function BookingFacade({ messages, url }: BookingFacadeProps) {
           ref={frame}
           src={source}
           title={messages.frame}
-          className="h-[44rem] w-full rounded-md border border-muted-foreground bg-surface md:col-span-6 md:col-start-7"
+          className="h-[44rem] w-full border border-muted-foreground bg-surface md:col-span-6 md:col-start-7"
         />
       )}
     </div>

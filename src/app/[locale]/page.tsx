@@ -28,25 +28,29 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         heroPhotos={await photoUrls("hero")}
         trailPhotos={await photoUrls("trail")}
         projects={projects}
-        contact={
-          <>
-            <GithubActivity
-              locale={locale}
-              messages={messages.home.contact.github}
-              activity={await githubActivity()}
-            />
+        contact={{
+          form: (
             <ContactForm
               messages={messages.home.contact.form}
               action={submitContact}
               siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
               challengeAction={CONTACT_ACTION}
             />
+          ),
+          booking: (
             <BookingFacade
               messages={messages.home.contact.booking}
               url={process.env.NEXT_PUBLIC_CALENDLY_URL}
             />
-          </>
-        }
+          ),
+          activity: (
+            <GithubActivity
+              locale={locale}
+              messages={messages.home.contact.github}
+              activity={await githubActivity()}
+            />
+          ),
+        }}
       />
     </>
   );

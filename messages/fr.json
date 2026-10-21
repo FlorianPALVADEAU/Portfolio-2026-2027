@@ -171,6 +171,8 @@
     "contact": {
       "profiles": "Profils",
       "newTab": "s'ouvre dans un nouvel onglet",
+      "location": "Genève, Suisse",
+      "availability": "Disponible dès septembre 2027",
       "form": {
         "title": "Écrivez-moi",
         "intro": "Je lis chaque message moi-même et je réponds depuis ma propre adresse. Votre e-mail sert uniquement à vous répondre.",

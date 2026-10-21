@@ -171,6 +171,8 @@
     "contact": {
       "profiles": "Profiles",
       "newTab": "opens in a new tab",
+      "location": "Geneva, Switzerland",
+      "availability": "Available from September 2027",
       "form": {
         "title": "Write to me",
         "intro": "I read every message myself and answer from my own address. Your email is used only to reply to you.",

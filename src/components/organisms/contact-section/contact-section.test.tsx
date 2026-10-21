@@ -6,9 +6,13 @@ import { ContactSection } from "./contact-section";
 describe("ContactSection", () => {
   it("links the approved profiles in a new tab and exposes the slot", () => {
     render(
-      <ContactSection title="Contact" messages={en.home.contact} photo={en.home.photos.closing}>
-        <p>form slot</p>
-      </ContactSection>,
+      <ContactSection
+        index={6}
+        title="Contact"
+        locale="en"
+        messages={en.home.contact}
+        form={<p>form slot</p>}
+      />,
     );
 
     const github = screen.getByRole("link", { name: /GitHub/ });
@@ -20,9 +24,15 @@ describe("ContactSection", () => {
     expect(screen.getByRole("region", { name: "Contact" })).toHaveAttribute("id", "contact");
   });
 
+  it("sits on paper, so a dark page turns light here", () => {
+    render(<ContactSection index={6} title="Contact" locale="en" messages={en.home.contact} />);
+
+    expect(screen.getByRole("region", { name: "Contact" })).toHaveAttribute("data-paper");
+  });
+
   it("publishes no email address or phone number", () => {
     const { container } = render(
-      <ContactSection title="Contact" messages={en.home.contact} photo={en.home.photos.closing} />,
+      <ContactSection index={6} title="Contact" locale="en" messages={en.home.contact} />,
     );
 
     expect(container.innerHTML).not.toMatch(/@[\w-]+\.\w+|mailto:|tel:/);
