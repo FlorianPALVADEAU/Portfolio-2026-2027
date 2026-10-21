@@ -66,21 +66,43 @@ jobs:
           restore-keys: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
       - run: npm run build
 
-  e2e:
-    name: End-to-end
+  e2e-shard:
+    name: End-to-end shard ${{ matrix.shard }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
-      # Firefox and WebKit stay in the local run; they added most of the time and the timing flakes.
+      - uses: actions/cache@v6
+        with:
+          path: .next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**') }}
+          restore-keys: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      # Firefox and WebKit run nightly (e2e-browsers.yml); they added most of the time and the timing flakes.
       - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e -- --project=chromium --project=mobile
+      - run: npm run test:e2e -- --project=chromium --project=mobile --shard=${{ matrix.shard }}/2
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.shard }}
           path: playwright-report
           retention-days: 7
+
+  # Branch protection requires this name, so it stays one check however many shards run.
+  e2e:
+    name: End-to-end
+    needs: e2e-shard
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: test "${{ needs.e2e-shard.result }}" = "success"
 
   storybook:
     name: Storybook
