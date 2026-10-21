@@ -11,7 +11,6 @@ const nav = {
 };
 const messages = {
   kicker: "That's the end of the page",
-  clients: "They have trusted me",
   headline: { lead: "Let's build something", accent: "worth shipping." },
   cta: "Write to me",
   top: "Back to top",

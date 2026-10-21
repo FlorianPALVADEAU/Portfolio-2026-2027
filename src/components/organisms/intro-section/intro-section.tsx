@@ -29,8 +29,11 @@ export function IntroSection({ title, messages }: IntroSectionProps) {
         stageClassName="flex flex-col justify-center gap-20 px-(--gutter) motion-reduce:min-h-svh motion-reduce:py-(--section-space) md:gap-28"
         className="mx-auto max-w-5xl text-center text-[clamp(1.75rem,3.8vw,3.5rem)] leading-[1.15] tracking-tight text-balance"
       >
-        <div className="flex flex-col gap-10 md:gap-12">
-          <TrustBadge text={messages.trust.replace("{count}", String(clients.length))} />
+        <div className="flex flex-col items-center gap-6 md:flex-row md:gap-10">
+          <TrustBadge
+            text={messages.trust.replace("{count}", String(clients.length))}
+            className="shrink-0"
+          />
           <Marquee
             items={clients.map(({ id, name, width, height, onWhite }) => ({
               id,
@@ -49,7 +52,7 @@ export function IntroSection({ title, messages }: IntroSectionProps) {
               ),
             }))}
             label={messages.clients}
-            className="border-0 bg-transparent px-0"
+            className="min-w-0 flex-1 border-0 bg-transparent px-0"
             speed={190}
             fade
           />
