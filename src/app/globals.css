@@ -14,12 +14,6 @@
   }
 }
 
-/* `CustomCursor` adds this class while it draws the pointer, and drops it wherever the system one must show. */
-html.cursor-custom,
-html.cursor-custom * {
-  cursor: none;
-}
-
 /* Required by Lenis so native scroll position and anchors keep working. */
 html.lenis,
 html.lenis body {

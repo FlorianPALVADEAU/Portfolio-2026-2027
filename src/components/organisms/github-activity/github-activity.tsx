@@ -1,4 +1,6 @@
 import { Heading } from "@/components/atoms/heading";
+import { Rise } from "@/components/atoms/rise";
+import { RiseText } from "@/components/atoms/rise-text";
 import { Text } from "@/components/atoms/text";
 import type { Locale, Messages } from "@/lib/i18n";
 
@@ -33,47 +35,51 @@ export function GithubActivity({ locale, messages, activity }: GithubActivityPro
     <div className="grid gap-8 border-t border-border pt-8 md:grid-cols-12">
       <div className="flex flex-col gap-4 md:col-span-5">
         <Heading level={3} size="xl">
-          {messages.title}
+          <RiseText>{messages.title}</RiseText>
         </Heading>
-        <Text tone="muted" size="sm" className="max-w-[40ch]">
-          {messages.note}
-        </Text>
+        <Rise>
+          <Text tone="muted" size="sm" className="max-w-[40ch]">
+            {messages.note}
+          </Text>
+        </Rise>
       </div>
-      <div className="flex flex-col gap-4 md:col-span-6 md:col-start-7">
-        <p className="flex items-baseline gap-2">
-          <span className="text-2xl font-semibold tracking-tight tabular-nums">
-            {new Intl.NumberFormat(locale).format(activity.total)}
-          </span>
-          <span className="text-sm text-muted-foreground">{messages.total}</span>
-        </p>
-        {/* The graph repeats the number above, so assistive technology skips the 371 cells. */}
-        <div
-          aria-hidden="true"
-          className="grid grid-flow-col grid-rows-7 gap-[3px]"
-          style={{ gridTemplateColumns: `repeat(${activity.weeks.length}, minmax(0, 1fr))` }}
-        >
-          {activity.weeks.flatMap((week, column) =>
-            week.map(({ date, count, level }) => (
-              <span
-                key={date}
-                title={`${date}: ${count}`}
-                className={`aspect-square rounded-[2px] ${SHADES[level]}`}
-                style={{ gridColumn: column + 1, gridRow: weekday(date) + 1 }}
-              />
-            )),
-          )}
+      <Rise className="md:col-span-6 md:col-start-7">
+        <div className="flex flex-col gap-4">
+          <p className="flex items-baseline gap-2">
+            <span className="text-2xl font-semibold tracking-tight tabular-nums">
+              {new Intl.NumberFormat(locale).format(activity.total)}
+            </span>
+            <span className="text-sm text-muted-foreground">{messages.total}</span>
+          </p>
+          {/* The graph repeats the number above, so assistive technology skips the 371 cells. */}
+          <div
+            aria-hidden="true"
+            className="grid grid-flow-col grid-rows-7 gap-[3px]"
+            style={{ gridTemplateColumns: `repeat(${activity.weeks.length}, minmax(0, 1fr))` }}
+          >
+            {activity.weeks.flatMap((week, column) =>
+              week.map(({ date, count, level }) => (
+                <span
+                  key={date}
+                  title={`${date}: ${count}`}
+                  className={`aspect-square rounded-[2px] ${SHADES[level]}`}
+                  style={{ gridColumn: column + 1, gridRow: weekday(date) + 1 }}
+                />
+              )),
+            )}
+          </div>
+          <p
+            aria-hidden="true"
+            className="flex items-center gap-2 self-end text-xs text-muted-foreground"
+          >
+            {messages.less}
+            {([0, 1, 2, 3, 4] as const).map((level) => (
+              <span key={level} className={`size-3 rounded-[2px] ${SHADES[level]}`} />
+            ))}
+            {messages.more}
+          </p>
         </div>
-        <p
-          aria-hidden="true"
-          className="flex items-center gap-2 self-end text-xs text-muted-foreground"
-        >
-          {messages.less}
-          {([0, 1, 2, 3, 4] as const).map((level) => (
-            <span key={level} className={`size-3 rounded-[2px] ${SHADES[level]}`} />
-          ))}
-          {messages.more}
-        </p>
-      </div>
+      </Rise>
     </div>
   );
 }
