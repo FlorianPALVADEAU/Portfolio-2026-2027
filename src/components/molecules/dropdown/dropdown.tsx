@@ -52,7 +52,7 @@ export function Dropdown({ label, trigger, align = "end", children }: DropdownPr
   return (
     <div ref={root} className="relative">
       <Button
-        variant="ghost"
+        variant="secondary"
         size="icon"
         aria-label={label}
         aria-expanded={open}
