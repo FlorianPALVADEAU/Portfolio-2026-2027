@@ -23,3 +23,21 @@ export function getInternalNavigation(
 
   return `${url.pathname}${url.search}${url.hash}`;
 }
+
+/**
+ * Returns the element id a plain click on `anchor` jumps to when the link points into the page the
+ * visitor is already on, or null when it goes anywhere else.
+ */
+export function getSamePageTarget(
+  event: ClickLike,
+  anchor: AnchorLike,
+  current: Pick<URL, "origin" | "pathname" | "search">,
+): string | null {
+  if (event.defaultPrevented || event.button !== 0) return null;
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return null;
+
+  const url = new URL(anchor.href);
+  if (url.origin !== current.origin) return null;
+  if (url.pathname !== current.pathname || url.search !== current.search) return null;
+  return url.hash.length > 1 ? decodeURIComponent(url.hash.slice(1)) : null;
+}

@@ -1,1 +1,1 @@
-export { getInternalNavigation } from "./internal-link";
+export { getInternalNavigation, getSamePageTarget } from "./internal-link";

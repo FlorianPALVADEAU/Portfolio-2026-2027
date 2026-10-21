@@ -6,7 +6,6 @@ import { SkipLink } from "@/components/atoms/skip-link";
 import { LocaleSwitcher } from "@/components/molecules/locale-switcher";
 import { SoundToggle } from "@/components/molecules/sound-toggle";
 import { ThemeSwitcher } from "@/components/molecules/theme-switcher";
-import { CommandPalette } from "@/features/command-palette";
 import { HeaderShrink } from "@/features/header-shrink";
 import { MAIN_ID } from "@/features/route-focus";
 import { SiteMenu } from "@/features/site-menu";
@@ -18,11 +17,10 @@ import { siteName } from "@/lib/site";
 type SiteHeaderProps = {
   locale: Locale;
   messages: Messages["header"];
-  palette: Messages["palette"];
   cvHref?: string | null;
 };
 
-export function SiteHeader({ locale, messages, palette, cvHref = null }: SiteHeaderProps) {
+export function SiteHeader({ locale, messages, cvHref = null }: SiteHeaderProps) {
   return (
     <>
       <SkipLink href={`#${MAIN_ID}`}>{messages.skip}</SkipLink>
@@ -59,12 +57,16 @@ export function SiteHeader({ locale, messages, palette, cvHref = null }: SiteHea
                   label: messages.nav[id],
                 }))}
               >
-                <CommandPalette
-                  locale={locale}
-                  themeNames={messages.theme.names}
-                  messages={palette}
-                />
-                <ThemeSwitcher label={messages.theme.label} names={messages.theme.names} />
+                <div className="hidden md:block">
+                  <ThemeSwitcher label={messages.theme.label} names={messages.theme.names} />
+                </div>
+                <div className="md:hidden">
+                  <ThemeSwitcher
+                    label={messages.theme.label}
+                    names={messages.theme.names}
+                    layout="inline"
+                  />
+                </div>
                 <div className="md:hidden">
                   <LocaleSwitcher current={locale} label={messages.language} layout="inline" />
                 </div>

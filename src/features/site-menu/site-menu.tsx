@@ -56,8 +56,7 @@ export function SiteMenu({
       if ((event.target as Element).closest("a")) setOpen(false);
     }
     function onKeyDown(event: KeyboardEvent) {
-      // Escape inside the palette dialog belongs to the dialog, not to the menu behind it.
-      if (event.key !== "Escape" || (event.target as Element).closest("dialog")) return;
+      if (event.key !== "Escape") return;
       playIfEnabled("close");
       setOpen(false);
       root.current?.querySelector("button")?.focus();
@@ -119,7 +118,6 @@ export function SiteMenu({
           )}
         />
       </button>
-      {/* Always mounted: the preferences hold listeners, such as the palette shortcut, that must outlive a closed menu. */}
       <div
         ref={panel}
         id={panelId}
@@ -137,7 +135,7 @@ export function SiteMenu({
           <ul>
             {items.map((item) => (
               <li key={item.href} data-item="">
-                <Link href={item.href} className={ROW_CLASS}>
+                <Link href={item.href} data-jump="" className={ROW_CLASS}>
                   <FlipText>{item.label}</FlipText>
                   <span
                     aria-hidden="true"

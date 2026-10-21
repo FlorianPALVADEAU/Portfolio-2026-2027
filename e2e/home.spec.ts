@@ -130,47 +130,10 @@ test("sound is muted by default and the opt-in persists", async ({ page, isMobil
   await expect(page.getByRole("button", { name: "Sound: on" })).toBeVisible();
 });
 
-test.describe("command palette", () => {
-  test("opens with the keyboard, runs a command and restores focus on Escape", async ({ page }) => {
-    await page.goto("/en");
-    await openMenu(page);
-    const trigger = page.getByRole("button", { name: "Commands" });
-    await trigger.focus();
-
-    await page.keyboard.press("Control+k");
-    const combobox = page.getByRole("combobox", { name: "Type a command" });
-    await expect(combobox).toBeFocused();
-
-    await page.keyboard.press("Escape");
-    await expect(combobox).toBeHidden();
-    await expect(trigger).toBeFocused();
-
-    await trigger.click();
-    await combobox.fill("swiss");
-    await page.keyboard.press("Enter");
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "swiss");
-  });
-
-  test("switches locale and filters out non-matching commands", async ({ page }) => {
-    await page.goto("/en");
-    await openMenu(page);
-    await page.getByRole("button", { name: "Commands" }).click();
-    const combobox = page.getByRole("combobox", { name: "Type a command" });
-
-    await combobox.fill("zzz");
-    await expect(page.getByText("No matching command")).toBeVisible();
-
-    await combobox.fill("deutsch");
-    await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/\/de$/);
-  });
-
-  test("has no accessibility violations while open", async ({ page }) => {
-    await page.goto("/en");
-    await openMenu(page);
-    await page.getByRole("button", { name: "Commands" }).click();
-    await expectNoA11yViolations(page);
-  });
+test("has no accessibility violations while the menu is open", async ({ page }) => {
+  await page.goto("/en");
+  await openMenu(page);
+  await expectNoA11yViolations(page);
 });
 
 test.describe("seo", () => {

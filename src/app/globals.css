@@ -3,6 +3,15 @@
 @import "../styles/tokens.css";
 
 @layer base {
+  /* The page draws its own scroll indicator (ScrollIndicator). */
+  html {
+    scrollbar-width: none;
+  }
+
+  html::-webkit-scrollbar {
+    display: none;
+  }
+
   body {
     background: var(--background);
     color: var(--foreground);

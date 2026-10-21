@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getInternalNavigation } from "./internal-link";
+import { getInternalNavigation, getSamePageTarget } from "./internal-link";
 
 const current = { origin: "https://site.test", pathname: "/en", search: "" };
 const click = {
@@ -43,5 +43,16 @@ describe("getInternalNavigation", () => {
   it("ignores new-tab and download links", () => {
     expect(getInternalNavigation(click, anchor("/fr", { target: "_blank" }), current)).toBeNull();
     expect(getInternalNavigation(click, anchor("/cv.pdf", { download: true }), current)).toBeNull();
+  });
+});
+
+describe("getSamePageTarget", () => {
+  it("returns the id of a link into the current page", () => {
+    expect(getSamePageTarget(click, anchor("/en#contact"), current)).toBe("contact");
+  });
+
+  it("ignores links to another page or without a hash", () => {
+    expect(getSamePageTarget(click, anchor("/fr#contact"), current)).toBeNull();
+    expect(getSamePageTarget(click, anchor("/en"), current)).toBeNull();
   });
 });

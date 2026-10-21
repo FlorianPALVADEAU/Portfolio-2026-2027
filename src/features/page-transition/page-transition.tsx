@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { onReducedMotionChange, prefersReducedMotion } from "@/lib/motion";
-import { getInternalNavigation } from "@/lib/navigation";
+import { getInternalNavigation, getSamePageTarget } from "@/lib/navigation";
 
 const COVER_SECONDS = 0.45;
 const REVEAL_SECONDS = 0.55;
@@ -12,7 +12,8 @@ const REVEAL_SECONDS = 0.55;
 const GIVE_UP_MS = 4000;
 
 /**
- * GSAP overlay that covers the page, lets the router navigate, then reveals the new page.
+ * GSAP overlay that covers the page, lets the router navigate, then reveals the new page. A link
+ * marked `data-jump` to a section of the current page is covered the same way, and lands at once.
  * Screen readers are informed by the route announcer Next.js renders for every navigation.
  */
 export function PageTransition() {
@@ -47,24 +48,45 @@ export function PageTransition() {
   useEffect(() => {
     if (!enabled) return;
 
-    function onClick(event: MouseEvent) {
-      const element = overlay.current;
-      const anchor = event.target instanceof Element ? event.target.closest("a") : null;
-      if (!(element && anchor) || covering.current) return;
-
-      const destination = getInternalNavigation(event, anchor, window.location);
-      if (!destination) return;
-
-      event.preventDefault();
+    function cover(element: HTMLElement, onCovered: () => void) {
       covering.current = true;
       gsap.to(element, {
         yPercent: 0,
         duration: COVER_SECONDS,
         ease: "power3.inOut",
-        onComplete: () => {
-          giveUp.current = setTimeout(reveal, GIVE_UP_MS);
-          router.push(destination, { scroll: !anchor.hasAttribute("data-keep-scroll") });
-        },
+        onComplete: onCovered,
+      });
+    }
+
+    function sectionOf(event: MouseEvent, anchor: HTMLAnchorElement): HTMLElement | null {
+      if (!anchor.hasAttribute("data-jump")) return null;
+      const id = getSamePageTarget(event, anchor, window.location);
+      return id ? document.getElementById(id) : null;
+    }
+
+    function onClick(event: MouseEvent) {
+      const element = overlay.current;
+      const anchor = event.target instanceof Element ? event.target.closest("a") : null;
+      if (!(element && anchor) || covering.current) return;
+
+      const section = sectionOf(event, anchor);
+      if (section) {
+        // Scrolling there would play every animation on the way past in a blink: cover, land, uncover.
+        event.preventDefault();
+        cover(element, () => {
+          section.scrollIntoView({ behavior: "instant", block: "start" });
+          requestAnimationFrame(reveal);
+        });
+        return;
+      }
+
+      const destination = getInternalNavigation(event, anchor, window.location);
+      if (!destination) return;
+
+      event.preventDefault();
+      cover(element, () => {
+        giveUp.current = setTimeout(reveal, GIVE_UP_MS);
+        router.push(destination, { scroll: !anchor.hasAttribute("data-keep-scroll") });
       });
     }
 
