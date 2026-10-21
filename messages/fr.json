@@ -207,8 +207,7 @@
       },
       "booking": {
         "title": "Réserver un appel",
-        "text": "Vous préférez échanger de vive voix ? Choisissez un créneau qui vous convient. Le calendrier ne se charge depuis Calendly que si vous le demandez.",
-        "action": "Afficher le calendrier",
+        "text": "Vous préférez échanger de vive voix ? Choisissez un créneau qui vous convient. Le calendrier vient de Calendly et ne se charge que lorsque vous faites défiler jusqu’ici.",
         "frame": "Calendrier de réservation"
       }
     },

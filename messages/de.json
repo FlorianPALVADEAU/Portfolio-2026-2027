@@ -212,8 +212,7 @@
       },
       "booking": {
         "title": "Gespräch vereinbaren",
-        "text": "Sie sprechen lieber direkt? Wählen Sie einen passenden Termin. Der Kalender wird erst von Calendly geladen, wenn Sie ihn anfordern.",
-        "action": "Kalender anzeigen",
+        "text": "Sie sprechen lieber direkt? Wählen Sie einen passenden Termin. Der Kalender stammt von Calendly und wird erst geladen, wenn Sie bis hierher scrollen.",
         "frame": "Buchungskalender"
       }
     },

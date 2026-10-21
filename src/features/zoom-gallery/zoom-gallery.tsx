@@ -10,10 +10,10 @@ import { pose, smoothstep, wordReveal } from "./zoom-pose";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Viewport heights the section lasts: three for the dive, a half more holding the closing text. */
-const TRACK = "450svh";
+/** Viewport heights the section lasts: three for the dive, one more holding the closing text. */
+const TRACK = "500svh";
 /** Share of the scroll the dive itself takes, so the hold after it does not slow the photos. */
-const SCENE_END = 300 / 350;
+const SCENE_END = 300 / 400;
 /** Share of the remaining distance the scroll and the pointer cover per frame at 60 fps. */
 const EASING = 0.1;
 /** Below this stage width the photos are enlarged, so they stay legible on a phone. */

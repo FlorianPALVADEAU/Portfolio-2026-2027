@@ -207,8 +207,7 @@
       },
       "booking": {
         "title": "Book a call",
-        "text": "Prefer to talk? Pick a time that suits you. The calendar loads from Calendly only when you ask for it.",
-        "action": "Show the calendar",
+        "text": "Prefer to talk? Pick a time that suits you. The calendar comes from Calendly and loads only as you scroll down to it.",
         "frame": "Booking calendar"
       }
     },

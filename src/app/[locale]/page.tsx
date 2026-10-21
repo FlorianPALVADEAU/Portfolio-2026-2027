@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { BookingFacade } from "@/components/organisms/booking-facade";
+import { BookingEmbed } from "@/components/organisms/booking-embed";
 import { ContactForm } from "@/components/organisms/contact-form";
 import { GithubActivity } from "@/components/organisms/github-activity";
 import { PersonSchema } from "@/components/organisms/person-schema";
@@ -38,7 +38,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
             />
           ),
           booking: (
-            <BookingFacade
+            <BookingEmbed
               messages={messages.home.contact.booking}
               url={process.env.NEXT_PUBLIC_CALENDLY_URL}
             />

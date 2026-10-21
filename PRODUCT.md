@@ -20,7 +20,7 @@ A full-stack engineer who also ships and runs things: engineering plus delivery 
 
 ## Operating Context
 
-Content changes via redeploy only (no admin panel). Typed structured content blocks (`content/`, `messages/` fr/en/de) validated by Effect Schema. Hosted on Vercel, domain palvadeau.ch. Contact via Resend and Turnstile; Calendly loaded on click. Analytics: Vercel Web Analytics and Speed Insights only. A CV PDF per locale is served as is.
+Content changes via redeploy only (no admin panel). Typed structured content blocks (`content/`, `messages/` fr/en/de) validated by Effect Schema. Hosted on Vercel, domain palvadeau.ch. Contact via Resend and Turnstile; Calendly embedded lazily (requested only near the viewport). Analytics: Vercel Web Analytics and Speed Insights only. A CV PDF per locale is served as is.
 
 ## Capabilities and Constraints
 

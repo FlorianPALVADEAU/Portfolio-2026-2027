@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/atoms/button";
+import { useEffect, useState } from "react";
 import { Heading } from "@/components/atoms/heading";
 import { Text } from "@/components/atoms/text";
 import type { Messages } from "@/lib/i18n";
 
-type BookingFacadeProps = {
+type BookingEmbedProps = {
   messages: Messages["home"]["contact"]["booking"];
   /** Calendly event page; without it nothing is rendered. */
   url: string | undefined;
@@ -21,16 +20,16 @@ function embedUrl(url: string): string {
 }
 
 /**
- * Booking block that stays a plain button until asked: Calendly is a third party, so nothing is
- * requested from it before the click.
+ * The calendar, open on the page so a visitor can pick a slot without another click. The frame
+ * is lazy: the browser requests Calendly only when it nears the viewport, so the third party is
+ * never contacted by visitors who stop above the contact section.
  */
-export function BookingFacade({ messages, url }: BookingFacadeProps) {
+export function BookingEmbed({ messages, url }: BookingEmbedProps) {
   const [source, setSource] = useState<string | null>(null);
-  const frame = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    if (source) frame.current?.focus();
-  }, [source]);
+    if (url) setSource(embedUrl(url));
+  }, [url]);
 
   if (!url) return null;
 
@@ -43,25 +42,17 @@ export function BookingFacade({ messages, url }: BookingFacadeProps) {
         <Text tone="muted" className="max-w-[40ch]">
           {messages.text}
         </Text>
-        {!source && (
-          <Button
-            variant="outline"
-            size="lg"
-            className="rounded-full"
-            onClick={() => setSource(embedUrl(url))}
-          >
-            {messages.action}
-          </Button>
+      </div>
+      <div className="h-[44rem] border border-muted-foreground bg-surface md:col-span-6 md:col-start-7">
+        {source && (
+          <iframe
+            src={source}
+            title={messages.frame}
+            loading="lazy"
+            className="size-full border-0"
+          />
         )}
       </div>
-      {source && (
-        <iframe
-          ref={frame}
-          src={source}
-          title={messages.frame}
-          className="h-[44rem] w-full border border-muted-foreground bg-surface md:col-span-6 md:col-start-7"
-        />
-      )}
     </div>
   );
 }

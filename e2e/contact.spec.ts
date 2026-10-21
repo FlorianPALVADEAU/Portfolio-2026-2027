@@ -58,16 +58,14 @@ test.describe("contact form", () => {
     await expect(page.getByRole("button", { name: "Nachricht senden" })).toBeVisible();
   });
 
-  test("loads the Calendly calendar only after a click", async ({ page }) => {
+  test("loads the Calendly calendar only when scrolled near", async ({ page }) => {
     const hosts: string[] = [];
     page.on("request", (request) => hosts.push(new URL(request.url()).hostname));
-    await page.goto("/en#contact");
-    const booking = page.getByRole("heading", { name: "Book a call" });
-    await booking.scrollIntoViewIfNeeded();
+    await page.goto("/en");
     await page.waitForLoadState("load");
     expect(hosts).not.toContain("calendly.com");
 
-    await page.getByRole("button", { name: "Show the calendar" }).click();
+    await page.locator("h3", { hasText: "Book a call" }).scrollIntoViewIfNeeded();
 
     await expect(page.locator("iframe[title='Booking calendar']")).toHaveAttribute(
       "src",
