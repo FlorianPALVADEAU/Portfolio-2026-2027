@@ -43,7 +43,7 @@ export function SiteHeader({ locale, messages, cvHref = null }: SiteHeaderProps)
                 asChild
                 className="hidden rounded-full px-5 text-xs tracking-wider uppercase hover:text-accent-foreground md:inline-flex"
               >
-                <Link href={`/${locale}#contact`} className="no-underline">
+                <Link href={`/${locale}#contact`} data-jump="" className="no-underline">
                   {messages.cta}
                 </Link>
               </Button>
