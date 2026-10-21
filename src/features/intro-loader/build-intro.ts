@@ -8,10 +8,17 @@ const ARRIVALS: ReadonlyArray<{ id: MarkId; axis: "x" | "y"; sign: 1 | -1 }> = [
   { id: "tl", axis: "x", sign: -1 },
   { id: "tr", axis: "y", sign: -1 },
 ];
-/** Fast then slow: almost the whole distance is covered in the first moments. */
-const ENTER_EASE = "expo.out";
-const ENTER_SECONDS = 1;
-const ENTER_STAGGER = 0.14;
+/** Falls at full speed and hits the centre like a crash, then rebounds and settles. */
+const ENTER_EASE = "bounce.out";
+const ENTER_SECONDS = 0.8;
+/** Where bounce.out first touches its target, as a share of the duration. */
+const FIRST_HIT = 1 / 2.75;
+/** Wide enough that each mark lands on its own, one after the other. */
+const ENTER_STAGGER = 0.3;
+const SETTLE_SECONDS = 0.35;
+const MARK_SHAKE_PX = 10;
+const LETTERS_SHAKE_PX = 16;
+const SHAKE_SECONDS = 0.28;
 const SPIN_SECONDS = 0.8;
 const SHRINK_SCALE = 0.55;
 const SHRINK_SECONDS = 0.4;
@@ -39,6 +46,18 @@ type IntroOptions = {
 };
 
 const mark = (id: MarkId) => `[data-mark="${id}"]`;
+
+/** Jolts the whole logo along `axis`, then lets it settle. */
+function shake(timeline: gsap.core.Timeline, at: number, axis: "x" | "y", pixels: number) {
+  timeline.to(
+    "[data-logo]",
+    {
+      keyframes: { [axis]: [pixels, -pixels * 0.7, pixels * 0.4, 0], easeEach: "power2.out" },
+      duration: SHAKE_SECONDS,
+    },
+    at,
+  );
+}
 
 /**
  * Marks fly in, the logo spins, shrinks and springs back, the letters slide in and knock the marks
@@ -82,12 +101,15 @@ export function buildIntro({
       enter
         .set(mark(id), { visibility: "visible" }, at)
         .to(mark(id), { [axis]: 0, duration: ENTER_SECONDS, ease: ENTER_EASE }, at);
+      shake(enter, at + ENTER_SECONDS * FIRST_HIT, axis, -sign * MARK_SHAKE_PX);
     });
 
-    const spinAt = ARRIVALS.length * ENTER_STAGGER + ENTER_SECONDS * 0.3;
+    const lastLanding = (ARRIVALS.length - 1) * ENTER_STAGGER + ENTER_SECONDS * FIRST_HIT;
+    const spinAt = lastLanding + SETTLE_SECONDS;
     const regrowAt = spinAt + SHRINK_SECONDS;
     const slideAt = regrowAt + 0.15;
     const impactAt = slideAt + SLIDE_SECONDS;
+    shake(enter, impactAt, "x", LETTERS_SHAKE_PX);
     enter
       .to(spin, { rotation: 360, duration: SPIN_SECONDS, ease: "power3.inOut" }, spinAt)
       .to(spin, { scale: SHRINK_SCALE, duration: SHRINK_SECONDS, ease: "power2.in" }, spinAt)

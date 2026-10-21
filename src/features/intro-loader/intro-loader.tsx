@@ -40,6 +40,7 @@ function Logo({ edge }: { edge: "top" | "bottom" }) {
   return (
     <svg
       aria-hidden="true"
+      data-logo
       viewBox={`${-VIEW_SIZE / 2} ${-VIEW_SIZE / 2} ${VIEW_SIZE} ${VIEW_SIZE}`}
       preserveAspectRatio="xMidYMid meet"
       className={`absolute inset-x-0 ${edge === "top" ? "top-0" : "bottom-0"} h-[200%] w-full fill-foreground stroke-foreground`}
