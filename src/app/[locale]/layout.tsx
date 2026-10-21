@@ -70,7 +70,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
         cvHref={await cvHref(locale)}
       />
       {children}
-      <SiteFooter locale={locale} nav={messages.header.nav} messages={messages.footer} />
+      <SiteFooter
+        locale={locale}
+        nav={messages.header.nav}
+        availability={messages.home.contact.availability}
+        messages={messages.footer}
+      />
       <RouteFocus />
       <SmoothScroll />
       <PageTransition />

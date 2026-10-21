@@ -236,6 +236,14 @@
     "year": "Year"
   },
   "footer": {
+    "kicker": "That's the end of the page",
+    "headline": {
+      "lead": "Let's build something",
+      "accent": "worth shipping."
+    },
+    "cta": "Write to me",
+    "top": "Back to top",
+    "newTab": "opens in a new tab",
     "photos": "Photos:",
     "legal": "© 2026 Florian Palvadeau",
     "navigation": "Navigation",

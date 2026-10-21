@@ -236,6 +236,14 @@
     "year": "Année"
   },
   "footer": {
+    "kicker": "Fin de la page",
+    "headline": {
+      "lead": "Construisons quelque chose",
+      "accent": "dont on sera fier."
+    },
+    "cta": "Écrivez-moi",
+    "top": "Retour en haut",
+    "newTab": "s'ouvre dans un nouvel onglet",
     "photos": "Photos :",
     "legal": "© 2026 Florian Palvadeau",
     "navigation": "Navigation",

@@ -241,6 +241,14 @@
     "year": "Jahr"
   },
   "footer": {
+    "kicker": "Das war die Seite",
+    "headline": {
+      "lead": "Lassen Sie uns etwas bauen,",
+      "accent": "worauf wir stolz sind."
+    },
+    "cta": "Schreiben Sie mir",
+    "top": "Nach oben",
+    "newTab": "öffnet in einem neuen Tab",
     "photos": "Fotos:",
     "legal": "© 2026 Florian Palvadeau",
     "navigation": "Navigation",

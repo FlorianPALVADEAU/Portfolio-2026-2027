@@ -10,6 +10,11 @@ const nav = {
   contact: "Contact",
 };
 const messages = {
+  kicker: "That's the end of the page",
+  headline: { lead: "Let's build something", accent: "worth shipping." },
+  cta: "Write to me",
+  top: "Back to top",
+  newTab: "opens in a new tab",
   photos: "Photos:",
   legal: "© 2026 Florian Palvadeau",
   navigation: "Navigation",
@@ -19,10 +24,17 @@ const messages = {
 
 describe("SiteFooter", () => {
   it("renders a contentinfo landmark with the name, navigation and picture credits", () => {
-    render(<SiteFooter locale="en" nav={nav} messages={messages} />);
+    render(<SiteFooter locale="en" nav={nav} availability="Available" messages={messages} />);
 
     expect(screen.getByRole("contentinfo")).toHaveTextContent("Florian Palvadeau");
     expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute("href", "/en#works");
     expect(screen.getAllByRole("link", { name: "CC BY-SA 4.0" })[0]).toBeVisible();
+    expect(screen.getByRole("heading")).toHaveTextContent("Let's build something worth shipping.");
+    expect(screen.getByRole("link", { name: "Write to me" })).toHaveAttribute(
+      "href",
+      "/en#contact",
+    );
+    expect(screen.getByRole("link", { name: /GitHub/ })).toHaveAttribute("target", "_blank");
+    expect(screen.getByRole("button", { name: "Back to top" })).toBeVisible();
   });
 });

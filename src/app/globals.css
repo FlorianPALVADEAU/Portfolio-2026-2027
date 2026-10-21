@@ -90,3 +90,19 @@ html.lenis body {
     translate: 400% 0;
   }
 }
+
+/* `SiteFooter`: a glow of accent colour drifts slowly behind the closing text. */
+@keyframes footer-glow {
+  from {
+    transform: translate(-18%, 0);
+  }
+  to {
+    transform: translate(18%, 8%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .footer-glow {
+    animation: footer-glow 16s ease-in-out infinite alternate;
+  }
+}
