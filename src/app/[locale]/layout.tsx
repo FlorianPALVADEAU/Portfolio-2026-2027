@@ -81,7 +81,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       <RouteFocus />
       <SmoothScroll />
       <PageTransition />
-      <IntroLoader label={messages.loader.label} />
+      <IntroLoader label={messages.loader.label} welcome={messages.loader.welcome} />
       <UiSound />
       <BackgroundMusic />
       <Analytics />

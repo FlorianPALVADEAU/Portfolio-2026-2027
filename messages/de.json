@@ -239,7 +239,8 @@
     "year": "Jahr"
   },
   "loader": {
-    "label": "Portfolio wird geladen"
+    "label": "Portfolio wird geladen",
+    "welcome": "Willkommen"
   },
   "footer": {
     "kicker": "Das war die Seite",

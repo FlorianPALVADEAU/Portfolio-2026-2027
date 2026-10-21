@@ -234,7 +234,8 @@
     "year": "Year"
   },
   "loader": {
-    "label": "Loading the portfolio"
+    "label": "Loading the portfolio",
+    "welcome": "Welcome"
   },
   "footer": {
     "kicker": "That's the end of the page",

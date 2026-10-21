@@ -29,6 +29,9 @@ const REGROW_EASE = "elastic.out(1, 0.45)";
 const SLIDE_SECONDS = 0.45;
 const PUSH_SECONDS = 1;
 const TUMBLE_DEGREES = 18;
+const WELCOME_DELAY = 0.4;
+const WELCOME_SECONDS = 0.5;
+const WELCOME_RISE_PX = 14;
 const OPEN_SECONDS = 1;
 /** The page entrance starts once the halves have parted enough to show it. */
 const PAGE_CUE_SECONDS = 0.3;
@@ -96,6 +99,7 @@ export function buildIntro({
     gsap.set(spin, { svgOrigin: `${MARKS_CENTER.x} ${MARKS_CENTER.y}` });
     gsap.set("[data-marks]", { x: -markShift });
     gsap.set("[data-letters]", { x: -offscreen });
+    gsap.set("[data-welcome]", { autoAlpha: 0, y: WELCOME_RISE_PX });
 
     ARRIVALS.forEach(({ id, axis, sign }, index) => {
       const at = index * ENTER_STAGGER;
@@ -112,6 +116,11 @@ export function buildIntro({
     const slideAt = regrowAt + 0.15;
     const impactAt = slideAt + SLIDE_SECONDS;
     shake(enter, impactAt, "x", LETTERS_SHAKE_PX);
+    enter.to(
+      "[data-welcome]",
+      { autoAlpha: 1, y: 0, duration: WELCOME_SECONDS, ease: "power3.out" },
+      impactAt + WELCOME_DELAY,
+    );
     enter
       .to(spin, { rotation: 360, duration: SPIN_SECONDS, ease: "power3.inOut" }, spinAt)
       .to(spin, { scale: SHRINK_SCALE, duration: SHRINK_SECONDS, ease: "power2.in" }, spinAt)

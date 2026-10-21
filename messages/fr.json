@@ -234,7 +234,8 @@
     "year": "Année"
   },
   "loader": {
-    "label": "Chargement du portfolio"
+    "label": "Chargement du portfolio",
+    "welcome": "Bienvenue"
   },
   "footer": {
     "kicker": "Fin de la page",

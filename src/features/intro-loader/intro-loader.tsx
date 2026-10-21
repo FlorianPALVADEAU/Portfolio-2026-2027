@@ -36,33 +36,45 @@ function pageReady(): Promise<void> {
 
 const hidden = { visibility: "hidden" } as const;
 
-function Logo({ edge }: { edge: "top" | "bottom" }) {
+function Logo({ edge, welcome }: { edge: "top" | "bottom"; welcome: string }) {
+  const placement = `absolute inset-x-0 ${edge === "top" ? "top-0" : "bottom-0"} h-[200%] w-full`;
   return (
-    <svg
-      aria-hidden="true"
-      data-logo
-      viewBox={`${-VIEW_SIZE / 2} ${-VIEW_SIZE / 2} ${VIEW_SIZE} ${VIEW_SIZE}`}
-      preserveAspectRatio="xMidYMid meet"
-      className={`absolute inset-x-0 ${edge === "top" ? "top-0" : "bottom-0"} h-[200%] w-full fill-foreground stroke-foreground`}
-      strokeWidth={1}
-    >
-      <g
-        transform={`translate(${(-LOGO_WIDTH / 2) * LOGO_SCALE} ${(-LOGO_HEIGHT / 2) * LOGO_SCALE}) scale(${LOGO_SCALE})`}
+    <>
+      <svg
+        aria-hidden="true"
+        data-logo
+        viewBox={`${-VIEW_SIZE / 2} ${-VIEW_SIZE / 2} ${VIEW_SIZE} ${VIEW_SIZE}`}
+        preserveAspectRatio="xMidYMid meet"
+        className={`${placement} fill-foreground stroke-foreground`}
+        strokeWidth={1}
       >
-        <g data-letters>
-          {LETTERS.map(({ id, d }) => (
-            <path key={id} d={d} data-letter={id} style={hidden} />
-          ))}
-        </g>
-        <g data-marks>
-          <g data-spin>
-            {MARKS.map(({ id, d }) => (
-              <path key={id} d={d} data-mark={id} style={hidden} />
+        <g
+          transform={`translate(${(-LOGO_WIDTH / 2) * LOGO_SCALE} ${(-LOGO_HEIGHT / 2) * LOGO_SCALE}) scale(${LOGO_SCALE})`}
+        >
+          <g data-letters>
+            {LETTERS.map(({ id, d }) => (
+              <path key={id} d={d} data-letter={id} style={hidden} />
             ))}
           </g>
+          <g data-marks>
+            <g data-spin>
+              {MARKS.map(({ id, d }) => (
+                <path key={id} d={d} data-mark={id} style={hidden} />
+              ))}
+            </g>
+          </g>
         </g>
-      </g>
-    </svg>
+      </svg>
+      <div aria-hidden="true" className={`${placement} flex items-center justify-center`}>
+        <p
+          data-welcome
+          style={hidden}
+          className="relative top-[14vmin] font-mono text-[clamp(0.7rem,2.4vmin,1rem)] text-foreground uppercase tracking-[0.35em]"
+        >
+          {welcome}
+        </p>
+      </div>
+    </>
   );
 }
 
@@ -70,7 +82,7 @@ function Logo({ edge }: { edge: "top" | "bottom" }) {
  * Opens the first visit: the four logo marks fly in and spin, the letters knock into them, then the
  * screen parts in two. Each half carries its own copy of the logo so the seam cuts through it.
  */
-export function IntroLoader({ label }: { label: string }) {
+export function IntroLoader({ label, welcome }: { label: string; welcome: string }) {
   const overlay = useRef<HTMLDivElement>(null);
   const [done, setDone] = useState(false);
 
@@ -92,7 +104,7 @@ export function IntroLoader({ label }: { label: string }) {
 
     if (prefersReducedMotion()) {
       let cancelled = false;
-      gsap.set("[data-mark], [data-letter]", { visibility: "visible" });
+      gsap.set("[data-mark], [data-letter], [data-welcome]", { visibility: "visible" });
       gsap.set("[data-marks]", { x: 0 });
       const hold = new Promise<void>((resolve) => setTimeout(resolve, REDUCED_HOLD_MS));
       void Promise.all([pageReady(), hold]).then(() => {
@@ -136,13 +148,13 @@ export function IntroLoader({ label }: { label: string }) {
         data-panel="top"
         className="absolute inset-x-0 top-0 h-1/2 overflow-hidden bg-background"
       >
-        <Logo edge="top" />
+        <Logo edge="top" welcome={welcome} />
       </div>
       <div
         data-panel="bottom"
         className="absolute inset-x-0 bottom-0 h-1/2 overflow-hidden bg-background"
       >
-        <Logo edge="bottom" />
+        <Logo edge="bottom" welcome={welcome} />
       </div>
       <span role="status" className="sr-only">
         {label}
