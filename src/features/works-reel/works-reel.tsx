@@ -3,7 +3,7 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dynamic from "next/dynamic";
-import { type ReactNode, useLayoutEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { prefersReducedMotion } from "@/lib/motion";
 import { canRenderScene } from "@/lib/scene";
 import { playIfEnabled, preloadFocusIfEnabled } from "@/lib/sound";
@@ -13,6 +13,9 @@ import { prepareTypewriter, ROLLER_COPIES, splitIntoLetters } from "./reel-text"
 gsap.registerPlugin(ScrollTrigger);
 
 const ReelCanvas = dynamic(() => import("./reel-canvas"), { ssr: false });
+
+/** The 3D code is a large download, so it starts once the list is this close to the screen. */
+const CANVAS_LEAD = "100% 0px";
 
 /** Degrees a cover leans on its inner edge before it straightens. */
 const TILT = 7;
@@ -229,6 +232,22 @@ function revealTextOnEnter(item: HTMLElement, restores: Array<() => void>) {
 export function WorksReel({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   const [covers, setCovers] = useState<ReelCover[]>([]);
+  const [near, setNear] = useState(false);
+
+  useEffect(() => {
+    const container = root.current;
+    if (!container) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setNear(true);
+        observer.disconnect();
+      },
+      { rootMargin: CANVAS_LEAD },
+    );
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
 
   useLayoutEffect(() => {
     const container = root.current;
@@ -266,7 +285,7 @@ export function WorksReel({ children }: { children: ReactNode }) {
   return (
     <div ref={root}>
       {children}
-      {covers.length > 0 && root.current ? (
+      {near && covers.length > 0 && root.current ? (
         <ReelCanvas covers={covers} container={root.current} />
       ) : null}
     </div>

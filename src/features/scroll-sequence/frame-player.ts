@@ -23,13 +23,18 @@ function paintCover(context: CanvasRenderingContext2D, image: HTMLImageElement) 
 
 /** Frames requested at once; enough to fill the connection without starving the first ones. */
 const CONCURRENCY = 6;
-const STRIDES = [16, 4, 1];
+const COARSE_STRIDE = 16;
+const STRIDES = [COARSE_STRIDE, 4, 1];
+/** Strides a visitor who asked to save data still gets, which is every fourth frame. */
+const SAVE_DATA_STRIDES = 2;
+
+type NetworkInformation = { saveData?: boolean };
 
 /** Frame indexes ordered coarse to fine, so the whole length can be scrubbed after a few loads. */
-function loadOrder(count: number) {
+function loadOrder(count: number, strides: readonly number[]) {
   const order: number[] = [];
   const queued = new Set<number>();
-  for (const stride of STRIDES) {
+  for (const stride of strides) {
     for (let index = 0; index < count; index += stride) {
       if (!queued.has(index)) {
         queued.add(index);
@@ -54,13 +59,19 @@ export function createFramePlayer(canvas: HTMLCanvasElement, set: FrameSet): Fra
   let destroyed = false;
 
   const images: (HTMLImageElement | undefined)[] = Array.from({ length: set.count });
-  const pending = loadOrder(set.count);
+  const saveData = (navigator as Navigator & { connection?: NetworkInformation }).connection
+    ?.saveData;
+  const pending = loadOrder(set.count, saveData ? STRIDES.slice(0, SAVE_DATA_STRIDES) : STRIDES);
+  // The first frames are the hero picture; the rest must not slow the scripts that run the page.
+  const urgent = Math.ceil(set.count / COARSE_STRIDE) + 1;
+  let requested = 0;
 
   function loadNext() {
     const index = pending.shift();
     if (destroyed || index === undefined) return;
     const image = new Image();
     image.decoding = "async";
+    image.fetchPriority = requested++ < urgent ? "auto" : "low";
     image.onload = () => {
       draw();
       loadNext();
