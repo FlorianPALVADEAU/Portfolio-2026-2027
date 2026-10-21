@@ -20,6 +20,8 @@ export const vertexShader = /* glsl */ `
  * Cover-fit picture with a zoom, clipped to a rounded rectangle with a soft edge. A focus pull
  * blurs each row of the picture by its distance from the focal line `uFocus`, like depth of field;
  * `uShutter` dips the exposure for a frame and `uShake` slides the picture like an unsteady hand.
+ * With a depth map, `uLook` moves the point of view: each pixel slides by its depth, so near
+ * parts travel further than far ones. `uParallax` is the largest slide, 0 turns the effect off.
  */
 export const fragmentShader = /* glsl */ `
   uniform sampler2D uMap;
@@ -31,19 +33,34 @@ export const fragmentShader = /* glsl */ `
   uniform float uFocus;
   uniform float uShutter;
   uniform vec2 uShake;
+  uniform sampler2D uDepthMap;
+  uniform vec2 uLook;
+  uniform float uParallax;
   varying vec2 vUv;
 
   const int TAPS = 24;
   const float MAX_BLUR = 0.009;
   const float GOLDEN_ANGLE = 2.39996323;
+  const int DEPTH_PASSES = 4;
 
   vec2 pictureUv(vec2 surface) {
     return (surface - 0.5) * uRatio / uZoom + 0.5 + uShake;
   }
 
+  // Each pass samples the depth where the previous one landed. A few passes settle on the pixel
+  // that really faces the viewer, which keeps edges from smearing at this small amplitude.
+  vec2 parallaxShift(vec2 base) {
+    vec2 uv = base;
+    for (int i = 0; i < DEPTH_PASSES; i++) {
+      uv = base + uLook * uParallax * (texture2D(uDepthMap, uv).r - 0.5);
+    }
+    return uv - base;
+  }
+
   void main() {
+    vec2 shift = uParallax > 0.0 ? parallaxShift(pictureUv(vUv)) : vec2(0.0);
     float defocus = uBlur * smoothstep(0.0, 0.6, abs(vUv.y - uFocus));
-    vec4 color = texture2D(uMap, pictureUv(vUv));
+    vec4 color = texture2D(uMap, pictureUv(vUv) + shift);
 
     if (defocus > 0.002) {
       // Vogel disc: even taps, no visible banding at this radius.
@@ -52,7 +69,7 @@ export const fragmentShader = /* glsl */ `
       for (int i = 0; i < TAPS; i++) {
         float angle = float(i) * GOLDEN_ANGLE;
         float reach = sqrt((float(i) + 0.5) / float(TAPS));
-        sum += texture2D(uMap, pictureUv(vUv + vec2(cos(angle), sin(angle)) * reach * spread));
+        sum += texture2D(uMap, pictureUv(vUv + vec2(cos(angle), sin(angle)) * reach * spread) + shift);
       }
       color = sum / float(TAPS + 1);
     }

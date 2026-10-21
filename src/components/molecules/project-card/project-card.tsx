@@ -9,7 +9,7 @@ type ProjectCardProps = {
   summary: string;
   year: number;
   stack: readonly string[];
-  cover: { src: string; width: number; height: number; alt: string };
+  cover: { src: string; width: number; height: number; alt: string; depth?: string };
 };
 
 /**
@@ -31,6 +31,7 @@ export function ProjectCard({ href, title, summary, year, stack, cover }: Projec
           height={cover.height}
           alt={cover.alt}
           data-reel-image
+          data-reel-depth={cover.depth}
           sizes="(min-width: 1024px) 560px, 100vw"
           className="aspect-video w-full object-cover motion-safe:transition-transform motion-safe:duration-(--duration-slow) motion-safe:ease-out motion-safe:group-hover:scale-105"
         />

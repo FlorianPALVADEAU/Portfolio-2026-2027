@@ -16,7 +16,7 @@ type WorksSectionProps = {
     summary: string;
     year: number;
     stack: readonly string[];
-    cover: { src: string; width: number; height: number; alt: string };
+    cover: { src: string; width: number; height: number; alt: string; depth?: string };
   }[];
 };
 
