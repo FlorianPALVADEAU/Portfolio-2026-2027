@@ -95,6 +95,7 @@ export function SoundHint({ label }: { label: string }) {
   return (
     <div
       aria-hidden="true"
+      data-sound-hint=""
       className="pointer-events-none absolute inset-x-0 top-full z-10 mt-3 flex justify-center"
     >
       <div

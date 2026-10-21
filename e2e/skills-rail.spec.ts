@@ -1,5 +1,19 @@
 import { expect, test } from "@playwright/test";
 
+/** Resolves once `read` returns the same value twice in a row, i.e. the thing has stopped moving. */
+async function settle(read: () => Promise<number>) {
+  let last = Number.NaN;
+  await expect
+    .poll(async () => {
+      const current = await read();
+      const still = current === last;
+      last = current;
+      return still;
+    })
+    .toBe(true);
+  return last;
+}
+
 test.describe("skills rail", () => {
   test("slides from frame to frame as the page scrolls", async ({ page }) => {
     await page.goto("/en");
@@ -11,22 +25,19 @@ test.describe("skills rail", () => {
     const infrastructure = skills.getByRole("heading", { name: "Infrastructure" });
     const position = async () => (await infrastructure.boundingBox())?.x ?? 0;
     // The rail follows the scroll with a short delay, so wait until it has stopped moving.
-    let before = Number.NaN;
-    await expect
-      .poll(async () => {
-        const current = await position();
-        const still = current === before;
-        before = current;
-        return still;
-      })
-      .toBe(true);
+    const before = await settle(position);
 
-    // On a small screen each push moves the page one stop, and the first only clears the pause.
-    for (let push = 0; push < 2; push += 1) {
-      await page.mouse.wheel(0, 2400);
-      await page.waitForTimeout(1200);
-    }
-    await expect.poll(position).toBeLessThan(before - 200);
+    // On a small screen each push moves the page one stop, and the first only clears the pause, so
+    // keep pushing until the rail has slid rather than count on a fixed number under load.
+    await expect
+      .poll(
+        async () => {
+          await page.mouse.wheel(0, 2400);
+          return settle(position);
+        },
+        { intervals: [250], timeout: 15_000 },
+      )
+      .toBeLessThan(before - 200);
   });
 
   test("jumps to a frame from the progress bar", async ({ page }) => {
@@ -34,7 +45,7 @@ test.describe("skills rail", () => {
     const skills = page.getByRole("region", { name: "Skills" });
     await skills.evaluate((section) => section.scrollIntoView());
     // Let the smooth scroll settle, as it would before a person reaches for the bar.
-    await page.waitForTimeout(1000);
+    await settle(() => page.evaluate(() => window.scrollY));
 
     await skills
       .getByRole("navigation", { name: "Parts of the section" })
