@@ -30,7 +30,7 @@ export function GithubActivity({ locale, messages, activity }: GithubActivityPro
   if (!activity) return null;
 
   return (
-    <div className="mt-24 grid gap-10 md:grid-cols-12">
+    <div className="grid gap-8 border-t border-border pt-8 md:grid-cols-12">
       <div className="flex flex-col gap-4 md:col-span-5">
         <Heading level={3} size="xl">
           {messages.title}
@@ -41,7 +41,7 @@ export function GithubActivity({ locale, messages, activity }: GithubActivityPro
       </div>
       <div className="flex flex-col gap-4 md:col-span-6 md:col-start-7">
         <p className="flex items-baseline gap-2">
-          <span className="text-3xl font-semibold tracking-tight tabular-nums">
+          <span className="text-2xl font-semibold tracking-tight tabular-nums">
             {new Intl.NumberFormat(locale).format(activity.total)}
           </span>
           <span className="text-sm text-muted-foreground">{messages.total}</span>

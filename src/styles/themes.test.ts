@@ -7,7 +7,12 @@ const css = readFileSync(path.resolve(import.meta.dirname, "themes.css"), "utf8"
 const themes = ["dark", "light", "swiss"] as const;
 
 function tokensOf(theme: (typeof themes)[number]) {
-  const selector = theme === "dark" ? ':root,\n[data-theme="dark"]' : `[data-theme="${theme}"]`;
+  const selectors = {
+    dark: ':root,\n[data-theme="dark"]',
+    light: '[data-theme="light"],\n[data-theme="dark"] [data-paper]',
+    swiss: '[data-theme="swiss"]',
+  };
+  const selector = selectors[theme];
   const start = css.indexOf(`${selector} {`);
   const block = css.slice(start, css.indexOf("}", start));
   return Object.fromEntries(

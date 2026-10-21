@@ -27,7 +27,6 @@ export default defineConfig({
           // Cloudflare's published test key: its widget always passes and never leaves the page.
           env: {
             NEXT_PUBLIC_TURNSTILE_SITE_KEY: "1x00000000000000000000AA",
-            NEXT_PUBLIC_CALENDLY_URL: "https://calendly.com/portfolio-test/intro",
           },
         },
       }),

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { BookingFacade } from "@/components/organisms/booking-facade";
+import { ContactDetails } from "@/components/organisms/contact-details";
 import { ContactForm } from "@/components/organisms/contact-form";
 import { GithubActivity } from "@/components/organisms/github-activity";
 import { PersonSchema } from "@/components/organisms/person-schema";
@@ -28,25 +28,31 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         heroPhotos={await photoUrls("hero")}
         trailPhotos={await photoUrls("trail")}
         projects={projects}
-        contact={
-          <>
-            <GithubActivity
-              locale={locale}
-              messages={messages.home.contact.github}
-              activity={await githubActivity()}
-            />
+        contact={{
+          form: (
             <ContactForm
               messages={messages.home.contact.form}
               action={submitContact}
               siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
               challengeAction={CONTACT_ACTION}
             />
-            <BookingFacade
-              messages={messages.home.contact.booking}
-              url={process.env.NEXT_PUBLIC_CALENDLY_URL}
+          ),
+          details: (
+            <ContactDetails
+              locale={locale}
+              messages={messages.home.contact.details}
+              timeZone="Europe/Zurich"
+              phone={process.env.NEXT_PUBLIC_CONTACT_PHONE}
             />
-          </>
-        }
+          ),
+          activity: (
+            <GithubActivity
+              locale={locale}
+              messages={messages.home.contact.github}
+              activity={await githubActivity()}
+            />
+          ),
+        }}
       />
     </>
   );

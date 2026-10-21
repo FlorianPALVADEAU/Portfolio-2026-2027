@@ -12,7 +12,7 @@ Swiss tech recruiters and hiring engineers (engineering leads, CTOs) evaluating 
 
 ## Product Purpose
 
-Personal portfolio of Florian Palvadeau, full-stack software engineer, to be hired in Switzerland (Geneva/Vaud, French cross-border worker, available from September 2027). Success = a visitor contacts him (email form or Calendly booking) or downloads the CV. The public code is part of the proof.
+Personal portfolio of Florian Palvadeau, full-stack software engineer, to be hired in Switzerland (Geneva/Vaud, French cross-border worker, available from September 2027). Success = a visitor contacts him (email form or phone) or downloads the CV. The public code is part of the proof.
 
 ## Positioning
 
@@ -20,7 +20,7 @@ A full-stack engineer who also ships and runs things: engineering plus delivery 
 
 ## Operating Context
 
-Content changes via redeploy only (no admin panel). Typed structured content blocks (`content/`, `messages/` fr/en/de) validated by Effect Schema. Hosted on Vercel, domain palvadeau.ch. Contact via Resend and Turnstile; Calendly loaded on click. Analytics: Vercel Web Analytics and Speed Insights only. A CV PDF per locale is served as is.
+Content changes via redeploy only (no admin panel). Typed structured content blocks (`content/`, `messages/` fr/en/de) validated by Effect Schema. Hosted on Vercel, domain palvadeau.ch. Contact via Resend and Turnstile; a lazy OpenStreetMap frame shows the city (no address). Analytics: Vercel Web Analytics and Speed Insights only. A CV PDF per locale is served as is.
 
 ## Capabilities and Constraints
 
@@ -28,7 +28,7 @@ Content changes via redeploy only (no admin panel). Typed structured content blo
 - Themes: dark, light, Swiss. Sound system (UI and ambient). GSAP is the only animation library; page transition overlay; gentle smooth scroll; lazy-loaded React Three Fiber 3D.
 - Extras wanted: Spotify now playing, GitHub stats.
 - FR, EN and DE ship together; no hard-coded copy.
-- Never publish phone, email or birth date in source or page copy; contact recipient lives in an env var. No case studies for employer work (JCDecaux, Neurones IT); no client names or internal employer metrics.
+- Never publish email or birth date in source or page copy; contact recipient lives in an env var. The owner chose to show a phone number on the page: it comes from `NEXT_PUBLIC_CONTACT_PHONE` and never enters the repository. No case studies for employer work (JCDecaux, Neurones IT); no client names or internal employer metrics.
 - Stack and rules are fixed in AGENTS.md.
 
 ## Brand Commitments

@@ -10,8 +10,10 @@ import { pose, smoothstep, wordReveal } from "./zoom-pose";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Viewport heights the section lasts: three of scrolling plus the one it is held on. */
-const TRACK = "400svh";
+/** Viewport heights the section lasts: three for the dive, one more holding the closing text. */
+const TRACK = "500svh";
+/** Share of the scroll the dive itself takes, so the hold after it does not slow the photos. */
+const SCENE_END = 300 / 400;
 /** Share of the remaining distance the scroll and the pointer cover per frame at 60 fps. */
 const EASING = 0.1;
 /** Below this stage width the photos are enlarged, so they stay legible on a phone. */
@@ -20,6 +22,8 @@ const SMALL_STAGE_ZOOM = 1.7;
 /** Scroll progress over which the title leaves, and over which the closing text arrives. */
 const INTRO_END = 0.16;
 const OUTRO = [0.8, 0.99] as const;
+/** Share of the hold, after the closing text is complete, over which the black turns to paper. */
+const PAPER = [0.1, 0.65] as const;
 /** Resting sway of a touch screen, which has no pointer to follow. */
 const SWAY = { x: 0.5, y: 0.35, period: 8 } as const;
 
@@ -53,8 +57,10 @@ function paint(figure: HTMLElement, next: Pose) {
  * A scene of photos and videos that the visitor flies into by scrolling. The section is held on
  * screen for a few viewport heights; the scroll moves the viewer forward, so the photos at the
  * back grow, drift out past the frame and blur as they go, others come out of the distance, and
- * the closing text fades in last. The pointer, or a slow sway on touch screens, shifts near photos
- * more than far ones. Videos play only while they are visible.
+ * the closing text fades in last. The scroll that follows turns the black background to paper (the
+ * light colours of a dark page, the page's own otherwise), so the section below carries on from
+ * it; scrolling back turns it black again. The pointer, or a slow sway on touch screens, shifts
+ * near photos more than far ones. Videos play only while they are visible.
  *
  * Without JavaScript, or under reduced motion, the section is a plain grid between the two texts.
  */
@@ -66,6 +72,7 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     const stage = root?.firstElementChild;
     if (!(root && stage instanceof HTMLElement) || prefersReducedMotion()) return;
 
+    const paperStyle = root.style;
     const figures = Array.from(stage.querySelectorAll<HTMLElement>("[data-zoom-item]"));
     const introElement = stage.querySelector<HTMLElement>("[data-zoom-intro]");
     const words = Array.from(stage.querySelectorAll<HTMLElement>("[data-zoom-word]"));
@@ -79,6 +86,13 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     let dirty = true;
 
     root.dataset.mode = "live";
+
+    function follow(scroll: number) {
+      raw = Math.min(1, scroll / SCENE_END);
+      const held = Math.max(0, (scroll - SCENE_END) / (1 - SCENE_END));
+      const mix = smoothstep(PAPER[0], PAPER[1], held);
+      paperStyle.setProperty("--paper", `${(mix * 100).toFixed(1)}%`);
+    }
 
     function measure() {
       const { width, height } = (stage as HTMLElement).getBoundingClientRect();
@@ -148,11 +162,9 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
       trigger: root,
       start: "top top",
       end: "bottom bottom",
-      onUpdate: (self) => {
-        raw = self.progress;
-      },
+      onUpdate: (self) => follow(self.progress),
     });
-    raw = trigger.progress;
+    follow(trigger.progress);
     progress = raw;
     const resize = new ResizeObserver(measure);
     resize.observe(stage);
@@ -176,6 +188,7 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
       for (const element of [...figures, ...words, introElement]) {
         if (element) for (const name of LIVE_STYLES) element.style.removeProperty(name);
       }
+      root.style.removeProperty("--paper");
       root.dataset.mode = "static";
     };
   }, [items]);
@@ -184,8 +197,9 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     <div
       ref={track}
       data-mode="static"
-      style={{ "--track": TRACK } as CSSProperties}
-      className="group/zoom data-[mode=live]:h-(--track)"
+      data-theme="dark"
+      style={{ "--track": TRACK, "--paper": "0%" } as CSSProperties}
+      className="group/zoom bg-[color-mix(in_srgb,var(--paper-background)_var(--paper),#000)] text-[color-mix(in_srgb,var(--paper-foreground)_var(--paper),var(--foreground))] data-[mode=live]:h-(--track)"
     >
       <div className="flex flex-col gap-10 px-(--gutter) py-(--section-space) group-data-[mode=live]/zoom:sticky group-data-[mode=live]/zoom:top-0 group-data-[mode=live]/zoom:block group-data-[mode=live]/zoom:h-svh group-data-[mode=live]/zoom:overflow-clip group-data-[mode=live]/zoom:p-0">
         <div

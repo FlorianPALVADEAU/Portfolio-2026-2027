@@ -171,6 +171,8 @@
     "contact": {
       "profiles": "Profils",
       "newTab": "s'ouvre dans un nouvel onglet",
+      "location": "Genève, Suisse",
+      "availability": "Disponible dès septembre 2027",
       "form": {
         "title": "Écrivez-moi",
         "intro": "Je lis chaque message moi-même et je réponds depuis ma propre adresse. Votre e-mail sert uniquement à vous répondre.",
@@ -203,11 +205,12 @@
         "less": "Moins",
         "more": "Plus"
       },
-      "booking": {
-        "title": "Réserver un appel",
-        "text": "Vous préférez échanger de vive voix ? Choisissez un créneau qui vous convient. Le calendrier ne se charge depuis Calendly que si vous le demandez.",
-        "action": "Afficher le calendrier",
-        "frame": "Calendrier de réservation"
+      "details": {
+        "title": "Me trouver",
+        "text": "Je cherche un poste à Genève et dans le canton de Vaud. La carte montre la ville, pas une adresse.",
+        "time": "Heure locale",
+        "phone": "Téléphone",
+        "map": "Carte de Genève"
       }
     },
     "works": {

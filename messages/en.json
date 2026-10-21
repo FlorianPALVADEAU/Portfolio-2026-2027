@@ -171,6 +171,8 @@
     "contact": {
       "profiles": "Profiles",
       "newTab": "opens in a new tab",
+      "location": "Geneva, Switzerland",
+      "availability": "Available from September 2027",
       "form": {
         "title": "Write to me",
         "intro": "I read every message myself and answer from my own address. Your email is used only to reply to you.",
@@ -203,11 +205,12 @@
         "less": "Less",
         "more": "More"
       },
-      "booking": {
-        "title": "Book a call",
-        "text": "Prefer to talk? Pick a time that suits you. The calendar loads from Calendly only when you ask for it.",
-        "action": "Show the calendar",
-        "frame": "Booking calendar"
+      "details": {
+        "title": "Find me",
+        "text": "I am looking for a role in Geneva and the canton of Vaud. The map shows the city, not an address.",
+        "time": "Local time",
+        "phone": "Phone",
+        "map": "Map of Geneva"
       }
     },
     "works": {

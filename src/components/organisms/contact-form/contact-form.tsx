@@ -35,14 +35,14 @@ type ContactFormProps = {
   challengeAction: string;
 };
 
-const GRID = "mt-24 grid gap-10 md:grid-cols-12";
+const GRID = "grid gap-10 md:grid-cols-12";
 const INTRO = "flex flex-col gap-4 md:col-span-5";
 const BODY = "md:col-span-6 md:col-start-7";
 
 function Intro({ messages }: { messages: FormMessages }) {
   return (
     <div className={INTRO}>
-      <Heading level={3} size="xl">
+      <Heading level={3} size="3xl">
         {messages.title}
       </Heading>
       <Text tone="muted" className="max-w-[40ch]">
@@ -62,7 +62,7 @@ function Confirmation({ messages, onAgain }: { messages: FormMessages; onAgain: 
         ref={card}
         role="status"
         tabIndex={-1}
-        className="flex flex-col items-start gap-4 rounded-md border border-foreground p-6 focus:outline-none"
+        className="flex flex-col items-start gap-4 border-y border-foreground py-8 focus:outline-none"
       >
         <Icon icon={CircleCheck} size="lg" />
         <Heading level={4} size="lg">
@@ -195,7 +195,12 @@ function Form({
         load={engaged}
         resetKey={state}
       />
-      <Button type="submit" loading={pending} className="w-full md:w-auto md:self-start">
+      <Button
+        type="submit"
+        size="lg"
+        loading={pending}
+        className="w-full rounded-full md:w-auto md:self-start"
+      >
         {pending ? messages.sending : messages.submit}
       </Button>
       {failure && (

@@ -15,16 +15,11 @@ type GallerySectionProps = {
 
 /**
  * A dark scroll-driven dive through photos, from the "Gallery" title to the invitation that
- * leads into the contact section.
+ * leads into the contact section, whose paper the background turns to at the end.
  */
 export function GallerySection({ index, title, closingTitle, messages }: GallerySectionProps) {
   return (
-    <Section
-      id="gallery"
-      aria-labelledby="gallery-title"
-      data-theme="dark"
-      className="relative scroll-mt-4 bg-black py-0 text-foreground"
-    >
+    <Section id="gallery" aria-labelledby="gallery-title" className="relative scroll-mt-4 py-0">
       <ZoomGallery
         items={galleryItems}
         alts={messages.images}
@@ -58,7 +53,7 @@ export function GallerySection({ index, title, closingTitle, messages }: Gallery
             >
               <ZoomWords text={closingTitle} />
             </Heading>
-            <Text className="max-w-[40ch] text-lg md:text-xl">
+            <Text className="max-w-[40ch] text-lg text-inherit md:text-xl">
               <ZoomWords text={messages.invitation} />
             </Text>
           </div>

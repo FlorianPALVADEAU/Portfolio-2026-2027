@@ -19,11 +19,11 @@ type FieldProps = {
 };
 
 const control =
-  "w-full rounded-md border bg-surface px-4 py-3 text-base text-foreground placeholder:text-muted-foreground";
+  "w-full rounded-none border-0 border-b bg-transparent px-0 py-3 text-xl text-foreground placeholder:text-muted-foreground";
 
-/** Border at least 3:1 against the page; an error adds a ring so it never relies on colour. */
+/** Rule at least 3:1 against the page; an error thickens it so it never relies on colour. */
 const borderOf = (error: string | undefined) =>
-  error ? "border-foreground ring-1 ring-foreground" : "border-muted-foreground";
+  error ? "border-b-2 border-foreground" : "border-muted-foreground";
 
 /** Label, control and error wired together; the control is rendered by the caller. */
 function Field({ label, error, hint, children }: FieldProps) {
@@ -32,7 +32,7 @@ function Field({ label, error, hint, children }: FieldProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-sm font-medium">
+      <label htmlFor={id} className="font-mono text-sm tracking-widest uppercase">
         {label}
       </label>
       {children({

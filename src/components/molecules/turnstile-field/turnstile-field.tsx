@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect, useRef, useState } from "react";
+import { type RefObject, useEffect, useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -24,18 +24,24 @@ type TurnstileFieldProps = {
   resetKey: unknown;
 };
 
-/** Turnstile has no Swiss look; the Swiss theme is white, so it takes the light one. */
-function useSiteTheme(): "light" | "dark" {
+/**
+ * Turnstile has no Swiss look; the Swiss theme is white, so it takes the light one. So does a
+ * dark page on paper, where the field sits inside a `data-paper` ancestor.
+ */
+function useSiteTheme(field: RefObject<HTMLElement | null>): "light" | "dark" {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
     const root = document.documentElement;
-    const read = () => setTheme(root.dataset.theme === "dark" ? "dark" : "light");
+    const read = () =>
+      setTheme(
+        root.dataset.theme === "dark" && !field.current?.closest("[data-paper]") ? "dark" : "light",
+      );
     read();
     const observer = new MutationObserver(read);
     observer.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
     return () => observer.disconnect();
-  }, []);
+  }, [field]);
 
   return theme;
 }
@@ -48,7 +54,7 @@ export function TurnstileField({ siteKey, action, label, load, resetKey }: Turns
   const container = useRef<HTMLDivElement>(null);
   const widget = useRef<string | null>(null);
 
-  const theme = useSiteTheme();
+  const theme = useSiteTheme(container);
 
   useEffect(() => {
     const mount = () => {
