@@ -9,6 +9,6 @@ describe("skills content", () => {
   });
 
   it("publishes the owner-confirmed credentials only", () => {
-    expect(certifications.map(({ id }) => id)).toEqual(["ckad", "psm", "aws"]);
+    expect(certifications.map(({ id }) => id)).toEqual(["psm", "aws", "ckad"]);
   });
 });

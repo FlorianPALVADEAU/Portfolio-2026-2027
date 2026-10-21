@@ -40,7 +40,12 @@ export function ProjectDetail({ locale, messages, project }: ProjectDetailProps)
                 data-entrance
               >{`${messages.role}: ${project.role} · ${messages.year}: ${project.year}`}</Text>
               <div data-entrance>
-                <Link href={`/${locale}`} className="inline-flex min-h-11 items-center">
+                <Link
+                  href={`/${locale}`}
+                  data-restore-scroll=""
+                  data-keep-scroll=""
+                  className="inline-flex min-h-11 items-center"
+                >
                   {messages.back}
                 </Link>
               </div>

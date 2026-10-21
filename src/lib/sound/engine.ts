@@ -1,7 +1,7 @@
-export type UiSound = "hover" | "item" | "click" | "pop" | "open" | "close" | "focus";
+export type UiSound = "hover" | "item" | "click" | "pop" | "open" | "close" | "focus" | "whoosh";
 
-/** Sounds made of tuned notes; `focus` plays recordings instead. */
-type ToneSound = Exclude<UiSound, "focus">;
+/** Sounds made of tuned notes; `focus` plays recordings and `whoosh` is shaped noise. */
+type ToneSound = Exclude<UiSound, "focus" | "whoosh">;
 
 type Note = {
   frequency: number;
@@ -244,8 +244,57 @@ async function playFocus({ context, input }: Graph): Promise<void> {
   });
 }
 
+const WHOOSH_SECONDS = 0.7;
+const WHOOSH_VOLUME = 0.05;
+const WHOOSH_FROM_HZ = 350;
+const WHOOSH_TO_HZ = 2400;
+
+let noise: AudioBuffer | null = null;
+
+/** One second of white noise, shared by every whoosh. */
+function noiseBuffer(context: AudioContext): AudioBuffer {
+  if (noise) return noise;
+  noise = context.createBuffer(1, context.sampleRate, context.sampleRate);
+  const data = noise.getChannelData(0);
+  for (let i = 0; i < data.length; i += 1) data[i] = Math.random() * 2 - 1;
+  return noise;
+}
+
+/**
+ * Something passing by: band-passed noise whose centre rises as it comes close and falls away,
+ * swelling and fading like a gust. `pan` places it from the left (-1) to the right (1).
+ */
+function playWhoosh({ context, input }: Graph, pan: number): void {
+  const start = context.currentTime;
+  const peak = start + WHOOSH_SECONDS * 0.4;
+  const end = start + WHOOSH_SECONDS;
+
+  const source = context.createBufferSource();
+  source.buffer = noiseBuffer(context);
+  source.loop = true;
+
+  const filter = context.createBiquadFilter();
+  filter.type = "bandpass";
+  filter.Q.value = 0.9;
+  filter.frequency.setValueAtTime(WHOOSH_FROM_HZ, start);
+  filter.frequency.exponentialRampToValueAtTime(WHOOSH_TO_HZ, peak);
+  filter.frequency.exponentialRampToValueAtTime(WHOOSH_FROM_HZ * 1.5, end);
+
+  const gain = context.createGain();
+  gain.gain.setValueAtTime(0.0001, start);
+  gain.gain.exponentialRampToValueAtTime(WHOOSH_VOLUME, peak);
+  gain.gain.exponentialRampToValueAtTime(0.0001, end);
+
+  const panner = context.createStereoPanner();
+  panner.pan.value = Math.max(-1, Math.min(1, pan));
+
+  source.connect(filter).connect(gain).connect(panner).connect(input);
+  source.start(start);
+  source.stop(end);
+}
+
 /** Interaction tones are synthesized; only the focus sound plays recordings. */
-export function playUiSound(sound: UiSound): void {
+export function playUiSound(sound: UiSound, pan = 0): void {
   // Browsers only allow audio after a user gesture; never try before one.
   if (!navigator.userActivation?.hasBeenActive) return;
   graph ??= createGraph();
@@ -254,6 +303,10 @@ export function playUiSound(sound: UiSound): void {
   const origin = graph.context.currentTime;
   if (sound === "focus") {
     void playFocus(graph);
+    return;
+  }
+  if (sound === "whoosh") {
+    playWhoosh(graph, pan);
     return;
   }
   for (const note of pickVariant(sound)) playNote(graph, note, origin);

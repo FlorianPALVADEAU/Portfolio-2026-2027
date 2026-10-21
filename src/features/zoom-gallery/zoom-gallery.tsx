@@ -5,8 +5,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { type CSSProperties, type ReactNode, useLayoutEffect, useRef } from "react";
 import type { GalleryItem } from "@/lib/landing";
 import { hasFinePointer, prefersReducedMotion } from "@/lib/motion";
+import { playIfEnabled } from "@/lib/sound";
 import { ZoomMedia } from "./zoom-media";
-import { pose, smoothstep, wordReveal } from "./zoom-pose";
+import { hasPassed, pose, smoothstep, wordReveal } from "./zoom-pose";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,6 +25,10 @@ const INTRO_END = 0.16;
 const OUTRO = [0.8, 0.99] as const;
 /** Share of the hold, after the closing text is complete, over which the black turns to paper. */
 const PAPER = [0.1, 0.65] as const;
+/** Shortest gap in ms between two whooshes, so a fast scroll is a gust and not a rattle. */
+const WHOOSH_GAP_MS = 140;
+/** How far a photo at the side of the frame pulls its whoosh towards that ear. */
+const WHOOSH_PAN = 0.8;
 /** Resting sway of a touch screen, which has no pointer to follow. */
 const SWAY = { x: 0.5, y: 0.35, period: 8 } as const;
 
@@ -84,6 +89,8 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     let progress = 0;
     let visible = true;
     let dirty = true;
+    const passed = items.map((item) => hasPassed(item, 0));
+    let lastWhoosh = 0;
 
     root.dataset.mode = "live";
 
@@ -106,10 +113,23 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
       dirty = true;
     }
 
+    function whoosh(pan: number) {
+      const now = performance.now();
+      if (now - lastWhoosh < WHOOSH_GAP_MS) return;
+      lastWhoosh = now;
+      playIfEnabled("whoosh", pan);
+    }
+
     function draw() {
       figures.forEach((figure, index) => {
         const item = items[index];
-        if (item) paint(figure, pose(item, progress, half, look));
+        if (!item) return;
+        paint(figure, pose(item, progress, half, look));
+        const past = hasPassed(item, progress);
+        if (past !== passed[index] && visible) {
+          whoosh(Math.max(-1, Math.min(1, item.ox)) * WHOOSH_PAN);
+        }
+        passed[index] = past;
       });
       if (introElement) {
         const gone = smoothstep(0, INTRO_END, progress);

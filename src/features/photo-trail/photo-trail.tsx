@@ -9,6 +9,8 @@ import { hasFinePointer, prefersReducedMotion } from "@/lib/motion";
 const SPAWN_DISTANCE = 130;
 const TILT = 12;
 const PEAK_OPACITY = 1;
+/** A narrow window on a desktop still has a mouse, but the trail is a wide-screen effect. */
+const WIDE_QUERY = "(min-width: 768px)";
 
 type PhotoTrailProps = {
   photos: readonly string[];
@@ -20,14 +22,19 @@ type PhotoTrailProps = {
  * fills its parent, which decides where the trail lives; only the pointer inside it counts. It sits over
  * the parent's content, without catching the pointer, and clips the photos so none can widen the
  * page. The photos are mounted, and so
- * downloaded, only with a fine pointer and without reduced motion; elsewhere it renders nothing.
+ * downloaded, only with a fine pointer, a tablet width or more and without reduced motion; elsewhere it renders nothing.
  */
 export function PhotoTrail({ photos }: PhotoTrailProps) {
   const layer = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
 
   useEffect(() => {
-    setActive(photos.length > 0 && !prefersReducedMotion() && hasFinePointer());
+    const wide = window.matchMedia(WIDE_QUERY);
+    const update = () =>
+      setActive(photos.length > 0 && !prefersReducedMotion() && hasFinePointer() && wide.matches);
+    update();
+    wide.addEventListener("change", update);
+    return () => wide.removeEventListener("change", update);
   }, [photos.length]);
 
   useEffect(() => {

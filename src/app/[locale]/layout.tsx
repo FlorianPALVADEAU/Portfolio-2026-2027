@@ -10,6 +10,7 @@ import { GridOverlay } from "@/features/grid-overlay";
 import { IntroLoader } from "@/features/intro-loader";
 import { PageTransition } from "@/features/page-transition";
 import { RouteFocus } from "@/features/route-focus";
+import { ScrollRestore } from "@/features/scroll-restore";
 import { SmoothScroll } from "@/features/smooth-scroll";
 import { UiSound } from "@/features/ui-sound";
 import { getMessages, isLocale, locales } from "@/lib/i18n";
@@ -79,6 +80,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
         messages={messages.footer}
       />
       <RouteFocus />
+      <ScrollRestore />
       <SmoothScroll />
       <PageTransition />
       <IntroLoader label={messages.loader.label} welcome={messages.loader.welcome} />

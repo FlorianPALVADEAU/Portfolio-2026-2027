@@ -22,19 +22,10 @@ export const skillGroups = [
 
 /**
  * Only credentials confirmed by the owner. `score: null` when none is published; `credentialId` is
- * the public identifier a verifier asks for, and `verifyUrl` the page that checks it.
+ * the public identifier a verifier asks for, and `verifyUrl` the page that checks it. Oldest first,
+ * since the plates read as a timeline from left to right.
  */
 export const certifications = [
-  {
-    id: "ckad",
-    name: "CKAD",
-    issuer: "CNCF",
-    year: 2026,
-    score: "92%",
-    logo: "/brand/certifications/ckad.svg",
-    credentialId: "LF-gm9o7dmr8j",
-    verifyUrl: "https://training.linuxfoundation.org/certification/verify/",
-  },
   {
     id: "psm",
     name: "PSM I",
@@ -54,6 +45,16 @@ export const certifications = [
     logo: "/brand/certifications/aws-cda.svg",
     credentialId: "093b98680b094f94971f653d5a619197",
     verifyUrl: "https://aws.amazon.com/verification",
+  },
+  {
+    id: "ckad",
+    name: "CKAD",
+    issuer: "CNCF",
+    year: 2026,
+    score: "92%",
+    logo: "/brand/certifications/ckad.svg",
+    credentialId: "LF-gm9o7dmr8j",
+    verifyUrl: "https://training.linuxfoundation.org/certification/verify/",
   },
 ] as const;
 

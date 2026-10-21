@@ -30,10 +30,18 @@ const EDGE_FADE = 0.3;
 /** Pointer shift of an item at scale 1, in half-stage units. */
 const PARALLAX = 0.08;
 
+/** An item is level with the viewer, and goes by, once it is this close. */
+const PASS_DISTANCE = 0.9;
+
 const HIDDEN: Pose = { x: 0, y: 0, scale: 1, opacity: 0, blur: 0, brightness: 1 };
 
 function clamp(value: number): number {
   return Math.min(1, Math.max(0, value));
+}
+
+/** Whether the viewer, `progress` of the way in, has gone level with the item. */
+export function hasPassed(item: ZoomItem, progress: number): boolean {
+  return item.depth - progress * TRAVEL < PASS_DISTANCE;
 }
 
 /** 0 up to `from`, 1 from `to`, eased between; also works when `from` is above `to`. */

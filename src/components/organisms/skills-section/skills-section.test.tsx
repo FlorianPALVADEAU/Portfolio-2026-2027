@@ -22,9 +22,9 @@ describe("SkillsSection", () => {
     expect(entries).toHaveLength(3);
     const checks = within(certifications).getAllByRole("link");
     expect(checks.map((link) => link.getAttribute("href"))).toEqual([
-      "https://training.linuxfoundation.org/certification/verify/",
       "https://www.scrum.org/user/1559892",
       "https://aws.amazon.com/verification",
+      "https://training.linuxfoundation.org/certification/verify/",
     ]);
     expect(within(certifications).getByText("LF-gm9o7dmr8j")).toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Skills" })).toHaveAttribute("id", "skills");

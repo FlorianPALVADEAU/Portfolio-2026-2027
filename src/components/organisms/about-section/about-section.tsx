@@ -34,7 +34,7 @@ export function AboutSection({ index, title, messages, trailPhotos = [] }: About
         <PhotoTrail photos={trailPhotos} />
         <figure
           data-portrait-frame
-          className="group relative m-0 aspect-[4/5] h-[34svh] justify-self-center overflow-hidden md:col-span-5 md:col-start-2 md:h-[68svh] motion-reduce:h-auto motion-reduce:w-full motion-reduce:max-w-sm"
+          className="group relative m-0 aspect-[4/5] h-[34svh] justify-self-center overflow-hidden md:col-span-5 md:col-start-2 md:h-[68svh] md:justify-self-end motion-reduce:h-auto motion-reduce:w-full motion-reduce:max-w-sm"
         >
           <Image
             data-portrait-image
@@ -45,7 +45,7 @@ export function AboutSection({ index, title, messages, trailPhotos = [] }: About
             className="object-cover object-top contrast-110 grayscale transition-[filter] duration-700 ease-out group-hover:grayscale-0"
           />
         </figure>
-        <div className="relative z-10 flex flex-col gap-4 md:col-span-5 md:col-start-8 md:gap-6">
+        <div className="relative z-10 flex flex-col gap-4 md:col-span-5 md:col-start-7 md:gap-6">
           <Text
             data-portrait-line
             as="span"
