@@ -49,7 +49,7 @@ export function IntroSection({ title, messages }: IntroSectionProps) {
               ),
             }))}
             label={messages.clients}
-            className="min-w-0 flex-1 border-0 bg-transparent px-0"
+            className="w-full min-w-0 flex-1 border-0 bg-transparent px-0"
             speed={190}
             fade
           />
