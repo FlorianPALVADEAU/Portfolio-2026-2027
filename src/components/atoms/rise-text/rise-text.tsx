@@ -15,7 +15,7 @@ export function RiseText({ children, className }: RiseTextProps) {
         // biome-ignore lint/suspicious/noArrayIndexKey: see above
         <span key={index}>
           {index > 0 && " "}
-          <span className="-mb-[0.12em] inline-block overflow-hidden pb-[0.12em] align-bottom">
+          <span data-rise-mask="" className="-mb-[0.12em] inline-block pb-[0.12em] align-bottom">
             <span data-rise-word="" className="inline-block">
               {word}
             </span>

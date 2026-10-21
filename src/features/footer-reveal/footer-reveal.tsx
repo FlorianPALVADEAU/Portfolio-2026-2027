@@ -8,16 +8,18 @@ import { prefersReducedMotion } from "@/lib/motion";
 gsap.registerPlugin(ScrollTrigger);
 
 /** Share of the viewport, from the top, where the card's top edge triggers the text. */
-const TEXT_START = "top 78%";
+const TEXT_START = "top 55%";
+/** Seconds between two texts, from the top of the card to the bottom. */
+const STAGGER = 0.07;
 /** The card has finished settling once its top edge is this far up; the footer is taller than that. */
 const SETTLE_END = "top 35%";
 
 /**
  * The footer card settles into place as it scrolls in, then its text rises. The settle follows
  * the scroll; the text plays once on its own clock, so scrolling fast neither skips it nor waits
- * on it, and nothing is pinned: the page is never held. Words marked `data-rise-word` slide up
- * from behind their mask, elements marked `data-rise-fade` fade up. Both start hidden only once
- * the script runs, so the footer stays readable without it. Under reduced motion nothing moves.
+ * on it, and nothing is pinned: the page is never held. Every text sits in a mask
+ * (`data-rise-mask`) and starts below its edge; it slides up from behind it. Nothing is hidden
+ * until the script runs, so the footer stays readable without it. Under reduced motion nothing moves.
  */
 export function FooterReveal(props: ComponentPropsWithoutRef<"div">) {
   const root = useRef<HTMLDivElement>(null);
@@ -27,22 +29,21 @@ export function FooterReveal(props: ComponentPropsWithoutRef<"div">) {
     if (!element || prefersReducedMotion()) return;
 
     const context = gsap.context(() => {
-      const words = gsap.utils.toArray<HTMLElement>("[data-rise-word]", element);
-      const fades = gsap.utils.toArray<HTMLElement>("[data-rise-fade]", element);
-      gsap.set(words, { yPercent: 115 });
-      gsap.set(fades, { autoAlpha: 0, y: 24 });
+      const masks = gsap.utils.toArray<HTMLElement>("[data-rise-mask]", element);
+      const movers = gsap.utils.toArray<HTMLElement>("[data-rise-word]", element);
+      // Clipped only while they move, so focus rings and hover effects are never cut off.
+      gsap.set(masks, { overflow: "hidden" });
+      gsap.set(movers, { yPercent: 110 });
 
-      gsap
-        .timeline({
-          defaults: { ease: "expo.out" },
-          scrollTrigger: { trigger: element, start: TEXT_START, once: true },
-        })
-        .to(words, { yPercent: 0, duration: 1.3, stagger: 0.07 })
-        .to(
-          fades,
-          { autoAlpha: 1, y: 0, duration: 1, stagger: 0.08, clearProps: "transform,visibility" },
-          0.35,
-        );
+      // Document order is reading order, so the stagger runs from the top of the card to the bottom.
+      gsap.to(movers, {
+        yPercent: 0,
+        duration: 1.3,
+        ease: "expo.out",
+        stagger: STAGGER,
+        scrollTrigger: { trigger: element, start: TEXT_START, once: true },
+        onComplete: () => gsap.set(masks, { clearProps: "overflow" }),
+      });
 
       gsap.fromTo(
         element,

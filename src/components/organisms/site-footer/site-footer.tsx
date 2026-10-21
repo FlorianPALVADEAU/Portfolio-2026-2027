@@ -3,6 +3,7 @@ import NextLink from "next/link";
 import { Button } from "@/components/atoms/button";
 import { Icon } from "@/components/atoms/icon";
 import { Link } from "@/components/atoms/link";
+import { Rise } from "@/components/atoms/rise";
 import { RiseText } from "@/components/atoms/rise-text";
 import { BackToTop } from "@/components/molecules/back-to-top";
 import { SocialLink } from "@/components/molecules/social-link";
@@ -54,133 +55,146 @@ export function SiteFooter({ locale, nav, availability, messages }: SiteFooterPr
   return (
     <footer data-paper="" className="mt-auto overflow-clip bg-background p-3 md:p-4">
       <FooterReveal className="relative flex min-h-[calc(100svh-1.5rem)] origin-top flex-col justify-between gap-8 overflow-hidden rounded-xl bg-foreground px-5 py-6 text-background md:min-h-[calc(100svh-2rem)] md:px-10 md:py-8">
-        <div
-          data-rise-fade=""
-          className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2"
-        >
-          <p className={`flex items-center gap-3 ${monoLabel}`}>
-            <span aria-hidden="true" className="relative flex size-2">
-              <span className="absolute inset-0 animate-ping rounded-full bg-background motion-reduce:hidden" />
-              <span className="relative size-2 rounded-full bg-background" />
-            </span>
-            {availability}
-          </p>
-          <CreditsDialog
-            triggerLabel={credits.trigger}
-            title={credits.title}
-            closeLabel={credits.close}
-            triggerClassName={`cursor-pointer ${linkClass} ${monoLabel}`}
-          >
-            <div className="flex flex-col gap-8 text-sm">
-              <section aria-labelledby="credits-photos" className="flex flex-col gap-3">
-                <h3 id="credits-photos" className="font-medium">
-                  {credits.photos}
-                </h3>
-                <ul className="flex flex-col gap-3">
-                  {pictureCredits.map(({ id, title, author, licence, licenceUrl, sourceUrl }) => (
-                    <li key={id}>
-                      <Link href={sourceUrl} external>
-                        {`“${title}”`}
-                      </Link>
-                      {` ${author}, `}
-                      <Link href={licenceUrl} external>
-                        {licence}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-              <section aria-labelledby="credits-assets" className="flex flex-col gap-3">
-                <h3 id="credits-assets" className="font-medium">
-                  {credits.assets}
-                </h3>
-                <ul className="flex flex-col gap-3">
-                  {assetCredits.map(({ id, name, author, licence, licenceUrl, sourceUrl }) => (
-                    <li key={id}>
-                      <span className="text-muted-foreground">{`${credits.uses[id]}: `}</span>
-                      <Link href={sourceUrl} external>
-                        {name}
-                      </Link>
-                      {` ${author}, `}
-                      <Link href={licenceUrl} external>
-                        {licence}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            </div>
-          </CreditsDialog>
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+          <Rise>
+            <p className={`flex items-center gap-3 ${monoLabel}`}>
+              <span aria-hidden="true" className="relative flex size-2">
+                <span className="absolute inset-0 animate-ping rounded-full bg-background motion-reduce:hidden" />
+                <span className="relative size-2 rounded-full bg-background" />
+              </span>
+              {availability}
+            </p>
+          </Rise>
+          <Rise>
+            <CreditsDialog
+              triggerLabel={credits.trigger}
+              title={credits.title}
+              closeLabel={credits.close}
+              triggerClassName={`cursor-pointer ${linkClass} ${monoLabel}`}
+            >
+              <div className="flex flex-col gap-8 text-sm">
+                <section aria-labelledby="credits-photos" className="flex flex-col gap-3">
+                  <h3 id="credits-photos" className="font-medium">
+                    {credits.photos}
+                  </h3>
+                  <ul className="flex flex-col gap-3">
+                    {pictureCredits.map(({ id, title, author, licence, licenceUrl, sourceUrl }) => (
+                      <li key={id}>
+                        <Link href={sourceUrl} external>
+                          {`“${title}”`}
+                        </Link>
+                        {` ${author}, `}
+                        <Link href={licenceUrl} external>
+                          {licence}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+                <section aria-labelledby="credits-assets" className="flex flex-col gap-3">
+                  <h3 id="credits-assets" className="font-medium">
+                    {credits.assets}
+                  </h3>
+                  <ul className="flex flex-col gap-3">
+                    {assetCredits.map(({ id, name, author, licence, licenceUrl, sourceUrl }) => (
+                      <li key={id}>
+                        <span className="text-muted-foreground">{`${credits.uses[id]}: `}</span>
+                        <Link href={sourceUrl} external>
+                          {name}
+                        </Link>
+                        {` ${author}, `}
+                        <Link href={licenceUrl} external>
+                          {licence}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              </div>
+            </CreditsDialog>
+          </Rise>
         </div>
 
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-4">
-            <p data-rise-fade="" className="text-lg text-background/70">
-              {messages.kicker}
-            </p>
+            <Rise>
+              <p className="text-lg text-background/70">{messages.kicker}</p>
+            </Rise>
             <h2 className="max-w-5xl text-[clamp(2.25rem,1rem+5vw,6rem)] leading-[0.95] font-semibold tracking-tight">
               <RiseText>{messages.headline.lead}</RiseText>{" "}
               <RiseText className="text-background/55">{messages.headline.accent}</RiseText>
             </h2>
           </div>
-          <div data-rise-fade="" className="flex flex-wrap items-center gap-3">
-            <Magnetic strength={0.25}>
-              <Button
-                asChild
-                size="lg"
-                className="bg-background text-foreground hover:bg-background hover:opacity-90"
-              >
-                <NextLink href={`/${locale}#contact`}>{messages.cta}</NextLink>
-              </Button>
-            </Magnetic>
-            <ul aria-label={messages.profiles} className="flex items-center gap-3">
-              {profiles.map(({ id, label, href }) => (
-                <li key={id}>
-                  <Magnetic>
-                    <SocialLink
-                      label={label}
-                      href={href}
-                      path={socialIcons[id].path}
-                      newTab={messages.newTab}
-                    />
-                  </Magnetic>
-                </li>
-              ))}
-            </ul>
+          <div className="flex flex-wrap items-center gap-3">
+            <Rise>
+              <Magnetic strength={0.25}>
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-background text-foreground hover:bg-background hover:opacity-90"
+                >
+                  <NextLink href={`/${locale}#contact`}>{messages.cta}</NextLink>
+                </Button>
+              </Magnetic>
+            </Rise>
+            <Rise>
+              <ul aria-label={messages.profiles} className="flex items-center gap-3">
+                {profiles.map(({ id, label, href }) => (
+                  <li key={id}>
+                    <Magnetic>
+                      <SocialLink
+                        label={label}
+                        href={href}
+                        path={socialIcons[id].path}
+                        newTab={messages.newTab}
+                      />
+                    </Magnetic>
+                  </li>
+                ))}
+              </ul>
+            </Rise>
           </div>
         </div>
 
-        <div data-rise-fade="" className="flex flex-col gap-6">
-          <Marquee
-            items={bannerItems}
-            label={siteName}
-            speed={100}
-            itemClassName="text-[clamp(2.5rem,1.2rem+5vw,5.5rem)] leading-none font-semibold tracking-tight whitespace-nowrap"
-            className="border-0 bg-transparent px-0 py-0"
-          />
+        <div className="flex flex-col gap-6">
+          <Rise>
+            <Marquee
+              items={bannerItems}
+              label={siteName}
+              speed={100}
+              itemClassName="text-[clamp(2.5rem,1.2rem+5vw,5.5rem)] leading-none font-semibold tracking-tight whitespace-nowrap"
+              className="border-0 bg-transparent px-0 py-0"
+            />
+          </Rise>
           <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 border-t border-background/15 pt-5 text-sm">
             <div className="flex min-w-0 flex-col gap-3">
-              <nav aria-label={messages.navigation}>
-                <ul className="flex flex-wrap gap-x-6 gap-y-2">
-                  {navSections.map((id) => (
-                    <li key={id}>
-                      <Link href={`/${locale}#${id}`} className={linkClass}>
-                        {nav[id]}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
+              <Rise>
+                <nav aria-label={messages.navigation}>
+                  <ul className="flex flex-wrap gap-x-6 gap-y-2">
+                    {navSections.map((id) => (
+                      <li key={id}>
+                        <Link href={`/${locale}#${id}`} className={linkClass}>
+                          {nav[id]}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </Rise>
               <NowPlaying
                 messages={messages.nowPlaying}
                 className="text-sm"
                 linkClassName={linkClass}
               />
-              <p className="text-background/70">{messages.legal}</p>
+              <Rise>
+                <p className="text-background/70">{messages.legal}</p>
+              </Rise>
             </div>
-            <Magnetic strength={0.3}>
-              <BackToTop label={messages.top} />
-            </Magnetic>
+            <Rise>
+              <Magnetic strength={0.3}>
+                <BackToTop label={messages.top} />
+              </Magnetic>
+            </Rise>
           </div>
         </div>
       </FooterReveal>
