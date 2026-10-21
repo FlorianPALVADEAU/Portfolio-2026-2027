@@ -33,26 +33,21 @@ export function NowPlaying({ messages, className, linkClassName }: NowPlayingPro
   if (!track) return null;
 
   return (
-    <p
-      className={cn(
-        "pill-in flex w-fit max-w-full items-center gap-3 rounded-3xl border border-current/40 py-2 pr-5 pl-4",
-        className,
-      )}
-    >
-      <span aria-hidden="true" className="flex h-5 items-end gap-[3px]">
+    <p className={cn("pill-in flex min-w-0 max-w-full items-center gap-3", className)}>
+      <span aria-hidden="true" className="flex h-4 shrink-0 items-end gap-[2px]">
         {METER.map((duration, bar) => (
           <span
             key={duration}
             style={{ "--i": bar, "--d": `${duration}s` } as CSSProperties}
             className={cn(
-              "h-full w-[3px] origin-bottom rounded-full bg-current",
+              "h-full w-[2px] origin-bottom rounded-full bg-current",
               track.playing ? "meter-bar" : "scale-y-[0.55]",
             )}
           />
         ))}
       </span>
-      <span className="min-w-0">
-        <span className="opacity-70">{`${track.playing ? messages.playing : messages.lastPlayed}: `}</span>
+      <span className="min-w-0 truncate">
+        <span className="font-mono text-xs tracking-widest uppercase opacity-60">{`${track.playing ? messages.playing : messages.lastPlayed} `}</span>
         <a
           href={track.url}
           target="_blank"

@@ -15,7 +15,14 @@ const messages = {
   cta: "Write to me",
   top: "Back to top",
   newTab: "opens in a new tab",
-  photos: "Photos:",
+  credits: {
+    trigger: "Credits",
+    title: "Credits of the site",
+    close: "Close",
+    photos: "Photographs",
+    assets: "Fonts, logos and icons",
+    uses: { geist: "Typeface", simpleIcons: "Logos", lucide: "Icons", mdi: "Marks" },
+  },
   legal: "© 2026 Florian Palvadeau",
   navigation: "Navigation",
   profiles: "Elsewhere",
@@ -24,11 +31,22 @@ const messages = {
 
 describe("SiteFooter", () => {
   it("renders a contentinfo landmark with the name, navigation and picture credits", () => {
-    render(<SiteFooter locale="en" nav={nav} availability="Available" messages={messages} />);
+    render(
+      <SiteFooter
+        locale="en"
+        nav={nav}
+        availability="Available"
+        marquee={{ label: "Technologies", pause: "Pause", play: "Play" }}
+        messages={messages}
+      />,
+    );
 
     expect(screen.getByRole("contentinfo")).toHaveTextContent("Florian Palvadeau");
     expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute("href", "/en#works");
-    expect(screen.getAllByRole("link", { name: "CC BY-SA 4.0" })[0]).toBeVisible();
+    expect(screen.getByRole("button", { name: "Credits" })).toBeVisible();
+    expect(
+      screen.getAllByRole("link", { name: "CC BY-SA 4.0", hidden: true })[0],
+    ).toBeInTheDocument();
     expect(screen.getByRole("heading")).toHaveTextContent("Let's build something worth shipping.");
     expect(screen.getByRole("link", { name: "Write to me" })).toHaveAttribute(
       "href",

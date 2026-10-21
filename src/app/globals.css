@@ -14,6 +14,12 @@
   }
 }
 
+/* `CustomCursor` adds this class while it draws the pointer, and drops it wherever the system one must show. */
+html.cursor-custom,
+html.cursor-custom * {
+  cursor: none;
+}
+
 /* Required by Lenis so native scroll position and anchors keep working. */
 html.lenis,
 html.lenis body {
@@ -91,18 +97,16 @@ html.lenis body {
   }
 }
 
-/* `SiteFooter`: a glow of accent colour drifts slowly behind the closing text. */
-@keyframes footer-glow {
+/* `CreditsDialog`: the panel rises in as the modal opens. */
+@keyframes dialog-in {
   from {
-    transform: translate(-18%, 0);
-  }
-  to {
-    transform: translate(18%, 8%);
+    opacity: 0;
+    transform: translateY(1rem) scale(0.98);
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .footer-glow {
-    animation: footer-glow 16s ease-in-out infinite alternate;
+  .dialog-in[open] {
+    animation: dialog-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }

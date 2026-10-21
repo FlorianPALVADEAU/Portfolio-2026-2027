@@ -244,7 +244,6 @@
     "cta": "Écrivez-moi",
     "top": "Retour en haut",
     "newTab": "s'ouvre dans un nouvel onglet",
-    "photos": "Photos :",
     "legal": "© 2026 Florian Palvadeau",
     "navigation": "Navigation",
     "profiles": "Ailleurs",
@@ -252,6 +251,19 @@
       "playing": "En écoute",
       "lastPlayed": "Dernier titre écouté sur Spotify",
       "newTab": "s'ouvre dans un nouvel onglet"
+    },
+    "credits": {
+      "trigger": "Crédits",
+      "title": "Crédits",
+      "close": "Fermer",
+      "photos": "Photographies",
+      "assets": "Polices, logos et icônes",
+      "uses": {
+        "geist": "Police de caractères",
+        "simpleIcons": "Logos de marques",
+        "lucide": "Icônes d'interface",
+        "mdi": "Marques LinkedIn et AWS"
+      }
     }
   }
 }

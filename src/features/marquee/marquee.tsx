@@ -7,6 +7,7 @@ import { prefersReducedMotion } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_LOOP_SECONDS = 40;
+const DEFAULT_ITEM_CLASS = "font-mono text-sm tracking-wide whitespace-nowrap uppercase";
 
 type MarqueeItem = { id: string; content: ReactNode };
 
@@ -18,11 +19,23 @@ type MarqueeProps = {
   className?: string;
   /** Time of one full loop. */
   seconds?: number;
+  /** Classes of each item; replaces the small uppercase mono default. */
+  itemClassName?: string;
+  /** Classes of the pause button, for a ground the default outline does not suit. */
+  controlClassName?: string;
   /** Fades both ends of the band on wide screens. */
   fade?: boolean;
 };
 
-function Items({ items, hidden }: { items: readonly MarqueeItem[]; hidden?: boolean }) {
+function Items({
+  items,
+  itemClassName,
+  hidden,
+}: {
+  items: readonly MarqueeItem[];
+  itemClassName: string;
+  hidden?: boolean;
+}) {
   return (
     <ul
       aria-hidden={hidden || undefined}
@@ -32,7 +45,7 @@ function Items({ items, hidden }: { items: readonly MarqueeItem[]; hidden?: bool
       )}
     >
       {items.map(({ id, content }) => (
-        <li key={id} className="font-mono text-sm tracking-wide whitespace-nowrap uppercase">
+        <li key={id} className={itemClassName}>
           {content}
         </li>
       ))}
@@ -52,6 +65,8 @@ export function Marquee({
   playLabel,
   className,
   seconds = DEFAULT_LOOP_SECONDS,
+  itemClassName = DEFAULT_ITEM_CLASS,
+  controlClassName,
   fade = false,
 }: MarqueeProps) {
   const root = useRef<HTMLDivElement>(null);
@@ -121,8 +136,8 @@ export function Marquee({
           )}
         >
           <div ref={track} className="flex w-max group-data-[motion=static]:w-auto">
-            <Items items={items} />
-            <Items items={items} hidden />
+            <Items items={items} itemClassName={itemClassName} />
+            <Items items={items} itemClassName={itemClassName} hidden />
           </div>
         </div>
         {animated && (
@@ -130,7 +145,7 @@ export function Marquee({
             variant="outline"
             size="sm"
             onClick={() => setUserPaused((paused) => !paused)}
-            className="shrink-0"
+            className={cn("shrink-0", controlClassName)}
           >
             {userPaused ? playLabel : pauseLabel}
           </Button>

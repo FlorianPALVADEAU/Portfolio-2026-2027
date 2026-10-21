@@ -19,11 +19,11 @@ export function SocialLink({ label, href, path, newTab }: SocialLinkProps) {
     <Link
       href={href}
       external
-      className="group relative flex size-12 items-center justify-center overflow-hidden rounded-full border border-background/30 text-background no-underline outline-offset-4 hover:text-foreground focus-visible:text-foreground"
+      className="group relative flex size-12 items-center justify-center overflow-hidden rounded-md border border-background/30 text-background no-underline outline-offset-4 hover:text-foreground focus-visible:text-foreground"
     >
       <span
         aria-hidden="true"
-        className="absolute inset-0 origin-bottom scale-y-0 rounded-full bg-background transition-transform duration-500 ease-(--ease-out-expo) group-hover:scale-y-100 group-focus-visible:scale-y-100 motion-reduce:transition-none"
+        className="absolute inset-0 origin-bottom scale-y-0 rounded-md bg-background transition-transform duration-500 ease-(--ease-out-expo) group-hover:scale-y-100 group-focus-visible:scale-y-100 motion-reduce:transition-none"
       />
       <svg
         viewBox="0 0 24 24"
