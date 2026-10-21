@@ -16,6 +16,7 @@ const LETTERS_RIGHT_EDGE = 76.66;
 const MARKS_LEFT_EDGE = 84.5;
 /** A slow font or image must not trap the visitor behind the loader. */
 const GIVE_UP_MS = 4000;
+const SEAM_OVERLAP_PX = 1;
 const REDUCED_HOLD_MS = 600;
 const REDUCED_FADE_SECONDS = 0.4;
 
@@ -36,8 +37,7 @@ function pageReady(): Promise<void> {
 
 const hidden = { visibility: "hidden" } as const;
 
-function Logo({ edge, welcome }: { edge: "top" | "bottom"; welcome: string }) {
-  const placement = `absolute inset-x-0 ${edge === "top" ? "top-0" : "bottom-0"} h-[200%] w-full`;
+function Logo({ welcome }: { welcome: string }) {
   return (
     <>
       <svg
@@ -45,7 +45,7 @@ function Logo({ edge, welcome }: { edge: "top" | "bottom"; welcome: string }) {
         data-logo
         viewBox={`${-VIEW_SIZE / 2} ${-VIEW_SIZE / 2} ${VIEW_SIZE} ${VIEW_SIZE}`}
         preserveAspectRatio="xMidYMid meet"
-        className={`${placement} fill-foreground stroke-foreground`}
+        className="absolute inset-0 size-full fill-foreground stroke-foreground"
         strokeWidth={1}
       >
         <g
@@ -65,7 +65,7 @@ function Logo({ edge, welcome }: { edge: "top" | "bottom"; welcome: string }) {
           </g>
         </g>
       </svg>
-      <div aria-hidden="true" className={`${placement} flex items-center justify-center`}>
+      <div aria-hidden="true" className="absolute inset-0 flex items-center justify-center">
         <p className="relative top-[14vmin] overflow-hidden font-mono text-[clamp(0.7rem,2.4vmin,1rem)] text-foreground uppercase tracking-[0.35em]">
           <span data-welcome style={hidden} className="block">
             {welcome}
@@ -143,17 +143,20 @@ export function IntroLoader({ label, welcome }: { label: string; welcome: string
       <noscript>
         <style>{"[data-intro-loader]{display:none}"}</style>
       </noscript>
+      {/* Each half is a full-screen copy clipped to its side, overlapping by a pixel so no seam shows. */}
       <div
         data-panel="top"
-        className="absolute inset-x-0 top-0 h-1/2 overflow-hidden bg-background"
+        className="absolute inset-0 bg-background"
+        style={{ clipPath: `inset(0 0 calc(50% - ${SEAM_OVERLAP_PX}px) 0)` }}
       >
-        <Logo edge="top" welcome={welcome} />
+        <Logo welcome={welcome} />
       </div>
       <div
         data-panel="bottom"
-        className="absolute inset-x-0 bottom-0 h-1/2 overflow-hidden bg-background"
+        className="absolute inset-0 bg-background"
+        style={{ clipPath: `inset(calc(50% - ${SEAM_OVERLAP_PX}px) 0 0 0)` }}
       >
-        <Logo edge="bottom" welcome={welcome} />
+        <Logo welcome={welcome} />
       </div>
       <span role="status" className="sr-only">
         {label}

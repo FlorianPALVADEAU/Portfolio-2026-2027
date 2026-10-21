@@ -12,6 +12,8 @@ const ARRIVALS: ReadonlyArray<{ id: MarkId; axis: "x" | "y"; sign: 1 | -1 }> = [
 gsap.registerPlugin(CustomEase);
 /** cubic-bezier(0.08, 0.82, 0.17, 1): launched at full speed, then a long soft settle with no rebound. */
 const ENTER_EASE = CustomEase.create("intro-crash", "M0,0 C0.08,0.82 0.17,1 1,1");
+/** cubic-bezier(0.86, 0, 0.07, 1): the halves hold, then part fast and settle off screen. */
+const OPEN_EASE = CustomEase.create("intro-open", "M0,0 C0.86,0 0.07,1 1,1");
 const ENTER_SECONDS = 0.65;
 /** Share of the duration at which the mark has covered nearly all of its distance. */
 const FIRST_HIT = 0.2;
@@ -82,8 +84,8 @@ export function buildIntro({
 
   const open = gsap.timeline({ paused: true, onComplete: onDone });
   open
-    .to("[data-panel='top']", { yPercent: -100, duration: OPEN_SECONDS, ease: "expo.inOut" }, 0)
-    .to("[data-panel='bottom']", { yPercent: 100, duration: OPEN_SECONDS, ease: "expo.inOut" }, 0)
+    .to("[data-panel='top']", { yPercent: -50, duration: OPEN_SECONDS, ease: OPEN_EASE }, 0)
+    .to("[data-panel='bottom']", { yPercent: 50, duration: OPEN_SECONDS, ease: OPEN_EASE }, 0)
     .call(onPageCue, undefined, PAGE_CUE_SECONDS);
 
   const enter = gsap.timeline({
