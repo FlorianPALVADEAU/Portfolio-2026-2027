@@ -41,7 +41,7 @@ export function GithubActivity({ locale, messages, activity }: GithubActivityPro
       </div>
       <div className="flex flex-col gap-4 md:col-span-6 md:col-start-7">
         <p className="flex items-baseline gap-2">
-          <span className="text-6xl font-semibold tracking-tight tabular-nums md:text-8xl">
+          <span className="text-3xl font-semibold tracking-tight tabular-nums">
             {new Intl.NumberFormat(locale).format(activity.total)}
           </span>
           <span className="text-sm text-muted-foreground">{messages.total}</span>

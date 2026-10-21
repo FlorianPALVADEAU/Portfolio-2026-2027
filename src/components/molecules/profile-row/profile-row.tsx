@@ -24,19 +24,16 @@ export function ProfileRow({ order, label, href, newTab }: ProfileRowProps) {
     <Link
       href={href}
       external
-      className="group relative flex items-center gap-4 overflow-hidden border-t border-border py-5 no-underline outline-offset-[-3px] hover:text-background focus-visible:text-background md:gap-8 md:py-7"
+      className="group relative flex items-center gap-4 overflow-hidden border-t border-border py-4 no-underline outline-offset-[-3px] hover:text-background focus-visible:text-background md:gap-8 md:py-6"
     >
       <span
         aria-hidden="true"
         className="absolute inset-0 origin-bottom scale-y-0 bg-foreground transition-transform duration-500 ease-(--ease-out-expo) group-hover:scale-y-100 group-focus-visible:scale-y-100"
       />
-      <span
-        aria-hidden="true"
-        className="relative w-8 shrink-0 self-start pt-3 font-mono text-sm md:w-14 md:pt-5"
-      >
+      <span aria-hidden="true" className="relative w-8 shrink-0 font-mono text-sm md:w-14">
         {`(${String(order).padStart(2, "0")})`}
       </span>
-      <span className="relative text-[clamp(3rem,11vw,9.5rem)] leading-[0.95] font-semibold tracking-[-0.05em]">
+      <span className="relative text-3xl font-semibold tracking-tight">
         {label}
         <span className="sr-only">{` (${newTab})`}</span>
       </span>
@@ -45,8 +42,8 @@ export function ProfileRow({ order, label, href, newTab }: ProfileRowProps) {
       </span>
       <Icon
         icon={ArrowUpRight}
-        size="lg"
-        className="relative ml-auto size-8 transition-transform duration-500 ease-(--ease-out-expo) group-hover:translate-x-1 group-hover:-translate-y-1 group-focus-visible:translate-x-1 group-focus-visible:-translate-y-1 md:size-12 lg:ml-0"
+        size="md"
+        className="relative ml-auto transition-transform duration-500 ease-(--ease-out-expo) group-hover:translate-x-1 group-hover:-translate-y-1 group-focus-visible:translate-x-1 group-focus-visible:-translate-y-1 lg:ml-0"
       />
     </Link>
   );

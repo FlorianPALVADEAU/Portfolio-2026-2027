@@ -23,7 +23,11 @@ const SMALL_STAGE_ZOOM = 1.7;
 const INTRO_END = 0.16;
 const OUTRO = [0.8, 0.99] as const;
 /** The closing text is complete from `OUTRO[1]`; the black turns to paper this long after. */
-const HANDOVER_DELAY = 700;
+const HANDOVER_DELAY = 500;
+/** Duration of the colour change, in ms; keep it equal to the `duration-*` of the root below. */
+const PAPER_FADE = 1000;
+/** Keys that move the page forward. */
+const FORWARD_KEYS = new Set([" ", "PageDown", "ArrowDown", "End"]);
 /** Scrolling back above this brings the black back, so the handover does not flicker at the edge. */
 const HANDOVER_RELEASE = 0.95;
 /** Resting sway of a touch screen, which has no pointer to follow. */
@@ -61,7 +65,7 @@ function paint(figure: HTMLElement, next: Pose) {
  * back grow, drift out past the frame and blur as they go, others come out of the distance, and
  * the closing text fades in last. Once that text is complete and held a moment, the black background
  * turns to paper (the light colours of a dark page, the page's own otherwise) and the section
- * that follows carries on from there. The pointer, or a slow sway on touch screens, shifts near photos
+ * that follows carries on from there. Scrolling on is blocked until that change has finished. The pointer, or a slow sway on touch screens, shifts near photos
  * more than far ones. Videos play only while they are visible.
  *
  * Without JavaScript, or under reduced motion, the section is a plain grid between the two texts.
@@ -87,7 +91,10 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     let visible = true;
     let dirty = true;
     let handover: number | undefined;
+    let settled: number | undefined;
     let onPaper = false;
+    /** From the closing text being complete until the paper has fully taken over. */
+    let locked = false;
 
     function setBackground(next: boolean) {
       if (next === onPaper) return;
@@ -98,12 +105,29 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     function follow(scroll: number) {
       raw = Math.min(1, scroll / SCENE_END);
       if (raw >= OUTRO[1]) {
-        handover ??= window.setTimeout(() => setBackground(true), HANDOVER_DELAY);
+        if (handover !== undefined) return;
+        locked = true;
+        handover = window.setTimeout(() => {
+          setBackground(true);
+          settled = window.setTimeout(() => {
+            locked = false;
+          }, PAPER_FADE);
+        }, HANDOVER_DELAY);
       } else if (raw < HANDOVER_RELEASE) {
         window.clearTimeout(handover);
+        window.clearTimeout(settled);
         handover = undefined;
+        locked = false;
         setBackground(false);
       }
+    }
+
+    /** The page may not leave the section before the colours have turned. */
+    function hold(event: Event) {
+      if (!locked) return;
+      if (event instanceof KeyboardEvent && !FORWARD_KEYS.has(event.key)) return;
+      event.preventDefault();
+      event.stopPropagation();
     }
 
     root.dataset.mode = "live";
@@ -191,10 +215,15 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     root.addEventListener("pointermove", onMove);
     root.addEventListener("pointerleave", onLeave);
     gsap.ticker.add(tick);
+    const guarded = ["wheel", "touchmove", "keydown"] as const;
+    for (const type of guarded)
+      window.addEventListener(type, hold, { capture: true, passive: false });
 
     return () => {
       gsap.ticker.remove(tick);
+      for (const type of guarded) window.removeEventListener(type, hold, { capture: true });
       window.clearTimeout(handover);
+      window.clearTimeout(settled);
       root.removeEventListener("pointermove", onMove);
       root.removeEventListener("pointerleave", onLeave);
       observer.disconnect();
