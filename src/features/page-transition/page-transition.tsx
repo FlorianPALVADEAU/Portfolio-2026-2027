@@ -3,14 +3,18 @@
 import { gsap } from "gsap";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { MARKS_CENTER } from "@/lib/brand";
 import { jumpToTop, onReducedMotionChange, prefersReducedMotion } from "@/lib/motion";
 import { getInternalNavigation, getSamePageTarget } from "@/lib/navigation";
+import { TransitionLogo } from "./transition-logo";
 
-const COVER_SECONDS = 0.45;
-const REVEAL_SECONDS = 0.55;
+const COVER_SECONDS = 0.32;
+const REVEAL_SECONDS = 0.4;
+/** One turn of the logo marks, started with the cover so it is mid-turn when the page is hidden. */
+const SPIN_SECONDS = 0.6;
 /** A jump lands on a heavy page: the cover is held while it settles, then lifted more slowly. */
-const SETTLE_MS = 350;
-const JUMP_REVEAL_SECONDS = 1;
+const SETTLE_MS = 150;
+const JUMP_REVEAL_SECONDS = 0.5;
 /** Reveals anyway if a navigation never lands, so the overlay cannot trap the page. */
 const GIVE_UP_MS = 4000;
 
@@ -58,6 +62,11 @@ export function PageTransition() {
 
     function cover(element: HTMLElement, onCovered: () => void) {
       covering.current = true;
+      gsap.fromTo(
+        element.querySelector("[data-spin]"),
+        { rotation: 0, svgOrigin: `${MARKS_CENTER.x} ${MARKS_CENTER.y}` },
+        { rotation: 360, duration: SPIN_SECONDS, ease: "power3.inOut" },
+      );
       gsap.to(element, {
         yPercent: 0,
         duration: COVER_SECONDS,
@@ -128,6 +137,8 @@ export function PageTransition() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-(--z-transition) bg-accent"
       style={{ transform: "translateY(100%)" }}
-    />
+    >
+      <TransitionLogo />
+    </div>
   );
 }

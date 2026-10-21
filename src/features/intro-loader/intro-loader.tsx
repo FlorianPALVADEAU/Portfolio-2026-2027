@@ -2,10 +2,10 @@
 
 import { gsap } from "gsap";
 import { useLayoutEffect, useRef, useState } from "react";
+import { LETTERS, LOGO_HEIGHT, LOGO_WIDTH, MARKS, MARKS_CENTER } from "@/lib/brand";
 import { hasPlayedIntro, openIntro } from "@/lib/intro";
 import { prefersReducedMotion } from "@/lib/motion";
 import { buildIntro } from "./build-intro";
-import { LETTERS, LOGO_HEIGHT, LOGO_WIDTH, MARKS, MARKS_CENTER } from "./marks";
 
 /** The logo spans this much of the smaller viewport side, in the 100-unit view box below. */
 const LOGO_VIEW_WIDTH = 64;

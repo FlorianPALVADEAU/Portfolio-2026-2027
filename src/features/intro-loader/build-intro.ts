@@ -1,6 +1,6 @@
 import { gsap } from "gsap";
 import { CustomEase } from "gsap/CustomEase";
-import { LETTERS, MARKS_CENTER, type MarkId } from "./marks";
+import { LETTERS, MARKS_CENTER, type MarkId } from "@/lib/brand";
 
 /** Marks arrive in this order, each from its own side. */
 const ARRIVALS: ReadonlyArray<{ id: MarkId; axis: "x" | "y"; sign: 1 | -1 }> = [
