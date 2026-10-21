@@ -3,11 +3,14 @@
 import { gsap } from "gsap";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { onReducedMotionChange, prefersReducedMotion } from "@/lib/motion";
+import { jumpToTop, onReducedMotionChange, prefersReducedMotion } from "@/lib/motion";
 import { getInternalNavigation, getSamePageTarget } from "@/lib/navigation";
 
 const COVER_SECONDS = 0.45;
 const REVEAL_SECONDS = 0.55;
+/** A jump lands on a heavy page: the cover is held while it settles, then lifted more slowly. */
+const SETTLE_MS = 350;
+const JUMP_REVEAL_SECONDS = 1;
 /** Reveals anyway if a navigation never lands, so the overlay cannot trap the page. */
 const GIVE_UP_MS = 4000;
 
@@ -30,13 +33,18 @@ export function PageTransition() {
     return onReducedMotionChange((reduced) => setEnabled(!reduced));
   }, []);
 
-  const reveal = useCallback(() => {
+  useEffect(() => {
+    // GSAP reads the inline `translateY(100%)` as pixels, so without this the cover never moved.
+    if (overlay.current) gsap.set(overlay.current, { y: 0, yPercent: 100 });
+  }, []);
+
+  const reveal = useCallback((seconds = REVEAL_SECONDS) => {
     const element = overlay.current;
     clearTimeout(giveUp.current);
     if (!element) return;
     gsap.to(element, {
       yPercent: -100,
-      duration: REVEAL_SECONDS,
+      duration: seconds,
       ease: "power3.inOut",
       onComplete: () => {
         gsap.set(element, { yPercent: 100 });
@@ -76,8 +84,9 @@ export function PageTransition() {
       event.preventDefault();
       event.stopPropagation();
       cover(element, () => {
-        section.scrollIntoView({ behavior: "instant", block: "start" });
-        requestAnimationFrame(reveal);
+        const margin = Number.parseFloat(getComputedStyle(section).scrollMarginTop) || 0;
+        jumpToTop(section.getBoundingClientRect().top + window.scrollY - margin);
+        giveUp.current = setTimeout(() => reveal(JUMP_REVEAL_SECONDS), SETTLE_MS);
       });
     }
 
@@ -91,7 +100,7 @@ export function PageTransition() {
 
       event.preventDefault();
       cover(element, () => {
-        giveUp.current = setTimeout(reveal, GIVE_UP_MS);
+        giveUp.current = setTimeout(() => reveal(), GIVE_UP_MS);
         router.push(destination, { scroll: !anchor.hasAttribute("data-keep-scroll") });
       });
     }
