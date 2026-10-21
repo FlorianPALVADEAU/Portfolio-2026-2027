@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Section } from "@/components/atoms/section";
+import { TrustBadge } from "@/components/molecules/trust-badge";
 import { LitText } from "@/features/lit-text";
 import { Marquee } from "@/features/marquee";
 import type { Messages } from "@/lib/i18n";
@@ -28,28 +29,31 @@ export function IntroSection({ title, messages }: IntroSectionProps) {
         stageClassName="flex flex-col justify-center gap-20 px-(--gutter) motion-reduce:min-h-svh motion-reduce:py-(--section-space) md:gap-28"
         className="mx-auto max-w-5xl text-center text-[clamp(1.75rem,3.8vw,3.5rem)] leading-[1.15] tracking-tight text-balance"
       >
-        <Marquee
-          items={clients.map(({ id, name, width, height, onWhite }) => ({
-            id,
-            content: (
-              <Image
-                src={`/brand/companies/${id}.svg`}
-                alt={name}
-                width={width}
-                height={height}
-                unoptimized
-                className={cn(
-                  "h-6 w-auto opacity-70 md:h-7",
-                  onWhite ? "invert" : "brightness-0 invert",
-                )}
-              />
-            ),
-          }))}
-          label={messages.clients}
-          className="border-0 bg-transparent px-0"
-          speed={190}
-          fade
-        />
+        <div className="flex flex-col gap-10 md:gap-12">
+          <TrustBadge text={messages.trust.replace("{count}", String(clients.length))} />
+          <Marquee
+            items={clients.map(({ id, name, width, height, onWhite }) => ({
+              id,
+              content: (
+                <Image
+                  src={`/brand/companies/${id}.svg`}
+                  alt={name}
+                  width={width}
+                  height={height}
+                  unoptimized
+                  className={cn(
+                    "h-6 w-auto opacity-70 md:h-7",
+                    onWhite ? "invert" : "brightness-0 invert",
+                  )}
+                />
+              ),
+            }))}
+            label={messages.clients}
+            className="border-0 bg-transparent px-0"
+            speed={190}
+            fade
+          />
+        </div>
       </LitText>
     </Section>
   );

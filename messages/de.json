@@ -68,7 +68,8 @@
     "scrollHint": "Scrollen",
     "intro": {
       "paragraph": "Ich entwerfe, entwickle und betreibe Webanwendungen in TypeScript, von Unternehmensintegrationen bis zur Ticketing-Plattform eines Rennens, das ich gegründet habe. Ich arbeite vom ersten Bedarf bis zum Produktivbetrieb, mit einer Architektur, die lesbar bleibt, und einer Auslieferung, die ruhig bleibt, damit sich Teams auf das Wesentliche konzentrieren können.",
-      "clients": "Unternehmen, mit denen ich gearbeitet habe"
+      "clients": "Unternehmen, mit denen ich gearbeitet habe",
+      "trust": "{count} Organisationen vertrauen mir"
     },
     "gallery": {
       "hint": "Scrollen, um einzutauchen.",
@@ -179,6 +180,7 @@
       "newTab": "öffnet in einem neuen Tab",
       "location": "Genf, Schweiz",
       "availability": "Verfügbar ab September 2027",
+      "clients": "Sie haben mir vertraut",
       "form": {
         "title": "Schreiben Sie mir",
         "intro": "Ich lese jede Nachricht selbst und antworte von meiner eigenen Adresse. Ihre E-Mail dient nur dazu, Ihnen zu antworten.",
@@ -245,6 +247,7 @@
   },
   "footer": {
     "kicker": "Das war die Seite",
+    "clients": "Sie haben mir vertraut",
     "headline": {
       "lead": "Lassen Sie uns etwas bauen,",
       "accent": "worauf wir stolz sind."

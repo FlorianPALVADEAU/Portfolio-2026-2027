@@ -63,7 +63,8 @@
     "scrollHint": "Scroll",
     "intro": {
       "paragraph": "Je conçois, développe et exploite des applications web en TypeScript, des intégrations d'entreprise à la billetterie d'une course que j'ai fondée. Je travaille du premier besoin à la mise en production, avec une architecture qui reste lisible et une livraison qui reste sereine, pour que les équipes se concentrent sur l'essentiel.",
-      "clients": "Entreprises avec lesquelles j'ai travaillé"
+      "clients": "Entreprises avec lesquelles j'ai travaillé",
+      "trust": "{count} organisations m'ont fait confiance"
     },
     "gallery": {
       "hint": "Faites défiler pour plonger.",
@@ -174,6 +175,7 @@
       "newTab": "s'ouvre dans un nouvel onglet",
       "location": "Genève, Suisse",
       "availability": "Disponible dès septembre 2027",
+      "clients": "Ils m'ont fait confiance",
       "form": {
         "title": "Écrivez-moi",
         "intro": "Je lis chaque message moi-même et je réponds depuis ma propre adresse. Votre e-mail sert uniquement à vous répondre.",
@@ -240,6 +242,7 @@
   },
   "footer": {
     "kicker": "Fin de la page",
+    "clients": "Ils m'ont fait confiance",
     "headline": {
       "lead": "Construisons quelque chose",
       "accent": "dont on sera fier."

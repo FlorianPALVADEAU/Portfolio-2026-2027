@@ -23,3 +23,11 @@ describe("IntroSection", () => {
     expect(screen.getByRole("region", { name: en.home.intro.clients })).toBeInTheDocument();
   });
 });
+
+describe("IntroSection trust line", () => {
+  it("counts the companies it lists", () => {
+    render(<IntroSection title="Introduction" messages={en.home.intro} />);
+
+    expect(screen.getByText(/Trusted by 8 organizations/)).toBeInTheDocument();
+  });
+});

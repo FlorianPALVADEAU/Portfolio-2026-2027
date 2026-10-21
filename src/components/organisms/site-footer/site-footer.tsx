@@ -6,6 +6,7 @@ import { Link } from "@/components/atoms/link";
 import { Rise } from "@/components/atoms/rise";
 import { RiseText } from "@/components/atoms/rise-text";
 import { BackToTop } from "@/components/molecules/back-to-top";
+import { ClientLogos } from "@/components/molecules/client-logos";
 import { SocialLink } from "@/components/molecules/social-link";
 import { CreditsDialog } from "@/features/credits-dialog";
 import { FooterReveal } from "@/features/footer-reveal";
@@ -173,6 +174,10 @@ export function SiteFooter({ locale, nav, availability, cv, messages }: SiteFoot
             </Rise>
           </div>
         </div>
+
+        <Rise>
+          <ClientLogos label={messages.clients} ground="ink" />
+        </Rise>
 
         <div className="flex flex-col gap-6">
           <Rise>
