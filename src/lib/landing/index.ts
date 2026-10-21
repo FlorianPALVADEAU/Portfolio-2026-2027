@@ -1,5 +1,5 @@
 export { clients } from "./clients";
-export { pictureCredits } from "./credits";
+export { assetCredits, pictureCredits } from "./credits";
 export { experiences, pipelineStages, skillStats, timelineYears } from "./experiences";
 export { type GalleryItem, galleryIds, galleryItems } from "./gallery";
 export { heroPhotoSlots } from "./hero-photos";
@@ -8,3 +8,4 @@ export { landingSections, navSections } from "./sections";
 export { type FrameSet, type FrameSources, genevaAscent } from "./sequence";
 export { type SkillIcon, skillIcon } from "./skill-icons";
 export { certifications, skillGroups, technologies } from "./skills";
+export { socialIcons } from "./social-icons";

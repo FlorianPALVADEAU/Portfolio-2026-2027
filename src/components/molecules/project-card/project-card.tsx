@@ -14,13 +14,13 @@ type ProjectCardProps = {
 
 /**
  * Large media tile with a mono tag line above a big title. The title link stretches over the
- * whole card, so the card is one focus stop with one name; `data-view-cursor` lets the page's
- * cursor label follow the pointer over it.
+ * whole card, so the card is one focus stop with one name; `data-cursor="view"` gives the
+ * custom cursor its "view" label over it.
  */
 export function ProjectCard({ href, title, summary, year, stack, cover }: ProjectCardProps) {
   return (
     <article
-      data-view-cursor
+      data-cursor="view"
       data-reel-item
       className="group relative flex flex-col gap-5 focus-within:outline-2 focus-within:outline-offset-8 focus-within:outline-ring"
     >

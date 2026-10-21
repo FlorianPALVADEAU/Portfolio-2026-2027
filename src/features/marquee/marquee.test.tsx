@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Marquee } from "./marquee";
 
 const props = {
@@ -9,35 +8,38 @@ const props = {
     { id: "nest", content: "NestJS" },
   ],
   label: "Tech",
-  pauseLabel: "Pause",
-  playLabel: "Play",
 };
 
-function mockMotion(reduced: boolean) {
+function mockBrowser(reduced: boolean) {
   window.matchMedia = vi.fn().mockReturnValue({
     matches: reduced,
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
   }) as unknown as typeof window.matchMedia;
+  const observer = class {
+    observe = vi.fn();
+    disconnect = vi.fn();
+  };
+  vi.stubGlobal("ResizeObserver", observer);
+  vi.stubGlobal("IntersectionObserver", observer);
 }
 
 describe("Marquee", () => {
-  it("is static, single and without a control under reduced motion", () => {
-    mockMotion(true);
+  beforeEach(() => vi.unstubAllGlobals());
+
+  it("is static and has no control under reduced motion", () => {
+    mockBrowser(true);
     render(<Marquee {...props} />);
 
-    expect(screen.getAllByText("React")).toHaveLength(2);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Tech" })).toBeInTheDocument();
   });
 
-  it("hides the loop copy from assistive technology and toggles playback", async () => {
-    mockMotion(false);
+  it("announces one list and hides the loop copies from assistive technology", () => {
+    mockBrowser(false);
     render(<Marquee {...props} />);
 
     expect(screen.getAllByRole("list")).toHaveLength(1);
-    const button = screen.getByRole("button", { name: "Pause" });
-    await userEvent.click(button);
-    expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 });

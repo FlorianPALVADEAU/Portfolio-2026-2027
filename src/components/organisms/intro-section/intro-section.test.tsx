@@ -5,9 +5,7 @@ import { IntroSection } from "./intro-section";
 
 describe("IntroSection", () => {
   it("renders the paragraph under a labelled region", () => {
-    render(
-      <IntroSection title="Introduction" messages={en.home.intro} controls={en.home.marquee} />,
-    );
+    render(<IntroSection title="Introduction" messages={en.home.intro} />);
 
     expect(screen.getByRole("region", { name: "Introduction" })).toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Introduction" })).toHaveTextContent(
@@ -16,9 +14,7 @@ describe("IntroSection", () => {
   });
 
   it("lists the companies as named logos", () => {
-    render(
-      <IntroSection title="Introduction" messages={en.home.intro} controls={en.home.marquee} />,
-    );
+    render(<IntroSection title="Introduction" messages={en.home.intro} />);
 
     expect(screen.getAllByRole("img", { name: "JCDecaux" })[0]).toHaveAttribute(
       "src",

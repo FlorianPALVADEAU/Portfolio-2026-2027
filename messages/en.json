@@ -218,9 +218,7 @@
       "view": "View"
     },
     "marquee": {
-      "label": "Technologies I work with",
-      "pause": "Pause",
-      "play": "Play"
+      "label": "Technologies I work with"
     },
     "photos": {
       "closing": {
@@ -236,7 +234,14 @@
     "year": "Year"
   },
   "footer": {
-    "photos": "Photos:",
+    "kicker": "That's the end of the page",
+    "headline": {
+      "lead": "Let's build something",
+      "accent": "worth shipping."
+    },
+    "cta": "Write to me",
+    "top": "Back to top",
+    "newTab": "opens in a new tab",
     "legal": "© 2026 Florian Palvadeau",
     "navigation": "Navigation",
     "profiles": "Elsewhere",
@@ -244,6 +249,19 @@
       "playing": "Now playing",
       "lastPlayed": "Last played on Spotify",
       "newTab": "opens in a new tab"
+    },
+    "credits": {
+      "trigger": "Credits",
+      "title": "Credits",
+      "close": "Close",
+      "photos": "Photographs",
+      "assets": "Fonts, logos and icons",
+      "uses": {
+        "geist": "Typeface",
+        "simpleIcons": "Brand logos",
+        "lucide": "Interface icons",
+        "mdi": "LinkedIn and AWS marks"
+      }
     }
   }
 }

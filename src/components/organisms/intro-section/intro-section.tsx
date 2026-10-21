@@ -9,14 +9,13 @@ import { cn } from "@/lib/utils";
 type IntroSectionProps = {
   title: string;
   messages: Messages["home"]["intro"];
-  controls: Pick<Messages["home"]["marquee"], "pause" | "play">;
 };
 
 /**
  * What the owner does, above the companies worked with. It slides over the hero, then stays in
  * place while the paragraph lights up word by word. It is opaque and above the hero (`z-10`).
  */
-export function IntroSection({ title, messages, controls }: IntroSectionProps) {
+export function IntroSection({ title, messages }: IntroSectionProps) {
   return (
     <Section
       id="intro"
@@ -47,10 +46,8 @@ export function IntroSection({ title, messages, controls }: IntroSectionProps) {
             ),
           }))}
           label={messages.clients}
-          pauseLabel={controls.pause}
-          playLabel={controls.play}
           className="border-0 bg-transparent px-0"
-          seconds={26}
+          speed={190}
           fade
         />
       </LitText>

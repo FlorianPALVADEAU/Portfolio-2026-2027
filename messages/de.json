@@ -223,9 +223,7 @@
       "view": "Ansehen"
     },
     "marquee": {
-      "label": "Technologien, mit denen ich arbeite",
-      "pause": "Pause",
-      "play": "Abspielen"
+      "label": "Technologien, mit denen ich arbeite"
     },
     "photos": {
       "closing": {
@@ -241,7 +239,14 @@
     "year": "Jahr"
   },
   "footer": {
-    "photos": "Fotos:",
+    "kicker": "Das war die Seite",
+    "headline": {
+      "lead": "Lassen Sie uns etwas bauen,",
+      "accent": "worauf wir stolz sind."
+    },
+    "cta": "Schreiben Sie mir",
+    "top": "Nach oben",
+    "newTab": "öffnet in einem neuen Tab",
     "legal": "© 2026 Florian Palvadeau",
     "navigation": "Navigation",
     "profiles": "Weitere Profile",
@@ -249,6 +254,19 @@
       "playing": "Läuft gerade",
       "lastPlayed": "Zuletzt auf Spotify gehört",
       "newTab": "öffnet in einem neuen Tab"
+    },
+    "credits": {
+      "trigger": "Credits",
+      "title": "Credits",
+      "close": "Schliessen",
+      "photos": "Fotografien",
+      "assets": "Schriften, Logos und Icons",
+      "uses": {
+        "geist": "Schriftart",
+        "simpleIcons": "Markenlogos",
+        "lucide": "Oberflächen-Icons",
+        "mdi": "LinkedIn- und AWS-Marken"
+      }
     }
   }
 }

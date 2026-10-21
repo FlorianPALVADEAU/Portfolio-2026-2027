@@ -218,9 +218,7 @@
       "view": "Voir"
     },
     "marquee": {
-      "label": "Technologies que j'utilise",
-      "pause": "Pause",
-      "play": "Lecture"
+      "label": "Technologies que j'utilise"
     },
     "photos": {
       "closing": {
@@ -236,7 +234,14 @@
     "year": "Année"
   },
   "footer": {
-    "photos": "Photos :",
+    "kicker": "Fin de la page",
+    "headline": {
+      "lead": "Construisons quelque chose",
+      "accent": "dont on sera fier."
+    },
+    "cta": "Écrivez-moi",
+    "top": "Retour en haut",
+    "newTab": "s'ouvre dans un nouvel onglet",
     "legal": "© 2026 Florian Palvadeau",
     "navigation": "Navigation",
     "profiles": "Ailleurs",
@@ -244,6 +249,19 @@
       "playing": "En écoute",
       "lastPlayed": "Dernier titre écouté sur Spotify",
       "newTab": "s'ouvre dans un nouvel onglet"
+    },
+    "credits": {
+      "trigger": "Crédits",
+      "title": "Crédits",
+      "close": "Fermer",
+      "photos": "Photographies",
+      "assets": "Polices, logos et icônes",
+      "uses": {
+        "geist": "Police de caractères",
+        "simpleIcons": "Logos de marques",
+        "lucide": "Icônes d'interface",
+        "mdi": "Marques LinkedIn et AWS"
+      }
     }
   }
 }
