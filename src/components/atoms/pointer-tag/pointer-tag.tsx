@@ -38,6 +38,7 @@ export function PointerTag({
     <div
       ref={ref}
       aria-hidden="true"
+      data-pointer-tag=""
       className={cn(
         "pointer-events-none invisible fixed z-(--z-overlay) flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 font-mono text-[0.6875rem] tracking-widest whitespace-nowrap text-accent-foreground uppercase shadow-md",
         anchors[anchor],

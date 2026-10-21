@@ -19,10 +19,13 @@ export async function expectNoA11yViolations(page: Page) {
       ),
   );
   // Scroll-scrubbed words (intro, gallery) are dimmed or blurred on purpose until reached; the full text stays in the DOM and readable.
+  // The sound hint and the pointer tags are decorative bubbles that fade in and out, so they are never at rest.
   const { violations } = await new AxeBuilder({ page })
     .withTags(WCAG_AA_TAGS)
     .exclude("[data-lit-word]")
     .exclude("[data-zoom-word]")
+    .exclude("[data-sound-hint]")
+    .exclude("[data-pointer-tag]")
     .analyze();
   expect(violations, JSON.stringify(violations, null, 2)).toEqual([]);
 }

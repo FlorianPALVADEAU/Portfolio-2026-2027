@@ -428,7 +428,11 @@ test("changing language keeps the theme and the scroll position", async ({ page,
   await page.goto("/en");
   await openMenu(page);
   await chooseTheme(page, "Light", isMobile);
-  await page.evaluate(() => window.scrollTo(0, 1200));
+  // The wheel, not `scrollTo`: a native jump leaves the smooth-scroll library on its old position.
+  // Touch screens have no smooth scroll, so a native jump is exact there.
+  if (isMobile) await page.evaluate(() => window.scrollTo(0, 1200));
+  else await page.mouse.wheel(0, 1200);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(1000);
   const before = await page.evaluate(() => window.scrollY);
 
   await openLanguage(page);
