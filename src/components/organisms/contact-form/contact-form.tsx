@@ -35,7 +35,7 @@ type ContactFormProps = {
   challengeAction: string;
 };
 
-const GRID = "grid gap-10 border-t border-border pt-10 md:grid-cols-12";
+const GRID = "grid gap-10 md:grid-cols-12";
 const INTRO = "flex flex-col gap-4 md:col-span-5";
 const BODY = "md:col-span-6 md:col-start-7";
 

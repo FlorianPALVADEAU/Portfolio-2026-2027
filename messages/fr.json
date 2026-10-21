@@ -205,10 +205,12 @@
         "less": "Moins",
         "more": "Plus"
       },
-      "booking": {
-        "title": "Réserver un appel",
-        "text": "Vous préférez échanger de vive voix ? Choisissez un créneau qui vous convient. Le calendrier vient de Calendly et ne se charge que lorsque vous faites défiler jusqu’ici.",
-        "frame": "Calendrier de réservation"
+      "details": {
+        "title": "Me trouver",
+        "text": "Je cherche un poste à Genève et dans le canton de Vaud. La carte montre la ville, pas une adresse.",
+        "time": "Heure locale",
+        "phone": "Téléphone",
+        "map": "Carte de Genève"
       }
     },
     "works": {

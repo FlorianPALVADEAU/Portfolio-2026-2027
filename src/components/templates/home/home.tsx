@@ -23,7 +23,7 @@ type HomeProps = {
   trailPhotos?: readonly string[];
   projects: ComponentProps<typeof WorksSection>["projects"];
   /** Blocks of the contact section, built by the route because they depend on server-side wiring. */
-  contact?: { form?: ReactNode; booking?: ReactNode; activity?: ReactNode };
+  contact?: { form?: ReactNode; details?: ReactNode; activity?: ReactNode };
 };
 
 export function Home({
@@ -72,7 +72,6 @@ export function Home({
       <ContactSection
         index={position("contact")}
         title={title.contact}
-        locale={locale}
         messages={messages.contact}
         {...contact}
       />

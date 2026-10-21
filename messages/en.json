@@ -205,10 +205,12 @@
         "less": "Less",
         "more": "More"
       },
-      "booking": {
-        "title": "Book a call",
-        "text": "Prefer to talk? Pick a time that suits you. The calendar comes from Calendly and loads only as you scroll down to it.",
-        "frame": "Booking calendar"
+      "details": {
+        "title": "Find me",
+        "text": "I am looking for a role in Geneva and the canton of Vaud. The map shows the city, not an address.",
+        "time": "Local time",
+        "phone": "Phone",
+        "map": "Map of Geneva"
       }
     },
     "works": {

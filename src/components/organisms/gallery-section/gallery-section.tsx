@@ -53,7 +53,7 @@ export function GallerySection({ index, title, closingTitle, messages }: Gallery
             >
               <ZoomWords text={closingTitle} />
             </Heading>
-            <Text className="max-w-[40ch] text-lg md:text-xl">
+            <Text className="max-w-[40ch] text-lg text-inherit md:text-xl">
               <ZoomWords text={messages.invitation} />
             </Text>
           </div>

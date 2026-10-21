@@ -50,3 +50,18 @@
   --radius: 0;
   --shadow-color: 0 0 0;
 }
+
+/*
+ * Paper as plain values, set on the root only so a dark section inside a light page still reads
+ * the page's own paper (the light theme's is the default). The gallery mixes from black to these while the scroll turns it, and the
+ * contact section lands on the same colours through its `data-paper` tokens.
+ */
+:root {
+  --paper-background: #fafaf9;
+  --paper-foreground: #0c0a09;
+}
+
+:root[data-theme="swiss"] {
+  --paper-background: #ffffff;
+  --paper-foreground: #000000;
+}

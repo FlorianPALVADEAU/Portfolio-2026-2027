@@ -210,10 +210,12 @@
         "less": "Weniger",
         "more": "Mehr"
       },
-      "booking": {
-        "title": "Gespräch vereinbaren",
-        "text": "Sie sprechen lieber direkt? Wählen Sie einen passenden Termin. Der Kalender stammt von Calendly und wird erst geladen, wenn Sie bis hierher scrollen.",
-        "frame": "Buchungskalender"
+      "details": {
+        "title": "Wo Sie mich finden",
+        "text": "Ich suche eine Stelle in Genf und im Kanton Waadt. Die Karte zeigt die Stadt, keine Adresse.",
+        "time": "Ortszeit",
+        "phone": "Telefon",
+        "map": "Karte von Genf"
       }
     },
     "works": {

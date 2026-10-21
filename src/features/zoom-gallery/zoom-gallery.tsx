@@ -2,7 +2,7 @@
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { type CSSProperties, type ReactNode, useLayoutEffect, useRef, useState } from "react";
+import { type CSSProperties, type ReactNode, useLayoutEffect, useRef } from "react";
 import type { GalleryItem } from "@/lib/landing";
 import { hasFinePointer, prefersReducedMotion } from "@/lib/motion";
 import { ZoomMedia } from "./zoom-media";
@@ -22,14 +22,8 @@ const SMALL_STAGE_ZOOM = 1.7;
 /** Scroll progress over which the title leaves, and over which the closing text arrives. */
 const INTRO_END = 0.16;
 const OUTRO = [0.8, 0.99] as const;
-/** The closing text is complete from `OUTRO[1]`; the black turns to paper this long after. */
-const HANDOVER_DELAY = 500;
-/** Duration of the colour change, in ms; keep it equal to the `duration-*` of the root below. */
-const PAPER_FADE = 1000;
-/** Keys that move the page forward. */
-const FORWARD_KEYS = new Set([" ", "PageDown", "ArrowDown", "End"]);
-/** Scrolling back above this brings the black back, so the handover does not flicker at the edge. */
-const HANDOVER_RELEASE = 0.95;
+/** Share of the hold, after the closing text is complete, over which the black turns to paper. */
+const PAPER = [0.1, 0.65] as const;
 /** Resting sway of a touch screen, which has no pointer to follow. */
 const SWAY = { x: 0.5, y: 0.35, period: 8 } as const;
 
@@ -63,22 +57,22 @@ function paint(figure: HTMLElement, next: Pose) {
  * A scene of photos and videos that the visitor flies into by scrolling. The section is held on
  * screen for a few viewport heights; the scroll moves the viewer forward, so the photos at the
  * back grow, drift out past the frame and blur as they go, others come out of the distance, and
- * the closing text fades in last. Once that text is complete and held a moment, the black background
- * turns to paper (the light colours of a dark page, the page's own otherwise) and the section
- * that follows carries on from there. Scrolling on is blocked until that change has finished. The pointer, or a slow sway on touch screens, shifts near photos
- * more than far ones. Videos play only while they are visible.
+ * the closing text fades in last. The scroll that follows turns the black background to paper (the
+ * light colours of a dark page, the page's own otherwise), so the section below carries on from
+ * it; scrolling back turns it black again. The pointer, or a slow sway on touch screens, shifts
+ * near photos more than far ones. Videos play only while they are visible.
  *
  * Without JavaScript, or under reduced motion, the section is a plain grid between the two texts.
  */
 export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
   const track = useRef<HTMLDivElement>(null);
-  const [paper, setPaper] = useState(false);
 
   useLayoutEffect(() => {
     const root = track.current;
     const stage = root?.firstElementChild;
     if (!(root && stage instanceof HTMLElement) || prefersReducedMotion()) return;
 
+    const paperStyle = root.style;
     const figures = Array.from(stage.querySelectorAll<HTMLElement>("[data-zoom-item]"));
     const introElement = stage.querySelector<HTMLElement>("[data-zoom-intro]");
     const words = Array.from(stage.querySelectorAll<HTMLElement>("[data-zoom-word]"));
@@ -90,47 +84,15 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     let progress = 0;
     let visible = true;
     let dirty = true;
-    let handover: number | undefined;
-    let settled: number | undefined;
-    let onPaper = false;
-    /** From the closing text being complete until the paper has fully taken over. */
-    let locked = false;
 
-    function setBackground(next: boolean) {
-      if (next === onPaper) return;
-      onPaper = next;
-      setPaper(next);
-    }
+    root.dataset.mode = "live";
 
     function follow(scroll: number) {
       raw = Math.min(1, scroll / SCENE_END);
-      if (raw >= OUTRO[1]) {
-        if (handover !== undefined) return;
-        locked = true;
-        handover = window.setTimeout(() => {
-          setBackground(true);
-          settled = window.setTimeout(() => {
-            locked = false;
-          }, PAPER_FADE);
-        }, HANDOVER_DELAY);
-      } else if (raw < HANDOVER_RELEASE) {
-        window.clearTimeout(handover);
-        window.clearTimeout(settled);
-        handover = undefined;
-        locked = false;
-        setBackground(false);
-      }
+      const held = Math.max(0, (scroll - SCENE_END) / (1 - SCENE_END));
+      const mix = smoothstep(PAPER[0], PAPER[1], held);
+      paperStyle.setProperty("--paper", `${(mix * 100).toFixed(1)}%`);
     }
-
-    /** The page may not leave the section before the colours have turned. */
-    function hold(event: Event) {
-      if (!locked) return;
-      if (event instanceof KeyboardEvent && !FORWARD_KEYS.has(event.key)) return;
-      event.preventDefault();
-      event.stopPropagation();
-    }
-
-    root.dataset.mode = "live";
 
     function measure() {
       const { width, height } = (stage as HTMLElement).getBoundingClientRect();
@@ -215,15 +177,9 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     root.addEventListener("pointermove", onMove);
     root.addEventListener("pointerleave", onLeave);
     gsap.ticker.add(tick);
-    const guarded = ["wheel", "touchmove", "keydown"] as const;
-    for (const type of guarded)
-      window.addEventListener(type, hold, { capture: true, passive: false });
 
     return () => {
       gsap.ticker.remove(tick);
-      for (const type of guarded) window.removeEventListener(type, hold, { capture: true });
-      window.clearTimeout(handover);
-      window.clearTimeout(settled);
       root.removeEventListener("pointermove", onMove);
       root.removeEventListener("pointerleave", onLeave);
       observer.disconnect();
@@ -232,6 +188,7 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
       for (const element of [...figures, ...words, introElement]) {
         if (element) for (const name of LIVE_STYLES) element.style.removeProperty(name);
       }
+      root.style.removeProperty("--paper");
       root.dataset.mode = "static";
     };
   }, [items]);
@@ -240,10 +197,9 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     <div
       ref={track}
       data-mode="static"
-      data-theme={paper ? undefined : "dark"}
-      data-paper={paper ? "" : undefined}
-      style={{ "--track": TRACK } as CSSProperties}
-      className="group/zoom bg-black text-foreground transition-colors duration-1000 ease-(--ease-in-out-quart) data-paper:bg-background data-[mode=live]:h-(--track)"
+      data-theme="dark"
+      style={{ "--track": TRACK, "--paper": "0%" } as CSSProperties}
+      className="group/zoom bg-[color-mix(in_srgb,var(--paper-background)_var(--paper),#000)] text-[color-mix(in_srgb,var(--paper-foreground)_var(--paper),var(--foreground))] data-[mode=live]:h-(--track)"
     >
       <div className="flex flex-col gap-10 px-(--gutter) py-(--section-space) group-data-[mode=live]/zoom:sticky group-data-[mode=live]/zoom:top-0 group-data-[mode=live]/zoom:block group-data-[mode=live]/zoom:h-svh group-data-[mode=live]/zoom:overflow-clip group-data-[mode=live]/zoom:p-0">
         <div

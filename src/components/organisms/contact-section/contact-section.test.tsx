@@ -9,7 +9,6 @@ describe("ContactSection", () => {
       <ContactSection
         index={6}
         title="Contact"
-        locale="en"
         messages={en.home.contact}
         form={<p>form slot</p>}
       />,
@@ -25,14 +24,14 @@ describe("ContactSection", () => {
   });
 
   it("sits on paper, so a dark page turns light here", () => {
-    render(<ContactSection index={6} title="Contact" locale="en" messages={en.home.contact} />);
+    render(<ContactSection index={6} title="Contact" messages={en.home.contact} />);
 
     expect(screen.getByRole("region", { name: "Contact" })).toHaveAttribute("data-paper");
   });
 
   it("publishes no email address or phone number", () => {
     const { container } = render(
-      <ContactSection index={6} title="Contact" locale="en" messages={en.home.contact} />,
+      <ContactSection index={6} title="Contact" messages={en.home.contact} />,
     );
 
     expect(container.innerHTML).not.toMatch(/@[\w-]+\.\w+|mailto:|tel:/);

@@ -6,8 +6,6 @@ type LocalTimeProps = {
   locale: string;
   /** IANA zone whose clock is shown. */
   timeZone: string;
-  /** Place the time belongs to. */
-  place: string;
 };
 
 const REFRESH = 15_000;
@@ -16,7 +14,7 @@ const REFRESH = 15_000;
  * The time where the owner lives. The clock is read in the browser only, so the server markup
  * and the first client render agree on a placeholder.
  */
-export function LocalTime({ locale, timeZone, place }: LocalTimeProps) {
+export function LocalTime({ locale, timeZone }: LocalTimeProps) {
   const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -30,9 +28,5 @@ export function LocalTime({ locale, timeZone, place }: LocalTimeProps) {
     ? new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit", timeZone }).format(now)
     : "--:--";
 
-  return (
-    <span>
-      {place} <span className="tabular-nums">{clock}</span>
-    </span>
-  );
+  return <span className="tabular-nums">{clock}</span>;
 }

@@ -8,8 +8,8 @@ describe("LocalTime", () => {
   it("shows the clock of the given zone once mounted", () => {
     vi.useFakeTimers({ now: new Date("2027-01-15T11:30:00Z") });
 
-    render(<LocalTime locale="en-GB" timeZone="Europe/Zurich" place="Geneva" />);
+    render(<LocalTime locale="en-GB" timeZone="Europe/Zurich" />);
 
-    expect(screen.getByText(/Geneva/)).toHaveTextContent("Geneva 12:30");
+    expect(screen.getByText("12:30")).toBeInTheDocument();
   });
 });
