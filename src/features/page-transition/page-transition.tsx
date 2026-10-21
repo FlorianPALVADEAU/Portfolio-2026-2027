@@ -95,6 +95,7 @@ export function PageTransition() {
       cover(element, () => {
         const margin = Number.parseFloat(getComputedStyle(section).scrollMarginTop) || 0;
         jumpToTop(section.getBoundingClientRect().top + window.scrollY - margin);
+        window.history.pushState(null, "", `#${section.id}`);
         giveUp.current = setTimeout(() => reveal(JUMP_REVEAL_SECONDS), SETTLE_MS);
       });
     }
