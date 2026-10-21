@@ -64,21 +64,27 @@ export function PageTransition() {
       return id ? document.getElementById(id) : null;
     }
 
+    // Captured, so that it runs before the smooth scroll and the router take the click for themselves.
+    function onJump(event: MouseEvent) {
+      const element = overlay.current;
+      const anchor = event.target instanceof Element ? event.target.closest("a") : null;
+      if (!(element && anchor) || covering.current) return;
+      const section = sectionOf(event, anchor);
+      if (!section) return;
+
+      // Scrolling there would play every animation on the way past in a blink: cover, land, uncover.
+      event.preventDefault();
+      event.stopPropagation();
+      cover(element, () => {
+        section.scrollIntoView({ behavior: "instant", block: "start" });
+        requestAnimationFrame(reveal);
+      });
+    }
+
     function onClick(event: MouseEvent) {
       const element = overlay.current;
       const anchor = event.target instanceof Element ? event.target.closest("a") : null;
       if (!(element && anchor) || covering.current) return;
-
-      const section = sectionOf(event, anchor);
-      if (section) {
-        // Scrolling there would play every animation on the way past in a blink: cover, land, uncover.
-        event.preventDefault();
-        cover(element, () => {
-          section.scrollIntoView({ behavior: "instant", block: "start" });
-          requestAnimationFrame(reveal);
-        });
-        return;
-      }
 
       const destination = getInternalNavigation(event, anchor, window.location);
       if (!destination) return;
@@ -90,8 +96,10 @@ export function PageTransition() {
       });
     }
 
+    document.addEventListener("click", onJump, true);
     document.addEventListener("click", onClick);
     return () => {
+      document.removeEventListener("click", onJump, true);
       document.removeEventListener("click", onClick);
       clearTimeout(giveUp.current);
       if (overlay.current) gsap.killTweensOf(overlay.current);

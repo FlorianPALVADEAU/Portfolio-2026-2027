@@ -62,11 +62,12 @@ export function SiteMenu({
       root.current?.querySelector("button")?.focus();
     }
     document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("click", onClick);
+    // Captured: a jump to a section stops the click before it bubbles up here.
+    document.addEventListener("click", onClick, true);
     document.addEventListener("keydown", onKeyDown);
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("click", onClick);
+      document.removeEventListener("click", onClick, true);
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);

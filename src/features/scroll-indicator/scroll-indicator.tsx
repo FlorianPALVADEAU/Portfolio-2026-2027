@@ -1,19 +1,22 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { type PointerEvent, useEffect, useRef } from "react";
 
 /** Share of the track the thumb never shrinks below, however long the page is. */
 const MIN_THUMB = 0.08;
 
 /**
- * A slim scroll indicator floating at the right edge, shorter than the screen, in place of the
- * browser's bar (hidden in the global styles). It is a gauge only: the page scrolls by wheel, touch,
- * keys and the menu, so it is hidden from assistive technology and ignores the pointer. It inverts
- * what is behind it, so it reads on both the black and the paper sections.
+ * A slim scroll bar floating at the right edge, shorter than the screen, in place of the browser's
+ * bar (hidden in the global styles). The thumb can be dragged with a mouse or a finger, and a press
+ * on the track brings the thumb to it; the bar widens while it is held. The page still scrolls by
+ * wheel, touch and keys, so it stays out of the accessibility tree. It inverts what is behind it, so
+ * it reads on both the black and the paper sections, and sits above everything, loader included.
  */
 export function ScrollIndicator() {
   const thumb = useRef<HTMLSpanElement>(null);
   const track = useRef<HTMLDivElement>(null);
+  /** Distance in px between the top of the thumb and the pointer that holds it. */
+  const grab = useRef<number | null>(null);
 
   useEffect(() => {
     const thumbElement = thumb.current;
@@ -53,13 +56,52 @@ export function ScrollIndicator() {
     };
   }, []);
 
+  function scrollToPointer(clientY: number) {
+    const trackElement = track.current;
+    const thumbElement = thumb.current;
+    if (!(trackElement && thumbElement && grab.current !== null)) return;
+    const box = trackElement.getBoundingClientRect();
+    const free = box.height - thumbElement.offsetHeight;
+    if (free <= 0) return;
+    const ratio = Math.min(1, Math.max(0, (clientY - box.top - grab.current) / free));
+    const reachable = document.documentElement.scrollHeight - window.innerHeight;
+    window.scrollTo({ top: ratio * reachable, behavior: "instant" });
+  }
+
+  function onPointerDown(event: PointerEvent<HTMLDivElement>) {
+    const thumbBox = thumb.current?.getBoundingClientRect();
+    if (!(thumbBox && track.current)) return;
+    event.preventDefault();
+    track.current.setPointerCapture(event.pointerId);
+    track.current.dataset.dragging = "";
+    const onThumb = event.clientY >= thumbBox.top && event.clientY <= thumbBox.bottom;
+    // A press beside the thumb brings its middle to the pointer.
+    grab.current = onThumb ? event.clientY - thumbBox.top : thumbBox.height / 2;
+    scrollToPointer(event.clientY);
+  }
+
+  function onPointerMove(event: PointerEvent<HTMLDivElement>) {
+    scrollToPointer(event.clientY);
+  }
+
+  function release() {
+    grab.current = null;
+    delete track.current?.dataset.dragging;
+  }
+
   return (
     <div
       ref={track}
       aria-hidden="true"
-      className="pointer-events-none fixed top-1/2 right-1.5 z-(--z-overlay) h-[50svh] w-1 -translate-y-1/2 rounded-full bg-white/25 mix-blend-difference transition-opacity duration-(--duration-base) md:right-3 md:h-[40svh]"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={release}
+      onPointerCancel={release}
+      className="group/bar fixed top-1/2 right-0 z-(--z-scrollbar) flex h-[50svh] w-7 -translate-y-1/2 cursor-grab touch-none justify-end py-0 pr-1.5 mix-blend-difference transition-opacity duration-(--duration-base) data-[dragging]:cursor-grabbing md:h-[40svh] md:pr-3"
     >
-      <span ref={thumb} className="block w-full rounded-full bg-white will-change-transform" />
+      <div className="relative h-full w-1 rounded-full bg-white/25 transition-[width] duration-(--duration-base) group-hover/bar:w-1.5 group-data-[dragging]/bar:w-2.5">
+        <span ref={thumb} className="block w-full rounded-full bg-white will-change-transform" />
+      </div>
     </div>
   );
 }

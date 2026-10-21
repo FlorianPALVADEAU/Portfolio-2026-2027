@@ -19,7 +19,7 @@ const glyphs = { dark: Moon, light: Sun, swiss: Plus } as const;
 type ThemeSwitcherProps = {
   label: string;
   names: Record<Theme, string>;
-  /** "inline" lists the themes in a row, for places such as the menu where a dropdown would be clipped. */
+  /** "inline" lists the themes in a row, for places such as the menu where a dropdown would be clipped. It leaves out Swiss, a desktop-only look. */
   layout?: "dropdown" | "inline";
 };
 
@@ -42,22 +42,24 @@ export function ThemeSwitcher({ label, names, layout = "dropdown" }: ThemeSwitch
   if (layout === "inline") {
     return (
       <ul aria-label={label} className="flex items-center gap-1">
-        {themes.map((value) => (
-          <li key={value}>
-            <button
-              type="button"
-              aria-pressed={theme === value}
-              aria-label={names[value]}
-              onClick={() => select(value)}
-              className={cn(
-                "inline-flex size-11 cursor-pointer items-center justify-center rounded-full hover:bg-muted",
-                theme === value ? "bg-muted text-foreground" : "text-muted-foreground",
-              )}
-            >
-              <Icon icon={glyphs[value]} />
-            </button>
-          </li>
-        ))}
+        {themes
+          .filter((value) => value !== "swiss")
+          .map((value) => (
+            <li key={value}>
+              <button
+                type="button"
+                aria-pressed={theme === value}
+                aria-label={names[value]}
+                onClick={() => select(value)}
+                className={cn(
+                  "inline-flex size-11 cursor-pointer items-center justify-center rounded-full hover:bg-muted",
+                  theme === value ? "bg-muted text-foreground" : "text-muted-foreground",
+                )}
+              >
+                <Icon icon={glyphs[value]} />
+              </button>
+            </li>
+          ))}
       </ul>
     );
   }
