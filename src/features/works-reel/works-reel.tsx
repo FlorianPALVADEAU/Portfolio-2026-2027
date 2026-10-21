@@ -237,6 +237,10 @@ export function WorksReel({ children }: { children: ReactNode }) {
   useEffect(() => {
     const container = root.current;
     if (!container) return;
+    if (!("IntersectionObserver" in window)) {
+      setNear(true);
+      return;
+    }
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry?.isIntersecting) return;
