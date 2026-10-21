@@ -30,7 +30,7 @@ const meta = {
         about: "About",
         contact: "Contact",
       },
-      sound: { on: "Sound: on", off: "Sound: off" },
+      sound: { on: "Sound: on", off: "Sound: off", hint: "Turn the sound on" },
       theme: { label: "Theme", names: { dark: "Dark", light: "Light", swiss: "Swiss" } },
     },
   },

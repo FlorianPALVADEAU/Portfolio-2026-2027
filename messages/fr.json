@@ -15,7 +15,8 @@
     },
     "sound": {
       "on": "Son : activé",
-      "off": "Son : coupé"
+      "off": "Son : coupé",
+      "hint": "Active le son"
     },
     "skip": "Aller au contenu",
     "cta": "Parlons-en",
@@ -232,6 +233,10 @@
     "back": "Retour à l'accueil",
     "role": "Rôle",
     "year": "Année"
+  },
+  "loader": {
+    "label": "Chargement du portfolio",
+    "welcome": "Bienvenue"
   },
   "footer": {
     "kicker": "Fin de la page",

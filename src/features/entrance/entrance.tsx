@@ -2,6 +2,7 @@
 
 import { gsap } from "gsap";
 import { type ComponentPropsWithoutRef, useLayoutEffect, useRef } from "react";
+import { whenIntroOpen } from "@/lib/intro";
 import { prefersReducedMotion } from "@/lib/motion";
 
 const ENTRANCE_ATTRIBUTE = "data-entrance";
@@ -21,21 +22,30 @@ export function Entrance(props: ComponentPropsWithoutRef<"div">) {
       return;
     }
 
+    const targets = `[${ENTRANCE_ATTRIBUTE}]`;
     const context = gsap.context(() => {
-      gsap.from(`[${ENTRANCE_ATTRIBUTE}]`, {
-        autoAlpha: 0,
-        y: 20,
-        duration: 0.7,
-        ease: "power3.out",
-        stagger: 0.08,
-        clearProps: "all",
-        onComplete: () => {
-          element.dataset.entranceState = "done";
-        },
-      });
+      gsap.set(targets, { autoAlpha: 0, y: 20 });
     }, element);
+    const cancelWait = whenIntroOpen(() =>
+      context.add(() => {
+        gsap.to(targets, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.08,
+          clearProps: "all",
+          onComplete: () => {
+            element.dataset.entranceState = "done";
+          },
+        });
+      }),
+    );
 
-    return () => context.revert();
+    return () => {
+      cancelWait();
+      context.revert();
+    };
   }, []);
 
   return <div ref={root} data-entrance-root {...props} />;

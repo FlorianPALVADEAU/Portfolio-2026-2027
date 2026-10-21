@@ -15,7 +15,8 @@
     },
     "sound": {
       "on": "Ton: an",
-      "off": "Ton: aus"
+      "off": "Ton: aus",
+      "hint": "Ton einschalten"
     },
     "skip": "Zum Inhalt springen",
     "cta": "Lass uns reden",
@@ -237,6 +238,10 @@
     "back": "Zurück zur Startseite",
     "role": "Rolle",
     "year": "Jahr"
+  },
+  "loader": {
+    "label": "Portfolio wird geladen",
+    "welcome": "Willkommen"
   },
   "footer": {
     "kicker": "Das war die Seite",

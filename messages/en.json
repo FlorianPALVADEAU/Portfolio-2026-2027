@@ -15,7 +15,8 @@
     },
     "sound": {
       "on": "Sound: on",
-      "off": "Sound: off"
+      "off": "Sound: off",
+      "hint": "Turn the sound on"
     },
     "skip": "Skip to content",
     "cta": "Let's talk",
@@ -232,6 +233,10 @@
     "back": "Back to home",
     "role": "Role",
     "year": "Year"
+  },
+  "loader": {
+    "label": "Loading the portfolio",
+    "welcome": "Welcome"
   },
   "footer": {
     "kicker": "That's the end of the page",

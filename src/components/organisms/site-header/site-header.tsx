@@ -7,9 +7,9 @@ import { LocaleSwitcher } from "@/components/molecules/locale-switcher";
 import { SoundToggle } from "@/components/molecules/sound-toggle";
 import { ThemeSwitcher } from "@/components/molecules/theme-switcher";
 import { CommandPalette } from "@/features/command-palette";
-import { HeaderReveal } from "@/features/header-reveal";
 import { MAIN_ID } from "@/features/route-focus";
 import { SiteMenu } from "@/features/site-menu";
+import { SoundHint } from "@/features/sound-hint";
 import type { Locale, Messages } from "@/lib/i18n";
 import { navSections } from "@/lib/landing";
 import { siteName } from "@/lib/site";
@@ -25,7 +25,7 @@ export function SiteHeader({ locale, messages, palette, cvHref = null }: SiteHea
   return (
     <>
       <SkipLink href={`#${MAIN_ID}`}>{messages.skip}</SkipLink>
-      <HeaderReveal>
+      <header className="sticky top-0 z-40 px-4 pt-3">
         <Container>
           <div className="relative flex items-center justify-between rounded-full border border-border/60 bg-background/60 py-2 pr-2 pl-4 sm:pl-5 backdrop-blur-md backdrop-saturate-150">
             <Link href={`/${locale}`} className="inline-flex min-h-11 items-center no-underline">
@@ -34,7 +34,10 @@ export function SiteHeader({ locale, messages, palette, cvHref = null }: SiteHea
             <div className="flex items-center gap-1 sm:gap-2">
               {/* Touch screens have no hover, so the sound controls only exist from md up. */}
               <div className="hidden items-center gap-2 md:flex">
-                <SoundToggle onLabel={messages.sound.on} offLabel={messages.sound.off} />
+                <div className="relative">
+                  <SoundToggle onLabel={messages.sound.on} offLabel={messages.sound.off} />
+                  <SoundHint label={messages.sound.hint} />
+                </div>
                 <LocaleSwitcher current={locale} label={messages.language} />
               </div>
               <Button
@@ -68,7 +71,7 @@ export function SiteHeader({ locale, messages, palette, cvHref = null }: SiteHea
             </div>
           </div>
         </Container>
-      </HeaderReveal>
+      </header>
     </>
   );
 }
