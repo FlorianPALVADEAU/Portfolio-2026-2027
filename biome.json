@@ -18,7 +18,8 @@
       "!.claude/skills",
       "!.github/skills",
       "!public/brand/certifications",
-      "!public/brand/companies"
+      "!public/brand/companies",
+      "!public/brand/*.svg"
     ]
   },
   "formatter": {

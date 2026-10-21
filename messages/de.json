@@ -238,6 +238,9 @@
     "role": "Rolle",
     "year": "Jahr"
   },
+  "loader": {
+    "label": "Portfolio wird geladen"
+  },
   "footer": {
     "kicker": "Das war die Seite",
     "headline": {

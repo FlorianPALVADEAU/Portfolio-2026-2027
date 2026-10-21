@@ -233,6 +233,9 @@
     "role": "Rôle",
     "year": "Année"
   },
+  "loader": {
+    "label": "Chargement du portfolio"
+  },
   "footer": {
     "kicker": "Fin de la page",
     "headline": {
