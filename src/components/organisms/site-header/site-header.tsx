@@ -7,6 +7,7 @@ import { LocaleSwitcher } from "@/components/molecules/locale-switcher";
 import { SoundToggle } from "@/components/molecules/sound-toggle";
 import { ThemeSwitcher } from "@/components/molecules/theme-switcher";
 import { CommandPalette } from "@/features/command-palette";
+import { HeaderShrink } from "@/features/header-shrink";
 import { MAIN_ID } from "@/features/route-focus";
 import { SiteMenu } from "@/features/site-menu";
 import { SoundHint } from "@/features/sound-hint";
@@ -27,7 +28,7 @@ export function SiteHeader({ locale, messages, palette, cvHref = null }: SiteHea
       <SkipLink href={`#${MAIN_ID}`}>{messages.skip}</SkipLink>
       <header className="sticky top-0 z-40 px-4 pt-3">
         <Container>
-          <div className="relative flex items-center justify-between rounded-full border border-border/60 bg-background/60 py-2 pr-2 pl-4 sm:pl-5 backdrop-blur-md backdrop-saturate-150">
+          <HeaderShrink className="relative flex items-center justify-between rounded-full border border-border/60 bg-background/60 py-2 pr-2 pl-4 sm:pl-5 backdrop-blur-md backdrop-saturate-150">
             <Link href={`/${locale}`} className="inline-flex min-h-11 items-center no-underline">
               <Logo label={siteName} className="h-5" />
             </Link>
@@ -69,7 +70,7 @@ export function SiteHeader({ locale, messages, palette, cvHref = null }: SiteHea
                 </div>
               </SiteMenu>
             </div>
-          </div>
+          </HeaderShrink>
         </Container>
       </header>
     </>

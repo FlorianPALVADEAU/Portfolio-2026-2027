@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { galleryItems } from "@/lib/landing";
-import { pose, smoothstep, TRAVEL, wordReveal } from "./zoom-pose";
+import { hasPassed, pose, smoothstep, TRAVEL, wordReveal } from "./zoom-pose";
 
 describe("wordReveal", () => {
   it("shows nothing before the reveal and everything after it", () => {
@@ -75,5 +75,15 @@ describe("pose", () => {
     for (const { id } of galleryItems) {
       expect(pose(item(id), 0.85, half, still).opacity, id).toBe(0);
     }
+  });
+});
+
+describe("hasPassed", () => {
+  const item = { ox: 0, oy: 0, depth: 2 };
+
+  it("flips once the viewer has come level with the item, in both directions", () => {
+    expect(hasPassed(item, 0)).toBe(false);
+    expect(hasPassed(item, 2 / TRAVEL)).toBe(true);
+    expect(hasPassed(item, 1 / TRAVEL)).toBe(false);
   });
 });
