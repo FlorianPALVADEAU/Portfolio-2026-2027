@@ -12,3 +12,8 @@ export function preloadFocusIfEnabled(): void {
   if (!getSoundEnabled()) return;
   void import("./engine").then((engine) => engine.preloadFocusSounds());
 }
+
+/** Fetches the music engine ahead of the click that needs it, so turning sound on starts at once. */
+export function warmMusic(): void {
+  void import("./music");
+}
