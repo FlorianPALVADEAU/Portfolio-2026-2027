@@ -356,18 +356,19 @@ test.describe("skills", () => {
 });
 
 test.describe("technology band", () => {
-  test("loops, then stops when paused", async ({ page }) => {
+  test("loops on its own, with no pause button", async ({ page }) => {
     await page.goto("/en");
 
     const band = page.getByRole("region", { name: "Technologies I work with" });
     await expect(band.getByRole("list")).toHaveCount(1);
+    await expect(band.getByRole("button")).toHaveCount(0);
+    // A band that is off screen is not driven, so bring it into view first.
+    await band.scrollIntoViewIfNeeded();
     const track = band.locator("div.w-max");
     const offset = () => track.evaluate((node) => node.getBoundingClientRect().x);
 
-    await band.getByRole("button", { name: "Pause" }).click();
-    const paused = await offset();
-    await page.waitForTimeout(400);
-    expect(await offset()).toBe(paused);
+    const before = await offset();
+    await expect.poll(offset).not.toBe(before);
     await expectNoA11yViolations(page);
   });
 
