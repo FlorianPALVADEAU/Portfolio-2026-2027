@@ -72,8 +72,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
-      - run: npx playwright install --with-deps
-      - run: npm run test:e2e
+      # Firefox and WebKit stay in the local run; they added most of the time and the timing flakes.
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e -- --project=chromium --project=mobile
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
