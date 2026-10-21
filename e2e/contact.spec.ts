@@ -41,6 +41,8 @@ test.describe("contact form", () => {
     await page.waitForLoadState("load");
     expect(hosts).not.toContain("challenges.cloudflare.com");
 
+    // The form rises in as it enters the viewport, and a hidden field cannot take focus.
+    await expect(form.getByLabel("Name")).toBeVisible();
     await form.getByLabel("Name").focus();
 
     await expect.poll(() => hosts).toContain("challenges.cloudflare.com");
