@@ -31,15 +31,7 @@ const messages = {
 
 describe("SiteFooter", () => {
   it("renders a contentinfo landmark with the name, navigation and picture credits", () => {
-    render(
-      <SiteFooter
-        locale="en"
-        nav={nav}
-        availability="Available"
-        marquee={{ label: "Technologies", pause: "Pause", play: "Play" }}
-        messages={messages}
-      />,
-    );
+    render(<SiteFooter locale="en" nav={nav} availability="Available" messages={messages} />);
 
     expect(screen.getByRole("contentinfo")).toHaveTextContent("Florian Palvadeau");
     expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute("href", "/en#works");

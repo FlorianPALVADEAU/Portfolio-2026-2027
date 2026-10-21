@@ -1,13 +1,12 @@
-/** What the custom cursor currently looks like, from least to most specific context. */
-export type CursorKind = "dot" | "scroll" | "link" | "view" | "native";
+/** The drawing the cursor shows: the arrow, the Macintosh hand over what can be clicked, or nothing. */
+type CursorShape = "arrow" | "hand" | "native";
 
-export type CursorTarget = {
-  kind: CursorKind;
-  /** The clickable element a `link` cursor gently pulls towards. */
-  anchor: Element | null;
-};
+/** The tag that rides next to the shape, when the area under it has something to say. */
+type CursorLabel = "view" | "scroll" | null;
 
-/** Marks an area that wants the "view" label; mirrored by `data-cursor="view"` in the markup. */
+export type CursorTarget = { shape: CursorShape; label: CursorLabel };
+
+/** Areas that want the "view" tag carry `data-cursor="view"`. */
 const VIEW_SELECTOR = "[data-cursor='view']";
 
 const TEXT_INPUT_TYPES = ["text", "email", "search", "url", "tel", "password", "number"];
@@ -35,13 +34,13 @@ const LINK_SELECTOR = [
 ].join(", ");
 
 /**
- * Picks the cursor look for what is under the pointer. Precedence: the system pointer wins over
- * everything, a marked area wins over the link that covers it, a link wins over the scroll hint.
+ * Picks the cursor for what is under the pointer. The system pointer wins over everything. A
+ * marked area keeps its tag even though the link covering it makes the hand appear, while the
+ * scroll hint only shows where nothing can be clicked.
  */
 export function resolveCursorTarget(target: Element | null, scrollHint: boolean): CursorTarget {
-  if (target?.closest(NATIVE_SELECTOR)) return { kind: "native", anchor: null };
-  if (target?.closest(VIEW_SELECTOR)) return { kind: "view", anchor: null };
-  const anchor = target?.closest(LINK_SELECTOR) ?? null;
-  if (anchor) return { kind: "link", anchor };
-  return { kind: scrollHint ? "scroll" : "dot", anchor: null };
+  if (target?.closest(NATIVE_SELECTOR)) return { shape: "native", label: null };
+  if (target?.closest(VIEW_SELECTOR)) return { shape: "hand", label: "view" };
+  if (target?.closest(LINK_SELECTOR)) return { shape: "hand", label: null };
+  return { shape: "arrow", label: scrollHint ? "scroll" : null };
 }

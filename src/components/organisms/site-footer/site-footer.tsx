@@ -20,8 +20,6 @@ type SiteFooterProps = {
   nav: Messages["header"]["nav"];
   /** The availability line of the contact section, repeated here as the footer's first line. */
   availability: string;
-  /** Labels of the pause control of the name banner. */
-  marquee: Messages["home"]["marquee"];
   messages: Messages["footer"];
 };
 
@@ -50,7 +48,7 @@ const bannerItems = [0, 1, 2].map((copy) => ({
  * screen. The closing line rises in word by word as the card scrolls into view, and nothing here
  * holds the scroll.
  */
-export function SiteFooter({ locale, nav, availability, marquee, messages }: SiteFooterProps) {
+export function SiteFooter({ locale, nav, availability, messages }: SiteFooterProps) {
   const { credits } = messages;
 
   return (
@@ -156,11 +154,8 @@ export function SiteFooter({ locale, nav, availability, marquee, messages }: Sit
           <Marquee
             items={bannerItems}
             label={siteName}
-            pauseLabel={marquee.pause}
-            playLabel={marquee.play}
-            seconds={30}
+            speed={100}
             itemClassName="text-[clamp(2.5rem,1.2rem+5vw,5.5rem)] leading-none font-semibold tracking-tight whitespace-nowrap"
-            controlClassName="border-background/30 text-background hover:bg-background/10"
             className="border-0 bg-transparent px-0 py-0"
           />
           <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 border-t border-background/15 pt-5 text-sm">

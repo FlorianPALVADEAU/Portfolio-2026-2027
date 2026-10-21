@@ -42,7 +42,7 @@ export function Home({
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
       <ScrollHint label={messages.scrollHint} />
       <HeroSection messages={messages} cvHref={cvHref ?? null} photos={heroPhotos ?? []} />
-      <IntroSection title={title.intro} messages={messages.intro} controls={messages.marquee} />
+      <IntroSection title={title.intro} messages={messages.intro} />
       <AboutSection
         index={position("about")}
         title={title.about}

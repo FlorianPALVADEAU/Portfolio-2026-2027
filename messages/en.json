@@ -218,9 +218,7 @@
       "view": "View"
     },
     "marquee": {
-      "label": "Technologies I work with",
-      "pause": "Pause",
-      "play": "Play"
+      "label": "Technologies I work with"
     },
     "photos": {
       "closing": {

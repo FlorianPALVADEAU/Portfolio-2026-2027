@@ -13,27 +13,24 @@ afterEach(() => {
 });
 
 describe("resolveCursorTarget", () => {
-  it("is a dot over plain content and a scroll hint when one is active", () => {
+  it("is an arrow over plain content, tagged with the scroll hint when one is active", () => {
     const target = mount("<p>hello</p>", "p");
 
-    expect(resolveCursorTarget(target, false).kind).toBe("dot");
-    expect(resolveCursorTarget(target, true).kind).toBe("scroll");
-    expect(resolveCursorTarget(null, false).kind).toBe("dot");
+    expect(resolveCursorTarget(target, false)).toEqual({ shape: "arrow", label: null });
+    expect(resolveCursorTarget(target, true)).toEqual({ shape: "arrow", label: "scroll" });
+    expect(resolveCursorTarget(null, false)).toEqual({ shape: "arrow", label: null });
   });
 
-  it("grows over what can be clicked and names it as the anchor", () => {
+  it("becomes the hand over what can be clicked, and drops the scroll hint", () => {
     const target = mount("<a href='/x'><span>go</span></a>", "span");
 
-    const { kind, anchor } = resolveCursorTarget(target, true);
-
-    expect(kind).toBe("link");
-    expect(anchor?.tagName).toBe("A");
+    expect(resolveCursorTarget(target, true)).toEqual({ shape: "hand", label: null });
   });
 
-  it("lets a marked area win over the link that covers it", () => {
+  it("keeps the view tag on a marked area even though a link covers it", () => {
     const target = mount("<article data-cursor='view'><a href='/x'>card</a></article>", "a");
 
-    expect(resolveCursorTarget(target, false).kind).toBe("view");
+    expect(resolveCursorTarget(target, false)).toEqual({ shape: "hand", label: "view" });
   });
 
   it.each([
@@ -44,10 +41,12 @@ describe("resolveCursorTarget", () => {
     ["<iframe></iframe>", "iframe"],
     ["<dialog open><button>x</button></dialog>", "button"],
   ])("leaves the system pointer in %s", (html, selector) => {
-    expect(resolveCursorTarget(mount(html, selector), true).kind).toBe("native");
+    expect(resolveCursorTarget(mount(html, selector), true).shape).toBe("native");
   });
 
-  it("keeps the custom cursor on checkboxes", () => {
-    expect(resolveCursorTarget(mount("<input type='checkbox'>", "input"), false).kind).toBe("link");
+  it("keeps the hand on checkboxes", () => {
+    expect(resolveCursorTarget(mount("<input type='checkbox'>", "input"), false).shape).toBe(
+      "hand",
+    );
   });
 });

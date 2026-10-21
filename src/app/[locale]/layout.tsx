@@ -75,7 +75,6 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
         locale={locale}
         nav={messages.header.nav}
         availability={messages.home.contact.availability}
-        marquee={messages.home.marquee}
         messages={messages.footer}
       />
       <RouteFocus />

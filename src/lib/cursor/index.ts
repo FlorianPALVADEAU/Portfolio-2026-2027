@@ -1,2 +1,2 @@
-export { type CursorKind, resolveCursorTarget } from "./cursor-kind";
-export { extendTrail, type TrailPoint, trailStrength } from "./trail";
+export { type Spring, stepSpring, streakLength, streakStrength, swingAngle } from "./air";
+export { resolveCursorTarget } from "./cursor-kind";

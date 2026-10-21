@@ -1,28 +1,31 @@
 "use client";
 
 import { gsap } from "gsap";
-import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Button } from "@/components/atoms/button";
+import { type ReactNode, useLayoutEffect, useRef, useState } from "react";
 import { prefersReducedMotion } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_LOOP_SECONDS = 40;
+const DEFAULT_SPEED = 60;
 const DEFAULT_ITEM_CLASS = "font-mono text-sm tracking-wide whitespace-nowrap uppercase";
+/** Share of the scroll speed added to the band's own speed. */
+const SCROLL_GAIN = 0.6;
+/** Ceiling of the speed added by scrolling, so a hard flick never turns the band into a blur. */
+const MAX_BOOST = 2400;
+/** How fast the boost follows the scroll speed, per second: higher is snappier, lower glides longer. */
+const FOLLOW = 6;
+/** A frame longer than this (a hidden tab, a long task) never makes the band jump. */
+const MAX_FRAME_SECONDS = 0.1;
 
 type MarqueeItem = { id: string; content: ReactNode };
 
 type MarqueeProps = {
   items: readonly MarqueeItem[];
   label: string;
-  pauseLabel: string;
-  playLabel: string;
   className?: string;
-  /** Time of one full loop. */
-  seconds?: number;
+  /** Pixels per second when the page is not scrolling. */
+  speed?: number;
   /** Classes of each item; replaces the small uppercase mono default. */
   itemClassName?: string;
-  /** Classes of the pause button, for a ground the default outline does not suit. */
-  controlClassName?: string;
   /** Fades both ends of the band on wide screens. */
   fade?: boolean;
 };
@@ -31,13 +34,16 @@ function Items({
   items,
   itemClassName,
   hidden,
+  copyRef,
 }: {
   items: readonly MarqueeItem[];
   itemClassName: string;
   hidden?: boolean;
+  copyRef?: React.Ref<HTMLUListElement>;
 }) {
   return (
     <ul
+      ref={copyRef}
       aria-hidden={hidden || undefined}
       className={cn(
         "flex shrink-0 items-center gap-10 pr-10 group-data-[motion=static]:flex-wrap",
@@ -54,102 +60,108 @@ function Items({
 }
 
 /**
- * Slow, endless band of keywords or logos. The track holds two copies so a -50% shift loops seamlessly;
- * the copy is hidden from assistive technology. Hovering or focusing inside pauses it, and a
- * button gives keyboard users the same control. Reduced motion shows one static, wrapping list.
+ * Endless band of keywords or logos. The track holds as many copies as it takes to cover the
+ * band plus one, and every frame it moves by a distance that is wrapped to the width of one copy,
+ * so the copy that leaves is exactly the copy that enters and nothing ever jumps. It runs at its
+ * own speed and goes faster the faster the page scrolls. The copies are hidden from assistive
+ * technology; reduced motion shows one static, wrapping list.
  */
 export function Marquee({
   items,
   label,
-  pauseLabel,
-  playLabel,
   className,
-  seconds = DEFAULT_LOOP_SECONDS,
+  speed = DEFAULT_SPEED,
   itemClassName = DEFAULT_ITEM_CLASS,
-  controlClassName,
   fade = false,
 }: MarqueeProps) {
   const root = useRef<HTMLDivElement>(null);
+  const viewport = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
-  const tween = useRef<gsap.core.Tween | null>(null);
-  const [animated, setAnimated] = useState(false);
-  const [userPaused, setUserPaused] = useState(false);
-  const [engaged, setEngaged] = useState(false);
+  const copy = useRef<HTMLUListElement>(null);
+  const [copies, setCopies] = useState(2);
 
   useLayoutEffect(() => {
-    const element = track.current;
-    if (!(element && root.current)) return;
+    const band = viewport.current;
+    const strip = track.current;
+    const first = copy.current;
+    if (!(band && strip && first && root.current)) return;
     if (prefersReducedMotion()) {
       root.current.dataset.motion = "static";
       return;
     }
-
     root.current.dataset.motion = "loop";
-    setAnimated(true);
-    const context = gsap.context(() => {
-      tween.current = gsap.to(element, {
-        xPercent: -50,
-        duration: seconds,
-        ease: "none",
-        repeat: -1,
-      });
-    }, root);
+
+    let width = first.getBoundingClientRect().width;
+    let visible = true;
+    let offset = 0;
+    let lastScroll = window.scrollY;
+    let boost = 0;
+
+    const measure = () => {
+      width = first.getBoundingClientRect().width;
+      if (width > 0) setCopies(Math.max(2, Math.ceil(band.clientWidth / width) + 1));
+    };
+    measure();
+
+    const tick = (_time: number, delta: number) => {
+      const seconds = Math.min(delta / 1000, MAX_FRAME_SECONDS);
+      const scrolled = Math.abs(window.scrollY - lastScroll);
+      lastScroll = window.scrollY;
+      if (!visible || width === 0 || seconds === 0) return;
+
+      const target = Math.min((scrolled / seconds) * SCROLL_GAIN, MAX_BOOST);
+      boost += (target - boost) * (1 - Math.exp(-FOLLOW * seconds));
+      offset = (offset + (speed + boost) * seconds) % width;
+      strip.style.transform = `translate3d(${-offset}px, 0, 0)`;
+    };
+    gsap.ticker.add(tick);
+
+    const resize = new ResizeObserver(measure);
+    resize.observe(band);
+    const intersection = new IntersectionObserver(([entry]) => {
+      visible = entry?.isIntersecting ?? true;
+    });
+    intersection.observe(band);
 
     return () => {
-      tween.current = null;
-      context.revert();
+      gsap.ticker.remove(tick);
+      resize.disconnect();
+      intersection.disconnect();
+      strip.style.transform = "";
     };
-  }, [seconds]);
-
-  useEffect(() => {
-    const element = root.current;
-    if (!element) return;
-    const engage = () => setEngaged(true);
-    const release = () => setEngaged(false);
-    const events = [
-      ["pointerenter", engage],
-      ["pointerleave", release],
-      ["focusin", engage],
-      ["focusout", release],
-    ] as const;
-    for (const [name, handler] of events) element.addEventListener(name, handler);
-    return () => {
-      for (const [name, handler] of events) element.removeEventListener(name, handler);
-    };
-  }, []);
-
-  useEffect(() => {
-    tween.current?.paused(userPaused || engaged);
-  }, [userPaused, engaged]);
+  }, [speed]);
 
   return (
     <section
       aria-label={label}
       className={cn("relative border-y border-border bg-background px-(--gutter) py-6", className)}
     >
-      <div ref={root} data-motion="static" className="group flex items-center gap-4">
+      <div ref={root} data-motion="static" className="group">
         <div
+          ref={viewport}
           className={cn(
-            "flex min-w-0 flex-1 overflow-hidden",
+            "flex min-w-0 overflow-hidden",
             fade &&
               "md:[mask-image:linear-gradient(to_right,transparent,black_14%,black_86%,transparent)]",
           )}
         >
-          <div ref={track} className="flex w-max group-data-[motion=static]:w-auto">
-            <Items items={items} itemClassName={itemClassName} />
-            <Items items={items} itemClassName={itemClassName} hidden />
+          <div
+            ref={track}
+            className="flex w-max will-change-transform group-data-[motion=static]:w-auto"
+          >
+            <Items items={items} itemClassName={itemClassName} copyRef={copy} />
+            {Array.from({ length: copies - 1 }, (_, index) => (
+              <Items
+                // The copies never reorder, so their position is a stable key.
+                // biome-ignore lint/suspicious/noArrayIndexKey: see above
+                key={index}
+                items={items}
+                itemClassName={itemClassName}
+                hidden
+              />
+            ))}
           </div>
         </div>
-        {animated && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setUserPaused((paused) => !paused)}
-            className={cn("shrink-0", controlClassName)}
-          >
-            {userPaused ? playLabel : pauseLabel}
-          </Button>
-        )}
       </div>
     </section>
   );

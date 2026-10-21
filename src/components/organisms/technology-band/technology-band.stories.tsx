@@ -5,7 +5,7 @@ const meta = {
   title: "Organisms/TechnologyBand",
   component: TechnologyBand,
   parameters: { layout: "fullscreen" },
-  args: { messages: { label: "Technologies I work with", pause: "Pause", play: "Play" } },
+  args: { messages: { label: "Technologies I work with" } },
 } satisfies Meta<typeof TechnologyBand>;
 
 export default meta;

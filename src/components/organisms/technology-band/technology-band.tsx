@@ -11,8 +11,7 @@ export function TechnologyBand({ messages }: TechnologyBandProps) {
     <Marquee
       items={technologies.map((name) => ({ id: name, content: name }))}
       label={messages.label}
-      pauseLabel={messages.pause}
-      playLabel={messages.play}
+      speed={110}
     />
   );
 }

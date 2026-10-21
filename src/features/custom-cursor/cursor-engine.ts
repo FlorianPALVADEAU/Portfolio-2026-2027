@@ -1,159 +1,151 @@
 import { gsap } from "gsap";
-import { type CursorKind, resolveCursorTarget } from "@/lib/cursor";
+import {
+  resolveCursorTarget,
+  type Spring,
+  stepSpring,
+  streakLength,
+  streakStrength,
+  swingAngle,
+} from "@/lib/cursor";
 import {
   activeScrollHint,
   hasFinePointer,
   onReducedMotionChange,
   prefersReducedMotion,
 } from "@/lib/motion";
-import { LABELLED, LOOKS } from "./cursor-looks";
-import { createTrailCanvas } from "./trail-canvas";
 
 const ACTIVE_CLASS = "cursor-custom";
-/** Higher is snappier: how quickly the dot closes the gap to the real pointer. */
-const FOLLOW_STIFFNESS = 22;
-const LINK_PULL = 0.28;
-const PRESS_SCALE = 0.82;
+/** Per second: how quickly the measured speed follows the pointer, so a pause calms the air. */
+const SPEED_SMOOTHING = 14;
+/** Each streak catches up at its own pace, so they stretch and fall back one after the other. */
+const STREAK_LAGS = [26, 17, 11] as const;
+const STREAK_SIZES = [1, 0.72, 0.5] as const;
+/** The hand is a solid object: it leans less than the arrow does. */
+const HAND_SWING = 0.5;
 
 type Parts = {
-  /** Fixed, zero-sized element that is moved to the pointer. */
+  /** Fixed, zero-sized element moved to the pointer; carries `data-shape`, `data-label`, `data-pressed`. */
   root: HTMLElement;
-  /** The shape that morphs; holds the fill layer and the labels. */
-  body: HTMLElement;
-  fill: HTMLElement;
-  canvas: HTMLCanvasElement;
+  /** Turns around the tip, which is the root's origin. */
+  swing: HTMLElement;
+  streaks: readonly SVGLineElement[];
+  /** Turns to the way the pointer goes; its streaks run back from the origin, so they trail behind. */
+  streakGroup: SVGGElement;
 };
 
 type Point = { x: number; y: number };
 
 /**
- * Runs the custom cursor: follows the pointer, picks a look for what is under it, morphs between
- * looks and draws the trail. Returns the cleanup. Does nothing without a fine pointer.
+ * Runs the custom cursor: sits on the pointer, picks a shape and a tag for what is under it, and
+ * lets the air play with it: the shape leans on a spring against the pointer's speed and a few
+ * thin streaks stretch out behind it when it is flicked. Returns the cleanup. Does nothing without
+ * a fine pointer.
  *
- * To debug, inspect `data-cursor-kind` on the root: it always holds the look being shown.
+ * To debug, read `data-shape` and `data-label` on the root: they always hold what is shown.
  */
-export function startCursor({ root, body, fill, canvas }: Parts): () => void {
+export function startCursor({ root, swing, streaks, streakGroup }: Parts): () => void {
   if (!hasFinePointer()) return () => {};
 
-  const labels = body.querySelectorAll<HTMLElement>("[data-cursor-label]");
-  const trail = createTrailCanvas(canvas);
   let reduced = prefersReducedMotion();
   const stopWatchingMotion = onReducedMotionChange((value) => {
     reduced = value;
-    if (value) trail.reset();
   });
 
   const pointer: Point = { x: 0, y: 0 };
-  const shown: Point = { x: 0, y: 0 };
-  let kind: CursorKind = "native";
-  let anchor: Element | null = null;
+  const last: Point = { x: 0, y: 0 };
+  const velocity: Point = { x: 0, y: 0 };
+  let lean: Spring = { value: 0, velocity: 0 };
+  const streakSpeed = STREAK_LAGS.map(() => 0);
+  let shape: string = "native";
   let inWindow = false;
-  let pressed = false;
+  let scrollHint = false;
+  let lastTarget: Element | null = null;
 
-  const duration = (seconds: number) => (reduced ? 0 : seconds);
-
-  const bodyScale = (visible: boolean) => {
-    if (!visible) return 0;
-    return pressed ? PRESS_SCALE : 1;
-  };
-
-  const renderLook = () => {
-    const look = LOOKS[kind];
-    const visible = look.visible && inWindow;
-    gsap.to(body, {
-      width: look.width,
-      height: look.height,
-      scale: bodyScale(visible),
-      duration: duration(0.55),
-      ease: "expo.out",
-      overwrite: "auto",
-    });
-    gsap.to(fill, { opacity: look.filled ? 1 : 0, duration: duration(0.3), overwrite: "auto" });
-    for (const label of labels) {
-      const lit = label.dataset.cursorLabel === kind && LABELLED.includes(kind);
-      gsap.to(label, { opacity: lit ? 1 : 0, duration: duration(0.25), overwrite: "auto" });
-    }
-    root.dataset.cursorKind = visible ? kind : "hidden";
+  const render = (next: ReturnType<typeof resolveCursorTarget>) => {
+    shape = next.shape;
+    const visible = inWindow && next.shape !== "native";
+    root.dataset.shape = visible ? next.shape : "hidden";
+    root.dataset.label = visible ? (next.label ?? "none") : "none";
     // The system pointer comes back wherever ours steps aside, so it is never lost.
     document.documentElement.classList.toggle(ACTIVE_CLASS, visible);
   };
+  const refresh = (target: Element | null) => render(resolveCursorTarget(target, scrollHint));
 
-  let scrollHint = false;
-  const setKind = (target: Element | null, force = false) => {
-    const next = resolveCursorTarget(target, scrollHint);
-    if (!force && next.kind === kind && next.anchor === anchor) return;
-    kind = next.kind;
-    anchor = next.anchor;
-    renderLook();
-  };
-
-  let lastTarget: Element | null = null;
   const onMove = (event: PointerEvent) => {
     if (event.pointerType === "touch") return;
     pointer.x = event.clientX;
     pointer.y = event.clientY;
     lastTarget = event.target as Element | null;
-    const entering = !inWindow;
-    if (entering) {
+    if (!inWindow) {
       inWindow = true;
-      shown.x = pointer.x;
-      shown.y = pointer.y;
-      trail.reset();
+      last.x = pointer.x;
+      last.y = pointer.y;
+      velocity.x = 0;
+      velocity.y = 0;
     }
-    setKind(lastTarget, entering);
+    refresh(lastTarget);
   };
   const onLeave = () => {
     inWindow = false;
-    renderLook();
+    refresh(null);
   };
   const onPress = (down: boolean) => () => {
-    pressed = down;
-    renderLook();
+    if (down) root.dataset.pressed = "";
+    else delete root.dataset.pressed;
   };
   const onDown = onPress(true);
   const onUp = onPress(false);
   // The page can scroll under a still pointer, which changes what is under it without a move.
   const onScroll = () => {
-    if (inWindow) setKind(document.elementFromPoint(pointer.x, pointer.y));
-  };
-
-  const goal = (): Point => {
-    if (kind !== "link" || !anchor) return pointer;
-    const rect = anchor.getBoundingClientRect();
-    return {
-      x: pointer.x + (rect.left + rect.width / 2 - pointer.x) * LINK_PULL,
-      y: pointer.y + (rect.top + rect.height / 2 - pointer.y) * LINK_PULL,
-    };
+    if (inWindow) refresh(document.elementFromPoint(pointer.x, pointer.y));
   };
 
   const watchScrollHint = () => {
     const hint = activeScrollHint() !== null;
     if (hint === scrollHint) return;
     scrollHint = hint;
-    if (inWindow) setKind(lastTarget);
+    if (inWindow) refresh(lastTarget);
+  };
+
+  const measureSpeed = (seconds: number) => {
+    const ease = 1 - Math.exp(-SPEED_SMOOTHING * seconds);
+    velocity.x += ((pointer.x - last.x) / seconds - velocity.x) * ease;
+    velocity.y += ((pointer.y - last.y) / seconds - velocity.y) * ease;
+    last.x = pointer.x;
+    last.y = pointer.y;
+  };
+
+  const playWithAir = (seconds: number) => {
+    const grip = shape === "hand" ? HAND_SWING : 1;
+    lean = stepSpring(lean, swingAngle(velocity.x) * grip, seconds);
+    swing.style.transform = `rotate(${lean.value}deg)`;
+
+    const speed = Math.hypot(velocity.x, velocity.y);
+    const heading = (Math.atan2(velocity.y, velocity.x) * 180) / Math.PI;
+    streakGroup.setAttribute("transform", `rotate(${heading})`);
+    streaks.forEach((line, index) => {
+      const lag = STREAK_LAGS[index] ?? 1;
+      const size = STREAK_SIZES[index] ?? 1;
+      const previous = streakSpeed[index] ?? 0;
+      const next = previous + (speed - previous) * (1 - Math.exp(-lag * seconds));
+      streakSpeed[index] = next;
+      const strength = streakStrength(next);
+      line.setAttribute("x2", String(-streakLength(strength) * size));
+      line.style.opacity = String(strength * size);
+    });
   };
 
   const tick = (_time: number, deltaMs: number) => {
     watchScrollHint();
-    if (!inWindow) {
-      trail.reset();
-      return;
-    }
-
-    const target = goal();
-    const follow = reduced ? 1 : 1 - Math.exp((-FOLLOW_STIFFNESS * deltaMs) / 1000);
-    shown.x += (target.x - shown.x) * follow;
-    shown.y += (target.y - shown.y) * follow;
-    root.style.transform = `translate3d(${shown.x}px, ${shown.y}px, 0)`;
-
-    if (reduced) return;
-    if (kind === "native") trail.reset();
-    else trail.follow(shown.x, shown.y);
+    if (!inWindow) return;
+    const seconds = Math.min(deltaMs, 50) / 1000;
+    root.style.transform = `translate3d(${pointer.x}px, ${pointer.y}px, 0)`;
+    if (reduced || seconds === 0) return;
+    measureSpeed(seconds);
+    playWithAir(seconds);
   };
 
   gsap.set(root, { visibility: "visible" });
-  gsap.set(body, { xPercent: -50, yPercent: -50, scale: 0 });
-  gsap.set(labels, { opacity: 0 });
   document.addEventListener("pointermove", onMove, { passive: true });
   document.addEventListener("pointerdown", onDown);
   document.addEventListener("pointerup", onUp);
@@ -170,8 +162,6 @@ export function startCursor({ root, body, fill, canvas }: Parts): () => void {
     document.documentElement.removeEventListener("pointerleave", onLeave);
     document.documentElement.classList.remove(ACTIVE_CLASS);
     root.style.visibility = "";
-    gsap.killTweensOf([body, fill, ...labels]);
     stopWatchingMotion();
-    trail.destroy();
   };
 }
