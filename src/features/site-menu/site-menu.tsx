@@ -107,7 +107,7 @@ export function SiteMenu({
         aria-controls={panelId}
         data-sound={open ? "close" : "open"}
         onClick={() => setOpen(!open)}
-        className="flip-host inline-flex h-11 cursor-pointer items-center gap-2 rounded-full bg-muted px-4 text-xs font-medium tracking-wider uppercase transition-colors duration-(--duration-fast) hover:bg-border"
+        className="flip-host inline-flex h-11 cursor-pointer items-center gap-2 rounded-full bg-muted px-4 text-xs font-medium tracking-wider uppercase transition-colors duration-(--duration-fast) hover:bg-foreground/15"
       >
         <FlipText>{open ? closeLabel : openLabel}</FlipText>
         <Icon

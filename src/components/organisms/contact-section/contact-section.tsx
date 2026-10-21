@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Container } from "@/components/atoms/container";
 import { Rise } from "@/components/atoms/rise";
 import { Section } from "@/components/atoms/section";
+import { ClientCards } from "@/components/molecules/client-cards";
 import { ProfileRow } from "@/components/molecules/profile-row";
 import { RiseReveal } from "@/features/rise-reveal";
 import type { Messages } from "@/lib/i18n";
@@ -64,6 +65,7 @@ export function ContactSection({
           {form}
           {details}
           {activity}
+          <ClientCards title={messages.clients} newTab={messages.newTab} />
         </RiseReveal>
       </Container>
     </Section>

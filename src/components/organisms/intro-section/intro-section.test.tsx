@@ -23,3 +23,11 @@ describe("IntroSection", () => {
     expect(screen.getByRole("region", { name: en.home.intro.clients })).toBeInTheDocument();
   });
 });
+
+describe("IntroSection trust line", () => {
+  it("states services, not a headcount", () => {
+    render(<IntroSection title="Introduction" messages={en.home.intro} />);
+
+    expect(screen.getByText("Services delivered for teams at")).toBeInTheDocument();
+  });
+});
