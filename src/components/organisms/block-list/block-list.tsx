@@ -58,11 +58,45 @@ type BlockListProps = {
   blocks: readonly Block[];
 };
 
-/** One story panel per block, for a `StoryRail`: any number of blocks, in the order authored. */
+/** Runs of blocks that are not pictures stay together, so the text reads as one band. */
+function groupBlocks(blocks: readonly Block[]): readonly (readonly Block[])[] {
+  const groups: Block[][] = [];
+  for (const block of blocks) {
+    const last = groups.at(-1);
+    if (last && last[0]?.type !== "media" && block.type !== "media") last.push(block);
+    else groups.push([block]);
+  }
+  return groups;
+}
+
+/**
+ * Story panels for a `StoryRail`, in the order authored: a picture gets a panel of its own, and
+ * the blocks around it that are not pictures share one, as columns side by side.
+ */
 export function BlockList({ blocks }: BlockListProps) {
-  return blocks.map((block) => (
-    <StoryPanel key={block.id} size={block.type === "media" ? "media" : "text"}>
-      {renderBlock(block)}
-    </StoryPanel>
-  ));
+  return groupBlocks(blocks).map((group) => {
+    const [first] = group;
+    if (!first) return null;
+    if (first.type === "media") {
+      return (
+        <StoryPanel key={first.id} size="media">
+          {renderBlock(first)}
+        </StoryPanel>
+      );
+    }
+    return (
+      <StoryPanel key={first.id} size="group">
+        <div className="flex flex-col gap-12 group-data-[rail=on]/rail:w-[max-content] group-data-[rail=on]/rail:flex-row group-data-[rail=on]/rail:items-start group-data-[rail=on]/rail:gap-16">
+          {group.map((block) => (
+            <div
+              key={block.id}
+              className="group-data-[rail=on]/rail:w-[min(80vw,24rem)] group-data-[rail=on]/rail:shrink-0"
+            >
+              {renderBlock(block)}
+            </div>
+          ))}
+        </div>
+      </StoryPanel>
+    );
+  });
 }

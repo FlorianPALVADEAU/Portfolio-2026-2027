@@ -20,13 +20,16 @@ type ProjectDetailProps = {
 };
 
 /**
- * A project as a story: the intro, the cover, then one panel per block. The stack and the links
- * are lifted into the intro, where they are seen first; every other block keeps its place.
+ * A project as a story: the intro, the text blocks together as one band of columns, then the
+ * cover and the pictures. The stack and the links are lifted into the intro, where they are seen
+ * first.
  */
 export function ProjectDetail({ locale, messages, project }: ProjectDetailProps) {
   const stack = project.blocks.find((block) => block.type === "stack");
   const links = project.blocks.find((block) => block.type === "links");
   const story = project.blocks.filter((block) => block.type !== "stack" && block.type !== "links");
+  const texts = story.filter((block) => block.type !== "media");
+  const visuals = story.filter((block) => block.type === "media");
 
   return (
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
@@ -47,10 +50,11 @@ export function ProjectDetail({ locale, messages, project }: ProjectDetailProps)
               : []
           }
         />
+        <BlockList blocks={texts} />
         <StoryPanel size="media">
           <MediaBlock image={project.cover} alt={project.cover.alt} priority />
         </StoryPanel>
-        <BlockList blocks={story} />
+        <BlockList blocks={visuals} />
       </StoryRail>
     </main>
   );

@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 const sizes = {
   /** The opening screen: wide enough for the title beside the facts. */
   intro: "group-data-[rail=on]/rail:w-[min(92vw,90rem)]",
+  /** Several text columns side by side: as wide as they are many. */
+  group: "group-data-[rail=on]/rail:w-[max-content]",
   /** Reading width: text, a short list. */
   text: "group-data-[rail=on]/rail:w-[min(88vw,38rem)]",
   /** Takes the width of what it holds: a picture sized to the screen height. */

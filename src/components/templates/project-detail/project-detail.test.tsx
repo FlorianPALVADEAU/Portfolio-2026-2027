@@ -35,7 +35,7 @@ describe("ProjectDetail", () => {
     expect(screen.getByText("Role")).toBeVisible();
     expect(screen.getByText("Developer")).toBeVisible();
     expect(screen.getByText("2026")).toBeVisible();
-    expect(screen.getByRole("link", { name: "Back to home" })).toHaveAttribute("href", "/en");
+    expect(screen.getByRole("link", { name: "Back to home" })).toHaveAttribute("href", "/en#works");
     expect(screen.getByRole("heading", { level: 2, name: "Overview" })).toBeVisible();
   });
 

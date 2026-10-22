@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   hasFinePointer,
+  jumpToTop,
   prefersReducedMotion,
   rememberLeftWork,
   takeWorkReturn,
@@ -160,7 +161,14 @@ function returnToCard(cover: ReelCover, veil: HTMLElement) {
     const box = cover.frame.getBoundingClientRect();
     return box.bottom > 0 && box.top < window.innerHeight;
   };
+  // The browser's own scroll restoration is not the same everywhere, so the card is brought to
+  // the middle of the screen here, again on every frame until the page has settled around it.
+  const bringIntoView = () => {
+    const box = cover.frame.getBoundingClientRect();
+    jumpToTop(window.scrollY + box.top - (window.innerHeight - box.height) / 2);
+  };
   const wait = () => {
+    if (!onCard()) bringIntoView();
     const ready = cover.state.ready && onCard();
     if (!(ready || performance.now() - started > RETURN_GIVE_UP_MS)) return;
     gsap.ticker.remove(wait);

@@ -32,9 +32,8 @@ export function ProjectIntro({
       <Entrance className="flex flex-1 flex-col justify-between gap-16 py-8 lg:py-0">
         <div data-entrance>
           <Link
-            href={`/${locale}`}
+            href={`/${locale}#works`}
             data-restore-scroll=""
-            data-keep-scroll=""
             data-no-cover=""
             className="inline-flex min-h-11 items-center"
           >
