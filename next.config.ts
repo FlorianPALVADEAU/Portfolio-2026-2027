@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 /** Folders of public files that change rarely; Next sends them with `max-age=0` unless told otherwise. */
-const STATIC_FOLDERS = ["sequence", "brand", "photos", "projects", "skills", "sfx"];
+const STATIC_FOLDERS = ["sequence", "brand", "photos", "projects", "skills", "sfx", "gallery"];
 const WEEK_SECONDS = 60 * 60 * 24 * 7;
 
 const nextConfig: NextConfig = {
@@ -10,8 +10,12 @@ const nextConfig: NextConfig = {
   // The fixed back button of project pages lives at the bottom left, where the indicator sits by default.
   devIndicators: { position: "bottom-right" },
   allowedDevOrigins: ["127.0.0.1"],
-  // Placeholder gallery photos; drop this once they are local files.
-  images: { remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }] },
+  // 92 is for the large whiteboard photo, where the default 75 smears the fine marker lines.
+  images: {
+    qualities: [75, 92],
+    // Album covers of the track shown in the footer.
+    remotePatterns: [{ protocol: "https", hostname: "i.scdn.co" }],
+  },
   async headers() {
     return STATIC_FOLDERS.map((folder) => ({
       source: `/${folder}/:path*`,

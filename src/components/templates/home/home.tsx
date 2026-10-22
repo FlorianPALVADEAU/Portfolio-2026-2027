@@ -17,6 +17,8 @@ type HomeProps = {
   messages: Messages["home"];
   /** Public URL of the CV in this language, when the file exists. */
   cvHref?: string | null;
+  /** Address of the contact line, from the environment; the line is left out without it. */
+  email?: string | undefined;
   /** Public URLs of the photos scattered on the hero. */
   heroPhotos?: readonly string[];
   /** Public URLs of the photos that follow the pointer in the about section. */
@@ -30,6 +32,7 @@ export function Home({
   locale,
   messages,
   cvHref,
+  email,
   heroPhotos,
   trailPhotos,
   projects,
@@ -73,6 +76,8 @@ export function Home({
         index={position("contact")}
         title={title.contact}
         messages={messages.contact}
+        cv={{ label: messages.cv, href: cvHref ?? null }}
+        email={email}
         {...contact}
       />
     </main>

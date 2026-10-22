@@ -43,7 +43,9 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
                     src={src}
                     alt=""
                     fill
-                    sizes="(min-width: 768px) 16vw, 34vw"
+                    // Wide photos are cropped to a narrow frame, so the file must be much wider than the frame.
+                    sizes="(min-width: 768px) 40vw, 80vw"
+                    quality={92}
                     className="object-cover"
                   />
                 </div>
@@ -69,27 +71,44 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
           data-sequence-fade
           className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-(--gutter) text-center"
         >
-          <p className="font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
+          <p
+            data-intro-step="0"
+            className="font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]"
+          >
             Florian Palvadeau
           </p>
-          <RotatingText
-            base={messages.opening.base}
-            phrases={messages.opening.phrases}
-            className="max-w-5xl text-[clamp(2.5rem,1rem+6vw,7rem)] leading-[0.95] font-semibold tracking-tight text-balance"
-          />
+          <div data-intro-step="1">
+            <RotatingText
+              base={messages.opening.base}
+              phrases={messages.opening.phrases}
+              className="max-w-5xl text-[clamp(2.5rem,1rem+6vw,7rem)] leading-[0.95] font-semibold tracking-tight text-balance"
+            />
+          </div>
         </div>
-        <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-3 px-(--gutter) md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-4 pb-6 font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
-          <span>{messages.badge}</span>
-          <span aria-hidden="true" className="hidden md:block" />
-          <span className="md:justify-self-end">
-            {cvHref && (
-              <Button asChild size="sm" variant="outline">
-                <a href={cvHref} download className="no-underline">
-                  {messages.cv}
-                </a>
-              </Button>
-            )}
+        <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-4 px-(--gutter) pb-8 font-mono text-xs tracking-widest text-foreground uppercase md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 md:pb-6 [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
+          <span
+            data-intro-step="3"
+            className="inline-flex h-10 w-full max-w-xs items-center justify-center gap-2.5 rounded-full border border-foreground/40 bg-foreground/10 px-5 text-center backdrop-blur-md md:w-auto md:max-w-none md:justify-self-start"
+          >
+            <span aria-hidden="true" className="relative flex size-2 shrink-0">
+              <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400 motion-reduce:hidden" />
+              <span className="relative size-2 rounded-full bg-emerald-400" />
+            </span>
+            {messages.badge}
           </span>
+          <span aria-hidden="true" className="hidden md:block" />
+          {cvHref && (
+            <Button
+              asChild
+              data-intro-step="3"
+              variant="outline"
+              className="h-10 w-full max-w-xs rounded-full border-foreground/40 bg-foreground/10 px-5 font-mono text-xs tracking-widest uppercase backdrop-blur-md hover:bg-foreground/20 md:w-auto md:max-w-none md:justify-self-end"
+            >
+              <a href={cvHref} download className="no-underline">
+                {messages.cv}
+              </a>
+            </Button>
+          )}
         </div>
       </ScrollSequence>
     </section>

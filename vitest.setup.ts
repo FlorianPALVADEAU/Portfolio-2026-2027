@@ -24,3 +24,19 @@ if (typeof window !== "undefined" && !window.ResizeObserver) {
     disconnect() {}
   };
 }
+
+// Nor IntersectionObserver; nothing is ever reported on screen, so ambient videos stay paused.
+if (typeof window !== "undefined" && !window.IntersectionObserver) {
+  window.IntersectionObserver = class {
+    readonly root = null;
+    readonly rootMargin = "";
+    readonly scrollMargin = "";
+    readonly thresholds = [];
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return [];
+    }
+  };
+}

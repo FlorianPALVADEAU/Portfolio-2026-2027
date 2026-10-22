@@ -59,10 +59,11 @@ export function EngineeringFrame({
           >
             <div data-frame-parallax="0.09" className="absolute inset-y-0 -inset-x-[14%]">
               <Image
-                src="/skills/engineering.jpg"
+                src="/gallery/whiteboard.webp"
                 alt=""
                 fill
-                sizes="45vw"
+                sizes="60vw"
+                quality={92}
                 className="object-cover"
               />
             </div>

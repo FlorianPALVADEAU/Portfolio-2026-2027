@@ -1,6 +1,9 @@
+/** The photos around the headline, taken from the gallery: the first one fills the first slot. */
+export const heroPhotos = ["/gallery/whiteboard.webp", "/gallery/geneva.webp"] as const;
+
 /**
  * Where the loosely placed hero photos sit, around the headline. A photo takes the slot of its
- * position in the folder; the last two are only shown from `md` up. `tilt` is a resting angle in
+ * position in `heroPhotos`; the last two are only shown from `md` up. `tilt` is a resting angle in
  * degrees, and each slot has its own size and shape so the group reads as hand-placed.
  */
 export const heroPhotoSlots = [

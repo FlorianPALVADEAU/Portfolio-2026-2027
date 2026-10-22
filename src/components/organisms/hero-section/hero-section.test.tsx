@@ -5,7 +5,7 @@ import { HeroSection } from "./hero-section";
 const messages = {
   badge: "Open to positions",
   role: "Full-stack software engineer",
-  headline: "From Geneva, I build software that holds.",
+  headline: "French developer, I build software that holds.",
   cv: "Download CV (PDF)",
   opening: { base: "Code", phrases: ["that holds.", "built to last."] },
 };
@@ -18,7 +18,7 @@ describe("HeroSection", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Florian Palvadeau. From Geneva, I build software that holds.",
+        name: "Florian Palvadeau. French developer, I build software that holds.",
       }),
     ).toBeInTheDocument();
   });

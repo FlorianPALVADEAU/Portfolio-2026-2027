@@ -138,3 +138,10 @@ html.lenis body {
     animation: player-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
+
+/* Held back while the loader covers the page; set on the root by `IntroEntrance`, never inline,
+   so the server HTML and the first client render still match. */
+html[data-intro-pending] [data-intro-step] {
+  opacity: 0;
+  visibility: hidden;
+}

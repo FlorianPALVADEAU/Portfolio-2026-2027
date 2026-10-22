@@ -15,7 +15,7 @@ export const skillGroups = [
       "Supabase",
     ],
   },
-  { id: "infrastructure", items: ["AWS", "Kubernetes", "GitHub Actions", "CI/CD"] },
+  { id: "infrastructure", items: ["AWS", "Kubernetes", "Docker", "Helm", "CI/CD"] },
   { id: "delivery", items: null },
   { id: "collaboration", items: null },
 ] as const;

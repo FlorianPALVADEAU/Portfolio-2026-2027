@@ -36,7 +36,7 @@
   "home": {
     "badge": "Open to positions, Switzerland",
     "role": "Full-stack software engineer",
-    "headline": "From Geneva, I build software that holds.",
+    "headline": "French developer, I build software that holds.",
     "sections": {
       "intro": "Introduction",
       "works": "Selected works",
@@ -57,21 +57,22 @@
     },
     "gallery": {
       "hint": "Scroll to dive in.",
-      "invitation": "I am open to full-stack roles in Geneva and the canton of Vaud from September 2027. If my work looks relevant to your team, reach out through one of these profiles.",
+      "invitation": "I am open to full-stack roles between Geneva and the canton of Vaud from September 2027. If my work looks relevant to your team, reach out through one of these profiles.",
       "images": {
-        "peak": "Snow-capped mountain peak at sunrise",
-        "meadow": "Green meadow under a wide sky",
-        "forest": "Tall trees in a misty forest",
-        "fog": "Hills rising out of the fog",
-        "lake": "Still mountain lake at dusk",
-        "shore": "Waves rolling onto a sandy shore",
-        "ocean": "Dark ocean wave breaking",
-        "field": "Golden field in late light",
-        "ridge": "Jagged mountain ridge against the sky",
-        "falls": "Waterfall dropping into a green gorge",
-        "valley": "Green valley between steep hills",
-        "road": "Dirt road through a forest",
-        "light": "Sunbeams over a wide field"
+        "portrait": "Smiling portrait in a red top, in the evening light",
+        "studio": "Smiling portrait in a white shirt against a dark, lit backdrop",
+        "golf": "Golf practice: a swing on a driving range under a cloudy sky",
+        "desk": "A developer at the keyboard in front of a screen, a notebook open beside it",
+        "rome": "In front of the Colosseum in Rome, in a pink shirt and white shorts",
+        "helmet": "Full-face helmet and orange goggles on a chairlift",
+        "newyork": "On a New York street, seen from behind, wearing a cap",
+        "geneva": "Couple selfie in front of the Geneva water jet",
+        "mic": "Speaking into a studio microphone",
+        "summit": "Arms wide on a viewing platform, in the mist",
+        "code": "A developer in front of a large code screen and a laptop",
+        "triathlon": "A cyclist next to a racing bike at a triathlon",
+        "build": "A laptop showing a 3D model, above a spreadsheet",
+        "whiteboard": "At a whiteboard, explaining a Kubernetes architecture diagram"
       }
     },
     "skills": {
@@ -155,14 +156,15 @@
         },
         "availability": {
           "value": "Sept. 2027",
-          "label": "Available, Geneva and the canton of Vaud"
+          "label": "Available, between Geneva and the canton of Vaud"
         }
       }
     },
     "contact": {
       "profiles": "Profiles",
+      "email": "Write me an email",
       "newTab": "opens in a new tab",
-      "location": "Geneva, Switzerland",
+      "location": "France, looking between Geneva and the canton of Vaud",
       "availability": "Available from September 2027",
       "clients": "Services and mission contexts",
       "form": {
@@ -198,9 +200,9 @@
         "more": "More"
       },
       "details": {
-        "title": "Find me",
-        "text": "I am looking for a role in Geneva and the canton of Vaud. The map shows the city, not an address.",
-        "time": "Local time",
+        "title": "Where I am looking",
+        "text": "I live in France and I am looking for a role between Geneva and the canton of Vaud. The map shows the target area, not an address.",
+        "time": "Time in Geneva",
         "phone": "Phone",
         "map": "Map of Geneva"
       }
@@ -215,7 +217,7 @@
     "photos": {
       "closing": {
         "alt": "The church of Saint-Saphorin between the Lavaux vineyards and Lake Geneva",
-        "caption": "Between Lavaux and Lake Geneva"
+        "caption": "Between Geneva and the canton of Vaud"
       }
     },
     "cv": "Download CV (PDF)"

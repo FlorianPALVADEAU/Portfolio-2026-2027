@@ -36,7 +36,7 @@
   "home": {
     "badge": "Offen für Stellen, Schweiz",
     "role": "Full-Stack-Softwareentwickler",
-    "headline": "Von Genf aus baue ich Software, die hält.",
+    "headline": "Als französischer Entwickler baue ich Software, die hält.",
     "sections": {
       "intro": "Einführung",
       "works": "Ausgewählte Projekte",
@@ -62,21 +62,22 @@
     },
     "gallery": {
       "hint": "Scrollen, um einzutauchen.",
-      "invitation": "Ab September 2027 bin ich offen für Full-Stack-Stellen in Genf und im Kanton Waadt. Wenn meine Arbeit für Ihr Team interessant ist, melden Sie sich über eines dieser Profile.",
+      "invitation": "Ab September 2027 bin ich offen für Full-Stack-Stellen zwischen Genf und dem Kanton Waadt. Wenn meine Arbeit für Ihr Team interessant ist, melden Sie sich über eines dieser Profile.",
       "images": {
-        "peak": "Schneebedeckter Berggipfel bei Sonnenaufgang",
-        "meadow": "Grüne Wiese unter weitem Himmel",
-        "forest": "Hohe Bäume in einem Nebelwald",
-        "fog": "Hügel, die aus dem Nebel ragen",
-        "lake": "Ruhiger Bergsee in der Dämmerung",
-        "shore": "Wellen an einem Sandstrand",
-        "ocean": "Brechende dunkle Meereswelle",
-        "field": "Goldenes Feld im Abendlicht",
-        "ridge": "Zerklüfteter Bergkamm vor dem Himmel",
-        "falls": "Wasserfall in einer grünen Schlucht",
-        "valley": "Grünes Tal zwischen steilen Hügeln",
-        "road": "Feldweg durch einen Wald",
-        "light": "Sonnenstrahlen über einem weiten Feld"
+        "portrait": "Lächelndes Porträt in einem roten Oberteil im Abendlicht",
+        "studio": "Lächelndes Porträt im weissen Hemd vor dunklem, beleuchtetem Hintergrund",
+        "golf": "Golftraining: ein Schwung auf der Driving Range unter bewölktem Himmel",
+        "desk": "Ein Entwickler an der Tastatur vor einem Bildschirm, daneben ein offenes Notizbuch",
+        "rome": "Vor dem Kolosseum in Rom, im rosa Hemd und in weissen Shorts",
+        "helmet": "Integralhelm und orange Schutzbrille in einem Sessellift",
+        "newyork": "In einer Strasse in New York, von hinten, mit Cap",
+        "geneva": "Paar-Selfie vor der Wasserfontäne von Genf",
+        "mic": "Beim Sprechen in ein Studiomikrofon",
+        "summit": "Mit ausgebreiteten Armen auf einer Aussichtsplattform im Nebel",
+        "code": "Ein Entwickler vor einem grossen Code-Bildschirm und einem Laptop",
+        "triathlon": "Radfahrer neben seinem Rennrad bei einem Triathlon",
+        "build": "Ein Laptop mit einem 3D-Modell über einer Tabelle",
+        "whiteboard": "An einem Whiteboard, beim Erklären eines Kubernetes-Architekturdiagramms"
       }
     },
     "skills": {
@@ -160,14 +161,15 @@
         },
         "availability": {
           "value": "Sept. 2027",
-          "label": "Verfügbar, Genf und Kanton Waadt"
+          "label": "Verfügbar, zwischen Genf und dem Kanton Waadt"
         }
       }
     },
     "contact": {
       "profiles": "Profile",
+      "email": "Schreiben Sie mir eine E-Mail",
       "newTab": "öffnet in einem neuen Tab",
-      "location": "Genf, Schweiz",
+      "location": "Frankreich, Suche zwischen Genf und dem Kanton Waadt",
       "availability": "Verfügbar ab September 2027",
       "clients": "Leistungen und Einsatzkontexte",
       "form": {
@@ -203,9 +205,9 @@
         "more": "Mehr"
       },
       "details": {
-        "title": "Wo Sie mich finden",
-        "text": "Ich suche eine Stelle in Genf und im Kanton Waadt. Die Karte zeigt die Stadt, keine Adresse.",
-        "time": "Ortszeit",
+        "title": "Wo ich suche",
+        "text": "Ich lebe in Frankreich und suche eine Stelle zwischen Genf und dem Kanton Waadt. Die Karte zeigt das Zielgebiet, keine Adresse.",
+        "time": "Zeit in Genf",
         "phone": "Telefon",
         "map": "Karte von Genf"
       }
@@ -220,7 +222,7 @@
     "photos": {
       "closing": {
         "alt": "Die Kirche von Saint-Saphorin zwischen den Weinbergen des Lavaux und dem Genfersee",
-        "caption": "Zwischen Lavaux und Genfersee"
+        "caption": "Zwischen Genf und dem Kanton Waadt"
       }
     },
     "cv": "Lebenslauf herunterladen (PDF)"

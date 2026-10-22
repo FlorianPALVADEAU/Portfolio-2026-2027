@@ -70,6 +70,7 @@ export function SoundToggle({ onLabel, offLabel }: SoundToggleProps) {
     <Button
       variant="secondary"
       size="icon"
+      data-sound-toggle=""
       aria-label={enabled ? onLabel : offLabel}
       onPointerEnter={warmMusic}
       onFocus={warmMusic}

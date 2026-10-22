@@ -186,11 +186,14 @@ export function SiteFooter({ locale, nav, availability, cv, messages }: SiteFoot
               className="border-0 bg-transparent px-0 py-0"
             />
           </Rise>
-          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 border-t border-background/15 pt-5 text-sm">
-            <div className="flex min-w-0 flex-col gap-3">
-              <Rise>
-                <nav aria-label={messages.navigation}>
-                  <ul className="flex flex-wrap gap-x-6 gap-y-2">
+          <div className="flex flex-col gap-8 border-t border-background/15 pt-6 text-sm">
+            <div className="grid gap-8 md:grid-cols-12 md:items-end">
+              <Rise className="md:col-span-7">
+                <nav aria-label={messages.navigation} className="flex flex-col gap-3">
+                  <p aria-hidden="true" className={`text-background/50 ${monoLabel}`}>
+                    {messages.navigation}
+                  </p>
+                  <ul className="grid grid-cols-2 gap-x-10 gap-y-2.5 text-base sm:grid-cols-3 md:w-fit">
                     {navSections.map((id) => (
                       <li key={id}>
                         <Link href={`/${locale}#${id}`} data-jump="" className={linkClass}>
@@ -201,20 +204,20 @@ export function SiteFooter({ locale, nav, availability, cv, messages }: SiteFoot
                   </ul>
                 </nav>
               </Rise>
-              <NowPlaying
-                messages={messages.nowPlaying}
-                className="text-sm"
-                linkClassName={linkClass}
-              />
+              <div className="md:col-span-5 md:justify-self-end">
+                <NowPlaying messages={messages.nowPlaying} />
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-6 border-t border-background/15 pt-5">
               <Rise>
                 <p className="text-background/70">{messages.legal}</p>
               </Rise>
+              <Rise>
+                <Magnetic strength={0.3}>
+                  <BackToTop label={messages.top} />
+                </Magnetic>
+              </Rise>
             </div>
-            <Rise>
-              <Magnetic strength={0.3}>
-                <BackToTop label={messages.top} />
-              </Magnetic>
-            </Rise>
           </div>
         </div>
       </FooterReveal>

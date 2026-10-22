@@ -13,6 +13,10 @@ type ContactSectionProps = {
   /** Accessible name; the visible heading is the closing text of the gallery above. */
   title: string;
   messages: Messages["home"]["contact"];
+  /** Last line of the profile index, shown when the CV file exists. */
+  cv?: { label: string; href: string | null };
+  /** Address to write to, read from the environment; without it the line is left out. */
+  email?: string | undefined;
   /** Writing, where to find the owner and activity, in the order they are read. */
   form?: ReactNode;
   details?: ReactNode;
@@ -28,6 +32,8 @@ export function ContactSection({
   index,
   title,
   messages,
+  cv,
+  email,
   form,
   details,
   activity,
@@ -60,6 +66,29 @@ export function ContactSection({
                   </Rise>
                 </li>
               ))}
+              {cv?.href && (
+                <li>
+                  <Rise>
+                    <ProfileRow
+                      order={profiles.length + 1}
+                      label={cv.label}
+                      href={cv.href}
+                      download
+                    />
+                  </Rise>
+                </li>
+              )}
+              {email && (
+                <li>
+                  <Rise>
+                    <ProfileRow
+                      order={profiles.length + (cv?.href ? 2 : 1)}
+                      label={messages.email}
+                      href={`mailto:${email}`}
+                    />
+                  </Rise>
+                </li>
+              )}
             </ul>
           </div>
           {form}

@@ -9,7 +9,7 @@ const meta = {
     messages: {
       badge: "Open to positions, Switzerland",
       role: "Full-stack software engineer",
-      headline: "From Geneva, I build software that holds.",
+      headline: "French developer, I build software that holds.",
       cv: "Download CV (PDF)",
       opening: { base: "Code", phrases: ["that holds.", "built to last."] },
     },
