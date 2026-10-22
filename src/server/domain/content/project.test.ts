@@ -33,10 +33,18 @@ describe("ProjectStructure", () => {
     expect(Schema.decodeUnknownSync(ProjectStructure)(structure).slug).toBe("sample-project");
   });
 
+  it("accepts a cover with a depth map", () => {
+    const cover = { ...structure.cover, depth: "/projects/sample/depth.webp" };
+    expect(Schema.decodeUnknownSync(ProjectStructure)({ ...structure, cover }).cover.depth).toBe(
+      "/projects/sample/depth.webp",
+    );
+  });
+
   it.each([
     ["a bad slug", { ...structure, slug: "Not A Slug" }],
     ["an unknown block type", { ...structure, blocks: [{ id: "x", type: "video" }] }],
     ["no blocks", { ...structure, blocks: [] }],
+    ["an empty depth map path", { ...structure, cover: { ...structure.cover, depth: "" } }],
     ["a non positive image size", { ...structure, cover: { ...structure.cover, width: 0 } }],
   ])("rejects %s", (_, input) => {
     expect(() => Schema.decodeUnknownSync(ProjectStructure)(input)).toThrow();

@@ -12,6 +12,8 @@ export const ProjectStructure = Schema.Struct({
     src: NonEmpty,
     width: Schema.Number.check(Schema.isInt(), Schema.isGreaterThan(0)),
     height: Schema.Number.check(Schema.isInt(), Schema.isGreaterThan(0)),
+    /** Grayscale depth map of the cover, same framing, white is near. Enables the hover parallax. */
+    depth: Schema.optionalKey(NonEmpty),
   }),
   blocks: Schema.NonEmptyArray(BlockStructure),
 });

@@ -17,7 +17,11 @@ export const loadProject = (slug: string, locale: string) =>
     decodeStructure: Schema.decodeUnknownEffect(ProjectStructure),
     decodeText: (structure: ProjectStructure, input) =>
       Schema.decodeUnknownEffect(projectTextSchema(structure))(input),
-    media: (structure: ProjectStructure) => [structure.cover.src, ...blockMedia(structure.blocks)],
+    media: (structure: ProjectStructure) => [
+      structure.cover.src,
+      ...(structure.cover.depth ? [structure.cover.depth] : []),
+      ...blockMedia(structure.blocks),
+    ],
   }).pipe(
     Effect.map(
       ({ structure, text }): Project => ({

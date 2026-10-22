@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dynamic from "next/dynamic";
 import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { prefersReducedMotion } from "@/lib/motion";
+import { hasFinePointer, prefersReducedMotion } from "@/lib/motion";
 import { canRenderScene } from "@/lib/scene";
 import { playIfEnabled, preloadFocusIfEnabled } from "@/lib/sound";
 import { type CoverState, type ReelCover, restingState } from "./reel-cover";
@@ -84,6 +84,39 @@ function pullFocus(state: CoverState): gsap.core.Timeline {
     pull.to(state, { shutter: 0, duration: 0.12, ease: "power2.out" }, time + 0.04);
   }
   return pull.timeScale(PULL_SPEED);
+}
+
+/** Touch screens have no hover and no cheap point of view, so they never fetch a depth map. */
+function depthMapFor(image: HTMLImageElement): string | undefined {
+  return hasFinePointer() ? image.dataset.reelDepth : undefined;
+}
+
+/** Seconds the point of view takes to follow the pointer, and to come back to the centre. */
+const LOOK_DURATION = 0.9;
+
+/**
+ * Turns the pointer position over the frame into a point of view, -1 to 1 on each axis with up
+ * positive, eased so it never jumps and drifts back to the centre when the pointer leaves.
+ */
+function followPointer(item: HTMLElement, frame: HTMLElement, state: CoverState): () => void {
+  const setting = { duration: LOOK_DURATION, ease: "power3.out" };
+  const lookX = gsap.quickTo(state, "lookX", setting);
+  const lookY = gsap.quickTo(state, "lookY", setting);
+  const move = (event: PointerEvent) => {
+    const box = frame.getBoundingClientRect();
+    lookX(gsap.utils.clamp(-1, 1, ((event.clientX - box.left) / box.width) * 2 - 1));
+    lookY(gsap.utils.clamp(-1, 1, 1 - ((event.clientY - box.top) / box.height) * 2));
+  };
+  const rest = () => {
+    lookX(0);
+    lookY(0);
+  };
+  item.addEventListener("pointermove", move);
+  item.addEventListener("pointerleave", rest);
+  return () => {
+    item.removeEventListener("pointermove", move);
+    item.removeEventListener("pointerleave", rest);
+  };
 }
 
 /**
@@ -225,7 +258,7 @@ function revealTextOnEnter(item: HTMLElement, restores: Array<() => void>) {
  * Carries the visitor through the project list. Covers are drawn as planes in one canvas and bend
  * like the inside of a tube while the page moves, rows appear in pairs that straighten and grow,
  * titles roll in letter by letter and tags decode from noise.
- * Marked descendants: `data-reel-cell`, `data-reel-item`, `data-reel-frame`, `data-reel-image`,
+ * Marked descendants: `data-reel-cell`, `data-reel-item`, `data-reel-frame`, `data-reel-image` (and optional `data-reel-depth`),
  * `data-reel-title`, `data-reel-tags`. Without WebGL or with reduced motion the DOM covers stay
  * and the list stays a plain list.
  */
@@ -274,7 +307,9 @@ export function WorksReel({ children }: { children: ReactNode }) {
         const state = restingState();
         appearOnScroll(state, cell, container);
         restores.push(followHover(item, state));
-        planes.push({ id: `cover-${index}`, frame, image, state });
+        const depthSrc = depthMapFor(image);
+        if (depthSrc) restores.push(followPointer(item, frame, state));
+        planes.push({ id: `cover-${index}`, frame, image, depthSrc, state });
       });
     }, container);
     setCovers(planes);

@@ -13,7 +13,7 @@ const meta = {
       summary: "A placeholder that exercises every content block.",
       role: "Full-stack developer",
       year: 2026,
-      cover: { src: "/projects/overbound/cover.png", width: 1600, height: 900, alt: "Cover" },
+      cover: { src: "/projects/overbound/cover.webp", width: 1920, height: 1280, alt: "Cover" },
       blocks: [
         { id: "overview", type: "text", title: "Overview", paragraphs: ["A short paragraph."] },
         { id: "stack", type: "stack", title: "Stack", items: ["TypeScript", "Next.js"] },

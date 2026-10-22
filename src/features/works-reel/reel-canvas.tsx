@@ -2,7 +2,14 @@
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { type Mesh, PlaneGeometry, ShaderMaterial, SRGBColorSpace, Texture } from "three";
+import {
+  type Mesh,
+  PlaneGeometry,
+  ShaderMaterial,
+  SRGBColorSpace,
+  Texture,
+  TextureLoader,
+} from "three";
 import { coverRatio, type ReelCover } from "./reel-cover";
 import { followTarget, pinchTarget } from "./reel-physics";
 import { fragmentShader, vertexShader } from "./reel-shader";
@@ -20,6 +27,8 @@ const HOVER_ZOOM = 0.05;
 /** Largest slide of the picture, as a share of its size, at full shake. */
 const SHAKE_X = 0.01;
 const SHAKE_Y = 0.003;
+/** Largest slide of the picture between its nearest and farthest pixels, as a share of its size. */
+const PARALLAX = 0.034;
 
 /** Unsteady-hand offset: two out-of-phase waves per axis, never beyond the shake limits. */
 function handShake(seconds: number, strength: number): [number, number] {
@@ -57,6 +66,7 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
   const size = useThree((state) => state.size);
   const mesh = useRef<Mesh>(null);
   const [texture, setTexture] = useState<Texture | null>(null);
+  const [depthMap, setDepthMap] = useState<Texture | null>(null);
 
   const { geometry, material, uniforms } = useMemo(() => {
     const uniforms = {
@@ -71,6 +81,9 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
       uFocus: { value: 0.5 },
       uShutter: { value: 0 },
       uShake: { value: [0, 0] as [number, number] },
+      uDepthMap: { value: null as Texture | null },
+      uLook: { value: [0, 0] as [number, number] },
+      uParallax: { value: 0 },
     };
     return {
       geometry: new PlaneGeometry(1, 1, 24, 24),
@@ -103,6 +116,26 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
     };
   }, [cover]);
 
+  useEffect(() => {
+    if (!cover.depthSrc) return;
+    let cancelled = false;
+    let loaded: Texture | null = null;
+    new TextureLoader().load(cover.depthSrc, (depth) => {
+      if (cancelled) {
+        depth.dispose();
+        return;
+      }
+      // Depth is data, not colour: no colour space and no mipmaps, so values stay exact.
+      depth.generateMipmaps = false;
+      loaded = depth;
+      setDepthMap(depth);
+    });
+    return () => {
+      cancelled = true;
+      loaded?.dispose();
+    };
+  }, [cover.depthSrc]);
+
   // The DOM frame keeps its layout, alt text and focus ring; only its pixels give way to the plane.
   useEffect(() => {
     if (!texture) return;
@@ -129,7 +162,7 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
     plane.visible = visible;
     if (!(visible && texture)) return;
 
-    const { tilt, grow, zoom, hover, blur, focus, shutter, shake } = cover.state;
+    const { tilt, grow, zoom, hover, blur, focus, shutter, shake, lookX, lookY } = cover.state;
     const width = box.width * grow;
     const height = box.height * grow;
     const pixels = texture.image as HTMLCanvasElement;
@@ -146,9 +179,13 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
     uniforms.uRatio.value = coverRatio(pixels.width / pixels.height, width / height);
     uniforms.uSize.value = [width, height];
     // Zooming in by exactly the room the shake needs keeps the picture inside its frame.
-    const reach = Math.max(SHAKE_X, SHAKE_Y) * shake;
+    const parallax = depthMap ? PARALLAX * hover : 0;
+    const reach = Math.max(SHAKE_X, SHAKE_Y) * shake + parallax / 2;
     uniforms.uZoom.value = (zoom * (1 + HOVER_ZOOM * hover)) / (1 - 2 * reach);
     uniforms.uShake.value = handShake(performance.now() / 1000, shake);
+    uniforms.uDepthMap.value = depthMap;
+    uniforms.uLook.value = [lookX, lookY];
+    uniforms.uParallax.value = parallax;
     uniforms.uBlur.value = blur;
     uniforms.uFocus.value = focus;
     uniforms.uShutter.value = shutter;

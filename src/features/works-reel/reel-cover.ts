@@ -16,6 +16,9 @@ export type CoverState = {
   shutter: number;
   /** Strength of the hand-held shake, 0 is steady. */
   shake: number;
+  /** Where the pointer looks from over the cover, -1 to 1 on each axis, 0 at the centre. */
+  lookX: number;
+  lookY: number;
 };
 
 /** A DOM cover and the plane that replaces it on screen. */
@@ -23,11 +26,24 @@ export type ReelCover = {
   id: string;
   frame: HTMLElement;
   image: HTMLImageElement;
+  /** Depth map of the picture; only set where the pointer can hover. */
+  depthSrc: string | undefined;
   state: CoverState;
 };
 
 export function restingState(): CoverState {
-  return { tilt: 0, grow: 1, zoom: 1, hover: 0, blur: 0, focus: 0.5, shutter: 0, shake: 0 };
+  return {
+    tilt: 0,
+    grow: 1,
+    zoom: 1,
+    hover: 0,
+    blur: 0,
+    focus: 0.5,
+    shutter: 0,
+    shake: 0,
+    lookX: 0,
+    lookY: 0,
+  };
 }
 
 /**

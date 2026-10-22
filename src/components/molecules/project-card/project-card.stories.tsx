@@ -11,9 +11,9 @@ const meta = {
     year: 2026,
     stack: ["Next.js", "Supabase", "Stripe", "Sanity"],
     cover: {
-      src: "/projects/overbound/cover.png",
-      width: 1600,
-      height: 900,
+      src: "/projects/overbound/cover.webp",
+      width: 1920,
+      height: 1280,
       alt: "Overbound cover",
     },
   },
