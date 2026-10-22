@@ -24,7 +24,7 @@ export const vertexShader = /* glsl */ `
 /**
  * Cover-fit picture with a zoom, clipped to a rounded rectangle with a soft edge. A focus pull
  * blurs each row of the picture by its distance from the focal line `uFocus`, like depth of field;
- * `uShutter` dips the exposure for a frame and `uShake` slides the picture like an unsteady hand.
+ * `uShake` slides the picture like an unsteady hand.
  * With a depth map, `uLook` moves the point of view: each pixel slides by its depth, so near
  * parts travel further than far ones. `uParallax` is the largest slide, 0 turns the effect off.
  */
@@ -36,7 +36,6 @@ export const fragmentShader = /* glsl */ `
   uniform float uRadius;
   uniform float uBlur;
   uniform float uFocus;
-  uniform float uShutter;
   uniform vec2 uShake;
   uniform sampler2D uDepthMap;
   uniform vec2 uLook;
@@ -46,7 +45,7 @@ export const fragmentShader = /* glsl */ `
   varying vec2 vUv;
 
   const int TAPS = 24;
-  const float MAX_BLUR = 0.009;
+  const float MAX_BLUR = 0.012;
   const float GOLDEN_ANGLE = 2.39996323;
   const int DEPTH_PASSES = 4;
   // Growth of each tap's footprint at full defocus: a tap then covers the gap to its neighbours, so
@@ -90,7 +89,6 @@ export const fragmentShader = /* glsl */ `
       }
       color = sum / float(TAPS + 1);
     }
-    color.rgb *= 1.0 - 0.22 * uShutter;
     color.rgb = mix(color.rgb, uTint, uTintMix);
 
     vec2 corner = abs((vUv - 0.5) * uSize) - (uSize * 0.5 - uRadius);

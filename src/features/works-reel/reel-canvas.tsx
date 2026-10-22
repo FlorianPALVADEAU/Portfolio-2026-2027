@@ -89,7 +89,6 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
       uHalfHeight: { value: 1 },
       uBlur: { value: 0 },
       uFocus: { value: 0.5 },
-      uShutter: { value: 0 },
       uShake: { value: [0, 0] as [number, number] },
       uDepthMap: { value: null as Texture | null },
       uLook: { value: [0, 0] as [number, number] },
@@ -196,7 +195,7 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
     plane.visible = visible;
     if (!(visible && texture)) return;
 
-    const { tilt, grow, zoom, hover, blur, focus, shutter, shake, lookX, lookY } = cover.state;
+    const { tilt, grow, zoom, hover, blur, focus, shake, lookX, lookY } = cover.state;
     const { cup, lean, tint, tintColor } = cover.state;
     const width = lerp(box.width * grow, size.width * OVERSCAN, fill);
     const height = lerp(box.height * grow, size.height * OVERSCAN, fill);
@@ -228,7 +227,6 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
     uniforms.uTintMix.value = tint;
     uniforms.uBlur.value = blur;
     uniforms.uFocus.value = focus;
-    uniforms.uShutter.value = shutter;
     uniforms.uDepth.value = depth * bend.current;
     uniforms.uHalfHeight.value = size.height / 2;
     cover.state.ready = true;

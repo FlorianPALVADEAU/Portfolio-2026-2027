@@ -63,8 +63,8 @@ function appearOnScroll(state: CoverState, cell: HTMLElement, container: HTMLEle
 
 /**
  * A photographer racking focus with a hand-held camera: the picture starts a little out of focus,
- * the focal line sweeps across it and hunts back and forth while the hand trembles, the shutter
- * dips twice, and everything settles to a sharp, steady picture.
+ * the focal line sweeps across it and hunts back and forth while the hand trembles,
+ * and everything settles to a sharp, steady picture.
  * Each step is `[focus, blur, shake, seconds]`.
  */
 const FOCUS_HUNT: ReadonlyArray<readonly [number, number, number, number]> = [
@@ -78,8 +78,6 @@ const FOCUS_HUNT: ReadonlyArray<readonly [number, number, number, number]> = [
 ];
 /** The table above is timed at its natural pace; the pull plays this many times faster. */
 const PULL_SPEED = 1.4;
-/** Seconds into the pull at which the shutter dips. */
-const SHUTTER_AT = [0.3, 0.78] as const;
 
 function pullFocus(state: CoverState): gsap.core.Timeline {
   const pull = gsap.timeline();
@@ -87,10 +85,6 @@ function pullFocus(state: CoverState): gsap.core.Timeline {
   for (const [focus, blur, shake, seconds] of FOCUS_HUNT) {
     pull.to(state, { focus, blur, shake, duration: seconds, ease: "power2.inOut" }, at);
     at += seconds;
-  }
-  for (const time of SHUTTER_AT) {
-    pull.to(state, { shutter: 1, duration: 0.04, ease: "none" }, time);
-    pull.to(state, { shutter: 0, duration: 0.12, ease: "power2.out" }, time + 0.04);
   }
   return pull.timeScale(PULL_SPEED);
 }
@@ -233,7 +227,7 @@ function followHover(item: HTMLElement, state: CoverState): () => void {
     zoomOut();
     pull?.kill();
     pull = null;
-    gsap.to(state, { blur: 0, shake: 0, shutter: 0, duration: 0.2, overwrite: "auto" });
+    gsap.to(state, { blur: 0, shake: 0, duration: 0.2, overwrite: "auto" });
   };
   item.addEventListener("pointerenter", enter);
   item.addEventListener("pointerleave", leave);
