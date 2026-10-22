@@ -8,19 +8,17 @@ type TextBlockProps = {
 
 export function TextBlock({ title, paragraphs }: TextBlockProps) {
   return (
-    <div className="grid gap-6 md:grid-cols-12">
+    <div className="flex flex-col gap-4">
       {title && (
-        <Heading level={2} className="md:col-span-4">
+        <Heading level={2} size="xl">
           {title}
         </Heading>
       )}
-      <div className="flex flex-col gap-4 md:col-span-7 md:col-start-6">
-        {paragraphs.map((paragraph) => (
-          <Text key={paragraph} className="max-w-prose">
-            {paragraph}
-          </Text>
-        ))}
-      </div>
+      {paragraphs.map((paragraph) => (
+        <Text key={paragraph} size="sm" className="max-w-[62ch] leading-relaxed">
+          {paragraph}
+        </Text>
+      ))}
     </div>
   );
 }

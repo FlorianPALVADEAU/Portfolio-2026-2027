@@ -45,12 +45,12 @@ export function ProjectIntro({
           <Heading
             level={1}
             size="display"
-            className="text-[clamp(3.25rem,8vw,9rem)] leading-[0.92] lg:col-span-7"
+            className="text-[clamp(3rem,7vw,7.5rem)] leading-[0.92] lg:col-span-7"
           >
             {title}
           </Heading>
           <div className="flex flex-col gap-8 lg:col-span-5 lg:pb-3">
-            <Text data-entrance className="max-w-[40ch] text-pretty">
+            <Text data-entrance size="sm" className="max-w-[44ch] text-pretty leading-relaxed">
               {summary}
             </Text>
             <dl data-entrance className="grid grid-cols-2 gap-x-8 gap-y-5 text-sm">

@@ -8,17 +8,19 @@ type ResultsBlockProps = {
 
 export function ResultsBlock({ title, items }: ResultsBlockProps) {
   return (
-    <div className="grid gap-6 md:grid-cols-12">
-      <Heading level={2} className="md:col-span-4">
+    <div className="flex flex-col gap-5">
+      <Heading level={2} size="xl">
         {title}
       </Heading>
-      <dl className="grid gap-8 sm:grid-cols-2 md:col-span-7 md:col-start-6">
+      <dl className="grid gap-6 sm:grid-cols-2">
         {items.map((item) => (
           <div key={item.label} className="flex flex-col-reverse justify-end gap-1">
             <dt>
-              <Text as="span">{item.label}</Text>
+              <Text as="span" size="sm">
+                {item.label}
+              </Text>
             </dt>
-            <dd className="text-[clamp(2.75rem,6vw,5rem)] leading-none font-semibold tracking-tight">
+            <dd className="text-[clamp(2rem,3.5vw,3rem)] leading-none font-semibold tracking-tight">
               {item.value}
             </dd>
           </div>

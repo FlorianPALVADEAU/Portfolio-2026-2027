@@ -9,18 +9,14 @@ type LinksBlockProps = {
 
 export function LinksBlock({ title, items, labels }: LinksBlockProps) {
   return (
-    <div className="grid gap-6 md:grid-cols-12">
-      <Heading level={2} className="md:col-span-4">
+    <div className="flex flex-col gap-4">
+      <Heading level={2} size="xl">
         {title}
       </Heading>
-      <ul className="flex flex-col gap-2 md:col-span-7 md:col-start-6">
+      <ul className="flex flex-col gap-1">
         {items.map(({ id, href }) => (
           <li key={id}>
-            <Link
-              href={href}
-              external
-              className="inline-flex min-h-11 items-center text-[clamp(1.25rem,2.1vw,1.875rem)]"
-            >
+            <Link href={href} external className="inline-flex min-h-11 items-center text-base">
               {labels[id] ?? id}
             </Link>
           </li>
