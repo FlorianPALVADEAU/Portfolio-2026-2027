@@ -1,5 +1,6 @@
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { openIntro } from "@/lib/intro";
 import { IntroEntrance } from "./intro-entrance";
 
 const reduced = vi.hoisted(() => ({ value: false }));
@@ -41,6 +42,9 @@ describe("IntroEntrance", () => {
 
     expect(document.querySelector("main")).toHaveAttribute("inert");
     expect(document.querySelector("[data-intro-loader]")).not.toHaveAttribute("inert");
+
+    act(() => openIntro());
+    expect(document.querySelector("main")).not.toHaveAttribute("inert");
 
     unmount();
   });

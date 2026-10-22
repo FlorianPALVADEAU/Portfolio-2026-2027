@@ -15,8 +15,9 @@ import {
 const GESTURES = ["pointerdown", "keydown", "touchend", "click"] as const;
 
 // The keyboard never turns sound on by itself: a screen-reader user's first key must not start audio
-// over their reader (WCAG 1.4.2). Only the switch, or a pointer, opts a new visitor in.
-const OPT_IN_GESTURES = ["pointerdown", "touchend", "click"] as const;
+// over their reader (WCAG 1.4.2). Only the switch, or a pointer, opts a new visitor in; `click` is
+// left out because pressing Enter or Space on a focused control fires one too.
+const OPT_IN_GESTURES = ["pointerdown", "touchend"] as const;
 
 // Module scope survives a remount, and lets a muted visitor skip loading the engine just to stop it.
 let requested = false;

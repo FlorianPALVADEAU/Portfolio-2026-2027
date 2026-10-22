@@ -29,8 +29,10 @@ const PAPER = [0.1, 0.65] as const;
 const WHOOSH_GAP_MS = 140;
 /** How far a photo at the side of the frame pulls its whoosh towards that ear. */
 const WHOOSH_PAN = 0.8;
-/** Resting sway of a touch screen, which has no pointer to follow. */
-/** The idle drift of touch screens stops after `seconds`, easing out over the last `fade`, so it never runs unattended (WCAG 2.2.2). */
+/**
+ * Resting sway of a touch screen, which has no pointer to follow. It stops after `seconds`, easing
+ * out over the last `fade`, so it never runs unattended (WCAG 2.2.2).
+ */
 const SWAY = { x: 0.5, y: 0.35, period: 8, seconds: 10, fade: 2 } as const;
 
 type ZoomGalleryProps = {

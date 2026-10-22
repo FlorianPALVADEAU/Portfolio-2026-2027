@@ -35,6 +35,8 @@ describe("BackgroundMusic first action", () => {
 
     fireEvent.keyDown(document.body, { key: "Enter" });
     fireEvent.keyDown(document.body, { key: "ArrowDown" });
+    // The click a browser synthesises when Enter or Space activates a focused button.
+    fireEvent.click(document.body, { detail: 0 });
 
     expect(sound.getSoundEnabled()).toBe(false);
   });
