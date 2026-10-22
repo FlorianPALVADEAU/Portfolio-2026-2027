@@ -1,20 +1,21 @@
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { cvFileName, findCv } from "./find-cv";
+import { cvRelativePath, findCv } from "./find-cv";
 
 describe("findCv", () => {
-  it("names one file per language", () => {
-    expect(cvFileName("fr")).toBe("cv-fr.pdf");
-    expect(cvFileName("de")).toBe("cv-de.pdf");
+  it("keeps one folder per language and the same file name in each", () => {
+    expect(cvRelativePath("fr")).toBe("fr/Florian_PALVADEAU_CV.pdf");
+    expect(cvRelativePath("de")).toBe("de/Florian_PALVADEAU_CV.pdf");
   });
 
   it("returns the public URL of the files that exist and null for the others", () => {
     const directory = mkdtempSync(path.join(tmpdir(), "cv-"));
-    writeFileSync(path.join(directory, "cv-en.pdf"), "%PDF");
+    mkdirSync(path.join(directory, "en"));
+    writeFileSync(path.join(directory, cvRelativePath("en")), "%PDF");
 
-    expect(findCv("en", directory)).toBe("/cv/cv-en.pdf");
+    expect(findCv("en", directory)).toBe("/cv/en/Florian_PALVADEAU_CV.pdf");
     expect(findCv("fr", directory)).toBeNull();
   });
 

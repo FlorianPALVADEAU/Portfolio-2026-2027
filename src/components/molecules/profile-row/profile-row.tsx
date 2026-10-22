@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { Icon } from "@/components/atoms/icon";
 import { Link } from "@/components/atoms/link";
 
@@ -8,22 +8,26 @@ type ProfileRowProps = {
   /** Brand name, set large. */
   label: string;
   href: string;
-  /** Announces that the link leaves the site. */
-  newTab: string;
+  /** Announces that the link leaves the site; omit it for a file or an email address. */
+  newTab?: string;
+  /** The link saves a file instead of opening something. */
+  download?: boolean;
 };
 
 /** The link without its scheme, which is how people read an address. */
-const shown = (href: string) => href.replace(/^https?:\/\/(www\.)?/, "");
+const shown = (href: string) => href.replace(/^(https?:\/\/(www\.)?|mailto:)/, "");
 
 /**
  * A full-width line of an index: the name in huge type, the address beside it. On hover or focus
  * the line fills with ink from below and the type turns to paper.
  */
-export function ProfileRow({ order, label, href, newTab }: ProfileRowProps) {
+export function ProfileRow({ order, label, href, newTab, download = false }: ProfileRowProps) {
+  const external = newTab !== undefined;
   return (
     <Link
       href={href}
-      external
+      external={external}
+      download={download}
       className="group relative flex items-center gap-4 overflow-hidden border-t border-border py-4 no-underline outline-offset-[-3px] hover:text-background focus-visible:text-background md:gap-8 md:py-6"
     >
       <span
@@ -35,13 +39,13 @@ export function ProfileRow({ order, label, href, newTab }: ProfileRowProps) {
       </span>
       <span className="relative text-3xl font-semibold tracking-tight">
         {label}
-        <span className="sr-only">{` (${newTab})`}</span>
+        {external && <span className="sr-only">{` (${newTab})`}</span>}
       </span>
       <span aria-hidden="true" className="relative ml-auto hidden font-mono text-sm lg:inline">
         {shown(href)}
       </span>
       <Icon
-        icon={ArrowUpRight}
+        icon={download ? ArrowDown : ArrowUpRight}
         size="md"
         className="relative ml-auto transition-transform duration-500 ease-(--ease-out-expo) group-hover:translate-x-1 group-hover:-translate-y-1 group-focus-visible:translate-x-1 group-focus-visible:-translate-y-1 lg:ml-0"
       />

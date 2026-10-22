@@ -5,6 +5,7 @@ import { GithubActivity } from "@/components/organisms/github-activity";
 import { PersonSchema } from "@/components/organisms/person-schema";
 import { Home } from "@/components/templates/home";
 import { getMessages, isLocale } from "@/lib/i18n";
+import { heroPhotos } from "@/lib/landing";
 import { CONTACT_ACTION, submitContact } from "@/server/infrastructure/contact";
 import { loadProject, projectSlugs } from "@/server/infrastructure/content";
 import { cvHref } from "@/server/infrastructure/cv";
@@ -25,7 +26,8 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         locale={locale}
         messages={messages.home}
         cvHref={await cvHref(locale)}
-        heroPhotos={await photoUrls("hero")}
+        email={process.env.CONTACT_EMAIL}
+        heroPhotos={heroPhotos}
         trailPhotos={await photoUrls("trail")}
         projects={projects}
         contact={{
