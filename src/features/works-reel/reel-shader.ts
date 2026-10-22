@@ -49,9 +49,9 @@ export const fragmentShader = /* glsl */ `
   const float MAX_BLUR = 0.009;
   const float GOLDEN_ANGLE = 2.39996323;
   const int DEPTH_PASSES = 4;
-  // Mip levels added to each tap at full defocus: a tap then covers the gap to its neighbours, so
+  // Growth of each tap's footprint at full defocus: a tap then covers the gap to its neighbours, so
   // bright edges blur smoothly instead of leaving a ring of separate, line-like copies.
-  const float TAP_SOFTNESS = 2.5;
+  const float TAP_SOFTNESS = 3.0;
 
   vec2 pictureUv(vec2 surface) {
     return (surface - 0.5) * uRatio / uZoom + 0.5 + uShake;
@@ -72,7 +72,13 @@ export const fragmentShader = /* glsl */ `
     float defocus = uBlur * smoothstep(0.0, 0.6, abs(vUv.y - uFocus));
     vec4 color = texture2D(uMap, pictureUv(vUv) + shift);
 
+    // Taken outside the branch below: derivatives read inside it are undefined along its edge, where
+    // they picked a wrong mip level and drew a thin line at each border of the in-focus band.
+    vec2 gradX = dFdx(pictureUv(vUv));
+    vec2 gradY = dFdy(pictureUv(vUv));
+
     if (defocus > 0.002) {
+      float soften = 1.0 + TAP_SOFTNESS * defocus;
       // Vogel disc: even taps, softened by a mip bias so they merge.
       vec2 spread = vec2(1.0, uSize.x / uSize.y) * MAX_BLUR * defocus;
       vec4 sum = color;
@@ -80,7 +86,7 @@ export const fragmentShader = /* glsl */ `
         float angle = float(i) * GOLDEN_ANGLE;
         float reach = sqrt((float(i) + 0.5) / float(TAPS));
         vec2 tap = pictureUv(vUv + vec2(cos(angle), sin(angle)) * reach * spread) + shift;
-        sum += texture2D(uMap, tap, TAP_SOFTNESS * defocus);
+        sum += textureGrad(uMap, tap, gradX * soften, gradY * soften);
       }
       color = sum / float(TAPS + 1);
     }
