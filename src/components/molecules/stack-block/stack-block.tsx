@@ -1,4 +1,6 @@
 import { Heading } from "@/components/atoms/heading";
+import { RiseText } from "@/components/atoms/rise-text";
+import { Text } from "@/components/atoms/text";
 
 type StackBlockProps = {
   title: string;
@@ -7,13 +9,11 @@ type StackBlockProps = {
 
 export function StackBlock({ title, items }: StackBlockProps) {
   return (
-    <div className="grid gap-6 md:grid-cols-12">
-      <Heading level={2} className="md:col-span-4">
-        {title}
+    <div className="flex flex-col gap-4">
+      <Heading level={2} size="xl">
+        <RiseText>{title}</RiseText>
       </Heading>
-      <p className="text-[clamp(1.25rem,2.1vw,1.875rem)] md:col-span-7 md:col-start-6">
-        {items.join(", ")}
-      </p>
+      <Text size="sm">{items.join(", ")}</Text>
     </div>
   );
 }

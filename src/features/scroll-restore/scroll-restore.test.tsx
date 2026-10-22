@@ -56,6 +56,23 @@ describe("ScrollRestore", () => {
     link.remove();
   });
 
+  it("keeps the position when the page scrolls while the address already changed", () => {
+    const { rerender } = render(<ScrollRestore />);
+    scrollTo(1800);
+    pathname = "/en/projects/atlas";
+    window.history.pushState({}, "", pathname);
+    rerender(<ScrollRestore />);
+    scrollTo(1500);
+
+    act(() => void window.dispatchEvent(new PopStateEvent("popstate")));
+    window.history.pushState({}, "", "/en");
+    scrollTo(1500);
+    pathname = "/en";
+    rerender(<ScrollRestore />);
+
+    expect(window.scrollTo).toHaveBeenCalledWith({ top: 1800, behavior: "instant" });
+  });
+
   it("leaves any other navigation at the top", () => {
     leaveAndReturn(() => {});
 

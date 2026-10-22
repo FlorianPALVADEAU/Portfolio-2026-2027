@@ -3,6 +3,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Color,
   type Mesh,
   PlaneGeometry,
   ShaderMaterial,
@@ -10,7 +11,7 @@ import {
   Texture,
   TextureLoader,
 } from "three";
-import { coverRatio, type ReelCover } from "./reel-cover";
+import { coverRatio, type ReelCover, sharpSource } from "./reel-cover";
 import { followTarget, pinchTarget } from "./reel-physics";
 import { fragmentShader, vertexShader } from "./reel-shader";
 
@@ -24,11 +25,20 @@ const WIDE_SCREEN = 1024;
 const CULL_MARGIN = 240;
 const RADIUS = 24;
 const HOVER_ZOOM = 0.05;
+/** Size of the full-screen plane against the viewport, so the lean and the bowl never show a gap. */
+const OVERSCAN = 1.3;
+/** Distance in px the edges of the viewport come toward the camera at full bowl. */
+const CUP_DEPTH = 260;
+
 /** Largest slide of the picture, as a share of its size, at full shake. */
-const SHAKE_X = 0.01;
-const SHAKE_Y = 0.003;
+const SHAKE_X = 0.0075;
+const SHAKE_Y = 0.0022;
 /** Largest slide of the picture between its nearest and farthest pixels, as a share of its size. */
 const PARALLAX = 0.034;
+
+function lerp(from: number, to: number, amount: number): number {
+  return from + (to - from) * amount;
+}
 
 /** Unsteady-hand offset: two out-of-phase waves per axis, never beyond the shake limits. */
 function handShake(seconds: number, strength: number): [number, number] {
@@ -79,11 +89,13 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
       uHalfHeight: { value: 1 },
       uBlur: { value: 0 },
       uFocus: { value: 0.5 },
-      uShutter: { value: 0 },
       uShake: { value: [0, 0] as [number, number] },
       uDepthMap: { value: null as Texture | null },
       uLook: { value: [0, 0] as [number, number] },
       uParallax: { value: 0 },
+      uCup: { value: 0 },
+      uTint: { value: new Color() },
+      uTintMix: { value: 0 },
     };
     return {
       geometry: new PlaneGeometry(1, 1, 24, 24),
@@ -94,25 +106,43 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
 
   useEffect(() => {
     const { image } = cover;
-    let loaded: Texture | null = null;
-    const load = () => {
+    let current: Texture | null = null;
+    let cancelled = false;
+    const show = (source: HTMLImageElement) => {
       // An <img> reports its rendered size to three, not its natural one, so the pixels go through a
       // canvas of the real size.
       const pixels = document.createElement("canvas");
-      pixels.width = image.naturalWidth;
-      pixels.height = image.naturalHeight;
-      pixels.getContext("2d")?.drawImage(image, 0, 0);
-      loaded = new Texture(pixels);
-      loaded.colorSpace = SRGBColorSpace;
-      loaded.anisotropy = 4;
-      loaded.needsUpdate = true;
-      setTexture(loaded);
+      pixels.width = source.naturalWidth;
+      pixels.height = source.naturalHeight;
+      pixels.getContext("2d")?.drawImage(source, 0, 0);
+      const next = new Texture(pixels);
+      next.colorSpace = SRGBColorSpace;
+      next.anisotropy = 4;
+      next.needsUpdate = true;
+      const previous = current;
+      current = next;
+      setTexture(next);
+      previous?.dispose();
+    };
+    // The card's picture shows first; the sharp one replaces it once it has arrived.
+    const sharpen = () => {
+      const sharp = new Image();
+      sharp.decoding = "async";
+      sharp.onload = () => {
+        if (!cancelled) show(sharp);
+      };
+      sharp.src = sharpSource(image.currentSrc || image.src, window.location.href);
+    };
+    const load = () => {
+      show(image);
+      sharpen();
     };
     if (image.complete && image.naturalWidth > 0) load();
     else image.addEventListener("load", load, { once: true });
     return () => {
+      cancelled = true;
       image.removeEventListener("load", load);
-      loaded?.dispose();
+      current?.dispose();
     };
   }, [cover]);
 
@@ -157,24 +187,29 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
     const plane = mesh.current;
     if (!plane) return;
     const box = cover.frame.getBoundingClientRect();
+    const { fill } = cover.state;
+    // A cover that fills the screen is drawn wherever its card is, even far out of sight.
     const visible =
-      Boolean(texture) && box.bottom > -CULL_MARGIN && box.top < size.height + CULL_MARGIN;
+      Boolean(texture) &&
+      (fill > 0 || (box.bottom > -CULL_MARGIN && box.top < size.height + CULL_MARGIN));
     plane.visible = visible;
     if (!(visible && texture)) return;
 
-    const { tilt, grow, zoom, hover, blur, focus, shutter, shake, lookX, lookY } = cover.state;
-    const width = box.width * grow;
-    const height = box.height * grow;
+    const { tilt, grow, zoom, hover, blur, focus, shake, lookX, lookY } = cover.state;
+    const { cup, lean, tint, tintColor } = cover.state;
+    const width = lerp(box.width * grow, size.width * OVERSCAN, fill);
+    const height = lerp(box.height * grow, size.height * OVERSCAN, fill);
     const pixels = texture.image as HTMLCanvasElement;
     const depth = size.width >= WIDE_SCREEN ? DEPTH : DEPTH_SMALL;
 
     plane.position.set(
-      box.left + box.width / 2 - size.width / 2,
-      -(box.top + box.height / 2 - size.height / 2),
+      (box.left + box.width / 2 - size.width / 2) * (1 - fill),
+      -(box.top + box.height / 2 - size.height / 2) * (1 - fill),
       0,
     );
+    plane.renderOrder = fill > 0 ? 10 : 0;
     plane.scale.set(width, height, 1);
-    plane.rotation.z = (-tilt * Math.PI) / 180;
+    plane.rotation.z = (-(tilt + lean) * Math.PI) / 180;
     uniforms.uMap.value = texture;
     uniforms.uRatio.value = coverRatio(pixels.width / pixels.height, width / height);
     uniforms.uSize.value = [width, height];
@@ -186,11 +221,15 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
     uniforms.uDepthMap.value = depthMap;
     uniforms.uLook.value = [lookX, lookY];
     uniforms.uParallax.value = parallax;
+    uniforms.uRadius.value = RADIUS * (1 - fill);
+    uniforms.uCup.value = CUP_DEPTH * cup;
+    uniforms.uTint.value.setRGB(...tintColor, SRGBColorSpace);
+    uniforms.uTintMix.value = tint;
     uniforms.uBlur.value = blur;
     uniforms.uFocus.value = focus;
-    uniforms.uShutter.value = shutter;
     uniforms.uDepth.value = depth * bend.current;
     uniforms.uHalfHeight.value = size.height / 2;
+    cover.state.ready = true;
   });
 
   return <mesh ref={mesh} geometry={geometry} material={material} />;

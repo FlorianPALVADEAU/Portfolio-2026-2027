@@ -37,7 +37,18 @@ function yieldToNativeScroll(lenis: Lenis): () => void {
 }
 
 function start(): () => void {
-  const lenis = new Lenis({ autoRaf: false, lerp: LERP, anchors: true });
+  const lenis: Lenis = new Lenis({
+    autoRaf: false,
+    lerp: LERP,
+    anchors: true,
+    // A page can be moved from outside (returning to a card, an address with a hash) without
+    // Lenis noticing; its next wheel step would then start from where it believes the page is.
+    virtualScroll: () => {
+      if (lenis.isScrolling !== "smooth" && Math.abs(lenis.actualScroll - lenis.animatedScroll) > 1)
+        lenis.scrollTo(lenis.actualScroll, { immediate: true, force: true });
+      return true;
+    },
+  });
   const tick = (time: number) => lenis.raf(time * 1000);
   const release = yieldToNativeScroll(lenis);
   setScroller((top, immediate) =>
