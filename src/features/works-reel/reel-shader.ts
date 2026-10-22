@@ -1,10 +1,12 @@
 /**
  * The plane is bent toward the camera by its distance from the middle of the viewport, like the
  * inside of a tube cut in half: flat in the centre, rising on both sides. World units are pixels.
+ * `uCup` adds a bowl on top, for the transition to a project page.
  */
 export const vertexShader = /* glsl */ `
   uniform float uDepth;
   uniform float uHalfHeight;
+  uniform float uCup;
   varying vec2 vUv;
 
   void main() {
@@ -12,6 +14,9 @@ export const vertexShader = /* glsl */ `
     vec4 world = modelMatrix * vec4(position, 1.0);
     float distanceFromMiddle = world.y / uHalfHeight;
     world.z += uDepth * distanceFromMiddle * distanceFromMiddle;
+    // A bowl around the middle of the screen: the centre stays put and the edges come forward.
+    float fromCentre = length(world.xy) / uHalfHeight;
+    world.z += uCup * fromCentre * fromCentre;
     gl_Position = projectionMatrix * viewMatrix * world;
   }
 `;
@@ -36,6 +41,8 @@ export const fragmentShader = /* glsl */ `
   uniform sampler2D uDepthMap;
   uniform vec2 uLook;
   uniform float uParallax;
+  uniform vec3 uTint;
+  uniform float uTintMix;
   varying vec2 vUv;
 
   const int TAPS = 24;
@@ -74,6 +81,7 @@ export const fragmentShader = /* glsl */ `
       color = sum / float(TAPS + 1);
     }
     color.rgb *= 1.0 - 0.22 * uShutter;
+    color.rgb = mix(color.rgb, uTint, uTintMix);
 
     vec2 corner = abs((vUv - 0.5) * uSize) - (uSize * 0.5 - uRadius);
     float edge = length(max(corner, 0.0)) + min(max(corner.x, corner.y), 0.0) - uRadius;

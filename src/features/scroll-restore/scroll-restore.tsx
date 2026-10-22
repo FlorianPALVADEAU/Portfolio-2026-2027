@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { armWorkReturn } from "@/lib/motion";
 
 /** Marks a link that returns to a page whose scroll position was left behind. */
 const RESTORE_SCROLL_ATTRIBUTE = "data-restore-scroll";
@@ -29,14 +30,16 @@ export function ScrollRestore() {
   const returning = useRef(false);
 
   useEffect(() => {
+    const arm = () => {
+      returning.current = true;
+      armWorkReturn();
+    };
     const remember = () => positions.current.set(window.location.pathname, window.scrollY);
     const onClick = (event: MouseEvent) => {
       if (event.target instanceof Element && event.target.closest(`[${RESTORE_SCROLL_ATTRIBUTE}]`))
-        returning.current = true;
+        arm();
     };
-    const onPopState = () => {
-      returning.current = true;
-    };
+    const onPopState = arm;
 
     remember();
     window.addEventListener("scroll", remember, { passive: true });

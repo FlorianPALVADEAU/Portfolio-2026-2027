@@ -3,12 +3,20 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { hasFinePointer, prefersReducedMotion } from "@/lib/motion";
+import {
+  hasFinePointer,
+  prefersReducedMotion,
+  rememberLeftWork,
+  takeWorkReturn,
+} from "@/lib/motion";
+import { getInternalNavigation } from "@/lib/navigation";
 import { canRenderScene } from "@/lib/scene";
 import { playIfEnabled, preloadFocusIfEnabled } from "@/lib/sound";
 import { type CoverState, type ReelCover, restingState } from "./reel-cover";
 import { prepareTypewriter, ROLLER_COPIES, splitIntoLetters } from "./reel-text";
+import { pageBackground } from "./reel-tint";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -89,6 +97,83 @@ function pullFocus(state: CoverState): gsap.core.Timeline {
 /** Touch screens have no hover and no cheap point of view, so they never fetch a depth map. */
 function depthMapFor(image: HTMLImageElement): string | undefined {
   return hasFinePointer() ? image.dataset.reelDepth : undefined;
+}
+
+/** Seconds a cover takes to fill the screen, and to come back to its card. */
+const LEAVE_SECONDS = 0.95;
+const WIDE_SCREEN = 1024;
+/** Degrees a cover leans to the left on its way to a project page. */
+const LEAN = -4;
+/** Frames the way back waits for the page to scroll to its card before it gives up. */
+const RETURN_GIVE_UP_MS = 2500;
+
+/**
+ * A cover filling the screen, leaning a little to the left, its edges pulled toward the viewer
+ * like a bowl and its picture fading into the page background. Small screens skip the lean and
+ * the bowl. Built paused: play it to leave, reverse it from the end to come back.
+ */
+function leaveTimeline(state: CoverState): gsap.core.Timeline {
+  const wide = window.innerWidth >= WIDE_SCREEN;
+  state.tintColor = pageBackground();
+  const timeline = gsap.timeline({ paused: true });
+  timeline.to(state, { fill: 1, duration: LEAVE_SECONDS, ease: "power3.inOut" }, 0);
+  if (wide) {
+    timeline.to(state, { lean: LEAN, duration: LEAVE_SECONDS, ease: "power2.inOut" }, 0);
+    timeline.to(state, { cup: 1, duration: LEAVE_SECONDS * 0.8, ease: "power2.in" }, 0.2);
+  }
+  timeline.to(state, { tint: 1, duration: LEAVE_SECONDS * 0.5, ease: "power1.in" }, 0.5);
+  return timeline;
+}
+
+/** Plays a cover's way out on a click, then lets the router open the project page. */
+function openOnClick(
+  link: HTMLAnchorElement,
+  state: CoverState,
+  open: (destination: string) => void,
+): () => void {
+  let leaving = false;
+  const onClick = (event: MouseEvent) => {
+    const destination = getInternalNavigation(event, link, window.location);
+    if (!destination) return;
+    event.preventDefault();
+    if (leaving) return;
+    leaving = true;
+    rememberLeftWork(link.pathname);
+    leaveTimeline(state)
+      .eventCallback("onComplete", () => open(destination))
+      .play();
+  };
+  link.addEventListener("click", onClick);
+  return () => link.removeEventListener("click", onClick);
+}
+
+/**
+ * The way back: the cover starts on screen as it ended its way out, then settles into its card
+ * once the plane is drawn and the page has scrolled there. `veil` hides the list meanwhile, in the
+ * same colour as the cover, so nothing flashes.
+ */
+function returnToCard(cover: ReelCover, veil: HTMLElement) {
+  const way = leaveTimeline(cover.state).progress(1);
+  veil.hidden = false;
+  const started = performance.now();
+  const onCard = () => {
+    const box = cover.frame.getBoundingClientRect();
+    return box.bottom > 0 && box.top < window.innerHeight;
+  };
+  const wait = () => {
+    const ready = cover.state.ready && onCard();
+    if (!(ready || performance.now() - started > RETURN_GIVE_UP_MS)) return;
+    gsap.ticker.remove(wait);
+    veil.hidden = true;
+    if (ready) way.reverse();
+    else way.progress(0).kill();
+  };
+  gsap.ticker.add(wait);
+  return () => {
+    gsap.ticker.remove(wait);
+    way.kill();
+    veil.hidden = true;
+  };
 }
 
 /** Seconds the point of view takes to follow the pointer, and to come back to the centre. */
@@ -254,6 +339,29 @@ function revealTextOnEnter(item: HTMLElement, restores: Array<() => void>) {
   }
 }
 
+/** Wires the animations of one cover and returns the plane that replaces it, if it has a picture. */
+function bindCover(
+  cell: HTMLElement,
+  item: HTMLElement,
+  id: string,
+  container: HTMLElement,
+  restores: Array<() => void>,
+  open: (path: string) => void,
+): ReelCover | null {
+  const frame = item.querySelector<HTMLElement>("[data-reel-frame]");
+  const image = item.querySelector<HTMLImageElement>("[data-reel-image]");
+  if (!(frame && image)) return null;
+
+  const link = item.querySelector<HTMLAnchorElement>("[data-reel-title]");
+  const state = restingState();
+  appearOnScroll(state, cell, container);
+  restores.push(followHover(item, state));
+  const depthSrc = depthMapFor(image);
+  if (depthSrc) restores.push(followPointer(item, frame, state));
+  if (link) restores.push(openOnClick(link, state, open));
+  return { id, path: link?.pathname ?? "", frame, image, depthSrc, state };
+}
+
 /**
  * Carries the visitor through the project list. Covers are drawn as planes in one canvas and bend
  * like the inside of a tube while the page moves, rows appear in pairs that straighten and grow,
@@ -265,6 +373,9 @@ function revealTextOnEnter(item: HTMLElement, restores: Array<() => void>) {
 export function WorksReel({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   const [covers, setCovers] = useState<ReelCover[]>([]);
+  const veil = useRef<HTMLDivElement>(null);
+  const returnedFrom = useRef<string | null | undefined>(undefined);
+  const router = useRouter();
   const [near, setNear] = useState(false);
 
   useEffect(() => {
@@ -289,7 +400,10 @@ export function WorksReel({ children }: { children: ReactNode }) {
   useLayoutEffect(() => {
     const container = root.current;
     if (!container || prefersReducedMotion()) return;
+    // Read once: a development remount must find the same answer.
+    if (returnedFrom.current === undefined) returnedFrom.current = takeWorkReturn();
 
+    const open = (path: string) => router.push(path);
     const restores: Array<() => void> = [];
     const planes: ReelCover[] = [];
     const cells = gsap.utils.toArray<HTMLElement>("[data-reel-cell]", container);
@@ -300,30 +414,30 @@ export function WorksReel({ children }: { children: ReactNode }) {
         const item = cell.querySelector<HTMLElement>("[data-reel-item]");
         if (!item) return;
         revealTextOnEnter(item, restores);
-        const frame = item.querySelector<HTMLElement>("[data-reel-frame]");
-        const image = item.querySelector<HTMLImageElement>("[data-reel-image]");
-        if (!(drawable && frame && image)) return;
-
-        const state = restingState();
-        appearOnScroll(state, cell, container);
-        restores.push(followHover(item, state));
-        const depthSrc = depthMapFor(image);
-        if (depthSrc) restores.push(followPointer(item, frame, state));
-        planes.push({ id: `cover-${index}`, frame, image, depthSrc, state });
+        if (!drawable) return;
+        const cover = bindCover(cell, item, `cover-${index}`, container, restores, open);
+        if (cover) planes.push(cover);
       });
     }, container);
     setCovers(planes);
+
+    const comingBack = planes.find((cover) => cover.path === returnedFrom.current);
+    if (comingBack && veil.current) {
+      setNear(true);
+      restores.push(returnToCard(comingBack, veil.current));
+    }
 
     return () => {
       setCovers([]);
       context.revert();
       for (const restore of restores) restore();
     };
-  }, []);
+  }, [router]);
 
   return (
     <div ref={root}>
       {children}
+      <div ref={veil} hidden aria-hidden="true" className="fixed inset-0 z-30 bg-background" />
       {near && covers.length > 0 && root.current ? (
         <ReelCanvas covers={covers} container={root.current} />
       ) : null}

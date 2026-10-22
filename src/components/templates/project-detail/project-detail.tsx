@@ -44,6 +44,7 @@ export function ProjectDetail({ locale, messages, project }: ProjectDetailProps)
                   href={`/${locale}`}
                   data-restore-scroll=""
                   data-keep-scroll=""
+                  data-no-cover=""
                   className="inline-flex min-h-11 items-center"
                 >
                   {messages.back}

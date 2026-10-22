@@ -19,11 +19,25 @@ export type CoverState = {
   /** Where the pointer looks from over the cover, -1 to 1 on each axis, 0 at the centre. */
   lookX: number;
   lookY: number;
+  /** 0 on its card, 1 once the plane fills the screen: the leave and return transition. */
+  fill: number;
+  /** Strength of the bowl that pulls the plane's edges toward the viewer, 0 is flat. */
+  cup: number;
+  /** Degrees the plane leans to the left during the transition, apart from the scroll `tilt`. */
+  lean: number;
+  /** How far the picture has faded into `tintColor`, 0 shows it and 1 hides it. */
+  tint: number;
+  /** sRGB colour the picture fades into: the background of the page it leads to. */
+  tintColor: [number, number, number];
+  /** Set by the canvas once the picture is on the GPU and drawn. */
+  ready: boolean;
 };
 
 /** A DOM cover and the plane that replaces it on screen. */
 export type ReelCover = {
   id: string;
+  /** Path of the project page the cover leads to. */
+  path: string;
   frame: HTMLElement;
   image: HTMLImageElement;
   /** Depth map of the picture; only set where the pointer can hover. */
@@ -43,6 +57,12 @@ export function restingState(): CoverState {
     shake: 0,
     lookX: 0,
     lookY: 0,
+    fill: 0,
+    cup: 0,
+    lean: 0,
+    tint: 0,
+    tintColor: [0, 0, 0],
+    ready: false,
   };
 }
 

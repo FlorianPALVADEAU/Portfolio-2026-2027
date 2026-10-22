@@ -44,6 +44,17 @@ describe("PageTransition", () => {
     expect(push).toHaveBeenCalledWith("/fr", { scroll: true });
   });
 
+  it("navigates without covering a link that brings its own transition", async () => {
+    const { getByText } = await mount();
+    getByText("French").setAttribute("data-no-cover", "");
+    getByText("French").setAttribute("data-keep-scroll", "");
+
+    fireEvent.click(getByText("French"));
+
+    expect(to).not.toHaveBeenCalled();
+    expect(push).toHaveBeenCalledWith("/fr", { scroll: false });
+  });
+
   it("leaves hash links to the browser", async () => {
     const { getByText } = await mount();
 

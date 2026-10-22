@@ -109,9 +109,15 @@ export function PageTransition() {
       if (!destination) return;
 
       event.preventDefault();
+      const scroll = !anchor.hasAttribute("data-keep-scroll");
+      // The page leaving brings its own transition and only needs the router.
+      if (anchor.hasAttribute("data-no-cover")) {
+        router.push(destination, { scroll });
+        return;
+      }
       cover(element, () => {
         giveUp.current = setTimeout(() => reveal(), GIVE_UP_MS);
-        router.push(destination, { scroll: !anchor.hasAttribute("data-keep-scroll") });
+        router.push(destination, { scroll });
       });
     }
 
