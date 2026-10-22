@@ -1,9 +1,19 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
-import { getServerSoundEnabled, getSoundEnabled, subscribeSound, warmMusic } from "@/lib/sound";
+import {
+  getServerSoundEnabled,
+  getSoundEnabled,
+  hasSoundChoice,
+  setSoundEnabled,
+  subscribeSound,
+  warmMusic,
+} from "@/lib/sound";
 
 const GESTURES = ["pointerdown", "keydown", "touchend"] as const;
+
+/** Keys that move around or modify without acting on the page. */
+const PASSIVE_KEYS = new Set(["Tab", "Shift", "Control", "Alt", "Meta", "CapsLock", "Escape"]);
 
 // Module scope survives a remount, and lets a muted visitor skip loading the engine just to stop it.
 let requested = false;
@@ -11,6 +21,8 @@ let requested = false;
 /**
  * Plays the lo-fi loop whenever sound is on: music and effects share one switch. The loop belongs
  * to the engine, not to this component, so a remount (a language or theme change) never restarts it.
+ * A visitor who has never chosen gets sound on at their first action, since a browser lets audio
+ * start only after one; the switch in the header, and an earlier choice, always win.
  */
 export function BackgroundMusic() {
   const enabled = useSyncExternalStore(subscribeSound, getSoundEnabled, getServerSoundEnabled);
@@ -36,6 +48,22 @@ export function BackgroundMusic() {
       for (const gesture of GESTURES) document.removeEventListener(gesture, start);
     };
   }, [enabled]);
+
+  useEffect(() => {
+    if (hasSoundChoice()) return;
+    const stop = () => {
+      for (const gesture of GESTURES) document.removeEventListener(gesture, onFirstAction, true);
+    };
+    function onFirstAction(event: Event) {
+      if (event instanceof KeyboardEvent && PASSIVE_KEYS.has(event.key)) return;
+      // The switch decides for itself, and must not be turned on and straight back off.
+      if (event.target instanceof Element && event.target.closest("[data-sound-toggle]")) return;
+      stop();
+      if (!hasSoundChoice()) setSoundEnabled(true);
+    }
+    for (const gesture of GESTURES) document.addEventListener(gesture, onFirstAction, true);
+    return stop;
+  }, []);
 
   return null;
 }

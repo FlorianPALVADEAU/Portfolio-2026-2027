@@ -2,6 +2,7 @@ const SOUND_STORAGE_KEY = "sound";
 
 const listeners = new Set<() => void>();
 let enabled = false;
+let chosen = false;
 let loaded = false;
 let suspensions = 0;
 
@@ -9,10 +10,18 @@ function load(): void {
   if (loaded) return;
   loaded = true;
   try {
-    enabled = localStorage.getItem(SOUND_STORAGE_KEY) === "on";
+    const stored = localStorage.getItem(SOUND_STORAGE_KEY);
+    enabled = stored === "on";
+    chosen = stored !== null;
   } catch {
     enabled = false;
   }
+}
+
+/** Whether the visitor, now or on an earlier visit, has already turned sound on or off. */
+export function hasSoundChoice(): boolean {
+  load();
+  return chosen;
 }
 
 /** Sound is opt-in: the default, and the server snapshot, is always off. Off too while suspended. */
@@ -49,6 +58,7 @@ export function getServerSoundEnabled(): boolean {
 export function setSoundEnabled(next: boolean): void {
   load();
   enabled = next;
+  chosen = true;
   try {
     localStorage.setItem(SOUND_STORAGE_KEY, next ? "on" : "off");
   } catch {
