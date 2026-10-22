@@ -268,5 +268,15 @@
         "mdi": "LinkedIn- und AWS-Marken"
       }
     }
+  },
+  "player": {
+    "play": "Video abspielen",
+    "pause": "Video pausieren",
+    "mute": "Ton aus",
+    "unmute": "Ton ein",
+    "fullscreen": "Vollbild",
+    "exitFullscreen": "Vollbild beenden",
+    "seek": "Position im Video",
+    "loading": "Wird geladen"
   }
 }

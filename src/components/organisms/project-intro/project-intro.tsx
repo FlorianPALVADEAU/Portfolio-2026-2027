@@ -1,31 +1,39 @@
+import Image from "next/image";
 import { Heading } from "@/components/atoms/heading";
 import { Link } from "@/components/atoms/link";
 import { Text } from "@/components/atoms/text";
 import { StoryPanel } from "@/components/molecules/story-panel";
 import { Entrance } from "@/features/entrance";
-import type { Locale } from "@/lib/i18n";
+import { VideoPlayer } from "@/features/video-player";
+
+type PlayerLabels = Parameters<typeof VideoPlayer>[0]["labels"];
 
 type ProjectIntroProps = {
-  locale: Locale;
   title: string;
   summary: string;
-  back: string;
   facts: readonly { label: string; value: string }[];
   stack: { title: string; items: readonly string[] } | null;
   links: readonly { id: string; href: string; label: string }[];
+  /** The picture above the title, or the video that opens on it. */
+  teaser: {
+    poster: { src: string; width: number; height: number };
+    video?: string | undefined;
+    label: string;
+  } | null;
+  playerLabels: PlayerLabels;
 };
 
 const LABEL = "font-mono text-xs uppercase tracking-widest text-accent";
 
-/** Opening screen of a project: the way back on top, the name large below, the facts beside it. */
+/** Opening screen of a project: a picture or video, the name large below it, the facts beside. */
 export function ProjectIntro({
-  locale,
   title,
   summary,
-  back,
   facts,
   stack,
   links,
+  teaser,
+  playerLabels,
 }: ProjectIntroProps) {
   return (
     <StoryPanel size="intro" className="relative">
@@ -36,27 +44,44 @@ export function ProjectIntro({
       >
         →
       </span>
-      <Entrance className="flex flex-1 flex-col justify-between gap-16 py-8 lg:py-0">
-        <div data-entrance>
-          <Link
-            href={`/${locale}#works`}
-            data-restore-scroll=""
-            data-no-cover=""
-            className="inline-flex min-h-11 items-center"
-          >
-            {back}
-          </Link>
-        </div>
+      <Entrance className="flex flex-1 flex-col justify-end gap-16 py-24 lg:py-0">
         <div className="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-x-12">
-          <Heading
-            level={1}
-            size="display"
-            className="text-[clamp(3rem,7vw,7.5rem)] leading-[0.92] lg:col-span-7"
-          >
-            {title}
-          </Heading>
+          <div className="flex flex-col gap-8 lg:col-span-7">
+            {teaser && (
+              <div data-entrance data-story-frame className="w-full max-w-[min(100%,36rem)]">
+                {teaser.video ? (
+                  <VideoPlayer
+                    src={teaser.video}
+                    poster={teaser.poster}
+                    label={teaser.label}
+                    labels={playerLabels}
+                  />
+                ) : (
+                  <Image
+                    src={teaser.poster.src}
+                    width={teaser.poster.width}
+                    height={teaser.poster.height}
+                    alt={teaser.label}
+                    priority
+                    sizes="(min-width: 1024px) 36rem, 100vw"
+                    className="aspect-video w-full rounded-3xl object-cover"
+                  />
+                )}
+              </div>
+            )}
+            <Heading
+              level={1}
+              size="display"
+              className="text-[clamp(3rem,7vw,7.5rem)] leading-[0.92]"
+            >
+              {title}
+            </Heading>
+          </div>
           <div className="flex flex-col gap-8 lg:col-span-5 lg:pb-3">
-            <Text data-entrance size="sm" className="max-w-[44ch] text-pretty leading-relaxed">
+            <Text
+              data-entrance
+              className="max-w-[26ch] text-[clamp(1.25rem,1.9vw,1.75rem)] leading-snug font-semibold text-balance"
+            >
               {summary}
             </Text>
             <dl data-entrance className="grid grid-cols-2 gap-x-8 gap-y-5 text-sm">

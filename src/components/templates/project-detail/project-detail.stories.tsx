@@ -16,6 +16,16 @@ const meta = {
       contact: "Let's work together",
       cv: "Download CV (PDF)",
     },
+    playerLabels: {
+      play: "Play video",
+      pause: "Pause video",
+      mute: "Mute",
+      unmute: "Unmute",
+      fullscreen: "Full screen",
+      exitFullscreen: "Exit full screen",
+      seek: "Position in the video",
+      loading: "Loading",
+    },
     next: { slug: "another", title: "Another project" },
     cvHref: "/cv/cv-en.pdf",
     project: {

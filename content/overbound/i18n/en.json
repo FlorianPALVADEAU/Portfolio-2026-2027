@@ -3,6 +3,9 @@
   "summary": "An obstacle-course race I founded and organised, and whose ticketing platform I built: 336 tickets sold for a first edition held on 12 September 2026.",
   "role": "Founder, organiser and developer",
   "alt": "Overbound cover",
+  "teaser": {
+    "label": "Overbound first edition: video of race day."
+  },
   "blocks": {
     "context": {
       "title": "Context",

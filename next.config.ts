@@ -7,6 +7,8 @@ const WEEK_SECONDS = 60 * 60 * 24 * 7;
 const nextConfig: NextConfig = {
   /* config options here */
   // Spotify only accepts a loopback IP as redirect URI, so the setup guide opens the dev server there.
+  // The fixed back button of project pages lives at the bottom left, where the indicator sits by default.
+  devIndicators: { position: "bottom-right" },
   allowedDevOrigins: ["127.0.0.1"],
   // Placeholder gallery photos; drop this once they are local files.
   images: { remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }] },

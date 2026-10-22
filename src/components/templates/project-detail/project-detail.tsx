@@ -1,6 +1,7 @@
 import { MediaBlock } from "@/components/molecules/media-block";
 import { StoryPanel } from "@/components/molecules/story-panel";
 import { type Block, BlockList } from "@/components/organisms/block-list";
+import { ProjectBack } from "@/components/organisms/project-back";
 import { ProjectIntro } from "@/components/organisms/project-intro";
 import { ProjectOutro } from "@/components/organisms/project-outro";
 import { MAIN_ID } from "@/features/route-focus";
@@ -10,6 +11,7 @@ import type { Locale, Messages } from "@/lib/i18n";
 type ProjectDetailProps = {
   locale: Locale;
   messages: Messages["project"];
+  playerLabels: Messages["player"];
   /** The project to read after this one, if there is another. */
   next: { slug: string; title: string } | null;
   cvHref: string | null;
@@ -19,6 +21,11 @@ type ProjectDetailProps = {
     role: string;
     year: number;
     cover: { src: string; width: number; height: number; alt: string };
+    teaser?: {
+      poster: { src: string; width: number; height: number };
+      video?: string | undefined;
+      label: string;
+    };
     blocks: readonly Block[];
   };
 };
@@ -31,7 +38,14 @@ type ProjectDetailProps = {
 /** Text blocks read before the cover; the rest of the text follows it. */
 const TEXT_BEFORE_COVER = 3;
 
-export function ProjectDetail({ locale, messages, next, cvHref, project }: ProjectDetailProps) {
+export function ProjectDetail({
+  locale,
+  messages,
+  playerLabels,
+  next,
+  cvHref,
+  project,
+}: ProjectDetailProps) {
   const stack = project.blocks.find((block) => block.type === "stack");
   const links = project.blocks.find((block) => block.type === "links");
   const story = project.blocks.filter((block) => block.type !== "stack" && block.type !== "links");
@@ -40,12 +54,13 @@ export function ProjectDetail({ locale, messages, next, cvHref, project }: Proje
 
   return (
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
+      <ProjectBack locale={locale} label={messages.back} />
       <StoryRail label={messages.story}>
         <ProjectIntro
-          locale={locale}
           title={project.title}
           summary={project.summary}
-          back={messages.back}
+          teaser={project.teaser ?? null}
+          playerLabels={playerLabels}
           facts={[
             { label: messages.role, value: project.role },
             { label: messages.year, value: String(project.year) },

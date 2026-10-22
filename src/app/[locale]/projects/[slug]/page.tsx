@@ -61,6 +61,7 @@ async function ProjectContent({
     <ProjectDetail
       locale={locale}
       messages={messages.project}
+      playerLabels={messages.player}
       next={next}
       cvHref={cv}
       project={project}

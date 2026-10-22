@@ -21,6 +21,17 @@ const project = {
   ],
 } as const;
 
+const playerLabels = {
+  play: "Play video",
+  pause: "Pause video",
+  mute: "Mute",
+  unmute: "Unmute",
+  fullscreen: "Full screen",
+  exitFullscreen: "Exit full screen",
+  seek: "Position in the video",
+  loading: "Loading",
+};
+
 const messages = {
   back: "Back to home",
   role: "Role",
@@ -37,6 +48,7 @@ describe("ProjectDetail", () => {
       <ProjectDetail
         locale="en"
         messages={messages}
+        playerLabels={playerLabels}
         next={{ slug: "another", title: "Another project" }}
         cvHref="/cv/cv-en.pdf"
         project={project}
@@ -56,6 +68,7 @@ describe("ProjectDetail", () => {
       <ProjectDetail
         locale="en"
         messages={messages}
+        playerLabels={playerLabels}
         next={{ slug: "another", title: "Another project" }}
         cvHref="/cv/cv-en.pdf"
         project={project}
@@ -76,6 +89,7 @@ describe("ProjectDetail", () => {
       <ProjectDetail
         locale="en"
         messages={messages}
+        playerLabels={playerLabels}
         next={{ slug: "another", title: "Another project" }}
         cvHref="/cv/cv-en.pdf"
         project={project}
@@ -98,11 +112,46 @@ describe("ProjectDetail", () => {
 
   it("leaves out the next project and the CV when there is none", () => {
     render(
-      <ProjectDetail locale="en" messages={messages} next={null} cvHref={null} project={project} />,
+      <ProjectDetail
+        locale="en"
+        messages={messages}
+        playerLabels={playerLabels}
+        next={null}
+        cvHref={null}
+        project={project}
+      />,
     );
 
     expect(screen.queryByText("Next project")).toBeNull();
     expect(screen.queryByRole("link", { name: "Download CV (PDF)" })).toBeNull();
     expect(screen.getByRole("link", { name: "Let's work together" })).toBeVisible();
+  });
+
+  it("shows the teaser as a picture, or as a player that opens on it", () => {
+    const poster = { src: "/poster.jpg", width: 1600, height: 900 };
+    const { rerender } = render(
+      <ProjectDetail
+        locale="en"
+        messages={messages}
+        playerLabels={playerLabels}
+        next={null}
+        cvHref={null}
+        project={{ ...project, teaser: { poster, label: "Race day" } }}
+      />,
+    );
+    expect(screen.getByRole("img", { name: "Race day" })).toBeVisible();
+
+    rerender(
+      <ProjectDetail
+        locale="en"
+        messages={messages}
+        playerLabels={playerLabels}
+        next={null}
+        cvHref={null}
+        project={{ ...project, teaser: { poster, video: "/race.mp4", label: "Race day" } }}
+      />,
+    );
+    expect(screen.getByRole("group", { name: "Race day" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Play video" })).toBeVisible();
   });
 });

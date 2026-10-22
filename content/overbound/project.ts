@@ -8,6 +8,10 @@ export default {
     width: 1920,
     height: 1280,
   },
+  teaser: {
+    poster: { src: "/projects/overbound/teaser-poster.webp", width: 1280, height: 720 },
+    video: "/projects/overbound/teaser.mp4",
+  },
   blocks: [
     { id: "context", type: "text" },
     { id: "problem", type: "text" },

@@ -3,6 +3,9 @@
   "summary": "Une course à obstacles que j'ai fondée et organisée, et dont j'ai développé la billetterie : 336 billets vendus pour une première édition tenue le 12 septembre 2026.",
   "role": "Fondateur, organisateur et développeur",
   "alt": "Couverture d'Overbound",
+  "teaser": {
+    "label": "Overbound, première édition : vidéo de la course."
+  },
   "blocks": {
     "context": {
       "title": "Contexte",

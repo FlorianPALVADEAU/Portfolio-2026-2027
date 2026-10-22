@@ -3,6 +3,9 @@
   "summary": "Ein Hindernislauf, den ich gegründet und organisiert habe und dessen Ticketing-Plattform ich entwickelt habe: 336 verkaufte Tickets für die erste Ausgabe am 12. September 2026.",
   "role": "Gründer, Organisator und Entwickler",
   "alt": "Titelbild von Overbound",
+  "teaser": {
+    "label": "Overbound, erste Ausgabe: Video vom Renntag."
+  },
   "blocks": {
     "context": {
       "title": "Kontext",

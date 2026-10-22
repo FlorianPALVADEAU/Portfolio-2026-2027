@@ -58,22 +58,78 @@ function wheelSideways(row: HTMLElement): () => void {
   };
 }
 
-/** Grows each `data-story-grow` as it enters the row, its `data-story-zoom` picture un-zooming. */
-function growOnEnter(row: HTMLElement) {
+/** How far, in share of its own width, a picture drifts inside its frame while it crosses. */
+const DRIFT = 7;
+/** A picture is drawn this much larger than its frame so the drift never shows an edge. */
+const DRIFT_SCALE = 1.18;
+
+/**
+ * Each `data-story-grow` picture appears when it comes into view: its frame is wiped open from the
+ * left while the picture grows and un-zooms, then its `data-story-parallax` layer drifts against
+ * the scroll for as long as the picture is on screen. The wipe plays once and goes back when the
+ * picture is scrolled back out of reach; the rest follows the scroll exactly.
+ */
+function animatePictures(row: HTMLElement) {
+  const along = { scroller: row, horizontal: true } as const;
   for (const element of gsap.utils.toArray<HTMLElement>("[data-story-grow]", row)) {
-    const scrollTrigger = {
-      trigger: element,
-      scroller: row,
-      horizontal: true,
-      start: "left 98%",
-      end: "left 55%",
-      scrub: 0.5,
-    };
-    gsap.fromTo(element, { scale: GROW_FROM }, { scale: 1, ease: "power2.out", scrollTrigger });
+    const entering = { ...along, trigger: element, start: "left 98%", end: "left 55%", scrub: 0.5 };
+    gsap.fromTo(
+      element,
+      { scale: GROW_FROM },
+      { scale: 1, ease: "power2.out", scrollTrigger: entering },
+    );
+
     const picture = element.querySelector<HTMLElement>("[data-story-zoom]");
     if (picture) {
-      gsap.fromTo(picture, { scale: ZOOM_FROM }, { scale: 1, ease: "power2.out", scrollTrigger });
+      gsap.fromTo(
+        picture,
+        { scale: ZOOM_FROM },
+        { scale: 1, ease: "power2.out", scrollTrigger: entering },
+      );
     }
+
+    const drift = element.querySelector<HTMLElement>("[data-story-parallax]");
+    if (drift) {
+      gsap.fromTo(
+        drift,
+        { xPercent: -DRIFT, scale: DRIFT_SCALE },
+        {
+          xPercent: DRIFT,
+          scale: DRIFT_SCALE,
+          ease: "none",
+          scrollTrigger: {
+            ...along,
+            trigger: element,
+            start: "left right",
+            end: "right left",
+            scrub: true,
+          },
+        },
+      );
+    }
+  }
+}
+
+/** Wipes every `data-story-frame` open from the left when it comes into view. */
+function wipeFramesOpen(row: HTMLElement) {
+  for (const frame of gsap.utils.toArray<HTMLElement>("[data-story-frame]", row)) {
+    gsap.fromTo(
+      frame,
+      { clipPath: "inset(0% 100% 0% 0%)", autoAlpha: 0 },
+      {
+        clipPath: "inset(0% 0% 0% 0%)",
+        autoAlpha: 1,
+        duration: 1.1,
+        ease: "expo.out",
+        scrollTrigger: {
+          scroller: row,
+          horizontal: true,
+          trigger: frame,
+          start: "left 92%",
+          toggleActions: "play none none reverse",
+        },
+      },
+    );
   }
 }
 
@@ -122,7 +178,10 @@ export function StoryRail({ label, children }: { label: string; children: ReactN
         if (progress.current) gsap.set(progress.current, { scaleX: row.scrollLeft / (reach || 1) });
       };
       row.addEventListener("scroll", onScroll, { passive: true });
-      if (context.conditions?.motion) growOnEnter(row);
+      if (context.conditions?.motion) {
+        animatePictures(row);
+        wipeFramesOpen(row);
+      }
 
       return () => {
         release();
