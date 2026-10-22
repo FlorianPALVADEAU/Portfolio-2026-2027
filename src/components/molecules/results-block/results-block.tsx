@@ -13,15 +13,18 @@ export function ResultsBlock({ title, items }: ResultsBlockProps) {
       <Heading level={2} size="xl">
         <RiseText>{title}</RiseText>
       </Heading>
-      <dl className="grid gap-6 sm:grid-cols-2">
+      <dl className="flex flex-col">
         {items.map((item) => (
-          <div key={item.label} className="flex flex-col-reverse justify-end gap-1">
-            <dt>
+          <div
+            key={item.label}
+            className="flex items-center justify-between gap-4 border-t py-2.5 first:border-t-0"
+          >
+            <dt className="min-w-0">
               <Text as="span" size="sm">
                 {item.label}
               </Text>
             </dt>
-            <dd className="text-[clamp(2rem,3.5vw,3rem)] leading-none font-semibold tracking-tight">
+            <dd className="shrink-0 text-right text-xl leading-tight font-semibold tracking-tight whitespace-nowrap tabular-nums">
               {item.value}
             </dd>
           </div>
