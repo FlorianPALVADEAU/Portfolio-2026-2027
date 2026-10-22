@@ -102,6 +102,45 @@
           "body": "Flyers, discounts and partner booths were hard to link to sales. Tracking acquisition and partner value from the start would show what is worth repeating."
         }
       ]
+    },
+    "tire-flip": {
+      "alt": "A participant flips a large tractor tire."
+    },
+    "tire-drag": {
+      "alt": "A participant drags a tire on a rope across dry ground."
+    },
+    "log-carry": {
+      "alt": "Two participants carry logs along a sunlit path."
+    },
+    "log-lift": {
+      "alt": "A participant lifts a log onto a stack of logs."
+    },
+    "chain-carry": {
+      "alt": "A participant carries heavy chains along a wooded path."
+    },
+    "monkey-bars": {
+      "alt": "A participant crosses wooden monkey bars."
+    },
+    "wall-under": {
+      "alt": "A participant crawls under a wooden wall."
+    },
+    "barbed-wire": {
+      "alt": "A participant crawls under barbed wire."
+    },
+    "podium": {
+      "alt": "Three women hold the 2, 1 and 3 podium boards in front of the Overbound backdrop."
+    },
+    "finishers": {
+      "alt": "A group of finishers wearing their medals in front of the Overbound backdrop."
+    },
+    "crowd": {
+      "alt": "Participants gathered in a crowd under the Intersport arch."
+    },
+    "finish-hug": {
+      "alt": "Two people pose arm in arm, one wearing a finisher medal."
+    },
+    "medals": {
+      "alt": "Finisher medals laid out in rows."
     }
   }
 }

@@ -12,45 +12,19 @@ const MOTION = "(prefers-reduced-motion: no-preference)";
 
 /** Share of the remaining distance the wheel glide covers on each frame. */
 const GLIDE = 0.18;
-/** Wheel distance in px the row swallows at an end before the page starts to scroll... */
-const END_RESISTANCE = 280;
-/** ...and the time in ms it keeps swallowing it, so a fast flick cannot cut through. */
-const END_DWELL_MS = 450;
-/** Pause in ms after which that resistance starts over. */
-const RESISTANCE_RESET_MS = 600;
 /** Distance in px after which the cue that invites the visitor to scroll sideways goes away. */
 const CUE_HIDDEN_AFTER = 40;
 /** Panels grow from this share of their size while they slide in, picture un-zooming inside. */
 const GROW_FROM = 0.84;
 const ZOOM_FROM = 1.5;
 
-/** Whether the wheel is still being held back at an end of the row; see the constants above. */
-function endResistance() {
-  let pushed = 0;
-  let pushedAt = 0;
-  let started = 0;
-  return {
-    holds(delta: number): boolean {
-      const now = performance.now();
-      if (now - pushedAt > RESISTANCE_RESET_MS) {
-        pushed = 0;
-        started = now;
-      }
-      pushedAt = now;
-      pushed += Math.abs(delta);
-      return pushed < END_RESISTANCE || now - started < END_DWELL_MS;
-    },
-  };
-}
-
 /**
- * Sends the vertical wheel along the row, eased. At either end the wheel goes back to the page,
- * so the footer stays within reach.
+ * Sends the vertical wheel along the row, eased. The page has nothing below the story, so the wheel
+ * has nowhere else to go.
  */
 function wheelSideways(row: HTMLElement): () => void {
   let target = row.scrollLeft;
   let frameId = 0;
-  const resistance = endResistance();
   const reach = () => row.scrollWidth - row.clientWidth;
   const glide = () => {
     const gap = target - row.scrollLeft;
@@ -66,12 +40,7 @@ function wheelSideways(row: HTMLElement): () => void {
     if (Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.ctrlKey) return;
     const from = frameId ? target : row.scrollLeft;
     const next = Math.min(Math.max(from + event.deltaY, 0), reach());
-    if (next === from) {
-      // The end of the story comes with a little give, so the last words are read before the
-      // footer takes over.
-      if (resistance.holds(event.deltaY)) event.preventDefault();
-      return;
-    }
+    if (next === from) return;
     event.preventDefault();
     target = next;
     if (!frameId) frameId = requestAnimationFrame(glide);
@@ -178,7 +147,7 @@ export function StoryRail({ label, children }: { label: string; children: ReactN
         tabIndex={-1}
         className="[scrollbar-width:none] focus:outline-none focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ring group-data-[rail=on]/rail:h-dvh group-data-[rail=on]/rail:overflow-x-auto group-data-[rail=on]/rail:overflow-y-hidden group-data-[rail=on]/rail:overscroll-x-contain [&::-webkit-scrollbar]:hidden"
       >
-        <div className="flex flex-col gap-(--section-space) group-data-[rail=on]/rail:h-full group-data-[rail=on]/rail:w-[max-content] group-data-[rail=on]/rail:flex-row group-data-[rail=on]/rail:gap-0 group-data-[rail=on]/rail:pr-[30vw]">
+        <div className="flex flex-col gap-(--section-space) group-data-[rail=on]/rail:h-full group-data-[rail=on]/rail:w-[max-content] group-data-[rail=on]/rail:flex-row group-data-[rail=on]/rail:gap-0 group-data-[rail=on]/rail:pr-[6vw]">
           {children}
         </div>
       </section>
