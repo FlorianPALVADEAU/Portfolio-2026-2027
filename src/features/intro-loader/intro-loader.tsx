@@ -92,6 +92,10 @@ export function IntroLoader({ label, welcome }: { label: string; welcome: string
       return;
     }
 
+    // An odd viewport height puts the middle on a half pixel; both clipped edges are then
+    // antialiased and a hairline of page shows through the logo. Whole pixels keep the seam clean.
+    element.style.setProperty("--seam", `${Math.round(element.clientHeight / 2)}px`);
+
     const html = document.documentElement;
     const previousOverflow = html.style.overflow;
     html.style.overflow = "hidden";
@@ -147,14 +151,14 @@ export function IntroLoader({ label, welcome }: { label: string; welcome: string
       <div
         data-panel="top"
         className="absolute inset-0 bg-background"
-        style={{ clipPath: `inset(0 0 calc(50% - ${SEAM_OVERLAP_PX}px) 0)` }}
+        style={{ clipPath: `inset(0 0 calc(100% - var(--seam, 50%) - ${SEAM_OVERLAP_PX}px) 0)` }}
       >
         <Logo welcome={welcome} />
       </div>
       <div
         data-panel="bottom"
         className="absolute inset-0 bg-background"
-        style={{ clipPath: `inset(calc(50% - ${SEAM_OVERLAP_PX}px) 0 0 0)` }}
+        style={{ clipPath: `inset(calc(var(--seam, 50%) - ${SEAM_OVERLAP_PX}px) 0 0 0)` }}
       >
         <Logo welcome={welcome} />
       </div>

@@ -13,10 +13,14 @@ type ScrollHintProps = {
 /** A narrower window is a phone or a small tablet, which gets the fixed label whatever its pointer. */
 const BESIDE_POINTER_MIN_WIDTH = 768;
 const INTERACTIVE = "a, button, input, textarea, select, summary, [role='button']";
+/** How long the page must rest before the hint shows; it never covers a scroll in progress. */
+const IDLE_MS = 700;
 const BOUNCE = "motion-safe:animate-bounce";
 
 /**
- * Tells the visitor to keep scrolling while a pinned block (see `markScrollHint`) is not over. With
+ * Tells the visitor to keep scrolling while a pinned block (see `markScrollHint`) is not over, but
+ * only once the page has rested for a moment: it shows on arrival if nobody scrolls, and comes back
+ * whenever the visitor stops, never while they scroll. With
  * a mouse a "scroll" tag trails the pointer, except over what can be clicked, while the native
  * pointer stays; on a touch screen the same tag stays fixed at the bottom of the screen. Both are
  * decoration: nothing is announced, and without a marked block, as under reduced motion, nothing
@@ -34,6 +38,7 @@ export function ScrollHint({ label }: ScrollHintProps) {
     const besidePointer = () => hasFinePointer() && window.innerWidth >= BESIDE_POINTER_MIN_WIDTH;
 
     let active = false;
+    let lastScroll = performance.now();
     let overInteractive = false;
     let inWindow = false;
     const render = () => {
@@ -44,9 +49,14 @@ export function ScrollHint({ label }: ScrollHintProps) {
     const check = () => {
       const hint = activeScrollHint();
       bottomTag.style.setProperty("--hint-bottom", hint?.bottom ?? "1rem");
-      if ((hint !== null) === active) return;
-      active = hint !== null;
+      const shown = hint !== null && performance.now() - lastScroll > IDLE_MS;
+      if (shown === active) return;
+      active = shown;
       render();
+    };
+    const onScroll = () => {
+      lastScroll = performance.now();
+      check();
     };
 
     const onMove = (event: PointerEvent) => {
@@ -64,7 +74,7 @@ export function ScrollHint({ label }: ScrollHintProps) {
     };
 
     gsap.set(bottomTag, { autoAlpha: 0 });
-    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", check);
     document.addEventListener("pointermove", onMove, { passive: true });
     document.documentElement.addEventListener("pointerleave", onLeave);
@@ -75,7 +85,7 @@ export function ScrollHint({ label }: ScrollHintProps) {
     return () => {
       cancelAnimationFrame(frame);
       gsap.ticker.remove(check);
-      window.removeEventListener("scroll", check);
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", check);
       document.removeEventListener("pointermove", onMove);
       document.documentElement.removeEventListener("pointerleave", onLeave);

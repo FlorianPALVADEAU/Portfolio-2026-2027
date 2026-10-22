@@ -13,13 +13,13 @@ gsap.registerPlugin(ScrollTrigger);
  * Pixels of scrolling that play the whole sequence, with the copy still hidden. Shorter on small
  * screens, where a thumb covers less distance. The track height in CSS must use the same values.
  */
-const SEQUENCE_PX = { small: 2000, large: 3000 };
+const SEQUENCE_PX = { small: 1400, large: 2000 };
 /** Pixels of scrolling, after the sequence, that reveal the copy. */
 const REVEAL_PX = 700;
 /** Pixels of scrolling, once the copy is shown, that keep it alone on screen before the next section. */
 const HOLD_PX = 500;
 /** Pixels over which the picture darkens, so that the copy can be read over the last frames. */
-const DARKEN_PX = 1400;
+const DARKEN_PX = 1000;
 /**
  * Share of the frames that is played. The footage ends on a blank white mist; stopping a little
  * before it keeps a cloud against the sky behind the copy.
@@ -41,7 +41,7 @@ const TRACK = `calc(var(--sequence) + ${REVEAL_PX + HOLD_PX}px + 200svh)`;
  * What the stage becomes while the next section covers it: it pivots on its bottom edge, so the
  * top falls back along Z, and it shrinks and rounds.
  */
-const RECEDE = { tilt: 10, scale: 0.92, radius: 36, perspective: 1100 };
+const RECEDE = { tilt: 14, scale: 0.9, radius: 36, perspective: 1000 };
 const SMALL_SCREEN = "(max-width: 767px)";
 
 type ScrollSequenceProps = {
@@ -84,7 +84,8 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
       return () => player?.destroy();
     }
 
-    markScrollHint(element, sequencePx + REVEAL_PX, "7rem");
+    // The hint is for the footage alone: it ends where the headline and the photos start to appear.
+    markScrollHint(element, sequencePx, "9rem");
     const cleanups: (() => void)[] = [() => clearScrollHint(element)];
     const context = gsap.context(() => {
       // Every position and duration below is in pixels of scrolling.
@@ -202,7 +203,7 @@ export function ScrollSequence({ frames, children }: ScrollSequenceProps) {
     <div
       ref={track}
       style={{ "--track": TRACK } as CSSProperties}
-      className="-mb-[100svh] [--sequence:2000px] md:[--sequence:3000px] h-(--track) motion-reduce:mb-0 motion-reduce:h-svh"
+      className="-mb-[100svh] [--sequence:1400px] md:[--sequence:2000px] h-(--track) motion-reduce:mb-0 motion-reduce:h-svh"
     >
       <div
         ref={stage}
