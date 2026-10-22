@@ -4,4 +4,5 @@ export {
   getSoundEnabled,
   setSoundEnabled,
   subscribeSound,
+  suspendSound,
 } from "./preference";

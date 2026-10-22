@@ -144,6 +144,13 @@
     },
     "medals": {
       "alt": "Finisher-Medaillen in Reihen ausgelegt."
+    },
+    "links": {
+      "title": "Links",
+      "labels": {
+        "site": "Website besuchen",
+        "code": "Quellcode lesen"
+      }
     }
   }
 }

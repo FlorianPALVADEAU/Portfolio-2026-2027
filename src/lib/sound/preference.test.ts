@@ -33,4 +33,35 @@ describe("sound preference", () => {
     const { getSoundEnabled } = await import("./preference");
     expect(getSoundEnabled()).toBe(true);
   });
+
+  it("goes quiet while suspended and comes back as it was", async () => {
+    const { getSoundEnabled, setSoundEnabled, suspendSound, subscribeSound } = await import(
+      "./preference"
+    );
+    setSoundEnabled(true);
+    const listener = vi.fn();
+    subscribeSound(listener);
+
+    const release = suspendSound();
+    expect(getSoundEnabled()).toBe(false);
+    expect(localStorage.getItem("sound")).toBe("on");
+
+    release();
+    release();
+    expect(getSoundEnabled()).toBe(true);
+    expect(listener).toHaveBeenCalledTimes(2);
+  });
+
+  it("stays quiet until every hold is released", async () => {
+    const { getSoundEnabled, setSoundEnabled, suspendSound } = await import("./preference");
+    setSoundEnabled(true);
+
+    const first = suspendSound();
+    const second = suspendSound();
+    first();
+
+    expect(getSoundEnabled()).toBe(false);
+    second();
+    expect(getSoundEnabled()).toBe(true);
+  });
 });

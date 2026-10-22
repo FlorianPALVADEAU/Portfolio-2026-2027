@@ -13,6 +13,14 @@ export default {
     video: "/projects/overbound/teaser.mp4",
   },
   blocks: [
+    {
+      id: "links",
+      type: "links",
+      items: [
+        { id: "site", href: "https://www.overbound-race.com" },
+        { id: "code", href: "https://github.com/FlorianPALVADEAU/Overbound" },
+      ],
+    },
     { id: "context", type: "text" },
     { id: "problem", type: "text" },
     { id: "role", type: "text" },

@@ -113,3 +113,28 @@ html.lenis body {
     animation: dialog-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
+
+/* `VideoPlayer`: a control pops when its icon changes, so the press is felt. */
+@keyframes control-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.5) rotate(-25deg);
+  }
+}
+
+@keyframes player-in {
+  from {
+    opacity: 0.6;
+    transform: scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .control-pop {
+    animation: control-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .player-in {
+    animation: player-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}

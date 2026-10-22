@@ -16,7 +16,7 @@ const PILL =
 /** Last panel of a story: where to go from here, so the story never ends on empty paper. */
 export function ProjectOutro({ locale, next, labels, cvHref }: ProjectOutroProps) {
   return (
-    <StoryPanel>
+    <StoryPanel className="pb-24 lg:pb-0">
       <div className="flex flex-col gap-10">
         {next && (
           <div className="flex flex-col gap-3">

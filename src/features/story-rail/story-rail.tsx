@@ -59,9 +59,9 @@ function wheelSideways(row: HTMLElement): () => void {
 }
 
 /** How far, in share of its own width, a picture drifts inside its frame while it crosses. */
-const DRIFT = 7;
+const DRIFT = 16;
 /** A picture is drawn this much larger than its frame so the drift never shows an edge. */
-const DRIFT_SCALE = 1.18;
+const DRIFT_SCALE = 1.4;
 
 /**
  * Each `data-story-grow` picture appears when it comes into view: its frame is wiped open from the
@@ -72,7 +72,13 @@ const DRIFT_SCALE = 1.18;
 function animatePictures(row: HTMLElement) {
   const along = { scroller: row, horizontal: true } as const;
   for (const element of gsap.utils.toArray<HTMLElement>("[data-story-grow]", row)) {
-    const entering = { ...along, trigger: element, start: "left 98%", end: "left 55%", scrub: 0.5 };
+    const entering = {
+      ...along,
+      trigger: element,
+      start: "left 112%",
+      end: "left 50%",
+      scrub: 0.4,
+    };
     gsap.fromTo(
       element,
       { scale: GROW_FROM },
@@ -119,13 +125,13 @@ function wipeFramesOpen(row: HTMLElement) {
       {
         clipPath: "inset(0% 0% 0% 0%)",
         autoAlpha: 1,
-        duration: 1.1,
-        ease: "expo.out",
+        duration: 0.65,
+        ease: "power3.out",
         scrollTrigger: {
           scroller: row,
           horizontal: true,
           trigger: frame,
-          start: "left 92%",
+          start: "left 118%",
           toggleActions: "play none none reverse",
         },
       },

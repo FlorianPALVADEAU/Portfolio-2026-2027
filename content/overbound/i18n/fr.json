@@ -144,6 +144,13 @@
     },
     "medals": {
       "alt": "Des médailles de finisher alignées en rangées."
+    },
+    "links": {
+      "title": "Liens",
+      "labels": {
+        "site": "Voir le site",
+        "code": "Lire le code source"
+      }
     }
   }
 }

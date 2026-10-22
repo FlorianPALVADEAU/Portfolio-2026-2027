@@ -1,9 +1,11 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
 import { Loader2, Maximize, Minimize, Pause, Play, Volume2, VolumeX } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/atoms/icon";
+import { suspendSound } from "@/lib/sound";
 import { formatTime } from "./format-time";
 
 /** Seconds the arrow keys jump. */
@@ -25,6 +27,47 @@ type VideoPlayerProps = {
     loading: string;
   };
 };
+
+const ALIGNMENTS = {
+  start: "left-0",
+  center: "left-1/2 -translate-x-1/2",
+  end: "right-0",
+} as const;
+
+/** A round glass button that grows under the pointer, pops when its icon changes and names itself. */
+function ControlButton({
+  label,
+  icon,
+  onClick,
+  filled = false,
+  align = "center",
+}: {
+  label: string;
+  icon: LucideIcon;
+  onClick: () => void;
+  filled?: boolean;
+  /** Which edge the name lines up with, so it never runs out of the player. */
+  align?: "start" | "center" | "end";
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className="group/button relative grid size-11 shrink-0 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md transition-[transform,background-color,color] duration-200 hover:scale-110 hover:bg-white hover:text-black focus-visible:scale-110 focus-visible:bg-white focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-95"
+    >
+      <span key={label} className="control-pop grid place-items-center">
+        <Icon icon={icon} className={filled ? "fill-current" : ""} />
+      </span>
+      <span
+        aria-hidden="true"
+        className={`pointer-events-none absolute bottom-full mb-2 -translate-y-1 whitespace-nowrap ${ALIGNMENTS[align]} rounded-full bg-white px-3 py-1 text-xs font-medium text-black opacity-0 transition duration-200 group-hover/button:translate-y-0 group-hover/button:opacity-100 group-focus-visible/button:translate-y-0 group-focus-visible/button:opacity-100`}
+      >
+        {label}
+      </span>
+    </button>
+  );
+}
 
 /** The furthest second already downloaded around the playhead. */
 function bufferedEnd(video: HTMLVideoElement): number {
@@ -54,6 +97,16 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
   const [duration, setDuration] = useState(0);
   const [buffered, setBuffered] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
+  const releaseSound = useRef<(() => void) | null>(null);
+
+  // The video has its own sound: the music and the effects step aside while it plays.
+  const holdSound = () => {
+    releaseSound.current ??= suspendSound();
+  };
+  const freeSound = () => {
+    releaseSound.current?.();
+    releaseSound.current = null;
+  };
 
   const toggle = () => {
     const element = video.current;
@@ -119,6 +172,7 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
     element.addEventListener("keydown", onKeyDown);
     document.addEventListener("fullscreenchange", onFullscreenChange);
     return () => {
+      releaseSound.current?.();
       element.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("fullscreenchange", onFullscreenChange);
     };
@@ -133,7 +187,7 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
       ref={box}
       role="group"
       aria-label={label}
-      className="group/player relative aspect-video w-full overflow-hidden rounded-3xl bg-black text-white"
+      className={`group/player relative aspect-video w-full overflow-hidden bg-black text-white ${fullscreen ? "player-in" : "rounded-3xl"}`}
     >
       <video
         ref={video}
@@ -152,9 +206,16 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
         onPlaying={() => {
           setWaiting(false);
           setPlaying(true);
+          holdSound();
         }}
-        onPause={() => setPlaying(false)}
-        onEnded={() => setPlaying(false)}
+        onPause={() => {
+          setPlaying(false);
+          freeSound();
+        }}
+        onEnded={() => {
+          setPlaying(false);
+          freeSound();
+        }}
         onVolumeChange={(event) => setMuted(event.currentTarget.muted)}
         className="size-full object-contain"
       >
@@ -168,7 +229,7 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
           height={poster.height}
           alt=""
           sizes="(min-width: 1024px) 45vw, 100vw"
-          className="pointer-events-none absolute inset-0 size-full object-cover"
+          className="pointer-events-none absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover/player:scale-105"
         />
       )}
 
@@ -177,10 +238,17 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
           type="button"
           onClick={toggle}
           aria-label={labels.play}
-          className="absolute inset-0 grid place-items-center focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
+          className="absolute inset-0 grid place-items-center bg-black/20 transition-colors duration-300 hover:bg-black/35 focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
         >
-          <span className="grid size-16 place-items-center rounded-full bg-white text-black transition-transform motion-safe:duration-(--duration-base) group-hover/player:scale-105">
-            <Icon icon={Play} size="lg" className="translate-x-0.5 fill-current" />
+          <span className="relative inline-flex items-center gap-3 rounded-full bg-white py-2.5 pr-6 pl-2.5 text-base font-semibold text-black transition-transform duration-300 group-hover/player:scale-105">
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full bg-white/70 motion-safe:animate-ping"
+            />
+            <span className="relative grid size-12 place-items-center rounded-full bg-black text-white">
+              <Icon icon={Play} size="lg" className="translate-x-0.5 fill-current" />
+            </span>
+            <span className="relative">{labels.play}</span>
           </span>
         </button>
       )}
@@ -194,16 +262,15 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
 
       {started && (
         <div
-          className={`absolute inset-x-0 bottom-0 flex items-center gap-3 bg-linear-to-t from-black/80 to-transparent px-4 pt-10 pb-3 transition-opacity motion-safe:duration-(--duration-base) group-focus-within/player:opacity-100 group-hover/player:opacity-100 ${playing ? "opacity-0" : "opacity-100"}`}
+          className={`absolute inset-x-0 bottom-0 flex items-center gap-3 bg-linear-to-t from-black/85 via-black/40 to-transparent px-4 pt-14 pb-4 transition-opacity motion-safe:duration-300 group-focus-within/player:opacity-100 group-hover/player:opacity-100 ${playing ? "opacity-0" : "opacity-100"}`}
         >
-          <button
-            type="button"
+          <ControlButton
+            label={playing ? labels.pause : labels.play}
+            icon={playing ? Pause : Play}
             onClick={toggle}
-            aria-label={playing ? labels.pause : labels.play}
-            className="grid size-11 shrink-0 place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-white"
-          >
-            <Icon icon={playing ? Pause : Play} className="fill-current" />
-          </button>
+            filled
+            align="start"
+          />
           <span className="w-24 shrink-0 font-mono text-xs tabular-nums">
             {formatTime(current)} / {formatTime(duration)}
           </span>
@@ -221,24 +288,19 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
             style={{
               background: `linear-gradient(to right, #fff ${played}%, rgb(255 255 255 / 0.5) ${played}%, rgb(255 255 255 / 0.5) ${loaded}%, rgb(255 255 255 / 0.2) ${loaded}%)`,
             }}
-            className="h-1 min-w-0 flex-1 cursor-pointer appearance-none rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white [&::-moz-range-thumb]:size-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-white [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
+            className="h-1.5 min-w-0 flex-1 cursor-pointer appearance-none rounded-full transition-[height] duration-200 hover:h-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white [&::-moz-range-thumb]:size-3.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-white [&::-webkit-slider-thumb]:size-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
           />
-          <button
-            type="button"
+          <ControlButton
+            label={muted ? labels.unmute : labels.mute}
+            icon={muted ? VolumeX : Volume2}
             onClick={toggleMute}
-            aria-label={muted ? labels.unmute : labels.mute}
-            className="grid size-11 shrink-0 place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-white"
-          >
-            <Icon icon={muted ? VolumeX : Volume2} />
-          </button>
-          <button
-            type="button"
+          />
+          <ControlButton
+            label={fullscreen ? labels.exitFullscreen : labels.fullscreen}
+            icon={fullscreen ? Minimize : Maximize}
             onClick={toggleFullscreen}
-            aria-label={fullscreen ? labels.exitFullscreen : labels.fullscreen}
-            className="grid size-11 shrink-0 place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-white"
-          >
-            <Icon icon={fullscreen ? Minimize : Maximize} />
-          </button>
+            align="end"
+          />
         </div>
       )}
     </div>

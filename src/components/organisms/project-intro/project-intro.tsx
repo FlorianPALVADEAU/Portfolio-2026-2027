@@ -1,5 +1,7 @@
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import { Heading } from "@/components/atoms/heading";
+import { Icon } from "@/components/atoms/icon";
 import { Link } from "@/components/atoms/link";
 import { Text } from "@/components/atoms/text";
 import { StoryPanel } from "@/components/molecules/story-panel";
@@ -46,9 +48,13 @@ export function ProjectIntro({
       </span>
       <Entrance className="flex flex-1 flex-col justify-end gap-16 py-24 lg:py-0">
         <div className="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-x-12">
-          <div className="flex flex-col gap-8 lg:col-span-7">
+          <div className="flex flex-col gap-8 lg:col-span-8">
             {teaser && (
-              <div data-entrance data-story-frame className="w-full max-w-[min(100%,36rem)]">
+              <div
+                data-entrance
+                data-story-frame
+                className="w-full lg:w-[min(100%,calc((100dvh-24rem)*1.7778))]"
+              >
                 {teaser.video ? (
                   <VideoPlayer
                     src={teaser.video}
@@ -63,7 +69,7 @@ export function ProjectIntro({
                     height={teaser.poster.height}
                     alt={teaser.label}
                     priority
-                    sizes="(min-width: 1024px) 36rem, 100vw"
+                    sizes="(min-width: 1024px) 60vw, 100vw"
                     className="aspect-video w-full rounded-3xl object-cover"
                   />
                 )}
@@ -77,7 +83,7 @@ export function ProjectIntro({
               {title}
             </Heading>
           </div>
-          <div className="flex flex-col gap-8 lg:col-span-5 lg:pb-3">
+          <div className="flex flex-col gap-8 lg:col-span-4 lg:pb-3">
             <Text
               data-entrance
               className="max-w-[26ch] text-[clamp(1.25rem,1.9vw,1.75rem)] leading-snug font-semibold text-balance"
@@ -100,14 +106,19 @@ export function ProjectIntro({
             </dl>
             {links.length > 0 && (
               <ul data-entrance className="flex flex-wrap gap-3">
-                {links.map(({ id, href, label }) => (
+                {links.map(({ id, href, label }, index) => (
                   <li key={id}>
                     <Link
                       href={href}
                       external
-                      className="inline-flex min-h-11 items-center rounded-full border border-border bg-surface px-6 no-underline transition-colors hover:border-accent"
+                      className={`group/link inline-flex min-h-11 items-center gap-2 rounded-full border px-5 text-sm font-medium no-underline transition-colors ${index === 0 ? "border-accent bg-accent text-accent-foreground hover:bg-transparent hover:text-accent" : "border-border bg-surface hover:border-accent hover:text-accent"}`}
                     >
                       {label}
+                      <Icon
+                        icon={ArrowUpRight}
+                        size="sm"
+                        className="transition-transform duration-200 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+                      />
                     </Link>
                   </li>
                 ))}
