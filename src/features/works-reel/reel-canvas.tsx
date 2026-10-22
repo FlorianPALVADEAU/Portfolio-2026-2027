@@ -28,7 +28,7 @@ const HOVER_ZOOM = 0.05;
 const SHAKE_X = 0.01;
 const SHAKE_Y = 0.003;
 /** Largest slide of the picture between its nearest and farthest pixels, as a share of its size. */
-const PARALLAX = 0.022;
+const PARALLAX = 0.034;
 
 /** Unsteady-hand offset: two out-of-phase waves per axis, never beyond the shake limits. */
 function handShake(seconds: number, strength: number): [number, number] {
