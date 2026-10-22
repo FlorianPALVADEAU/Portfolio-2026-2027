@@ -11,7 +11,7 @@ import {
   Texture,
   TextureLoader,
 } from "three";
-import { coverRatio, type ReelCover } from "./reel-cover";
+import { coverRatio, type ReelCover, sharpSource } from "./reel-cover";
 import { followTarget, pinchTarget } from "./reel-physics";
 import { fragmentShader, vertexShader } from "./reel-shader";
 
@@ -107,25 +107,43 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
 
   useEffect(() => {
     const { image } = cover;
-    let loaded: Texture | null = null;
-    const load = () => {
+    let current: Texture | null = null;
+    let cancelled = false;
+    const show = (source: HTMLImageElement) => {
       // An <img> reports its rendered size to three, not its natural one, so the pixels go through a
       // canvas of the real size.
       const pixels = document.createElement("canvas");
-      pixels.width = image.naturalWidth;
-      pixels.height = image.naturalHeight;
-      pixels.getContext("2d")?.drawImage(image, 0, 0);
-      loaded = new Texture(pixels);
-      loaded.colorSpace = SRGBColorSpace;
-      loaded.anisotropy = 4;
-      loaded.needsUpdate = true;
-      setTexture(loaded);
+      pixels.width = source.naturalWidth;
+      pixels.height = source.naturalHeight;
+      pixels.getContext("2d")?.drawImage(source, 0, 0);
+      const next = new Texture(pixels);
+      next.colorSpace = SRGBColorSpace;
+      next.anisotropy = 4;
+      next.needsUpdate = true;
+      const previous = current;
+      current = next;
+      setTexture(next);
+      previous?.dispose();
+    };
+    // The card's picture shows first; the sharp one replaces it once it has arrived.
+    const sharpen = () => {
+      const sharp = new Image();
+      sharp.decoding = "async";
+      sharp.onload = () => {
+        if (!cancelled) show(sharp);
+      };
+      sharp.src = sharpSource(image.currentSrc || image.src, window.location.href);
+    };
+    const load = () => {
+      show(image);
+      sharpen();
     };
     if (image.complete && image.naturalWidth > 0) load();
     else image.addEventListener("load", load, { once: true });
     return () => {
+      cancelled = true;
       image.removeEventListener("load", load);
-      loaded?.dispose();
+      current?.dispose();
     };
   }, [cover]);
 

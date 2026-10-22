@@ -74,3 +74,17 @@ export function coverRatio(imageAspect: number, boxAspect: number): [number, num
   if (imageAspect > boxAspect) return [boxAspect / imageAspect, 1];
   return [1, imageAspect / boxAspect];
 }
+
+/** Widest size the image optimiser serves, enough for a cover that fills the screen. */
+const SHARP_WIDTH = "1920";
+
+/**
+ * The address of the picture at the size the plane needs. The card's own `<img>` is cut for the
+ * card, which looks soft once the plane grows to fill the screen; any other source is kept.
+ */
+export function sharpSource(current: string, base: string): string {
+  const url = new URL(current, base);
+  if (url.pathname !== "/_next/image") return current;
+  url.searchParams.set("w", SHARP_WIDTH);
+  return url.pathname + url.search;
+}

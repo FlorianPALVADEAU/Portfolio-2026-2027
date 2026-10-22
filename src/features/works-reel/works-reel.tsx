@@ -237,13 +237,17 @@ function followHover(item: HTMLElement, state: CoverState): () => void {
   };
   item.addEventListener("pointerenter", enter);
   item.addEventListener("pointerleave", leave);
-  item.addEventListener("focusin", enter);
+  // A click also focuses the link; only a keyboard arrival is new, the pointer has had its turn.
+  const onFocus = (event: FocusEvent) => {
+    if (event.target instanceof Element && event.target.matches(":focus-visible")) enter();
+  };
+  item.addEventListener("focusin", onFocus);
   item.addEventListener("focusout", leave);
   return () => {
     pull?.kill();
     item.removeEventListener("pointerenter", enter);
     item.removeEventListener("pointerleave", leave);
-    item.removeEventListener("focusin", enter);
+    item.removeEventListener("focusin", onFocus);
     item.removeEventListener("focusout", leave);
   };
 }

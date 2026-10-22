@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { armWorkReturn } from "@/lib/motion";
+import { armWorkReturn, rememberLeftWork } from "@/lib/motion";
 
 /** Marks a link that returns to a page whose scroll position was left behind. */
 const RESTORE_SCROLL_ATTRIBUTE = "data-restore-scroll";
@@ -60,6 +60,9 @@ export function ScrollRestore() {
 
   useEffect(() => {
     shown.current = pathname;
+    // A project reached from another project (the next step of a story) is the one the list
+    // must bring the visitor back to, not the cover that was clicked first.
+    if (/\/projects\/[^/]+$/.test(pathname)) rememberLeftWork(pathname);
     if (!returning.current) return;
     returning.current = false;
     const top = positions.current.get(pathname);
