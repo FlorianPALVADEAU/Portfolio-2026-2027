@@ -81,27 +81,25 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
           />
         </div>
         <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-4 px-(--gutter) pb-8 font-mono text-xs tracking-widest text-foreground uppercase md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 md:pb-6 [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
-          <span className="inline-flex items-center gap-2.5 rounded-full border border-foreground/25 bg-foreground/10 px-4 py-2 text-center backdrop-blur-md md:justify-self-start">
+          <span className="inline-flex h-10 w-full max-w-xs items-center justify-center gap-2.5 rounded-full border border-foreground/40 bg-foreground/10 px-5 text-center backdrop-blur-md md:w-auto md:max-w-none md:justify-self-start">
             <span aria-hidden="true" className="relative flex size-2 shrink-0">
-              <span className="absolute inset-0 animate-ping rounded-full bg-foreground motion-reduce:hidden" />
-              <span className="relative size-2 rounded-full bg-foreground" />
+              <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400 motion-reduce:hidden" />
+              <span className="relative size-2 rounded-full bg-emerald-400" />
             </span>
             {messages.badge}
           </span>
           <span aria-hidden="true" className="hidden md:block" />
-          <span className="w-full max-w-xs md:max-w-none md:justify-self-end md:w-auto">
-            {cvHref && (
-              <Button
-                asChild
-                variant="outline"
-                className="w-full border-foreground/40 bg-foreground/10 backdrop-blur-md hover:bg-foreground/20 md:h-9 md:w-auto md:px-3 md:text-sm"
-              >
-                <a href={cvHref} download className="no-underline">
-                  {messages.cv}
-                </a>
-              </Button>
-            )}
-          </span>
+          {cvHref && (
+            <Button
+              asChild
+              variant="outline"
+              className="h-10 w-full max-w-xs rounded-full border-foreground/40 bg-foreground/10 px-5 font-mono text-xs tracking-widest uppercase backdrop-blur-md hover:bg-foreground/20 md:w-auto md:max-w-none md:justify-self-end"
+            >
+              <a href={cvHref} download className="no-underline">
+                {messages.cv}
+              </a>
+            </Button>
+          )}
         </div>
       </ScrollSequence>
     </section>
