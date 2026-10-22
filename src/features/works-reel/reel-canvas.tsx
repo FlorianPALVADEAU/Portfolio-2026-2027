@@ -31,8 +31,8 @@ const OVERSCAN = 1.3;
 const CUP_DEPTH = 260;
 
 /** Largest slide of the picture, as a share of its size, at full shake. */
-const SHAKE_X = 0.01;
-const SHAKE_Y = 0.003;
+const SHAKE_X = 0.0075;
+const SHAKE_Y = 0.0022;
 /** Largest slide of the picture between its nearest and farthest pixels, as a share of its size. */
 const PARALLAX = 0.034;
 
