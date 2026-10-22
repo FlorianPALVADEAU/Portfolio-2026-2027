@@ -30,6 +30,7 @@ const playerLabels = {
   exitFullscreen: "Exit full screen",
   seek: "Position in the video",
   loading: "Loading",
+  volume: "Volume",
 };
 
 const messages = {
@@ -96,7 +97,7 @@ describe("ProjectDetail", () => {
       />,
     );
 
-    expect(screen.getByRole("link", { name: "Another project" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Another\s*project/ })).toHaveAttribute(
       "href",
       "/en/projects/another",
     );

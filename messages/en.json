@@ -272,6 +272,7 @@
     "fullscreen": "Full screen",
     "exitFullscreen": "Exit full screen",
     "seek": "Position in the video",
-    "loading": "Loading"
+    "loading": "Loading",
+    "volume": "Volume"
   }
 }

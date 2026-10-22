@@ -1,4 +1,6 @@
 import { Heading } from "@/components/atoms/heading";
+import { Rise } from "@/components/atoms/rise";
+import { RiseText } from "@/components/atoms/rise-text";
 import { Text } from "@/components/atoms/text";
 
 type TextBlockProps = {
@@ -11,13 +13,15 @@ export function TextBlock({ title, paragraphs }: TextBlockProps) {
     <div className="flex flex-col gap-4">
       {title && (
         <Heading level={2} size="xl">
-          {title}
+          <RiseText>{title}</RiseText>
         </Heading>
       )}
       {paragraphs.map((paragraph) => (
-        <Text key={paragraph} size="sm" className="max-w-[62ch] leading-relaxed">
-          {paragraph}
-        </Text>
+        <Rise key={paragraph}>
+          <Text size="sm" className="max-w-[62ch] leading-relaxed">
+            {paragraph}
+          </Text>
+        </Rise>
       ))}
     </div>
   );

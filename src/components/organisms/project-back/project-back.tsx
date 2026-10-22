@@ -13,7 +13,7 @@ export function ProjectBack({ locale, label }: { locale: Locale; label: string }
       href={`/${locale}#works`}
       data-restore-scroll=""
       data-no-cover=""
-      className="fixed bottom-5 left-5 z-40 inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background/80 px-4 text-sm no-underline backdrop-blur-md transition-colors hover:border-accent hover:text-foreground focus-visible:outline-offset-4 lg:bottom-6 lg:left-6"
+      className="pill-in fixed bottom-5 left-5 z-40 inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background/80 px-4 text-sm no-underline backdrop-blur-md transition-colors hover:border-accent hover:text-foreground focus-visible:outline-offset-4 lg:bottom-6 lg:left-6"
     >
       <Icon icon={ArrowLeft} size="sm" />
       {label}

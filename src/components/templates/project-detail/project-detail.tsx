@@ -76,7 +76,7 @@ export function ProjectDetail({
         <StoryPanel size="media">
           <MediaBlock image={project.cover} alt={project.cover.alt} priority />
         </StoryPanel>
-        <BlockList blocks={texts.slice(TEXT_BEFORE_COVER)} />
+        <BlockList blocks={texts.slice(TEXT_BEFORE_COVER)} startAt={TEXT_BEFORE_COVER} />
         <BlockList blocks={visuals} />
         <ProjectOutro
           locale={locale}

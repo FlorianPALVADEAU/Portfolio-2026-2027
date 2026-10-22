@@ -1,4 +1,5 @@
 import { Link } from "@/components/atoms/link";
+import { RiseText } from "@/components/atoms/rise-text";
 import { StoryPanel } from "@/components/molecules/story-panel";
 import type { Locale } from "@/lib/i18n";
 
@@ -17,7 +18,7 @@ const PILL =
 export function ProjectOutro({ locale, next, labels, cvHref }: ProjectOutroProps) {
   return (
     <StoryPanel className="pb-24 lg:pb-0">
-      <div className="flex flex-col gap-10">
+      <div data-story-rise className="flex flex-col gap-10">
         {next && (
           <div className="flex flex-col gap-3">
             <p className="font-mono text-xs uppercase tracking-widest text-accent">{labels.next}</p>
@@ -25,7 +26,7 @@ export function ProjectOutro({ locale, next, labels, cvHref }: ProjectOutroProps
               href={`/${locale}/projects/${next.slug}`}
               className="text-[clamp(2.25rem,5vw,4.5rem)] leading-none font-semibold tracking-tight no-underline"
             >
-              {next.title}
+              <RiseText>{next.title}</RiseText>
             </Link>
           </div>
         )}

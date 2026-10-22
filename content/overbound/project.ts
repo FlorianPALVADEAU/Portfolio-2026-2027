@@ -16,10 +16,7 @@ export default {
     {
       id: "links",
       type: "links",
-      items: [
-        { id: "site", href: "https://www.overbound-race.com" },
-        { id: "code", href: "https://github.com/FlorianPALVADEAU/Overbound" },
-      ],
+      items: [{ id: "site", href: "https://www.overbound-race.com" }],
     },
     { id: "context", type: "text" },
     { id: "problem", type: "text" },

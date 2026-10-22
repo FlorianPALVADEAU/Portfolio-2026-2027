@@ -11,6 +11,7 @@ const labels = {
   exitFullscreen: "Exit full screen",
   seek: "Position in the video",
   loading: "Loading",
+  volume: "Volume",
 };
 
 const play = vi.fn(() => Promise.resolve());

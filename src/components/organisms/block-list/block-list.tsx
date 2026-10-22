@@ -56,6 +56,8 @@ function renderBlock(block: Block) {
 
 type BlockListProps = {
   blocks: readonly Block[];
+  /** Number of text blocks that come before these ones, so that the cards count on. */
+  startAt?: number;
 };
 
 /** Runs of blocks that are not pictures stay together, so the text reads as one band. */
@@ -73,7 +75,8 @@ function groupBlocks(blocks: readonly Block[]): readonly (readonly Block[])[] {
  * Story panels for a `StoryRail`, in the order authored: a picture gets a panel of its own, and
  * the blocks around it that are not pictures share one, as columns side by side.
  */
-export function BlockList({ blocks }: BlockListProps) {
+export function BlockList({ blocks, startAt = 0 }: BlockListProps) {
+  let counted = startAt;
   return groupBlocks(blocks).map((group) => {
     const [first] = group;
     if (!first) return null;
@@ -86,15 +89,28 @@ export function BlockList({ blocks }: BlockListProps) {
     }
     return (
       <StoryPanel key={first.id} size="group">
-        <div className="flex flex-col gap-12 group-data-[rail=on]/rail:w-[max-content] group-data-[rail=on]/rail:flex-row group-data-[rail=on]/rail:items-start group-data-[rail=on]/rail:gap-16">
-          {group.map((block) => (
-            <div
-              key={block.id}
-              className="group-data-[rail=on]/rail:w-[min(80vw,24rem)] group-data-[rail=on]/rail:shrink-0"
-            >
-              {renderBlock(block)}
-            </div>
-          ))}
+        <div className="flex flex-col gap-6 group-data-[rail=on]/rail:w-[max-content] group-data-[rail=on]/rail:flex-row group-data-[rail=on]/rail:items-stretch group-data-[rail=on]/rail:gap-6">
+          {group.map((block) => {
+            counted += 1;
+            const number = String(counted).padStart(2, "0");
+            return (
+              <article
+                key={block.id}
+                data-story-rise
+                data-story-velocity
+                className="relative flex flex-col gap-6 overflow-hidden rounded-3xl border border-border bg-surface p-6 group-data-[rail=on]/rail:h-[calc(100dvh-12rem)] group-data-[rail=on]/rail:w-[min(80vw,26rem)] group-data-[rail=on]/rail:shrink-0 lg:p-8"
+              >
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-3 -bottom-8 select-none text-[11rem] leading-none font-semibold tracking-tighter text-transparent [-webkit-text-stroke:1px_var(--color-border)]"
+                >
+                  {number}
+                </span>
+                <p className="relative font-mono text-xs tracking-widest text-accent">{number}</p>
+                <div className="relative flex flex-col gap-6">{renderBlock(block)}</div>
+              </article>
+            );
+          })}
         </div>
       </StoryPanel>
     );

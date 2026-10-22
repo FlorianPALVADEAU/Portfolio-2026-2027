@@ -1,10 +1,15 @@
 "use client";
 
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { type ReactNode, useLayoutEffect, useRef } from "react";
-
-gsap.registerPlugin(ScrollTrigger);
+import { whenIntroOpen } from "@/lib/intro";
+import {
+  growAndDrift,
+  hideBeforeEntrance,
+  revealOnEnter,
+  slideInNeighbours,
+  trackVelocity,
+} from "./story-motion";
 
 /** Large screens: the story is a row, scrolled sideways by the wheel, the touchpad or the keys. */
 const SIDEWAYS = "(min-width: 1024px)";
@@ -14,10 +19,6 @@ const MOTION = "(prefers-reduced-motion: no-preference)";
 const GLIDE = 0.18;
 /** Distance in px after which the cue that invites the visitor to scroll sideways goes away. */
 const CUE_HIDDEN_AFTER = 40;
-/** Panels grow from this share of their size while they slide in, picture un-zooming inside. */
-const GROW_FROM = 0.84;
-const ZOOM_FROM = 1.5;
-
 /**
  * Sends the vertical wheel along the row, eased. The page has nothing below the story, so the wheel
  * has nowhere else to go.
@@ -56,87 +57,6 @@ function wheelSideways(row: HTMLElement): () => void {
     row.removeEventListener("wheel", onWheel);
     row.removeEventListener("scroll", onScroll);
   };
-}
-
-/** How far, in share of its own width, a picture drifts inside its frame while it crosses. */
-const DRIFT = 16;
-/** A picture is drawn this much larger than its frame so the drift never shows an edge. */
-const DRIFT_SCALE = 1.4;
-
-/**
- * Each `data-story-grow` picture appears when it comes into view: its frame is wiped open from the
- * left while the picture grows and un-zooms, then its `data-story-parallax` layer drifts against
- * the scroll for as long as the picture is on screen. The wipe plays once and goes back when the
- * picture is scrolled back out of reach; the rest follows the scroll exactly.
- */
-function animatePictures(row: HTMLElement) {
-  const along = { scroller: row, horizontal: true } as const;
-  for (const element of gsap.utils.toArray<HTMLElement>("[data-story-grow]", row)) {
-    const entering = {
-      ...along,
-      trigger: element,
-      start: "left 112%",
-      end: "left 50%",
-      scrub: 0.4,
-    };
-    gsap.fromTo(
-      element,
-      { scale: GROW_FROM },
-      { scale: 1, ease: "power2.out", scrollTrigger: entering },
-    );
-
-    const picture = element.querySelector<HTMLElement>("[data-story-zoom]");
-    if (picture) {
-      gsap.fromTo(
-        picture,
-        { scale: ZOOM_FROM },
-        { scale: 1, ease: "power2.out", scrollTrigger: entering },
-      );
-    }
-
-    const drift = element.querySelector<HTMLElement>("[data-story-parallax]");
-    if (drift) {
-      gsap.fromTo(
-        drift,
-        { xPercent: -DRIFT, scale: DRIFT_SCALE },
-        {
-          xPercent: DRIFT,
-          scale: DRIFT_SCALE,
-          ease: "none",
-          scrollTrigger: {
-            ...along,
-            trigger: element,
-            start: "left right",
-            end: "right left",
-            scrub: true,
-          },
-        },
-      );
-    }
-  }
-}
-
-/** Wipes every `data-story-frame` open from the left when it comes into view. */
-function wipeFramesOpen(row: HTMLElement) {
-  for (const frame of gsap.utils.toArray<HTMLElement>("[data-story-frame]", row)) {
-    gsap.fromTo(
-      frame,
-      { clipPath: "inset(0% 100% 0% 0%)", autoAlpha: 0 },
-      {
-        clipPath: "inset(0% 0% 0% 0%)",
-        autoAlpha: 1,
-        duration: 0.65,
-        ease: "power3.out",
-        scrollTrigger: {
-          scroller: row,
-          horizontal: true,
-          trigger: frame,
-          start: "left 118%",
-          toggleActions: "play none none reverse",
-        },
-      },
-    );
-  }
 }
 
 /**
@@ -184,12 +104,25 @@ export function StoryRail({ label, children }: { label: string; children: ReactN
         if (progress.current) gsap.set(progress.current, { scaleX: row.scrollLeft / (reach || 1) });
       };
       row.addEventListener("scroll", onScroll, { passive: true });
+      let stopVelocity = () => {};
+      let cancelWait = () => {};
       if (context.conditions?.motion) {
-        animatePictures(row);
-        wipeFramesOpen(row);
+        hideBeforeEntrance(row);
+        // Behind the intro screen nothing should play, and nothing should show before it does.
+        cancelWait = whenIntroOpen(() =>
+          // Added to the context, so that leaving the large layout undoes it all.
+          context.add(() => {
+            growAndDrift(row);
+            revealOnEnter(row);
+            slideInNeighbours(row);
+            stopVelocity = trackVelocity(row);
+          }),
+        );
       }
 
       return () => {
+        cancelWait();
+        stopVelocity();
         release();
         row.removeEventListener("keydown", onKey);
         row.removeEventListener("scroll", onScroll);

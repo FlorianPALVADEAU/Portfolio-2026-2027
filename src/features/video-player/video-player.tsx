@@ -3,13 +3,15 @@
 import type { LucideIcon } from "lucide-react";
 import { Loader2, Maximize, Minimize, Pause, Play, Volume2, VolumeX } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { type RefObject, useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/atoms/icon";
 import { suspendSound } from "@/lib/sound";
 import { formatTime } from "./format-time";
 
 /** Seconds the arrow keys jump. */
 const SKIP_SECONDS = 5;
+/** Share of the full volume the arrow keys move it by. */
+const VOLUME_STEP = 0.1;
 
 type VideoPlayerProps = {
   src: string;
@@ -25,6 +27,7 @@ type VideoPlayerProps = {
     exitFullscreen: string;
     seek: string;
     loading: string;
+    volume: string;
   };
 };
 
@@ -54,7 +57,7 @@ function ControlButton({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="group/button relative grid size-11 shrink-0 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md transition-[transform,background-color,color] duration-200 hover:scale-110 hover:bg-white hover:text-black focus-visible:scale-110 focus-visible:bg-white focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-95"
+      className="group/button relative grid size-11 cursor-pointer shrink-0 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md transition-[transform,background-color,color] duration-200 hover:scale-110 hover:bg-white hover:text-black focus-visible:scale-110 focus-visible:bg-white focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-95"
     >
       <span key={label} className="control-pop grid place-items-center">
         <Icon icon={icon} className={filled ? "fill-current" : ""} />
@@ -66,6 +69,89 @@ function ControlButton({
         {label}
       </span>
     </button>
+  );
+}
+
+const THUMB =
+  "[&::-moz-range-thumb]:size-3.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-white [&::-webkit-slider-thumb]:size-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white";
+
+/** The position in the video: what is played, what is already downloaded, and what is left. */
+function SeekBar({
+  video,
+  current,
+  duration,
+  played,
+  loaded,
+  label,
+}: {
+  video: RefObject<HTMLVideoElement | null>;
+  current: number;
+  duration: number;
+  played: number;
+  loaded: number;
+  label: string;
+}) {
+  return (
+    <input
+      type="range"
+      min={0}
+      max={duration || 0}
+      step={0.1}
+      value={current}
+      aria-label={label}
+      aria-valuetext={`${formatTime(current)} / ${formatTime(duration)}`}
+      onChange={(event) => {
+        if (video.current) video.current.currentTime = Number(event.target.value);
+      }}
+      style={{
+        background: `linear-gradient(to right, #fff ${played}%, rgb(255 255 255 / 0.5) ${played}%, rgb(255 255 255 / 0.5) ${loaded}%, rgb(255 255 255 / 0.2) ${loaded}%)`,
+      }}
+      className={`h-1.5 min-w-0 flex-1 cursor-pointer appearance-none rounded-full transition-[height] duration-200 hover:h-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${THUMB}`}
+    />
+  );
+}
+
+/** The mute button, and the volume slider that unfolds beside it when it is pointed at. */
+function VolumeControl({
+  video,
+  muted,
+  volume,
+  labels,
+  onToggleMute,
+}: {
+  video: RefObject<HTMLVideoElement | null>;
+  muted: boolean;
+  volume: number;
+  labels: VideoPlayerProps["labels"];
+  onToggleMute: () => void;
+}) {
+  const level = muted ? 0 : volume;
+  return (
+    <div className="group/volume flex items-center gap-2">
+      <ControlButton
+        label={muted ? labels.unmute : labels.mute}
+        icon={muted ? VolumeX : Volume2}
+        onClick={onToggleMute}
+      />
+      <input
+        type="range"
+        min={0}
+        max={1}
+        step={0.05}
+        value={level}
+        aria-label={labels.volume}
+        onChange={(event) => {
+          const element = video.current;
+          if (!element) return;
+          element.volume = Number(event.target.value);
+          element.muted = element.volume === 0;
+        }}
+        style={{
+          background: `linear-gradient(to right, #fff ${level * 100}%, rgb(255 255 255 / 0.25) ${level * 100}%)`,
+        }}
+        className={`h-1.5 w-0 cursor-pointer appearance-none rounded-full opacity-0 transition-[width,opacity] duration-300 group-focus-within/volume:w-20 group-focus-within/volume:opacity-100 group-hover/volume:w-20 group-hover/volume:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${THUMB}`}
+      />
+    </div>
   );
 }
 
@@ -91,6 +177,8 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
   const video = useRef<HTMLVideoElement>(null);
   const [started, setStarted] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [paused, setPaused] = useState(true);
+  const [volume, setVolume] = useState(1);
   const [waiting, setWaiting] = useState(false);
   const [muted, setMuted] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -136,6 +224,13 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
     }
   };
 
+  const changeVolume = (delta: number) => {
+    const element = video.current;
+    if (!element) return;
+    element.muted = false;
+    element.volume = Math.min(Math.max(element.volume + delta, 0), 1);
+  };
+
   const jump = (seconds: number) => {
     const element = video.current;
     if (element)
@@ -150,6 +245,8 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
     f: toggleFullscreen,
     ArrowLeft: () => jump(-SKIP_SECONDS),
     ArrowRight: () => jump(SKIP_SECONDS),
+    ArrowUp: () => changeVolume(VOLUME_STEP),
+    ArrowDown: () => changeVolume(-VOLUME_STEP),
   };
 
   useEffect(() => {
@@ -203,6 +300,7 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
         }}
         onProgress={(event) => setBuffered(bufferedEnd(event.currentTarget))}
         onWaiting={() => setWaiting(true)}
+        onPlay={() => setPaused(false)}
         onPlaying={() => {
           setWaiting(false);
           setPlaying(true);
@@ -210,14 +308,19 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
         }}
         onPause={() => {
           setPlaying(false);
+          setPaused(true);
           freeSound();
         }}
         onEnded={() => {
           setPlaying(false);
+          setPaused(true);
           freeSound();
         }}
-        onVolumeChange={(event) => setMuted(event.currentTarget.muted)}
-        className="size-full object-contain"
+        onVolumeChange={(event) => {
+          setMuted(event.currentTarget.muted);
+          setVolume(event.currentTarget.volume);
+        }}
+        className="size-full cursor-pointer object-contain"
       >
         <track kind="captions" />
       </video>
@@ -233,12 +336,12 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
         />
       )}
 
-      {!started && (
+      {paused && (
         <button
           type="button"
           onClick={toggle}
           aria-label={labels.play}
-          className="absolute inset-0 grid place-items-center bg-black/20 transition-colors duration-300 hover:bg-black/35 focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
+          className="absolute inset-0 grid cursor-pointer place-items-center bg-black/20 transition-colors duration-300 hover:bg-black/35 focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
         >
           <span className="relative inline-flex items-center gap-3 rounded-full bg-white py-2.5 pr-6 pl-2.5 text-base font-semibold text-black transition-transform duration-300 group-hover/player:scale-105">
             <span
@@ -274,26 +377,20 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
           <span className="w-24 shrink-0 font-mono text-xs tabular-nums">
             {formatTime(current)} / {formatTime(duration)}
           </span>
-          <input
-            type="range"
-            min={0}
-            max={duration || 0}
-            step={0.1}
-            value={current}
-            aria-label={labels.seek}
-            aria-valuetext={`${formatTime(current)} / ${formatTime(duration)}`}
-            onChange={(event) => {
-              if (video.current) video.current.currentTime = Number(event.target.value);
-            }}
-            style={{
-              background: `linear-gradient(to right, #fff ${played}%, rgb(255 255 255 / 0.5) ${played}%, rgb(255 255 255 / 0.5) ${loaded}%, rgb(255 255 255 / 0.2) ${loaded}%)`,
-            }}
-            className="h-1.5 min-w-0 flex-1 cursor-pointer appearance-none rounded-full transition-[height] duration-200 hover:h-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white [&::-moz-range-thumb]:size-3.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-white [&::-webkit-slider-thumb]:size-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
+          <SeekBar
+            video={video}
+            current={current}
+            duration={duration}
+            played={played}
+            loaded={loaded}
+            label={labels.seek}
           />
-          <ControlButton
-            label={muted ? labels.unmute : labels.mute}
-            icon={muted ? VolumeX : Volume2}
-            onClick={toggleMute}
+          <VolumeControl
+            video={video}
+            muted={muted}
+            volume={volume}
+            labels={labels}
+            onToggleMute={toggleMute}
           />
           <ControlButton
             label={fullscreen ? labels.exitFullscreen : labels.fullscreen}

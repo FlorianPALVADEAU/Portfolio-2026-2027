@@ -1,4 +1,5 @@
 import { Heading } from "@/components/atoms/heading";
+import { RiseText } from "@/components/atoms/rise-text";
 import { Text } from "@/components/atoms/text";
 
 type ResultsBlockProps = {
@@ -10,7 +11,7 @@ export function ResultsBlock({ title, items }: ResultsBlockProps) {
   return (
     <div className="flex flex-col gap-5">
       <Heading level={2} size="xl">
-        {title}
+        <RiseText>{title}</RiseText>
       </Heading>
       <dl className="grid gap-6 sm:grid-cols-2">
         {items.map((item) => (

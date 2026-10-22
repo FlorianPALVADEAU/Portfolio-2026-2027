@@ -25,6 +25,7 @@ const meta = {
       exitFullscreen: "Exit full screen",
       seek: "Position in the video",
       loading: "Loading",
+      volume: "Volume",
     },
     next: { slug: "another", title: "Another project" },
     cvHref: "/cv/cv-en.pdf",

@@ -148,8 +148,7 @@
     "links": {
       "title": "Links",
       "labels": {
-        "site": "Visit the site",
-        "code": "Read the source code"
+        "site": "Visit the site"
       }
     }
   }

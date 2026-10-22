@@ -11,7 +11,7 @@ type MediaBlockProps = {
 
 export function MediaBlock({ image, alt, caption, priority = false }: MediaBlockProps) {
   return (
-    <figure data-story-grow className="m-0">
+    <figure data-story-grow data-story-velocity className="m-0">
       <div data-story-frame className="overflow-hidden rounded-3xl">
         <div data-story-parallax>
           <Image
