@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { armWorkReturn, rememberLeftWork } from "@/lib/motion";
+import { armWorkReturn, jumpToTop, rememberLeftWork } from "@/lib/motion";
 
 /** Marks a link that returns to a page whose scroll position was left behind. */
 const RESTORE_SCROLL_ATTRIBUTE = "data-restore-scroll";
@@ -17,6 +17,34 @@ function restore(top: number, frame = 0) {
     return;
   }
   requestAnimationFrame(() => restore(top, frame + 1));
+}
+
+/** Milliseconds a shared address keeps pulling the page to its section while the layout settles. */
+const HASH_SETTLE_MS = 2500;
+
+/** Keeps the section named by the address in place until the visitor takes over or it settles. */
+function holdHashTarget(): () => void {
+  const id = decodeURIComponent(window.location.hash.slice(1));
+  if (!id) return () => {};
+  const started = performance.now();
+  let frame = 0;
+  const align = () => {
+    const target = document.getElementById(id);
+    if (target) {
+      const margin = Number.parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+      const top = target.getBoundingClientRect().top - margin;
+      if (Math.abs(top) > 1) jumpToTop(top + window.scrollY);
+    }
+    if (performance.now() - started < HASH_SETTLE_MS) frame = requestAnimationFrame(align);
+  };
+  const release = () => cancelAnimationFrame(frame);
+  const events = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+  for (const name of events) window.addEventListener(name, release, { once: true, passive: true });
+  align();
+  return () => {
+    release();
+    for (const name of events) window.removeEventListener(name, release);
+  };
 }
 
 /**
@@ -47,11 +75,13 @@ export function ScrollRestore() {
     };
     const onPopState = arm;
 
+    const releaseHash = holdHashTarget();
     remember();
     window.addEventListener("scroll", remember, { passive: true });
     window.addEventListener("popstate", onPopState);
     document.addEventListener("click", onClick, true);
     return () => {
+      releaseHash();
       window.removeEventListener("scroll", remember);
       window.removeEventListener("popstate", onPopState);
       document.removeEventListener("click", onClick, true);
