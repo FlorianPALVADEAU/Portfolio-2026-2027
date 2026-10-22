@@ -14,6 +14,15 @@ describe("securityHeaders", () => {
     expect(value).toContain("https://i.scdn.co");
   });
 
+  it("keeps the directives that Turnstile and the 3D scene rely on", () => {
+    const value = csp(false);
+    expect(value).toContain(
+      "frame-src https://challenges.cloudflare.com https://www.openstreetmap.org",
+    );
+    expect(value).toContain("worker-src 'self' blob:");
+    expect(value).toContain("img-src 'self' data: blob:");
+  });
+
   it("allows eval and websockets in development only", () => {
     expect(csp(true)).toContain("'unsafe-eval'");
     expect(csp(false)).not.toContain("'unsafe-eval'");
@@ -23,7 +32,12 @@ describe("securityHeaders", () => {
   it("ships the hardening headers", () => {
     const keys = securityHeaders(false).map((header) => header.key);
     expect(keys).toEqual(
-      expect.arrayContaining(["X-Content-Type-Options", "Referrer-Policy", "Permissions-Policy"]),
+      expect.arrayContaining([
+        "X-Content-Type-Options",
+        "Referrer-Policy",
+        "Permissions-Policy",
+        "Strict-Transport-Security",
+      ]),
     );
   });
 });

@@ -25,7 +25,12 @@ export function createRateLimiter({ limit, windowMs, maxKeys = 1000, now = Date.
   /** Records an attempt and tells whether it is allowed. */
   return (key: string): boolean => {
     const at = now();
-    if (hits.size >= maxKeys && !hits.has(key)) prune(at);
+    if (hits.size >= maxKeys && !hits.has(key)) {
+      prune(at);
+      // Still full of live keys: drop the longest-tracked one so the table never outgrows its cap.
+      const [oldest] = hits.keys();
+      if (hits.size >= maxKeys && oldest !== undefined) hits.delete(oldest);
+    }
     const recent = (hits.get(key) ?? []).filter((time) => at - time < windowMs);
     if (recent.length >= limit) {
       hits.set(key, recent);

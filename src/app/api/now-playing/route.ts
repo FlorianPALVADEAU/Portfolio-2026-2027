@@ -1,13 +1,18 @@
 import { connection } from "next/server";
+import type { Track } from "@/server/domain/spotify";
 import { nowPlaying } from "@/server/infrastructure/spotify";
 
 const TTL_MS = 30_000;
-let cached: { at: number; track: ReturnType<typeof nowPlaying> } | undefined;
+let cached: { at: number; track: Promise<Track | null> } | undefined;
 
 /** One Spotify call per window per instance, even when a query string dodges the CDN cache. */
 function currentTrack() {
   const now = Date.now();
-  if (!cached || now - cached.at > TTL_MS) cached = { at: now, track: nowPlaying() };
+  if (!cached || now - cached.at > TTL_MS)
+    cached = {
+      at: now, // A defect must not be served from the cache for the whole window.
+      track: nowPlaying().catch(() => null),
+    };
   return cached.track;
 }
 
