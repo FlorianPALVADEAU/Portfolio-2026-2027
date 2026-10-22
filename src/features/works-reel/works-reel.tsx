@@ -400,7 +400,8 @@ export function WorksReel({ children }: { children: ReactNode }) {
   useLayoutEffect(() => {
     const container = root.current;
     if (!container || prefersReducedMotion()) return;
-    // Read once: a development remount must find the same answer.
+    // Read once per mount: React's development remount must find the same answer, while a page
+    // brought back from the router cache, whose refs survive, must ask again.
     if (returnedFrom.current === undefined) returnedFrom.current = takeWorkReturn();
 
     const open = (path: string) => router.push(path);
@@ -428,6 +429,10 @@ export function WorksReel({ children }: { children: ReactNode }) {
     }
 
     return () => {
+      // After the development remount, which runs in the same task, has had its look.
+      queueMicrotask(() => {
+        returnedFrom.current = undefined;
+      });
       setCovers([]);
       context.revert();
       for (const restore of restores) restore();
