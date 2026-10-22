@@ -183,6 +183,7 @@
         },
         "invalid": "Check the highlighted fields and try again.",
         "human": "The anti-spam check could not confirm you are human. Wait for it to finish, then send again.",
+        "limited": "Too many attempts. Wait a few minutes, then send again.",
         "unavailable": "The message could not be sent. Try again later or use one of the profiles above.",
         "unconfigured": "The contact form is not available right now. Use one of the profiles above.",
         "challenge": "Anti-spam check",

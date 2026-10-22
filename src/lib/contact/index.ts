@@ -8,7 +8,7 @@ export type ContactState =
   | { status: "sent" }
   | {
       status: "error";
-      reason: "invalid" | "human" | "unavailable";
+      reason: "invalid" | "human" | "limited" | "unavailable";
       /** Fields to highlight when the reason is `invalid`. */
       fields?: readonly ContactField[];
     };

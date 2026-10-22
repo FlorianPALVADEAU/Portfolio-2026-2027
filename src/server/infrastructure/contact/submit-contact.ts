@@ -3,9 +3,13 @@
 import { Effect, Layer } from "effect";
 import { headers } from "next/headers";
 import { type ContactState, invalidFields } from "@/lib/contact";
+import { createRateLimiter } from "@/lib/rate-limit";
 import { sendContact } from "@/server/services/contact";
 import { HumanCheckTurnstile } from "./human-check-turnstile";
 import { MailerResend } from "./mailer-resend";
+
+// Per instance, so it only slows a single source down; Turnstile and Resend quotas stay the backstop.
+const allowAttempt = createRateLimiter({ limit: 5, windowMs: 10 * 60 * 1000 });
 
 const field = (data: FormData, name: string) => {
   const value = data.get(name);
@@ -21,6 +25,7 @@ export async function submitContact(
   if (field(data, "website") !== "") return { status: "sent" };
 
   const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim();
+  if (!allowAttempt(ip ?? "unknown")) return { status: "error", reason: "limited" };
   const fields = {
     name: field(data, "name").trim(),
     email: field(data, "email").trim(),
