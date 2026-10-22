@@ -10,6 +10,12 @@ describe("invalidFields", () => {
     }
   });
 
+  it("accepts the usual shapes of an address", () => {
+    for (const email of ["a@b.co", "a@x.y.ch", "a+tag@example.com", "first.last@example.org"]) {
+      expect(invalidFields({ ...valid, email }), email).toEqual([]);
+    }
+  });
+
   it("accepts a valid message", () => {
     expect(invalidFields(valid)).toEqual([]);
   });

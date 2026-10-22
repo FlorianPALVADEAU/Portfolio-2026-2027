@@ -27,6 +27,18 @@ export default meta;
 
 export const Playing: StoryObj<typeof meta> = {};
 
+export const WithCover: StoryObj<typeof meta> = {
+  args: {
+    track: {
+      title: "Weightless",
+      artist: "Marconi Union",
+      url: "https://open.spotify.com",
+      cover: "/photos/lavaux-church.jpg",
+      playing: true,
+    },
+  },
+};
+
 export const LastPlayed: StoryObj<typeof meta> = {
   args: {
     track: {
