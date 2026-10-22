@@ -10,7 +10,9 @@ import {
   warmMusic,
 } from "@/lib/sound";
 
-const GESTURES = ["pointerdown", "keydown", "touchend"] as const;
+// `click` comes last in a press: some browsers count only it, or `touchend`, as the activation that
+// lets audio start, and the earlier events of the same press would find the audio still locked.
+const GESTURES = ["pointerdown", "keydown", "touchend", "click"] as const;
 
 /** Keys that move around or modify without acting on the page. */
 const PASSIVE_KEYS = new Set(["Tab", "Shift", "Control", "Alt", "Meta", "CapsLock", "Escape"]);
