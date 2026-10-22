@@ -28,13 +28,19 @@ export function ScrollRestore() {
   const pathname = usePathname();
   const positions = useRef(new Map<string, number>());
   const returning = useRef(false);
+  const shown = useRef(pathname);
 
   useEffect(() => {
     const arm = () => {
       returning.current = true;
       armWorkReturn();
     };
-    const remember = () => positions.current.set(window.location.pathname, window.scrollY);
+    // The address changes before the page does, and a page that was just swapped in starts at the
+    // top: neither moment says where the visitor was, so neither is written down.
+    const remember = () => {
+      if (returning.current || window.location.pathname !== shown.current) return;
+      positions.current.set(shown.current, window.scrollY);
+    };
     const onClick = (event: MouseEvent) => {
       if (event.target instanceof Element && event.target.closest(`[${RESTORE_SCROLL_ATTRIBUTE}]`))
         arm();
@@ -53,6 +59,7 @@ export function ScrollRestore() {
   }, []);
 
   useEffect(() => {
+    shown.current = pathname;
     if (!returning.current) return;
     returning.current = false;
     const top = positions.current.get(pathname);
