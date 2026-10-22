@@ -1,13 +1,17 @@
 import {
   siDjango,
-  siGithubactions,
+  siDocker,
+  siHelm,
   siKubernetes,
   siNestjs,
   siNextdotjs,
   siPostgresql,
   siReact,
   siRedis,
+  siSanity,
+  siStripe,
   siSupabase,
+  siTailwindcss,
   siTypescript,
   siVuedotjs,
 } from "simple-icons";
@@ -31,9 +35,13 @@ const icons: Record<string, SkillIcon> = {
   PostgreSQL: siPostgresql,
   Redis: siRedis,
   Supabase: siSupabase,
+  Sanity: siSanity,
+  Stripe: siStripe,
+  "Tailwind CSS": siTailwindcss,
   AWS: awsCloud,
   Kubernetes: siKubernetes,
-  "GitHub Actions": siGithubactions,
+  Docker: siDocker,
+  Helm: siHelm,
 };
 
 export function skillIcon(label: string): SkillIcon | null {

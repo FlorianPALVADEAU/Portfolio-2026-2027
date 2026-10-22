@@ -9,7 +9,7 @@ export const experiences = [
     href: "https://www.neurones.net",
     from: 2022.35,
     to: 2023.65,
-    stack: ["Django", "Vue.js"],
+    stack: ["Django", "Vue.js", "Docker"],
   },
   {
     id: "jcdecaux",
@@ -25,7 +25,7 @@ export const experiences = [
     href: "https://www.overbound-race.com",
     from: 2025.6,
     to: null,
-    stack: ["Next.js", "Supabase"],
+    stack: ["Next.js", "Supabase", "Sanity", "Stripe", "Tailwind CSS"],
   },
 ] as const;
 
@@ -43,7 +43,7 @@ export const skillStats = {
 /** Stages of the delivery pipeline and the tools that run them; the names live in the messages. */
 export const pipelineStages = [
   { id: "push", tools: [] },
-  { id: "test", tools: ["GitHub Actions"] },
-  { id: "build", tools: ["GitHub Actions"] },
-  { id: "deploy", tools: ["Kubernetes", "AWS"] },
+  { id: "test", tools: [] },
+  { id: "build", tools: ["Docker"] },
+  { id: "deploy", tools: ["Kubernetes", "Helm", "AWS"] },
 ] as const;

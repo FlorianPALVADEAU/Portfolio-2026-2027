@@ -1,15 +1,11 @@
 import { sampleProjects } from "./samples";
 
-/** Template projects show in development, or in any build with `SAMPLE_PROJECTS=1`. */
-const withSamples = process.env.NODE_ENV === "development" || process.env.SAMPLE_PROJECTS === "1";
-
 /**
- * Every project and note that ships. Imports are explicit so a missing file fails the build,
- * and the loader still validates what each file contains.
+ * Every project and note that ships, in display order. Imports are explicit so a missing file
+ * fails the build, and the loader still validates what each file contains.
  */
 export const registry = {
   project: {
-    ...(withSamples ? sampleProjects : {}),
     overbound: {
       structure: () => import("./overbound/project"),
       text: {
@@ -18,6 +14,7 @@ export const registry = {
         de: () => import("./overbound/i18n/de.json"),
       },
     },
+    ...sampleProjects,
   },
   note: {
     "sample-note": {

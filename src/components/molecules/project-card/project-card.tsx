@@ -60,7 +60,7 @@ export function ProjectCard({ href, title, summary, year, stack, cover }: Projec
             </Link>
           </span>
         </Heading>
-        <Text tone="muted" className="max-w-prose">
+        <Text tone="muted" className="max-w-prose max-md:hidden">
           {summary}
         </Text>
       </div>
