@@ -43,12 +43,12 @@ describe("smoothstep", () => {
 
 describe("pose", () => {
   it("shows the opening photos and hides the ones still in the distance", () => {
-    expect(pose(item("peak"), 0, half, still).opacity).toBeGreaterThan(0.9);
-    expect(pose(item("ridge"), 0, half, still).opacity).toBe(0);
+    expect(pose(item("portrait"), 0, half, still).opacity).toBeGreaterThan(0.9);
+    expect(pose(item("mic"), 0, half, still).opacity).toBe(0);
   });
 
   it("brings a far photo into view and past the frame as the visitor goes on", () => {
-    const ridge = item("ridge");
+    const ridge = item("mic");
     const mid = pose(ridge, 0.3, half, still);
     expect(mid.opacity).toBeGreaterThan(0.9);
     expect(mid.scale).toBeGreaterThan(pose(ridge, 0.1, half, still).scale);
@@ -56,7 +56,7 @@ describe("pose", () => {
   });
 
   it("blurs and fades a photo more the closer it gets to leaving the frame", () => {
-    const peak = item("peak");
+    const peak = item("portrait");
     const early = pose(peak, 0, half, still);
     const late = pose(peak, 0.1, half, still);
     expect(early.blur).toBe(0);
@@ -68,7 +68,7 @@ describe("pose", () => {
     const right = { x: 1, y: 0 };
     const shift = (id: string) =>
       pose(item(id), 0, half, right).x - pose(item(id), 0, half, still).x;
-    expect(Math.abs(shift("peak"))).toBeGreaterThan(Math.abs(shift("ocean")));
+    expect(Math.abs(shift("portrait"))).toBeGreaterThan(Math.abs(shift("newyork")));
   });
 
   it("leaves no photo on screen by the time the closing text appears", () => {

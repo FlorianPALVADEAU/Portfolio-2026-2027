@@ -249,7 +249,7 @@ test.describe("hero", () => {
     await page.goto("/en");
 
     await expect(
-      page.getByRole("heading", { level: 1, name: /Florian Palvadeau.*From Geneva/ }),
+      page.getByRole("heading", { level: 1, name: /Florian Palvadeau.*French developer/ }),
     ).toBeVisible();
     await expect(page.getByText("Full-stack software engineer", { exact: true })).toBeVisible();
     await expect(page.getByText("Open to positions, Switzerland")).toBeVisible();

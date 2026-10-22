@@ -36,7 +36,7 @@
   "home": {
     "badge": "Ouvert aux opportunités, Suisse",
     "role": "Ingénieur logiciel full-stack",
-    "headline": "Depuis Genève, je construis des logiciels qui tiennent.",
+    "headline": "Développeur français, je construis des logiciels qui tiennent.",
     "sections": {
       "intro": "Introduction",
       "works": "Projets sélectionnés",
@@ -57,21 +57,22 @@
     },
     "gallery": {
       "hint": "Faites défiler pour plonger.",
-      "invitation": "Je suis ouvert aux postes full-stack à Genève et dans le canton de Vaud à partir de septembre 2027. Si mon travail peut intéresser votre équipe, écrivez-moi via l'un de ces profils.",
+      "invitation": "Je suis ouvert aux postes full-stack entre Genève et le canton de Vaud à partir de septembre 2027. Si mon travail peut intéresser votre équipe, écrivez-moi via l'un de ces profils.",
       "images": {
-        "peak": "Sommet enneigé au lever du soleil",
-        "meadow": "Prairie verte sous un grand ciel",
-        "forest": "Grands arbres dans une forêt brumeuse",
-        "fog": "Collines émergeant de la brume",
-        "lake": "Lac de montagne calme au crépuscule",
-        "shore": "Vagues sur une plage de sable",
-        "ocean": "Vague sombre qui se brise",
-        "field": "Champ doré dans la lumière du soir",
-        "ridge": "Crête de montagne déchiquetée contre le ciel",
-        "falls": "Cascade tombant dans une gorge verte",
-        "valley": "Vallée verte entre des collines abruptes",
-        "road": "Chemin de terre à travers une forêt",
-        "light": "Rayons de soleil sur un grand champ"
+        "portrait": "Portrait souriant, en haut rouge, à la lumière du soir",
+        "studio": "Portrait souriant en chemise blanche, devant un fond sombre éclairé",
+        "golf": "Séance de golf : un swing sur un practice, sous un ciel nuageux",
+        "desk": "Un développeur au clavier, face à son écran, un carnet ouvert à côté",
+        "rome": "Devant le Colisée, à Rome, en chemise rose et short blanc",
+        "helmet": "Casque intégral et masque orange, à bord d'un télésiège",
+        "newyork": "Dans une rue de New York, vu de dos, casquette sur la tête",
+        "geneva": "Selfie en couple devant le jet d'eau de Genève",
+        "mic": "En train de parler dans un micro de studio",
+        "summit": "Bras ouverts sur une plateforme d'observation, dans la brume",
+        "code": "Un développeur devant un grand écran de code et un ordinateur portable",
+        "triathlon": "Cycliste à côté de son vélo de course, sur la zone d'un triathlon",
+        "build": "Un ordinateur portable affichant une maquette 3D, au-dessus d'un tableur",
+        "whiteboard": "Devant un tableau blanc, en train d'expliquer un schéma d'architecture Kubernetes"
       }
     },
     "skills": {
@@ -155,14 +156,15 @@
         },
         "availability": {
           "value": "Sept. 2027",
-          "label": "Disponible, Genève et canton de Vaud"
+          "label": "Disponible, entre Genève et le canton de Vaud"
         }
       }
     },
     "contact": {
       "profiles": "Profils",
+      "email": "Écrivez-moi par e-mail",
       "newTab": "s'ouvre dans un nouvel onglet",
-      "location": "Genève, Suisse",
+      "location": "France, en recherche entre Genève et le canton de Vaud",
       "availability": "Disponible dès septembre 2027",
       "clients": "Prestations et contextes de mission",
       "form": {
@@ -198,9 +200,9 @@
         "more": "Plus"
       },
       "details": {
-        "title": "Me trouver",
-        "text": "Je cherche un poste à Genève et dans le canton de Vaud. La carte montre la ville, pas une adresse.",
-        "time": "Heure locale",
+        "title": "Où je cherche",
+        "text": "Je vis en France et je cherche un poste entre Genève et le canton de Vaud. La carte montre la zone visée, pas une adresse.",
+        "time": "Heure à Genève",
         "phone": "Téléphone",
         "map": "Carte de Genève"
       }

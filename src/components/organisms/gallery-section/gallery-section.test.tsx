@@ -16,12 +16,16 @@ function renderSection() {
 }
 
 describe("GallerySection", () => {
-  it("is labelled by its title and describes every photo", () => {
+  it("is labelled by its title and describes every photo and video", () => {
     renderSection();
 
     expect(screen.getByRole("region", { name: "Gallery" })).toHaveAttribute("id", "gallery");
     for (const id of galleryIds) {
-      expect(screen.getByRole("img", { name: en.home.gallery.images[id] })).toBeInTheDocument();
+      // A photo is described by its alt text, a video by its label.
+      const description = en.home.gallery.images[id];
+      expect(
+        screen.queryByAltText(description) ?? screen.getByLabelText(description),
+      ).toBeVisible();
     }
   });
 

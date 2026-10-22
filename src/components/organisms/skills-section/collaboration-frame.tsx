@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { AmbientVideo } from "@/components/atoms/ambient-video";
 import { FlipText } from "@/components/atoms/flip-text";
 import { Pop } from "@/components/atoms/pop";
 import { Text } from "@/components/atoms/text";
@@ -71,12 +71,10 @@ export function CollaborationFrame({ order, total, messages }: GroupFrameProps) 
         className="group/photo relative aspect-video overflow-hidden rounded-3xl md:col-span-6 md:aspect-auto md:h-[62svh]"
       >
         <div data-frame-parallax="0.1" className="absolute inset-y-0 -inset-x-[16%]">
-          <Image
-            src="/skills/team.jpg"
-            alt=""
-            fill
-            sizes="45vw"
-            className="object-cover transition-transform duration-1000 ease-out group-hover/photo:scale-105"
+          <AmbientVideo
+            src="/gallery/code.mp4"
+            poster="/gallery/code-poster.webp"
+            className="object-[50%_20%] transition-transform duration-1000 ease-out group-hover/photo:scale-105"
           />
         </div>
       </Pop>
