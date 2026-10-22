@@ -2,7 +2,6 @@ import { Asterisk } from "lucide-react";
 import NextLink from "next/link";
 import { Button } from "@/components/atoms/button";
 import { Icon } from "@/components/atoms/icon";
-import { Link } from "@/components/atoms/link";
 import { Rise } from "@/components/atoms/rise";
 import { RiseText } from "@/components/atoms/rise-text";
 import { BackToTop } from "@/components/molecules/back-to-top";
@@ -13,8 +12,11 @@ import { Magnetic } from "@/features/magnetic";
 import { Marquee } from "@/features/marquee";
 import { NowPlaying } from "@/features/now-playing";
 import type { Locale, Messages } from "@/lib/i18n";
-import { assetCredits, navSections, pictureCredits, profiles, socialIcons } from "@/lib/landing";
+import { profiles, socialIcons } from "@/lib/landing";
 import { siteName } from "@/lib/site";
+import { CreditsContent } from "./credits-content";
+import { FooterNav } from "./footer-nav";
+import { footerLinkClass, monoLabel } from "./styles";
 
 type SiteFooterProps = {
   locale: Locale;
@@ -25,12 +27,6 @@ type SiteFooterProps = {
   cv: { label: string; href: string | null };
   messages: Messages["footer"];
 };
-
-/** A link that draws its underline from the left on hover instead of showing one. */
-const linkClass =
-  "bg-[linear-gradient(currentColor,currentColor)] bg-[length:0_1px] bg-bottom-left bg-no-repeat pb-0.5 text-background/70 no-underline transition-[background-size,color] duration-500 ease-(--ease-out-expo) hover:bg-[length:100%_1px] hover:text-background focus-visible:bg-[length:100%_1px] focus-visible:text-background motion-reduce:transition-none";
-
-const monoLabel = "font-mono text-sm tracking-widest uppercase";
 
 /** The name repeated, with a slowly turning mark between two copies; only the first is announced. */
 const bannerItems = [0, 1, 2].map((copy) => ({
@@ -72,47 +68,9 @@ export function SiteFooter({ locale, nav, availability, cv, messages }: SiteFoot
               triggerLabel={credits.trigger}
               title={credits.title}
               closeLabel={credits.close}
-              triggerClassName={`cursor-pointer ${linkClass} ${monoLabel}`}
+              triggerClassName={`cursor-pointer ${footerLinkClass} ${monoLabel}`}
             >
-              <div className="flex flex-col gap-8 text-sm">
-                <section aria-labelledby="credits-photos" className="flex flex-col gap-3">
-                  <h3 id="credits-photos" className="font-medium">
-                    {credits.photos}
-                  </h3>
-                  <ul className="flex flex-col gap-3">
-                    {pictureCredits.map(({ id, title, author, licence, licenceUrl, sourceUrl }) => (
-                      <li key={id}>
-                        <Link href={sourceUrl} external>
-                          {`“${title}”`}
-                        </Link>
-                        {` ${author}, `}
-                        <Link href={licenceUrl} external>
-                          {licence}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-                <section aria-labelledby="credits-assets" className="flex flex-col gap-3">
-                  <h3 id="credits-assets" className="font-medium">
-                    {credits.assets}
-                  </h3>
-                  <ul className="flex flex-col gap-3">
-                    {assetCredits.map(({ id, name, author, licence, licenceUrl, sourceUrl }) => (
-                      <li key={id}>
-                        <span className="text-muted-foreground">{`${credits.uses[id]}: `}</span>
-                        <Link href={sourceUrl} external>
-                          {name}
-                        </Link>
-                        {` ${author}, `}
-                        <Link href={licenceUrl} external>
-                          {licence}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              </div>
+              <CreditsContent credits={credits} />
             </CreditsDialog>
           </Rise>
         </div>
@@ -189,20 +147,7 @@ export function SiteFooter({ locale, nav, availability, cv, messages }: SiteFoot
           <div className="flex flex-col gap-8 border-t border-background/15 pt-6 text-sm">
             <div className="grid gap-8 md:grid-cols-12 md:items-end">
               <Rise className="md:col-span-7">
-                <nav aria-label={messages.navigation} className="flex flex-col gap-3">
-                  <p aria-hidden="true" className={`text-background/50 ${monoLabel}`}>
-                    {messages.navigation}
-                  </p>
-                  <ul className="grid grid-cols-2 gap-x-10 gap-y-2.5 text-base sm:grid-cols-3 md:w-fit">
-                    {navSections.map((id) => (
-                      <li key={id}>
-                        <Link href={`/${locale}#${id}`} data-jump="" className={linkClass}>
-                          {nav[id]}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
+                <FooterNav locale={locale} label={messages.navigation} nav={nav} />
               </Rise>
               <div className="md:col-span-5 md:justify-self-end">
                 <NowPlaying messages={messages.nowPlaying} />

@@ -7,7 +7,8 @@ export const limits = {
   messageMax: 4000,
 } as const;
 
-export const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** A domain of dot-separated labels ending in an ASCII top-level domain of at least two letters. */
+export const emailPattern = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/;
 
 /** Names of the fields that break the rules; the browser and the server share this verdict. */
 export function invalidFields(values: Readonly<Record<ContactField, string>>): ContactField[] {

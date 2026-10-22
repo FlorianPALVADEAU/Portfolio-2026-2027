@@ -57,14 +57,14 @@ function ControlButton({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="group/button relative grid size-11 cursor-pointer shrink-0 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md transition-[transform,background-color,color] duration-200 hover:scale-110 hover:bg-white hover:text-black focus-visible:scale-110 focus-visible:bg-white focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-95"
+      className="group/button relative grid size-11 cursor-pointer shrink-0 place-items-center rounded-full bg-on-scrim/15 text-on-scrim backdrop-blur-md transition-[transform,background-color,color] duration-200 hover:scale-110 hover:bg-on-scrim hover:text-scrim focus-visible:scale-110 focus-visible:bg-on-scrim focus-visible:text-scrim focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-on-scrim active:scale-95"
     >
       <span key={label} className="control-pop grid place-items-center">
         <Icon icon={icon} className={filled ? "fill-current" : ""} />
       </span>
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute bottom-full mb-2 -translate-y-1 whitespace-nowrap ${ALIGNMENTS[align]} rounded-full bg-white px-3 py-1 text-xs font-medium text-black opacity-0 transition duration-200 group-hover/button:translate-y-0 group-hover/button:opacity-100 group-focus-visible/button:translate-y-0 group-focus-visible/button:opacity-100`}
+        className={`pointer-events-none absolute bottom-full mb-2 -translate-y-1 whitespace-nowrap ${ALIGNMENTS[align]} rounded-full bg-on-scrim px-3 py-1 text-xs font-medium text-scrim opacity-0 transition duration-200 group-hover/button:translate-y-0 group-hover/button:opacity-100 group-focus-visible/button:translate-y-0 group-focus-visible/button:opacity-100`}
       >
         {label}
       </span>
@@ -73,7 +73,7 @@ function ControlButton({
 }
 
 const THUMB =
-  "[&::-moz-range-thumb]:size-3.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-white [&::-webkit-slider-thumb]:size-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white";
+  "[&::-moz-range-thumb]:size-3.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-on-scrim [&::-webkit-slider-thumb]:size-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-on-scrim";
 
 /** The position in the video: what is played, what is already downloaded, and what is left. */
 function SeekBar({
@@ -106,7 +106,7 @@ function SeekBar({
       style={{
         background: `linear-gradient(to right, #fff ${played}%, rgb(255 255 255 / 0.5) ${played}%, rgb(255 255 255 / 0.5) ${loaded}%, rgb(255 255 255 / 0.2) ${loaded}%)`,
       }}
-      className={`h-1.5 min-w-0 flex-1 cursor-pointer appearance-none rounded-full transition-[height] duration-200 hover:h-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${THUMB}`}
+      className={`h-1.5 min-w-0 flex-1 cursor-pointer appearance-none rounded-full transition-[height] duration-200 hover:h-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-on-scrim ${THUMB}`}
     />
   );
 }
@@ -149,7 +149,7 @@ function VolumeControl({
         style={{
           background: `linear-gradient(to right, #fff ${level * 100}%, rgb(255 255 255 / 0.25) ${level * 100}%)`,
         }}
-        className={`h-1.5 w-0 cursor-pointer appearance-none rounded-full opacity-0 transition-[width,opacity] duration-300 group-focus-within/volume:w-20 group-focus-within/volume:opacity-100 group-hover/volume:w-20 group-hover/volume:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${THUMB}`}
+        className={`h-1.5 w-0 cursor-pointer appearance-none rounded-full opacity-0 transition-[width,opacity] duration-300 group-focus-within/volume:w-20 group-focus-within/volume:opacity-100 group-hover/volume:w-20 group-hover/volume:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-on-scrim ${THUMB}`}
       />
     </div>
   );
@@ -284,7 +284,7 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
       ref={box}
       role="group"
       aria-label={label}
-      className={`group/player relative aspect-video w-full overflow-hidden bg-black text-white ${fullscreen ? "player-in" : "rounded-3xl"}`}
+      className={`group/player relative aspect-video w-full overflow-hidden bg-scrim text-on-scrim ${fullscreen ? "player-in" : "rounded-3xl"}`}
     >
       {/* biome-ignore lint/a11y/useMediaCaption: the Overbound teaser has no captions file yet (#224). */}
       <video
@@ -340,14 +340,14 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
           type="button"
           onClick={toggle}
           aria-label={labels.play}
-          className="absolute inset-0 grid cursor-pointer place-items-center bg-black/20 transition-colors duration-300 hover:bg-black/35 focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
+          className="absolute inset-0 grid cursor-pointer place-items-center bg-scrim/20 transition-colors duration-300 hover:bg-scrim/35 focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-on-scrim"
         >
-          <span className="relative inline-flex items-center gap-3 rounded-full bg-white py-2.5 pr-6 pl-2.5 text-base font-semibold text-black transition-transform duration-300 group-hover/player:scale-105">
+          <span className="relative inline-flex items-center gap-3 rounded-full bg-on-scrim py-2.5 pr-6 pl-2.5 text-base font-semibold text-scrim transition-transform duration-300 group-hover/player:scale-105">
             <span
               aria-hidden="true"
-              className="absolute inset-0 rounded-full bg-white/70 motion-safe:animate-ping"
+              className="absolute inset-0 rounded-full bg-on-scrim/70 motion-safe:animate-ping"
             />
-            <span className="relative grid size-12 place-items-center rounded-full bg-black text-white">
+            <span className="relative grid size-12 place-items-center rounded-full bg-scrim text-on-scrim">
               <Icon icon={Play} size="lg" className="translate-x-0.5 fill-current" />
             </span>
             <span className="relative">{labels.play}</span>
@@ -364,7 +364,7 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
 
       {started && (
         <div
-          className={`absolute inset-x-0 bottom-0 flex items-center gap-3 bg-linear-to-t from-black/85 via-black/40 to-transparent px-4 pt-14 pb-4 transition-opacity motion-safe:duration-300 group-focus-within/player:opacity-100 group-hover/player:opacity-100 ${playing ? "opacity-0" : "opacity-100"}`}
+          className={`absolute inset-x-0 bottom-0 flex items-center gap-3 bg-linear-to-t from-scrim/85 via-scrim/40 to-transparent px-4 pt-14 pb-4 transition-opacity motion-safe:duration-300 group-focus-within/player:opacity-100 group-hover/player:opacity-100 ${playing ? "opacity-0" : "opacity-100"}`}
         >
           <ControlButton
             label={playing ? labels.pause : labels.play}
