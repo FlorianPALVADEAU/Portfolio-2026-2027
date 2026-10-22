@@ -72,12 +72,12 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
           className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-(--gutter) text-center"
         >
           <p
-            data-entrance=""
+            data-intro-step="0"
             className="font-mono text-xs tracking-widest text-foreground uppercase [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]"
           >
             Florian Palvadeau
           </p>
-          <div data-entrance="">
+          <div data-intro-step="1">
             <RotatingText
               base={messages.opening.base}
               phrases={messages.opening.phrases}
@@ -87,7 +87,7 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
         </div>
         <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-4 px-(--gutter) pb-8 font-mono text-xs tracking-widest text-foreground uppercase md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 md:pb-6 [text-shadow:0_1px_12px_rgb(0_0_0/0.7)]">
           <span
-            data-entrance=""
+            data-intro-step="3"
             className="inline-flex h-10 w-full max-w-xs items-center justify-center gap-2.5 rounded-full border border-foreground/40 bg-foreground/10 px-5 text-center backdrop-blur-md md:w-auto md:max-w-none md:justify-self-start"
           >
             <span aria-hidden="true" className="relative flex size-2 shrink-0">
@@ -100,7 +100,7 @@ export function HeroSection({ messages, cvHref = null, photos = [] }: HeroSectio
           {cvHref && (
             <Button
               asChild
-              data-entrance=""
+              data-intro-step="3"
               variant="outline"
               className="h-10 w-full max-w-xs rounded-full border-foreground/40 bg-foreground/10 px-5 font-mono text-xs tracking-widest uppercase backdrop-blur-md hover:bg-foreground/20 md:w-auto md:max-w-none md:justify-self-end"
             >

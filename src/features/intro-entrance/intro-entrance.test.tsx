@@ -1,36 +1,37 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { IntroEntrance } from "./intro-entrance";
 
 const reduced = vi.hoisted(() => ({ value: false }));
 vi.mock("@/lib/motion", () => ({ prefersReducedMotion: () => reduced.value }));
 
+const pending = () => document.documentElement.hasAttribute("data-intro-pending");
+
 describe("IntroEntrance", () => {
   afterEach(() => {
     reduced.value = false;
-    vi.resetModules();
   });
 
-  it("hides the marked elements until the intro opens", () => {
-    render(
+  it("holds the page back through an attribute of the root until the intro opens", () => {
+    const { container, unmount } = render(
       <>
-        <p data-entrance="">Name</p>
+        <p data-intro-step="0">Name</p>
         <IntroEntrance />
       </>,
     );
 
-    expect(screen.getByText("Name")).toHaveStyle({ visibility: "hidden" });
+    expect(pending()).toBe(true);
+    // Never an inline style: it would not match the server HTML while hydrating.
+    expect(container.querySelector("p")?.getAttribute("style")).toBeNull();
+
+    unmount();
+    expect(pending()).toBe(false);
   });
 
-  it("leaves the elements alone under reduced motion", () => {
+  it("holds nothing back under reduced motion", () => {
     reduced.value = true;
-    render(
-      <>
-        <p data-entrance="">Name</p>
-        <IntroEntrance />
-      </>,
-    );
+    render(<IntroEntrance />);
 
-    expect(screen.getByText("Name")).not.toHaveStyle({ visibility: "hidden" });
+    expect(pending()).toBe(false);
   });
 });
