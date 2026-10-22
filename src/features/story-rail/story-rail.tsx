@@ -34,6 +34,10 @@ export function StoryRail({ children }: { children: ReactNode }) {
     const media = gsap.matchMedia();
     media.add(SIDEWAYS, () => {
       frame.dataset.rail = "on";
+      // The sticky header takes room above the story; without this the first pixels of scroll
+      // would move the page instead of the story.
+      const header = document.querySelector("header");
+      frame.style.marginTop = `-${header?.getBoundingClientRect().height ?? 0}px`;
       const distance = () => Math.max(0, row.scrollWidth - frame.clientWidth);
 
       const slide = gsap.to(row, {
@@ -90,6 +94,7 @@ export function StoryRail({ children }: { children: ReactNode }) {
       return () => {
         row.removeEventListener("focusin", onFocus);
         delete frame.dataset.rail;
+        frame.style.marginTop = "";
       };
     });
 
@@ -97,7 +102,7 @@ export function StoryRail({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div ref={viewport} className="group/rail relative overflow-x-clip">
+    <div ref={viewport} className="group/rail relative -mt-18 overflow-x-clip">
       <div
         ref={track}
         className="relative flex flex-col gap-(--section-space) group-data-[rail=on]/rail:flex-row group-data-[rail=on]/rail:gap-0 group-data-[rail=on]/rail:will-change-transform"

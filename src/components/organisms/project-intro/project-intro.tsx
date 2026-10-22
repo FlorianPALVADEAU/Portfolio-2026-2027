@@ -15,7 +15,9 @@ type ProjectIntroProps = {
   links: readonly { id: string; href: string; label: string }[];
 };
 
-/** Opening panel of a project: the name, what it is, the facts and where to see it live. */
+const LABEL = "font-mono text-xs uppercase tracking-widest text-accent";
+
+/** Opening screen of a project: the way back on top, the name large below, the facts beside it. */
 export function ProjectIntro({
   locale,
   title,
@@ -26,8 +28,8 @@ export function ProjectIntro({
   links,
 }: ProjectIntroProps) {
   return (
-    <StoryPanel>
-      <Entrance className="flex flex-col gap-8 py-24 lg:py-0">
+    <StoryPanel size="intro">
+      <Entrance className="flex flex-1 flex-col justify-between gap-16 py-8 lg:py-0">
         <div data-entrance>
           <Link
             href={`/${locale}`}
@@ -39,51 +41,49 @@ export function ProjectIntro({
             {back}
           </Link>
         </div>
-        <Heading level={1} size="display" className="text-[clamp(3rem,9vw,8rem)] leading-none">
-          {title}
-        </Heading>
-        <div className="grid gap-8 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-          <Text data-entrance size="lg" className="max-w-prose">
-            {summary}
-          </Text>
-          <dl data-entrance className="flex flex-col gap-5">
-            {facts.map(({ label, value }) => (
-              <div key={label} className="flex flex-col gap-1">
-                <dt className="font-mono text-xs uppercase tracking-widest text-accent">{label}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
-            {stack && (
-              <div className="flex flex-col gap-1">
-                <dt className="font-mono text-xs uppercase tracking-widest text-accent">
-                  {stack.title}
-                </dt>
-                <dd>
-                  <ul className="flex flex-col">
-                    {stack.items.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </dd>
-              </div>
+        <div className="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-x-12">
+          <Heading
+            level={1}
+            size="display"
+            className="text-[clamp(3.25rem,8vw,9rem)] leading-[0.92] lg:col-span-7"
+          >
+            {title}
+          </Heading>
+          <div className="flex flex-col gap-8 lg:col-span-5 lg:pb-3">
+            <Text data-entrance className="max-w-[40ch] text-pretty">
+              {summary}
+            </Text>
+            <dl data-entrance className="grid grid-cols-2 gap-x-8 gap-y-5 text-sm">
+              {facts.map(({ label, value }) => (
+                <div key={label} className="flex flex-col gap-1">
+                  <dt className={LABEL}>{label}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+              {stack && (
+                <div className="col-span-2 flex flex-col gap-1">
+                  <dt className={LABEL}>{stack.title}</dt>
+                  <dd>{stack.items.join(" · ")}</dd>
+                </div>
+              )}
+            </dl>
+            {links.length > 0 && (
+              <ul data-entrance className="flex flex-wrap gap-3">
+                {links.map(({ id, href, label }) => (
+                  <li key={id}>
+                    <Link
+                      href={href}
+                      external
+                      className="inline-flex min-h-11 items-center rounded-full border border-border bg-surface px-6 no-underline transition-colors hover:border-accent"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             )}
-          </dl>
+          </div>
         </div>
-        {links.length > 0 && (
-          <ul data-entrance className="flex flex-wrap gap-3">
-            {links.map(({ id, href, label }) => (
-              <li key={id}>
-                <Link
-                  href={href}
-                  external
-                  className="inline-flex min-h-11 items-center rounded-full border border-border bg-surface px-6 no-underline transition-colors hover:border-accent"
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
       </Entrance>
     </StoryPanel>
   );

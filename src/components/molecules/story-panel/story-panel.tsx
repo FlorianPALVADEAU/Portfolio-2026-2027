@@ -2,10 +2,13 @@ import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 
 const sizes = {
+  /** The opening screen: wide enough for the title beside the facts. */
+  intro: "group-data-[rail=on]/rail:w-[min(92vw,90rem)]",
   /** Reading width: text, a short list. */
   text: "group-data-[rail=on]/rail:w-[min(88vw,64rem)]",
   /** Takes the width of what it holds: a picture sized to the screen height. */
-  media: "group-data-[rail=on]/rail:w-auto",
+  media:
+    "group-data-[rail=on]/rail:w-auto group-data-[rail=on]/rail:px-[2vw] group-data-[rail=on]/rail:pt-24 group-data-[rail=on]/rail:pb-5",
 } as const;
 
 type StoryPanelProps = ComponentPropsWithoutRef<"section"> & {

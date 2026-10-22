@@ -20,8 +20,8 @@ export function MediaBlock({ image, alt, caption, priority = false }: MediaBlock
           alt={alt}
           priority={priority}
           data-story-zoom
-          sizes="(min-width: 1024px) 70vw, 100vw"
-          className="h-auto w-full group-data-[rail=on]/rail:max-h-[72vh] group-data-[rail=on]/rail:w-auto"
+          sizes="(min-width: 1024px) 95vw, 100vw"
+          className="h-auto w-full group-data-[rail=on]/rail:h-[calc(100dvh-7.5rem)] group-data-[rail=on]/rail:w-auto group-data-[rail=on]/rail:max-w-none group-data-[rail=on]/rail:object-cover"
         />
       </div>
       {caption && (

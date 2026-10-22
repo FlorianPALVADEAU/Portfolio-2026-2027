@@ -16,7 +16,7 @@ export function TextBlock({ title, paragraphs }: TextBlockProps) {
       )}
       <div className="flex flex-col gap-4 md:col-span-7 md:col-start-6">
         {paragraphs.map((paragraph) => (
-          <Text key={paragraph} size="lg" className="max-w-prose">
+          <Text key={paragraph} className="max-w-prose">
             {paragraph}
           </Text>
         ))}
