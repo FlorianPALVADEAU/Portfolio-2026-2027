@@ -8,6 +8,7 @@ const track = (title: string, playing: boolean): Track => ({
   title,
   artist: "Artist",
   url: `https://open.spotify.com/track/${title}`,
+  cover: null,
   playing,
 });
 

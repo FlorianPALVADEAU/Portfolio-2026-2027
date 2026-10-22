@@ -7,6 +7,13 @@ const item = {
   name: "Song",
   artists: [{ name: "A" }, { name: "B" }],
   external_urls: { spotify: "https://open.spotify.com/track/1" },
+  album: {
+    images: [
+      { url: "https://i.scdn.co/image/large" },
+      { url: "https://i.scdn.co/image/medium" },
+      { url: "https://i.scdn.co/image/small" },
+    ],
+  },
 };
 
 const reply = (status: number, body?: unknown) => ({
@@ -60,6 +67,7 @@ describe("Spotify source", () => {
       title: "Song",
       artist: "A, B",
       url: "https://open.spotify.com/track/1",
+      cover: "https://i.scdn.co/image/medium",
       playing: true,
     });
     const [url, init] = fetchMock.mock.calls[0] ?? [];

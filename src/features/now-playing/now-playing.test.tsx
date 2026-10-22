@@ -7,7 +7,12 @@ const messages = {
   lastPlayed: "Last played",
   newTab: "opens in a new tab",
 };
-const track = { title: "Song", artist: "Artist", url: "https://open.spotify.com/track/1" };
+const track = {
+  title: "Song",
+  artist: "Artist",
+  url: "https://open.spotify.com/track/1",
+  cover: null,
+};
 
 const answer = (status: number, body?: unknown) =>
   vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ status, json: async () => body }));
@@ -19,7 +24,7 @@ describe("NowPlaying", () => {
     answer(200, { ...track, playing: true });
     render(<NowPlaying messages={messages} />);
 
-    const link = await screen.findByRole("link", { name: /Song, Artist/ });
+    const link = await screen.findByRole("link", { name: /Song/ });
     expect(link).toHaveAttribute("href", track.url);
     expect(link).toHaveAttribute("target", "_blank");
     expect(screen.getByText(/Now playing/)).toBeInTheDocument();
