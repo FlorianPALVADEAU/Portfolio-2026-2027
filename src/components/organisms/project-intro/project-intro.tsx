@@ -28,7 +28,14 @@ export function ProjectIntro({
   links,
 }: ProjectIntroProps) {
   return (
-    <StoryPanel size="intro">
+    <StoryPanel size="intro" className="relative">
+      <span
+        aria-hidden="true"
+        data-story-cue
+        className="absolute right-[3vw] bottom-8 hidden text-3xl transition-opacity duration-(--duration-slow) group-data-[rail=on]/rail:block"
+      >
+        →
+      </span>
       <Entrance className="flex flex-1 flex-col justify-between gap-16 py-8 lg:py-0">
         <div data-entrance>
           <Link

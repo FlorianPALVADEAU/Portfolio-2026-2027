@@ -21,12 +21,24 @@ const project = {
   ],
 } as const;
 
+const messages = {
+  back: "Back to home",
+  role: "Role",
+  year: "Year",
+  story: "Project story",
+  next: "Next project",
+  contact: "Let's work together",
+  cv: "Download CV (PDF)",
+};
+
 describe("ProjectDetail", () => {
   it("has a single h1, facts, a back link and the blocks", () => {
     render(
       <ProjectDetail
         locale="en"
-        messages={{ back: "Back to home", role: "Role", year: "Year" }}
+        messages={messages}
+        next={{ slug: "another", title: "Another project" }}
+        cvHref="/cv/cv-en.pdf"
         project={project}
       />,
     );
@@ -43,7 +55,9 @@ describe("ProjectDetail", () => {
     render(
       <ProjectDetail
         locale="en"
-        messages={{ back: "Back to home", role: "Role", year: "Year" }}
+        messages={messages}
+        next={{ slug: "another", title: "Another project" }}
+        cvHref="/cv/cv-en.pdf"
         project={project}
       />,
     );
@@ -54,6 +68,41 @@ describe("ProjectDetail", () => {
       "https://example.com",
     );
     expect(screen.queryByRole("heading", { name: "Links" })).toBeNull();
-    expect(document.querySelectorAll("[data-story-panel]")).toHaveLength(3);
+    expect(document.querySelectorAll("[data-story-panel]")).toHaveLength(4);
+  });
+
+  it("ends on where to go next: the next project, the contact section and the CV", () => {
+    render(
+      <ProjectDetail
+        locale="en"
+        messages={messages}
+        next={{ slug: "another", title: "Another project" }}
+        cvHref="/cv/cv-en.pdf"
+        project={project}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: "Another project" })).toHaveAttribute(
+      "href",
+      "/en/projects/another",
+    );
+    expect(screen.getByRole("link", { name: "Let's work together" })).toHaveAttribute(
+      "href",
+      "/en#contact",
+    );
+    expect(screen.getByRole("link", { name: "Download CV (PDF)" })).toHaveAttribute(
+      "href",
+      "/cv/cv-en.pdf",
+    );
+  });
+
+  it("leaves out the next project and the CV when there is none", () => {
+    render(
+      <ProjectDetail locale="en" messages={messages} next={null} cvHref={null} project={project} />,
+    );
+
+    expect(screen.queryByText("Next project")).toBeNull();
+    expect(screen.queryByRole("link", { name: "Download CV (PDF)" })).toBeNull();
+    expect(screen.getByRole("link", { name: "Let's work together" })).toBeVisible();
   });
 });

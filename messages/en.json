@@ -223,7 +223,11 @@
   "project": {
     "back": "Back to home",
     "role": "Role",
-    "year": "Year"
+    "year": "Year",
+    "story": "Project story, scrolls sideways",
+    "next": "Next project",
+    "contact": "Let's work together",
+    "cv": "Download CV (PDF)"
   },
   "loader": {
     "label": "Loading the portfolio",

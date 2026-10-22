@@ -7,7 +7,17 @@ const meta = {
   parameters: { layout: "fullscreen" },
   args: {
     locale: "en",
-    messages: { back: "Back to home", role: "Role", year: "Year" },
+    messages: {
+      back: "Back to home",
+      role: "Role",
+      year: "Year",
+      story: "Project story",
+      next: "Next project",
+      contact: "Let's work together",
+      cv: "Download CV (PDF)",
+    },
+    next: { slug: "another", title: "Another project" },
+    cvHref: "/cv/cv-en.pdf",
     project: {
       title: "Sample project",
       summary: "A placeholder that exercises every content block.",

@@ -228,7 +228,11 @@
   "project": {
     "back": "Zurück zur Startseite",
     "role": "Rolle",
-    "year": "Jahr"
+    "year": "Jahr",
+    "story": "Projektvorstellung, scrollt seitwärts",
+    "next": "Nächstes Projekt",
+    "contact": "Lass uns zusammenarbeiten",
+    "cv": "Lebenslauf herunterladen (PDF)"
   },
   "loader": {
     "label": "Portfolio wird geladen",
