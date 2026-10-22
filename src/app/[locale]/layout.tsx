@@ -6,6 +6,7 @@ import { Document } from "@/components/templates/document";
 import { Analytics } from "@/features/analytics";
 import { BackgroundMusic } from "@/features/background-music";
 import { GridOverlay } from "@/features/grid-overlay";
+import { IntroEntrance } from "@/features/intro-entrance";
 import { IntroLoader } from "@/features/intro-loader";
 import { PageTransition } from "@/features/page-transition";
 import { RouteFocus } from "@/features/route-focus";
@@ -83,6 +84,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       <SmoothScroll />
       <PageTransition />
       <IntroLoader label={messages.loader.label} welcome={messages.loader.welcome} />
+      <IntroEntrance />
       <UiSound />
       <BackgroundMusic />
       <Analytics />

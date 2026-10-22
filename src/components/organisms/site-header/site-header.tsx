@@ -24,7 +24,7 @@ export function SiteHeader({ locale, messages, cvHref = null }: SiteHeaderProps)
   return (
     <>
       <SkipLink href={`#${MAIN_ID}`}>{messages.skip}</SkipLink>
-      <header className="sticky top-0 z-40 px-4 pt-3">
+      <header data-entrance="" className="sticky top-0 z-40 px-4 pt-3">
         <Container>
           <HeaderShrink className="relative flex items-center justify-between rounded-full border border-border/60 bg-background/60 py-2 pr-2 pl-4 sm:pl-5 backdrop-blur-md backdrop-saturate-150">
             <Link href={`/${locale}`} className="inline-flex min-h-11 items-center no-underline">
