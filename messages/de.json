@@ -187,6 +187,7 @@
         },
         "invalid": "Prüfen Sie die markierten Felder und versuchen Sie es erneut.",
         "human": "Die Spam-Prüfung konnte nicht bestätigen, dass Sie ein Mensch sind. Warten Sie, bis sie abgeschlossen ist, und senden Sie erneut.",
+        "limited": "Zu viele Versuche. Warten Sie einige Minuten und senden Sie dann erneut.",
         "unavailable": "Die Nachricht konnte nicht gesendet werden. Versuchen Sie es später erneut oder nutzen Sie eines der Profile oben.",
         "unconfigured": "Das Kontaktformular ist im Moment nicht verfügbar. Nutzen Sie eines der Profile oben.",
         "challenge": "Spam-Prüfung",

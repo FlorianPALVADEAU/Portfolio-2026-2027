@@ -182,6 +182,7 @@
         },
         "invalid": "Vérifiez les champs signalés et réessayez.",
         "human": "La vérification anti-spam n'a pas pu confirmer que vous êtes humain. Attendez qu'elle se termine, puis renvoyez.",
+        "limited": "Trop de tentatives. Patientez quelques minutes, puis réessayez.",
         "unavailable": "Le message n'a pas pu être envoyé. Réessayez plus tard ou utilisez l'un des profils ci-dessus.",
         "unconfigured": "Le formulaire de contact n'est pas disponible pour le moment. Utilisez l'un des profils ci-dessus.",
         "challenge": "Vérification anti-spam",

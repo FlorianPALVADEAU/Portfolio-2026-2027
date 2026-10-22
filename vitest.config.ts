@@ -7,6 +7,8 @@ export default defineConfig({
   resolve: { alias: { "@": path.resolve(import.meta.dirname, "src") } },
   test: {
     environment: "jsdom",
+    // jsdom is the slowest part of a run; a VM context per file keeps isolation without rebuilding it.
+    pool: "vmThreads",
     setupFiles: ["./vitest.setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
     coverage: {
