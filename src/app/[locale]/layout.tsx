@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
-import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { Document } from "@/components/templates/document";
 import { Analytics } from "@/features/analytics";
@@ -68,13 +67,6 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
     <Document lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
       <SiteHeader locale={locale} messages={messages.header} cvHref={await cvHref(locale)} />
       {children}
-      <SiteFooter
-        locale={locale}
-        nav={messages.header.nav}
-        cv={{ label: messages.home.cv, href: await cvHref(locale) }}
-        availability={messages.home.contact.availability}
-        messages={messages.footer}
-      />
       <RouteFocus />
       <ScrollRestore />
       <ScrollIndicator />

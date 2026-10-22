@@ -11,7 +11,7 @@ import {
   Texture,
   TextureLoader,
 } from "three";
-import { coverRatio, type ReelCover } from "./reel-cover";
+import { coverRatio, type ReelCover, sharpSource } from "./reel-cover";
 import { followTarget, pinchTarget } from "./reel-physics";
 import { fragmentShader, vertexShader } from "./reel-shader";
 
@@ -31,8 +31,8 @@ const OVERSCAN = 1.3;
 const CUP_DEPTH = 260;
 
 /** Largest slide of the picture, as a share of its size, at full shake. */
-const SHAKE_X = 0.01;
-const SHAKE_Y = 0.003;
+const SHAKE_X = 0.0075;
+const SHAKE_Y = 0.0022;
 /** Largest slide of the picture between its nearest and farthest pixels, as a share of its size. */
 const PARALLAX = 0.034;
 
@@ -89,7 +89,6 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
       uHalfHeight: { value: 1 },
       uBlur: { value: 0 },
       uFocus: { value: 0.5 },
-      uShutter: { value: 0 },
       uShake: { value: [0, 0] as [number, number] },
       uDepthMap: { value: null as Texture | null },
       uLook: { value: [0, 0] as [number, number] },
@@ -107,25 +106,43 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
 
   useEffect(() => {
     const { image } = cover;
-    let loaded: Texture | null = null;
-    const load = () => {
+    let current: Texture | null = null;
+    let cancelled = false;
+    const show = (source: HTMLImageElement) => {
       // An <img> reports its rendered size to three, not its natural one, so the pixels go through a
       // canvas of the real size.
       const pixels = document.createElement("canvas");
-      pixels.width = image.naturalWidth;
-      pixels.height = image.naturalHeight;
-      pixels.getContext("2d")?.drawImage(image, 0, 0);
-      loaded = new Texture(pixels);
-      loaded.colorSpace = SRGBColorSpace;
-      loaded.anisotropy = 4;
-      loaded.needsUpdate = true;
-      setTexture(loaded);
+      pixels.width = source.naturalWidth;
+      pixels.height = source.naturalHeight;
+      pixels.getContext("2d")?.drawImage(source, 0, 0);
+      const next = new Texture(pixels);
+      next.colorSpace = SRGBColorSpace;
+      next.anisotropy = 4;
+      next.needsUpdate = true;
+      const previous = current;
+      current = next;
+      setTexture(next);
+      previous?.dispose();
+    };
+    // The card's picture shows first; the sharp one replaces it once it has arrived.
+    const sharpen = () => {
+      const sharp = new Image();
+      sharp.decoding = "async";
+      sharp.onload = () => {
+        if (!cancelled) show(sharp);
+      };
+      sharp.src = sharpSource(image.currentSrc || image.src, window.location.href);
+    };
+    const load = () => {
+      show(image);
+      sharpen();
     };
     if (image.complete && image.naturalWidth > 0) load();
     else image.addEventListener("load", load, { once: true });
     return () => {
+      cancelled = true;
       image.removeEventListener("load", load);
-      loaded?.dispose();
+      current?.dispose();
     };
   }, [cover]);
 
@@ -178,7 +195,7 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
     plane.visible = visible;
     if (!(visible && texture)) return;
 
-    const { tilt, grow, zoom, hover, blur, focus, shutter, shake, lookX, lookY } = cover.state;
+    const { tilt, grow, zoom, hover, blur, focus, shake, lookX, lookY } = cover.state;
     const { cup, lean, tint, tintColor } = cover.state;
     const width = lerp(box.width * grow, size.width * OVERSCAN, fill);
     const height = lerp(box.height * grow, size.height * OVERSCAN, fill);
@@ -210,7 +227,6 @@ function Cover({ cover, bend }: { cover: ReelCover; bend: Bend }) {
     uniforms.uTintMix.value = tint;
     uniforms.uBlur.value = blur;
     uniforms.uFocus.value = focus;
-    uniforms.uShutter.value = shutter;
     uniforms.uDepth.value = depth * bend.current;
     uniforms.uHalfHeight.value = size.height / 2;
     cover.state.ready = true;

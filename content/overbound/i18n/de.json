@@ -3,6 +3,9 @@
   "summary": "Ein Hindernislauf, den ich gegründet und organisiert habe und dessen Ticketing-Plattform ich entwickelt habe: 336 verkaufte Tickets für die erste Ausgabe am 12. September 2026.",
   "role": "Gründer, Organisator und Entwickler",
   "alt": "Titelbild von Overbound",
+  "teaser": {
+    "label": "Overbound, erste Ausgabe: Video vom Renntag."
+  },
   "blocks": {
     "context": {
       "title": "Kontext",
@@ -40,10 +43,6 @@
         {
           "title": "Zwei Formate auf einer Strecke",
           "body": "RANKED und OPEN teilten dieselben Hindernisse, brauchten aber andere Regeln, Zeitmessung und Besetzung. Getrennte Zeitfenster erlaubten es, beide mit derselben Infrastruktur zu betreuen."
-        },
-        {
-          "title": "Gratisplätze und Rabatte",
-          "body": "Gratisplätze und Rabattcodes halfen, den Anlass zu füllen, verwässerten aber den Ticketumsatz, und gedruckte Flyer liessen sich keinen Verkäufen zuordnen."
         },
         {
           "title": "Partner als Teil des Erlebnisses",
@@ -102,6 +101,51 @@
           "body": "Flyer, Rabatte und Partnerstände liessen sich kaum mit Verkäufen verknüpfen. Wer Akquise und Partnernutzen von Anfang an misst, sieht, was sich zu wiederholen lohnt."
         }
       ]
+    },
+    "tire-flip": {
+      "alt": "Ein Teilnehmer wendet einen grossen Traktorreifen."
+    },
+    "tire-drag": {
+      "alt": "Eine Teilnehmerin zieht einen Reifen an einem Seil über trockenen Boden."
+    },
+    "log-carry": {
+      "alt": "Zwei Teilnehmer tragen Baumstämme auf einem sonnigen Weg."
+    },
+    "log-lift": {
+      "alt": "Ein Teilnehmer hebt einen Baumstamm auf einen Stapel."
+    },
+    "chain-carry": {
+      "alt": "Ein Teilnehmer trägt schwere Ketten auf einem Waldweg."
+    },
+    "monkey-bars": {
+      "alt": "Ein Teilnehmer überquert hölzerne Affenbarren."
+    },
+    "wall-under": {
+      "alt": "Eine Teilnehmerin kriecht unter einer Holzwand durch."
+    },
+    "barbed-wire": {
+      "alt": "Ein Teilnehmer kriecht unter Stacheldraht durch."
+    },
+    "podium": {
+      "alt": "Drei Frauen halten die Podiumstafeln 2, 1 und 3 vor der Overbound-Wand."
+    },
+    "finishers": {
+      "alt": "Eine Gruppe Finisher mit ihren Medaillen vor der Overbound-Wand."
+    },
+    "crowd": {
+      "alt": "Die Teilnehmenden versammelt unter dem Intersport-Bogen."
+    },
+    "finish-hug": {
+      "alt": "Zwei Personen posieren Arm in Arm, eine mit Finisher-Medaille."
+    },
+    "medals": {
+      "alt": "Finisher-Medaillen in Reihen ausgelegt."
+    },
+    "links": {
+      "title": "Links",
+      "labels": {
+        "site": "Website besuchen"
+      }
     }
   }
 }

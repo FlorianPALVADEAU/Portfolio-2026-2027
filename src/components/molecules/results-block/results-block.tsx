@@ -1,4 +1,5 @@
 import { Heading } from "@/components/atoms/heading";
+import { RiseText } from "@/components/atoms/rise-text";
 import { Text } from "@/components/atoms/text";
 
 type ResultsBlockProps = {
@@ -8,17 +9,22 @@ type ResultsBlockProps = {
 
 export function ResultsBlock({ title, items }: ResultsBlockProps) {
   return (
-    <div className="grid gap-6 md:grid-cols-12">
-      <Heading level={2} className="md:col-span-4">
-        {title}
+    <div className="flex flex-col gap-5">
+      <Heading level={2} size="xl">
+        <RiseText>{title}</RiseText>
       </Heading>
-      <dl className="grid gap-8 sm:grid-cols-2 md:col-span-7 md:col-start-6">
+      <dl className="flex flex-col">
         {items.map((item) => (
-          <div key={item.label} className="flex flex-col-reverse justify-end gap-1">
-            <dt>
-              <Text as="span">{item.label}</Text>
+          <div
+            key={item.label}
+            className="flex items-center justify-between gap-4 border-t py-2.5 first:border-t-0"
+          >
+            <dt className="min-w-0">
+              <Text as="span" size="sm">
+                {item.label}
+              </Text>
             </dt>
-            <dd className="text-[clamp(2.75rem,6vw,5rem)] leading-none font-semibold tracking-tight">
+            <dd className="shrink-0 text-right text-xl leading-tight font-semibold tracking-tight whitespace-nowrap tabular-nums">
               {item.value}
             </dd>
           </div>

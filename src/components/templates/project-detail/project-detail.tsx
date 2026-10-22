@@ -1,69 +1,96 @@
-import Image from "next/image";
-import { Container } from "@/components/atoms/container";
-import { Heading } from "@/components/atoms/heading";
-import { Link } from "@/components/atoms/link";
-import { Section } from "@/components/atoms/section";
-import { Stack } from "@/components/atoms/stack";
-import { Text } from "@/components/atoms/text";
+import { MediaBlock } from "@/components/molecules/media-block";
+import { StoryPanel } from "@/components/molecules/story-panel";
 import { type Block, BlockList } from "@/components/organisms/block-list";
-import { Entrance } from "@/features/entrance";
+import { ProjectBack } from "@/components/organisms/project-back";
+import { ProjectBar } from "@/components/organisms/project-bar";
+import { ProjectIntro } from "@/components/organisms/project-intro";
+import { ProjectOutro } from "@/components/organisms/project-outro";
 import { MAIN_ID } from "@/features/route-focus";
+import { StoryRail } from "@/features/story-rail";
 import type { Locale, Messages } from "@/lib/i18n";
 
 type ProjectDetailProps = {
   locale: Locale;
   messages: Messages["project"];
+  playerLabels: Messages["player"];
+  /** The project to read after this one, if there is another. */
+  next: { slug: string; title: string } | null;
+  cvHref: string | null;
   project: {
     title: string;
     summary: string;
     role: string;
     year: number;
     cover: { src: string; width: number; height: number; alt: string };
+    teaser?: {
+      poster: { src: string; width: number; height: number };
+      video?: string | undefined;
+      label: string;
+    };
     blocks: readonly Block[];
   };
 };
 
-export function ProjectDetail({ locale, messages, project }: ProjectDetailProps) {
+/**
+ * A project as a story: the intro, the first text blocks, the cover, the rest of the text as one
+ * band of columns, the pictures, then where to go next. The stack and the links are lifted into the
+ * intro, where they are seen first.
+ */
+/** Text blocks read before the cover; the rest of the text follows it. */
+const TEXT_BEFORE_COVER = 3;
+
+export function ProjectDetail({
+  locale,
+  messages,
+  playerLabels,
+  next,
+  cvHref,
+  project,
+}: ProjectDetailProps) {
+  const stack = project.blocks.find((block) => block.type === "stack");
+  const links = project.blocks.find((block) => block.type === "links");
+  const story = project.blocks.filter((block) => block.type !== "stack" && block.type !== "links");
+  const texts = story.filter((block) => block.type !== "media");
+  const visuals = story.filter((block) => block.type === "media");
+
   return (
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
-      <Section>
-        <Container>
-          <Stack gap="lg">
-            <Entrance className="flex flex-col gap-4">
-              <Heading level={1} size="display" className="text-[clamp(3rem,11vw,10rem)]">
-                {project.title}
-              </Heading>
-              <Text data-entrance size="lg" className="max-w-prose">
-                {project.summary}
-              </Text>
-              <Text
-                data-entrance
-              >{`${messages.role}: ${project.role} · ${messages.year}: ${project.year}`}</Text>
-              <div data-entrance>
-                <Link
-                  href={`/${locale}`}
-                  data-restore-scroll=""
-                  data-keep-scroll=""
-                  data-no-cover=""
-                  className="inline-flex min-h-11 items-center"
-                >
-                  {messages.back}
-                </Link>
-              </div>
-            </Entrance>
-            <Image
-              src={project.cover.src}
-              width={project.cover.width}
-              height={project.cover.height}
-              alt={project.cover.alt}
-              priority
-              sizes="(min-width: 1024px) 1200px, 100vw"
-              className="h-auto w-full"
-            />
-            <BlockList blocks={project.blocks} />
-          </Stack>
-        </Container>
-      </Section>
+      <ProjectBack locale={locale} label={messages.back} />
+      <ProjectBar
+        locale={locale}
+        labels={{ back: messages.back, next: messages.next }}
+        next={next}
+      />
+      <StoryRail label={messages.story}>
+        <ProjectIntro
+          title={project.title}
+          summary={project.summary}
+          teaser={project.teaser ?? null}
+          playerLabels={playerLabels}
+          facts={[
+            { label: messages.role, value: project.role },
+            { label: messages.year, value: String(project.year) },
+          ]}
+          stack={stack?.type === "stack" ? { title: stack.title, items: stack.items } : null}
+          links={
+            links?.type === "links"
+              ? links.items.map(({ id, href }) => ({ id, href, label: links.labels[id] ?? id }))
+              : []
+          }
+        />
+        <BlockList blocks={texts.slice(0, TEXT_BEFORE_COVER)} />
+        <StoryPanel size="media">
+          <MediaBlock image={project.cover} alt={project.cover.alt} priority />
+        </StoryPanel>
+        <BlockList blocks={texts.slice(TEXT_BEFORE_COVER)} startAt={TEXT_BEFORE_COVER} />
+        <BlockList blocks={visuals} />
+        <ProjectOutro
+          locale={locale}
+          next={next}
+          labels={{ next: messages.next, contact: messages.contact, cv: messages.cv }}
+          cvHref={cvHref}
+        />
+      </StoryRail>
     </main>
   );
 }

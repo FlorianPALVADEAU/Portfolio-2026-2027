@@ -215,7 +215,7 @@
     "photos": {
       "closing": {
         "alt": "L'église de Saint-Saphorin entre les vignes de Lavaux et le lac Léman",
-        "caption": "Entre Lavaux et le lac Léman"
+        "caption": "Entre Genève et le Canton de Vaud"
       }
     },
     "cv": "Télécharger le CV (PDF)"
@@ -223,7 +223,11 @@
   "project": {
     "back": "Retour à l'accueil",
     "role": "Rôle",
-    "year": "Année"
+    "year": "Année",
+    "story": "Présentation du projet, défile horizontalement",
+    "next": "Projet suivant",
+    "contact": "Travaillons ensemble",
+    "cv": "Télécharger le CV (PDF)"
   },
   "loader": {
     "label": "Chargement du portfolio",
@@ -259,5 +263,16 @@
         "mdi": "Marques LinkedIn et AWS"
       }
     }
+  },
+  "player": {
+    "play": "Lire la vidéo",
+    "pause": "Mettre la vidéo en pause",
+    "mute": "Couper le son",
+    "unmute": "Activer le son",
+    "fullscreen": "Plein écran",
+    "exitFullscreen": "Quitter le plein écran",
+    "seek": "Position dans la vidéo",
+    "loading": "Chargement",
+    "volume": "Volume"
   }
 }

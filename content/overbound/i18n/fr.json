@@ -3,6 +3,9 @@
   "summary": "Une course à obstacles que j'ai fondée et organisée, et dont j'ai développé la billetterie : 336 billets vendus pour une première édition tenue le 12 septembre 2026.",
   "role": "Fondateur, organisateur et développeur",
   "alt": "Couverture d'Overbound",
+  "teaser": {
+    "label": "Overbound, première édition : vidéo de la course."
+  },
   "blocks": {
     "context": {
       "title": "Contexte",
@@ -40,10 +43,6 @@
         {
           "title": "Deux formats sur un même parcours",
           "body": "RANKED et OPEN partageaient les mêmes obstacles mais demandaient des règles, un chronométrage et des effectifs différents. Les placer sur des créneaux séparés a permis de servir les deux avec la même infrastructure."
-        },
-        {
-          "title": "Places gratuites et réductions",
-          "body": "Les places gratuites et les codes de réduction ont aidé à remplir l'événement, mais ils ont dilué le chiffre d'affaires de la billetterie, et les flyers imprimés n'étaient pas attribuables à des ventes."
         },
         {
           "title": "Les partenaires dans l'expérience",
@@ -102,6 +101,51 @@
           "body": "Les flyers, les réductions et les stands partenaires étaient difficiles à relier aux ventes. Suivre l'acquisition et la valeur des partenaires dès le départ montrerait ce qui mérite d'être répété."
         }
       ]
+    },
+    "tire-flip": {
+      "alt": "Un participant retourne un gros pneu de tracteur."
+    },
+    "tire-drag": {
+      "alt": "Une participante tire un pneu au bout d'une corde sur un sol sec."
+    },
+    "log-carry": {
+      "alt": "Deux participants portent des troncs sur un chemin ensoleillé."
+    },
+    "log-lift": {
+      "alt": "Un participant hisse un tronc sur une pile de troncs."
+    },
+    "chain-carry": {
+      "alt": "Un participant porte de lourdes chaînes sur un chemin boisé."
+    },
+    "monkey-bars": {
+      "alt": "Un participant traverse des barres de singe en bois."
+    },
+    "wall-under": {
+      "alt": "Une participante rampe sous un mur en bois."
+    },
+    "barbed-wire": {
+      "alt": "Un participant rampe sous des barbelés."
+    },
+    "podium": {
+      "alt": "Trois femmes tiennent les panneaux 2, 1 et 3 du podium devant le fond Overbound."
+    },
+    "finishers": {
+      "alt": "Un groupe de finishers portant leur médaille devant le fond Overbound."
+    },
+    "crowd": {
+      "alt": "Les participants rassemblés sous l'arche Intersport."
+    },
+    "finish-hug": {
+      "alt": "Deux personnes posent bras dessus bras dessous, l'une portant une médaille de finisher."
+    },
+    "medals": {
+      "alt": "Des médailles de finisher alignées en rangées."
+    },
+    "links": {
+      "title": "Liens",
+      "labels": {
+        "site": "Voir le site"
+      }
     }
   }
 }

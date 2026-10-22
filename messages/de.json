@@ -228,7 +228,11 @@
   "project": {
     "back": "Zurück zur Startseite",
     "role": "Rolle",
-    "year": "Jahr"
+    "year": "Jahr",
+    "story": "Projektvorstellung, scrollt seitwärts",
+    "next": "Nächstes Projekt",
+    "contact": "Lass uns zusammenarbeiten",
+    "cv": "Lebenslauf herunterladen (PDF)"
   },
   "loader": {
     "label": "Portfolio wird geladen",
@@ -264,5 +268,16 @@
         "mdi": "LinkedIn- und AWS-Marken"
       }
     }
+  },
+  "player": {
+    "play": "Video abspielen",
+    "pause": "Video pausieren",
+    "mute": "Ton aus",
+    "unmute": "Ton ein",
+    "fullscreen": "Vollbild",
+    "exitFullscreen": "Vollbild beenden",
+    "seek": "Position im Video",
+    "loading": "Wird geladen",
+    "volume": "Lautstärke"
   }
 }

@@ -12,8 +12,6 @@ export type CoverState = {
   blur: number;
   /** Height of the focal line over the picture, 0 at the bottom and 1 at the top. */
   focus: number;
-  /** 1 while the shutter dips the exposure, 0 otherwise. */
-  shutter: number;
   /** Strength of the hand-held shake, 0 is steady. */
   shake: number;
   /** Where the pointer looks from over the cover, -1 to 1 on each axis, 0 at the centre. */
@@ -53,7 +51,6 @@ export function restingState(): CoverState {
     hover: 0,
     blur: 0,
     focus: 0.5,
-    shutter: 0,
     shake: 0,
     lookX: 0,
     lookY: 0,
@@ -73,4 +70,18 @@ export function restingState(): CoverState {
 export function coverRatio(imageAspect: number, boxAspect: number): [number, number] {
   if (imageAspect > boxAspect) return [boxAspect / imageAspect, 1];
   return [1, imageAspect / boxAspect];
+}
+
+/** Widest size the image optimiser serves, enough for a cover that fills the screen. */
+const SHARP_WIDTH = "1920";
+
+/**
+ * The address of the picture at the size the plane needs. The card's own `<img>` is cut for the
+ * card, which looks soft once the plane grows to fill the screen; any other source is kept.
+ */
+export function sharpSource(current: string, base: string): string {
+  const url = new URL(current, base);
+  if (url.pathname !== "/_next/image") return current;
+  url.searchParams.set("w", SHARP_WIDTH);
+  return url.pathname + url.search;
 }

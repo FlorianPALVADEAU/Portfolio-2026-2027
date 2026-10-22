@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   hasFinePointer,
+  jumpToTop,
   prefersReducedMotion,
   rememberLeftWork,
   takeWorkReturn,
@@ -62,8 +63,8 @@ function appearOnScroll(state: CoverState, cell: HTMLElement, container: HTMLEle
 
 /**
  * A photographer racking focus with a hand-held camera: the picture starts a little out of focus,
- * the focal line sweeps across it and hunts back and forth while the hand trembles, the shutter
- * dips twice, and everything settles to a sharp, steady picture.
+ * the focal line sweeps across it and hunts back and forth while the hand trembles,
+ * and everything settles to a sharp, steady picture.
  * Each step is `[focus, blur, shake, seconds]`.
  */
 const FOCUS_HUNT: ReadonlyArray<readonly [number, number, number, number]> = [
@@ -77,8 +78,6 @@ const FOCUS_HUNT: ReadonlyArray<readonly [number, number, number, number]> = [
 ];
 /** The table above is timed at its natural pace; the pull plays this many times faster. */
 const PULL_SPEED = 1.4;
-/** Seconds into the pull at which the shutter dips. */
-const SHUTTER_AT = [0.3, 0.78] as const;
 
 function pullFocus(state: CoverState): gsap.core.Timeline {
   const pull = gsap.timeline();
@@ -86,10 +85,6 @@ function pullFocus(state: CoverState): gsap.core.Timeline {
   for (const [focus, blur, shake, seconds] of FOCUS_HUNT) {
     pull.to(state, { focus, blur, shake, duration: seconds, ease: "power2.inOut" }, at);
     at += seconds;
-  }
-  for (const time of SHUTTER_AT) {
-    pull.to(state, { shutter: 1, duration: 0.04, ease: "none" }, time);
-    pull.to(state, { shutter: 0, duration: 0.12, ease: "power2.out" }, time + 0.04);
   }
   return pull.timeScale(PULL_SPEED);
 }
@@ -160,7 +155,14 @@ function returnToCard(cover: ReelCover, veil: HTMLElement) {
     const box = cover.frame.getBoundingClientRect();
     return box.bottom > 0 && box.top < window.innerHeight;
   };
+  // The browser's own scroll restoration is not the same everywhere, so the card is brought to
+  // the middle of the screen here, again on every frame until the page has settled around it.
+  const bringIntoView = () => {
+    const box = cover.frame.getBoundingClientRect();
+    jumpToTop(window.scrollY + box.top - (window.innerHeight - box.height) / 2);
+  };
   const wait = () => {
+    if (!onCard()) bringIntoView();
     const ready = cover.state.ready && onCard();
     if (!(ready || performance.now() - started > RETURN_GIVE_UP_MS)) return;
     gsap.ticker.remove(wait);
@@ -225,17 +227,21 @@ function followHover(item: HTMLElement, state: CoverState): () => void {
     zoomOut();
     pull?.kill();
     pull = null;
-    gsap.to(state, { blur: 0, shake: 0, shutter: 0, duration: 0.2, overwrite: "auto" });
+    gsap.to(state, { blur: 0, shake: 0, duration: 0.2, overwrite: "auto" });
   };
   item.addEventListener("pointerenter", enter);
   item.addEventListener("pointerleave", leave);
-  item.addEventListener("focusin", enter);
+  // A click also focuses the link; only a keyboard arrival is new, the pointer has had its turn.
+  const onFocus = (event: FocusEvent) => {
+    if (event.target instanceof Element && event.target.matches(":focus-visible")) enter();
+  };
+  item.addEventListener("focusin", onFocus);
   item.addEventListener("focusout", leave);
   return () => {
     pull?.kill();
     item.removeEventListener("pointerenter", enter);
     item.removeEventListener("pointerleave", leave);
-    item.removeEventListener("focusin", enter);
+    item.removeEventListener("focusin", onFocus);
     item.removeEventListener("focusout", leave);
   };
 }

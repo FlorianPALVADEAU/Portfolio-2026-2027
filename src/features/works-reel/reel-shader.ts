@@ -24,7 +24,7 @@ export const vertexShader = /* glsl */ `
 /**
  * Cover-fit picture with a zoom, clipped to a rounded rectangle with a soft edge. A focus pull
  * blurs each row of the picture by its distance from the focal line `uFocus`, like depth of field;
- * `uShutter` dips the exposure for a frame and `uShake` slides the picture like an unsteady hand.
+ * `uShake` slides the picture like an unsteady hand.
  * With a depth map, `uLook` moves the point of view: each pixel slides by its depth, so near
  * parts travel further than far ones. `uParallax` is the largest slide, 0 turns the effect off.
  */
@@ -36,7 +36,6 @@ export const fragmentShader = /* glsl */ `
   uniform float uRadius;
   uniform float uBlur;
   uniform float uFocus;
-  uniform float uShutter;
   uniform vec2 uShake;
   uniform sampler2D uDepthMap;
   uniform vec2 uLook;
@@ -46,9 +45,12 @@ export const fragmentShader = /* glsl */ `
   varying vec2 vUv;
 
   const int TAPS = 24;
-  const float MAX_BLUR = 0.009;
+  const float MAX_BLUR = 0.012;
   const float GOLDEN_ANGLE = 2.39996323;
   const int DEPTH_PASSES = 4;
+  // Growth of each tap's footprint at full defocus: a tap then covers the gap to its neighbours, so
+  // bright edges blur smoothly instead of leaving a ring of separate, line-like copies.
+  const float TAP_SOFTNESS = 3.0;
 
   vec2 pictureUv(vec2 surface) {
     return (surface - 0.5) * uRatio / uZoom + 0.5 + uShake;
@@ -69,18 +71,24 @@ export const fragmentShader = /* glsl */ `
     float defocus = uBlur * smoothstep(0.0, 0.6, abs(vUv.y - uFocus));
     vec4 color = texture2D(uMap, pictureUv(vUv) + shift);
 
+    // Taken outside the branch below: derivatives read inside it are undefined along its edge, where
+    // they picked a wrong mip level and drew a thin line at each border of the in-focus band.
+    vec2 gradX = dFdx(pictureUv(vUv));
+    vec2 gradY = dFdy(pictureUv(vUv));
+
     if (defocus > 0.002) {
-      // Vogel disc: even taps, no visible banding at this radius.
+      float soften = 1.0 + TAP_SOFTNESS * defocus;
+      // Vogel disc: even taps, softened by a mip bias so they merge.
       vec2 spread = vec2(1.0, uSize.x / uSize.y) * MAX_BLUR * defocus;
       vec4 sum = color;
       for (int i = 0; i < TAPS; i++) {
         float angle = float(i) * GOLDEN_ANGLE;
         float reach = sqrt((float(i) + 0.5) / float(TAPS));
-        sum += texture2D(uMap, pictureUv(vUv + vec2(cos(angle), sin(angle)) * reach * spread) + shift);
+        vec2 tap = pictureUv(vUv + vec2(cos(angle), sin(angle)) * reach * spread) + shift;
+        sum += textureGrad(uMap, tap, gradX * soften, gradY * soften);
       }
       color = sum / float(TAPS + 1);
     }
-    color.rgb *= 1.0 - 0.22 * uShutter;
     color.rgb = mix(color.rgb, uTint, uTintMix);
 
     vec2 corner = abs((vUv - 0.5) * uSize) - (uSize * 0.5 - uRadius);
