@@ -28,12 +28,11 @@ function wavePath(amplitude: number, phase: number): string {
 }
 
 type SoundToggleProps = {
-  onLabel: string;
-  offLabel: string;
+  label: string;
 };
 
 /** A line that ripples while sound is on and settles flat when it is muted. */
-export function SoundToggle({ onLabel, offLabel }: SoundToggleProps) {
+export function SoundToggle({ label }: SoundToggleProps) {
   const enabled = useSyncExternalStore(subscribeSound, getSoundEnabled, getServerSoundEnabled);
   const path = useRef<SVGPathElement>(null);
   const wave = useRef({ amplitude: 0, phase: 0 });
@@ -71,7 +70,8 @@ export function SoundToggle({ onLabel, offLabel }: SoundToggleProps) {
       variant="secondary"
       size="icon"
       data-sound-toggle=""
-      aria-label={enabled ? onLabel : offLabel}
+      aria-label={label}
+      aria-pressed={enabled}
       onPointerEnter={warmMusic}
       onFocus={warmMusic}
       onClick={() => setSoundEnabled(!enabled)}

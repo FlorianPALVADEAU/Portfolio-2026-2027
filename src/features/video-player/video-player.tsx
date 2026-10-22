@@ -286,6 +286,7 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
       aria-label={label}
       className={`group/player relative aspect-video w-full overflow-hidden bg-scrim text-on-scrim ${fullscreen ? "player-in" : "rounded-3xl"}`}
     >
+      {/* biome-ignore lint/a11y/useMediaCaption: the Overbound teaser has no captions file yet (#224). */}
       <video
         ref={video}
         src={src}
@@ -321,9 +322,7 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
           setVolume(event.currentTarget.volume);
         }}
         className="size-full cursor-pointer object-contain"
-      >
-        <track kind="captions" />
-      </video>
+      />
 
       {!started && (
         <Image

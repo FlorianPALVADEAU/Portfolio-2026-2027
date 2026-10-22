@@ -1,5 +1,6 @@
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { openIntro } from "@/lib/intro";
 import { IntroEntrance } from "./intro-entrance";
 
 const reduced = vi.hoisted(() => ({ value: false }));
@@ -26,6 +27,26 @@ describe("IntroEntrance", () => {
 
     unmount();
     expect(pending()).toBe(false);
+  });
+
+  it("makes the page behind the loader inert, then releases it", () => {
+    // Rendered into the body itself, as the layout does, so the loader is a sibling of the page.
+    const { unmount } = render(
+      <>
+        <main>Page</main>
+        <div data-intro-loader />
+        <IntroEntrance />
+      </>,
+      { container: document.body },
+    );
+
+    expect(document.querySelector("main")).toHaveAttribute("inert");
+    expect(document.querySelector("[data-intro-loader]")).not.toHaveAttribute("inert");
+
+    act(() => openIntro());
+    expect(document.querySelector("main")).not.toHaveAttribute("inert");
+
+    unmount();
   });
 
   it("holds nothing back under reduced motion", () => {

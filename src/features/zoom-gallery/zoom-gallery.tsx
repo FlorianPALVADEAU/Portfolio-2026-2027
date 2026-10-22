@@ -29,8 +29,11 @@ const PAPER = [0.1, 0.65] as const;
 const WHOOSH_GAP_MS = 140;
 /** How far a photo at the side of the frame pulls its whoosh towards that ear. */
 const WHOOSH_PAN = 0.8;
-/** Resting sway of a touch screen, which has no pointer to follow. */
-const SWAY = { x: 0.5, y: 0.35, period: 8 } as const;
+/**
+ * Resting sway of a touch screen, which has no pointer to follow. It stops after `seconds`, easing
+ * out over the last `fade`, so it never runs unattended (WCAG 2.2.2).
+ */
+const SWAY = { x: 0.5, y: 0.35, period: 8, seconds: 10, fade: 2 } as const;
 
 type ZoomGalleryProps = {
   items: readonly GalleryItem[];
@@ -91,6 +94,7 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
     let dirty = true;
     const passed = items.map((item) => hasPassed(item, 0));
     let lastWhoosh = 0;
+    let swayElapsed = 0;
 
     root.dataset.mode = "live";
 
@@ -158,12 +162,14 @@ export function ZoomGallery({ items, alts, intro, outro }: ZoomGalleryProps) {
       lookTarget.y = 0;
     }
 
-    function tick(time: number) {
+    function tick(_time: number, deltaTime: number) {
       if (!visible) return;
       if (!fine) {
-        const angle = (time / SWAY.period) * Math.PI * 2;
-        lookTarget.x = Math.sin(angle) * SWAY.x;
-        lookTarget.y = Math.cos(angle * 0.7) * SWAY.y;
+        swayElapsed = Math.min(SWAY.seconds, swayElapsed + deltaTime / 1000);
+        const strength = Math.min(1, (SWAY.seconds - swayElapsed) / SWAY.fade);
+        const angle = (swayElapsed / SWAY.period) * Math.PI * 2;
+        lookTarget.x = Math.sin(angle) * SWAY.x * strength;
+        lookTarget.y = Math.cos(angle * 0.7) * SWAY.y * strength;
       }
       const amount = 1 - (1 - EASING) ** (gsap.ticker.deltaRatio(60) || 1);
       const moved =

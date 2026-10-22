@@ -30,6 +30,13 @@ test("root redirects to a locale and the page has no accessibility violations", 
   await expectNoA11yViolations(page);
 });
 
+test("scroll-scrubbed words keep their contrast once they sit at rest", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/en");
+
+  await expectNoA11yViolations(page, { scrubbedWords: true });
+});
+
 test("locale switcher navigates to the German page", async ({ page }) => {
   await page.goto("/en");
   await openLanguage(page);
@@ -64,6 +71,8 @@ test("chosen theme persists across reloads without a flash", async ({ page, isMo
 
 test("skip link is the first tab stop and moves focus to main", async ({ page }) => {
   await page.goto("/en");
+  // The page is inert while the intro covers it, so keys only reach it once the intro opens.
+  await expect(page.locator("html")).not.toHaveAttribute("data-intro-pending");
   await page.keyboard.press("Tab");
 
   const skip = page.getByRole("link", { name: "Skip to content" });
@@ -129,13 +138,14 @@ test.describe("page transition", () => {
 test("sound is muted by default and the opt-in persists", async ({ page, isMobile }) => {
   test.skip(isMobile, "the sound toggle is desktop-only: touch screens have no hover");
   await page.goto("/en");
-  await expect(page.getByRole("button", { name: "Sound: off" })).toBeVisible();
+  const toggle = page.getByRole("button", { name: "Sound" });
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
 
-  await page.getByRole("button", { name: "Sound: off" }).click();
-  await expect(page.getByRole("button", { name: "Sound: on" })).toBeVisible();
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
 
   await page.reload();
-  await expect(page.getByRole("button", { name: "Sound: on" })).toBeVisible();
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
 });
 
 test("has no accessibility violations while the menu is open", async ({ page }) => {

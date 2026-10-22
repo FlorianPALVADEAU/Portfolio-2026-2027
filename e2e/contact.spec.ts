@@ -41,6 +41,8 @@ test.describe("contact form", () => {
     await page.waitForLoadState("load");
     expect(hosts).not.toContain("challenges.cloudflare.com");
 
+    // The page is inert while the intro covers it, and an inert field cannot take focus.
+    await expect(page.locator("html")).not.toHaveAttribute("data-intro-pending");
     // The form rises in as it enters the viewport, and a hidden field cannot take focus.
     await expect(form.getByLabel("Name")).toBeVisible();
     await form.getByLabel("Name").focus();

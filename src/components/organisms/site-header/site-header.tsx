@@ -34,7 +34,7 @@ export function SiteHeader({ locale, messages, cvHref = null }: SiteHeaderProps)
               {/* Touch screens have no hover, so the sound controls only exist from md up. */}
               <div className="hidden items-center gap-2 md:flex">
                 <div className="relative">
-                  <SoundToggle onLabel={messages.sound.on} offLabel={messages.sound.off} />
+                  <SoundToggle label={messages.sound.label} />
                   <SoundHint label={messages.sound.hint} />
                 </div>
                 <LocaleSwitcher current={locale} label={messages.language} />

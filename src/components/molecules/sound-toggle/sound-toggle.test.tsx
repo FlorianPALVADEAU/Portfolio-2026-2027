@@ -4,11 +4,13 @@ import { describe, expect, it } from "vitest";
 import { SoundToggle } from "./sound-toggle";
 
 describe("SoundToggle", () => {
-  it("starts muted and toggles on click", async () => {
-    render(<SoundToggle onLabel="Sound: on" offLabel="Sound: off" />);
+  it("starts muted and reports its pressed state while the name stays put", async () => {
+    render(<SoundToggle label="Sound" />);
+    const toggle = screen.getByRole("button", { name: "Sound" });
+    expect(toggle).toHaveAttribute("aria-pressed", "false");
 
-    await userEvent.click(screen.getByRole("button", { name: "Sound: off" }));
+    await userEvent.click(toggle);
 
-    expect(screen.getByRole("button", { name: "Sound: on" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Sound" })).toHaveAttribute("aria-pressed", "true");
   });
 });

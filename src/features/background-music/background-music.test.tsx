@@ -29,11 +29,14 @@ describe("BackgroundMusic first action", () => {
     expect(sound.getSoundEnabled()).toBe(true);
   });
 
-  it("ignores a key that only moves around the page", async () => {
+  it("never turns sound on from the keyboard, so a screen reader is not talked over", async () => {
     const { BackgroundMusic, sound } = await load();
     render(<BackgroundMusic />);
 
-    fireEvent.keyDown(document.body, { key: "Tab" });
+    fireEvent.keyDown(document.body, { key: "Enter" });
+    fireEvent.keyDown(document.body, { key: "ArrowDown" });
+    // The click a browser synthesises when Enter or Space activates a focused button.
+    fireEvent.click(document.body, { detail: 0 });
 
     expect(sound.getSoundEnabled()).toBe(false);
   });
