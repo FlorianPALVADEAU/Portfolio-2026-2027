@@ -48,7 +48,7 @@ describe("ProjectDetail", () => {
       />,
     );
 
-    expect(screen.getByText("Next.js")).toBeVisible();
+    expect(screen.getByText("Next.js · Stripe")).toBeVisible();
     expect(screen.getByRole("link", { name: "Launch project" })).toHaveAttribute(
       "href",
       "https://example.com",
