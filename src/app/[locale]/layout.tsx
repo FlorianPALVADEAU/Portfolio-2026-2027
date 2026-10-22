@@ -55,6 +55,16 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
       alternateLocale: locales.filter((l) => l !== locale).map(openGraphLocale),
     },
     twitter: { card: "summary_large_image", title: meta.title, description: meta.description },
+    icons: {
+      icon: [
+        { url: "/favicon-96x96.png", type: "image/png", sizes: "96x96" },
+        { url: "/favicon.svg", type: "image/svg+xml" },
+      ],
+      shortcut: "/favicon.ico",
+      apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
+    },
+    appleWebApp: { title: "Palvadeau.ch" },
+    manifest: "/site.webmanifest",
   };
 }
 
