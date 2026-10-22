@@ -15,7 +15,8 @@ const STEP = 0.12;
  * screen parts. The elements are held back by a stylesheet rule keyed on an attribute of the root
  * while the loader covers the page; they carry no inline style until they move, so hydration is
  * never disturbed. Nothing is held when there is no intro to wait for, as on a later visit in the
- * same session, or under reduced motion.
+ * same session, or under reduced motion. The rest of the page is inert for as long as the loader
+ * covers it.
  */
 export function IntroEntrance() {
   useLayoutEffect(() => {
@@ -23,8 +24,18 @@ export function IntroEntrance() {
 
     const root = document.documentElement;
     root.setAttribute(PENDING, "");
+    // The loader covers the page, so the page must not be reachable by keyboard or screen reader
+    // behind it. Only what was not inert already is released.
+    const covered = [...document.body.children].filter(
+      (element): element is HTMLElement =>
+        element instanceof HTMLElement &&
+        !element.hasAttribute("data-intro-loader") &&
+        !element.hasAttribute("inert"),
+    );
+    for (const element of covered) element.setAttribute("inert", "");
     const release = () => {
       root.removeAttribute(PENDING);
+      for (const element of covered) element.removeAttribute("inert");
     };
 
     const stopWaiting = whenIntroOpen(() => {

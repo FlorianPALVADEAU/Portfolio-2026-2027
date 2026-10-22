@@ -30,6 +30,13 @@ test("root redirects to a locale and the page has no accessibility violations", 
   await expectNoA11yViolations(page);
 });
 
+test("scroll-scrubbed words keep their contrast once they sit at rest", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/en");
+
+  await expectNoA11yViolations(page, { scrubbedWords: true });
+});
+
 test("locale switcher navigates to the German page", async ({ page }) => {
   await page.goto("/en");
   await openLanguage(page);

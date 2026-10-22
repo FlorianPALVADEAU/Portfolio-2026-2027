@@ -4,7 +4,7 @@ import { SoundToggle } from "./sound-toggle";
 const meta = {
   title: "Molecules/SoundToggle",
   component: SoundToggle,
-  args: { onLabel: "Sound: on", offLabel: "Sound: off" },
+  args: { label: "Sound" },
 } satisfies Meta<typeof SoundToggle>;
 
 export default meta;

@@ -14,8 +14,7 @@
       }
     },
     "sound": {
-      "on": "Ton: an",
-      "off": "Ton: aus",
+      "label": "Ton",
       "hint": "Ton einschalten"
     },
     "skip": "Zum Inhalt springen",

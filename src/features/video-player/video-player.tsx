@@ -286,6 +286,7 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
       aria-label={label}
       className={`group/player relative aspect-video w-full overflow-hidden bg-black text-white ${fullscreen ? "player-in" : "rounded-3xl"}`}
     >
+      {/* biome-ignore lint/a11y/useMediaCaption: no video here carries dialogue; add a captions track when one does. */}
       <video
         ref={video}
         src={src}
@@ -321,9 +322,7 @@ export function VideoPlayer({ src, poster, label, labels }: VideoPlayerProps) {
           setVolume(event.currentTarget.volume);
         }}
         className="size-full cursor-pointer object-contain"
-      >
-        <track kind="captions" />
-      </video>
+      />
 
       {!started && (
         <Image

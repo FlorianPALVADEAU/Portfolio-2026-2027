@@ -14,8 +14,7 @@
       }
     },
     "sound": {
-      "on": "Sound: on",
-      "off": "Sound: off",
+      "label": "Sound",
       "hint": "Turn the sound on"
     },
     "skip": "Skip to content",

@@ -28,6 +28,23 @@ describe("IntroEntrance", () => {
     expect(pending()).toBe(false);
   });
 
+  it("makes the page behind the loader inert, then releases it", () => {
+    // Rendered into the body itself, as the layout does, so the loader is a sibling of the page.
+    const { unmount } = render(
+      <>
+        <main>Page</main>
+        <div data-intro-loader />
+        <IntroEntrance />
+      </>,
+      { container: document.body },
+    );
+
+    expect(document.querySelector("main")).toHaveAttribute("inert");
+    expect(document.querySelector("[data-intro-loader]")).not.toHaveAttribute("inert");
+
+    unmount();
+  });
+
   it("holds nothing back under reduced motion", () => {
     reduced.value = true;
     render(<IntroEntrance />);
