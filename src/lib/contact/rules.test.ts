@@ -4,6 +4,12 @@ import { invalidFields } from "./rules";
 const valid = { name: "Ada", email: "ada@example.com", message: "Hello, I like your work." };
 
 describe("invalidFields", () => {
+  it("rejects addresses without a real domain", () => {
+    for (const email of ["a@b.c", "a@b..com", "a@.com", "a@com", "a b@c.com"]) {
+      expect(invalidFields({ ...valid, email }), email).toEqual(["email"]);
+    }
+  });
+
   it("accepts a valid message", () => {
     expect(invalidFields(valid)).toEqual([]);
   });

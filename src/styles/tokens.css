@@ -26,6 +26,12 @@
 }
 
 @theme {
+  /* Availability dot of the hero: a signal colour that stays the same in every theme. */
+  --color-available: oklch(0.765 0.177 163);
+  /* Fixed black and white for text and shades laid over photos and video, whatever the theme. */
+  --color-scrim: #000;
+  --color-on-scrim: #fff;
+
   --z-base: 0;
   --z-raised: 10;
   --z-sticky: 20;

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { Container } from "@/components/atoms/container";
 import { Rise } from "@/components/atoms/rise";
 import { Section } from "@/components/atoms/section";
@@ -7,6 +7,8 @@ import { ProfileRow } from "@/components/molecules/profile-row";
 import { RiseReveal } from "@/features/rise-reveal";
 import type { Messages } from "@/lib/i18n";
 import { profiles } from "@/lib/landing";
+
+type ProfileRowItem = { id: string } & Omit<ComponentProps<typeof ProfileRow>, "order">;
 
 type ContactSectionProps = {
   index: number;
@@ -38,6 +40,17 @@ export function ContactSection({
   details,
   activity,
 }: ContactSectionProps) {
+  const rows: ProfileRowItem[] = [
+    ...profiles.map(({ id, label, href }) => ({
+      id,
+      label,
+      href,
+      externalLabel: messages.newTab,
+    })),
+    ...(cv?.href ? [{ id: "cv", label: cv.label, href: cv.href, download: true }] : []),
+    ...(email ? [{ id: "email", label: messages.email, href: `mailto:${email}` }] : []),
+  ];
+
   return (
     <Section
       id="contact"
@@ -54,41 +67,13 @@ export function ContactSection({
               <Rise>{messages.location}</Rise>
             </div>
             <ul aria-label={messages.profiles} className="border-b border-border">
-              {profiles.map(({ id, label, href }, position) => (
+              {rows.map(({ id, ...row }, position) => (
                 <li key={id}>
                   <Rise>
-                    <ProfileRow
-                      order={position + 1}
-                      label={label}
-                      href={href}
-                      newTab={messages.newTab}
-                    />
+                    <ProfileRow order={position + 1} {...row} />
                   </Rise>
                 </li>
               ))}
-              {cv?.href && (
-                <li>
-                  <Rise>
-                    <ProfileRow
-                      order={profiles.length + 1}
-                      label={cv.label}
-                      href={cv.href}
-                      download
-                    />
-                  </Rise>
-                </li>
-              )}
-              {email && (
-                <li>
-                  <Rise>
-                    <ProfileRow
-                      order={profiles.length + (cv?.href ? 2 : 1)}
-                      label={messages.email}
-                      href={`mailto:${email}`}
-                    />
-                  </Rise>
-                </li>
-              )}
             </ul>
           </div>
           {form}

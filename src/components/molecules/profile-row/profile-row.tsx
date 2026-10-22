@@ -8,10 +8,13 @@ type ProfileRowProps = {
   /** Brand name, set large. */
   label: string;
   href: string;
-  /** Announces that the link leaves the site; omit it for a file or an email address. */
-  newTab?: string;
   /** The link saves a file instead of opening something. */
   download?: boolean;
+  /**
+   * Set for a link that leaves the site: it opens in a new tab, and this text announces that to
+   * assistive technology. Omit it for a file or an email address.
+   */
+  externalLabel?: string;
 };
 
 /** The link without its scheme, which is how people read an address. */
@@ -21,8 +24,14 @@ const shown = (href: string) => href.replace(/^(https?:\/\/(www\.)?|mailto:)/, "
  * A full-width line of an index: the name in huge type, the address beside it. On hover or focus
  * the line fills with ink from below and the type turns to paper.
  */
-export function ProfileRow({ order, label, href, newTab, download = false }: ProfileRowProps) {
-  const external = newTab !== undefined;
+export function ProfileRow({
+  order,
+  label,
+  href,
+  download = false,
+  externalLabel,
+}: ProfileRowProps) {
+  const external = externalLabel !== undefined;
   return (
     <Link
       href={href}
@@ -39,7 +48,7 @@ export function ProfileRow({ order, label, href, newTab, download = false }: Pro
       </span>
       <span className="relative text-3xl font-semibold tracking-tight">
         {label}
-        {external && <span className="sr-only">{` (${newTab})`}</span>}
+        {external && <span className="sr-only">{` (${externalLabel})`}</span>}
       </span>
       <span aria-hidden="true" className="relative ml-auto hidden font-mono text-sm lg:inline">
         {shown(href)}
