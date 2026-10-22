@@ -1,13 +1,9 @@
-import Image from "next/image";
-import { Container } from "@/components/atoms/container";
-import { Heading } from "@/components/atoms/heading";
-import { Link } from "@/components/atoms/link";
-import { Section } from "@/components/atoms/section";
-import { Stack } from "@/components/atoms/stack";
-import { Text } from "@/components/atoms/text";
+import { MediaBlock } from "@/components/molecules/media-block";
+import { StoryPanel } from "@/components/molecules/story-panel";
 import { type Block, BlockList } from "@/components/organisms/block-list";
-import { Entrance } from "@/features/entrance";
+import { ProjectIntro } from "@/components/organisms/project-intro";
 import { MAIN_ID } from "@/features/route-focus";
+import { StoryRail } from "@/features/story-rail";
 import type { Locale, Messages } from "@/lib/i18n";
 
 type ProjectDetailProps = {
@@ -23,47 +19,39 @@ type ProjectDetailProps = {
   };
 };
 
+/**
+ * A project as a story: the intro, the cover, then one panel per block. The stack and the links
+ * are lifted into the intro, where they are seen first; every other block keeps its place.
+ */
 export function ProjectDetail({ locale, messages, project }: ProjectDetailProps) {
+  const stack = project.blocks.find((block) => block.type === "stack");
+  const links = project.blocks.find((block) => block.type === "links");
+  const story = project.blocks.filter((block) => block.type !== "stack" && block.type !== "links");
+
   return (
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
-      <Section>
-        <Container>
-          <Stack gap="lg">
-            <Entrance className="flex flex-col gap-4">
-              <Heading level={1} size="display" className="text-[clamp(3rem,11vw,10rem)]">
-                {project.title}
-              </Heading>
-              <Text data-entrance size="lg" className="max-w-prose">
-                {project.summary}
-              </Text>
-              <Text
-                data-entrance
-              >{`${messages.role}: ${project.role} · ${messages.year}: ${project.year}`}</Text>
-              <div data-entrance>
-                <Link
-                  href={`/${locale}`}
-                  data-restore-scroll=""
-                  data-keep-scroll=""
-                  data-no-cover=""
-                  className="inline-flex min-h-11 items-center"
-                >
-                  {messages.back}
-                </Link>
-              </div>
-            </Entrance>
-            <Image
-              src={project.cover.src}
-              width={project.cover.width}
-              height={project.cover.height}
-              alt={project.cover.alt}
-              priority
-              sizes="(min-width: 1024px) 1200px, 100vw"
-              className="h-auto w-full"
-            />
-            <BlockList blocks={project.blocks} />
-          </Stack>
-        </Container>
-      </Section>
+      <StoryRail>
+        <ProjectIntro
+          locale={locale}
+          title={project.title}
+          summary={project.summary}
+          back={messages.back}
+          facts={[
+            { label: messages.role, value: project.role },
+            { label: messages.year, value: String(project.year) },
+          ]}
+          stack={stack?.type === "stack" ? { title: stack.title, items: stack.items } : null}
+          links={
+            links?.type === "links"
+              ? links.items.map(({ id, href }) => ({ id, href, label: links.labels[id] ?? id }))
+              : []
+          }
+        />
+        <StoryPanel size="media">
+          <MediaBlock image={project.cover} alt={project.cover.alt} priority />
+        </StoryPanel>
+        <BlockList blocks={story} />
+      </StoryRail>
     </main>
   );
 }

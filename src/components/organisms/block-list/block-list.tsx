@@ -3,8 +3,8 @@ import { LinksBlock } from "@/components/molecules/links-block";
 import { MediaBlock } from "@/components/molecules/media-block";
 import { ResultsBlock } from "@/components/molecules/results-block";
 import { StackBlock } from "@/components/molecules/stack-block";
+import { StoryPanel } from "@/components/molecules/story-panel";
 import { TextBlock } from "@/components/molecules/text-block";
-import { Reveal } from "@/features/reveal";
 
 type Image = { src: string; width: number; height: number };
 
@@ -58,12 +58,11 @@ type BlockListProps = {
   blocks: readonly Block[];
 };
 
+/** One story panel per block, for a `StoryRail`: any number of blocks, in the order authored. */
 export function BlockList({ blocks }: BlockListProps) {
-  return (
-    <Reveal className="flex flex-col gap-(--section-space)">
-      {blocks.map((block) => (
-        <div key={block.id}>{renderBlock(block)}</div>
-      ))}
-    </Reveal>
-  );
+  return blocks.map((block) => (
+    <StoryPanel key={block.id} size={block.type === "media" ? "media" : "text"}>
+      {renderBlock(block)}
+    </StoryPanel>
+  ));
 }
