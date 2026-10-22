@@ -2,6 +2,7 @@ import { MediaBlock } from "@/components/molecules/media-block";
 import { StoryPanel } from "@/components/molecules/story-panel";
 import { type Block, BlockList } from "@/components/organisms/block-list";
 import { ProjectBack } from "@/components/organisms/project-back";
+import { ProjectBar } from "@/components/organisms/project-bar";
 import { ProjectIntro } from "@/components/organisms/project-intro";
 import { ProjectOutro } from "@/components/organisms/project-outro";
 import { MAIN_ID } from "@/features/route-focus";
@@ -55,6 +56,11 @@ export function ProjectDetail({
   return (
     <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
       <ProjectBack locale={locale} label={messages.back} />
+      <ProjectBar
+        locale={locale}
+        labels={{ back: messages.back, next: messages.next }}
+        next={next}
+      />
       <StoryRail label={messages.story}>
         <ProjectIntro
           title={project.title}

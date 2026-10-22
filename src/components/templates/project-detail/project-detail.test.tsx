@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ProjectDetail } from "./project-detail";
 
 const project = {
@@ -44,6 +44,19 @@ const messages = {
 };
 
 describe("ProjectDetail", () => {
+  // The arrivals hide what they will reveal on scroll, which jsdom never does: the page is
+  // rendered as it is for a visitor who asked for reduced motion.
+  beforeEach(() => {
+    vi.stubGlobal("matchMedia", (query: string) => ({
+      matches: query.endsWith(": reduce)"),
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+    }));
+  });
+
   it("has a single h1, facts, a back link and the blocks", () => {
     render(
       <ProjectDetail
@@ -60,7 +73,9 @@ describe("ProjectDetail", () => {
     expect(screen.getByText("Role")).toBeVisible();
     expect(screen.getByText("Developer")).toBeVisible();
     expect(screen.getByText("2026")).toBeVisible();
-    expect(screen.getByRole("link", { name: "Back to home" })).toHaveAttribute("href", "/en#works");
+    for (const back of screen.getAllByRole("link", { name: "Back to home" })) {
+      expect(back).toHaveAttribute("href", "/en#works");
+    }
     expect(screen.getByRole("heading", { level: 2, name: "Overview" })).toBeVisible();
   });
 

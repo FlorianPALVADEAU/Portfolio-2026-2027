@@ -10,6 +10,9 @@ const ZOOM_FROM = 1.5;
 const DRIFT = 16;
 /** A picture is drawn this much larger than its frame so the drift never shows an edge. */
 const DRIFT_SCALE = 1.4;
+/** The same drift down a stacked page, where a picture is wide and short and has little room. */
+const STACKED_DRIFT = 6;
+const STACKED_SCALE = 1.14;
 /** Degrees of lean per pixel the row travels in a frame, and the most it ever leans. */
 const SKEW_PER_PIXEL = 0.12;
 const SKEW_LIMIT = 9;
@@ -21,7 +24,16 @@ const SETTLE = 0.14;
 /** Words rise this far below their mask. */
 const RISE_FROM = 110;
 
-const along = (row: HTMLElement) => ({ scroller: row, horizontal: true }) as const;
+/** The way the story is read: along the row on large screens, down the page elsewhere. */
+export type Axis = "x" | "y";
+
+/** The scroller a trigger follows: the row itself sideways, the page when the story is stacked. */
+const along = (row: HTMLElement, axis: Axis) =>
+  axis === "x" ? ({ scroller: row, horizontal: true } as const) : {};
+
+/** `start` of a trigger whose element is `share`% of the screen away from its leading edge. */
+const entering = (axis: Axis, share: number) =>
+  axis === "x" ? `left ${share}%` : `top ${share - 14}%`;
 
 /**
  * Hides what will appear, at once, so that nothing shows and then vanishes while the intro screen
@@ -42,7 +54,7 @@ export function hideBeforeEntrance(row: HTMLElement) {
  * from behind their masks, one after another, like the footer. Played once, and rewound if the
  * visitor goes back far enough.
  */
-export function revealOnEnter(row: HTMLElement) {
+export function revealOnEnter(row: HTMLElement, axis: Axis) {
   for (const frame of gsap.utils.toArray<HTMLElement>("[data-story-frame]", row)) {
     const reveal = gsap.to(frame, {
       clipPath: "inset(0% 0% 0% 0%)",
@@ -54,9 +66,9 @@ export function revealOnEnter(row: HTMLElement) {
     });
     gsap.set(frame, { scale: 1.06 });
     ScrollTrigger.create({
-      ...along(row),
+      ...along(row, axis),
       trigger: frame,
-      start: "left 118%",
+      start: entering(axis, 118),
       onEnter: () => reveal.play(),
       onLeaveBack: () => reveal.reverse(),
     });
@@ -77,9 +89,9 @@ export function revealOnEnter(row: HTMLElement) {
       },
     });
     ScrollTrigger.create({
-      ...along(row),
+      ...along(row, axis),
       trigger: block,
-      start: "left 112%",
+      start: entering(axis, 112),
       onEnter: () => rise.play(),
     });
   }
@@ -101,20 +113,47 @@ export function slideInNeighbours(row: HTMLElement) {
   });
 }
 
-/** Pictures grow and un-zoom as they arrive, then drift against the scroll while they cross. */
-export function growAndDrift(row: HTMLElement) {
-  for (const element of gsap.utils.toArray<HTMLElement>("[data-story-grow]", row)) {
-    const entering = {
-      ...along(row),
+/** The picture layer of a frame slides across it while the frame crosses the screen. */
+function drift(row: HTMLElement, element: HTMLElement, axis: Axis) {
+  const layer = element.querySelector<HTMLElement>("[data-story-parallax]");
+  if (!layer) return;
+  const sideways = axis === "x";
+  const [from, to] = sideways
+    ? [
+        { xPercent: -DRIFT, scale: DRIFT_SCALE },
+        { xPercent: DRIFT, scale: DRIFT_SCALE },
+      ]
+    : [
+        { yPercent: -STACKED_DRIFT, scale: STACKED_SCALE },
+        { yPercent: STACKED_DRIFT, scale: STACKED_SCALE },
+      ];
+  gsap.fromTo(layer, from, {
+    ...to,
+    ease: "none",
+    scrollTrigger: {
+      ...along(row, axis),
       trigger: element,
-      start: "left 112%",
-      end: "left 50%",
+      start: sideways ? "left right" : "top bottom",
+      end: sideways ? "right left" : "bottom top",
+      scrub: true,
+    },
+  });
+}
+
+/** Pictures grow and un-zoom as they arrive, then drift against the scroll while they cross. */
+export function growAndDrift(row: HTMLElement, axis: Axis) {
+  for (const element of gsap.utils.toArray<HTMLElement>("[data-story-grow]", row)) {
+    const arriving = {
+      ...along(row, axis),
+      trigger: element,
+      start: entering(axis, 112),
+      end: axis === "x" ? "left 50%" : "top 40%",
       scrub: 0.4,
     };
     gsap.fromTo(
       element,
       { scale: GROW_FROM },
-      { scale: 1, ease: "power2.out", scrollTrigger: entering },
+      { scale: 1, ease: "power2.out", scrollTrigger: arriving },
     );
 
     const picture = element.querySelector<HTMLElement>("[data-story-zoom]");
@@ -122,29 +161,11 @@ export function growAndDrift(row: HTMLElement) {
       gsap.fromTo(
         picture,
         { scale: ZOOM_FROM },
-        { scale: 1, ease: "power2.out", scrollTrigger: entering },
+        { scale: 1, ease: "power2.out", scrollTrigger: arriving },
       );
     }
 
-    const drift = element.querySelector<HTMLElement>("[data-story-parallax]");
-    if (drift) {
-      gsap.fromTo(
-        drift,
-        { xPercent: -DRIFT, scale: DRIFT_SCALE },
-        {
-          xPercent: DRIFT,
-          scale: DRIFT_SCALE,
-          ease: "none",
-          scrollTrigger: {
-            ...along(row),
-            trigger: element,
-            start: "left right",
-            end: "right left",
-            scrub: true,
-          },
-        },
-      );
-    }
+    drift(row, element, axis);
   }
 }
 

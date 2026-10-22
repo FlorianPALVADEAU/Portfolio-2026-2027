@@ -77,7 +77,18 @@ export function StoryRail({ label, children }: { label: string; children: ReactN
 
     const media = gsap.matchMedia();
     media.add({ sideways: SIDEWAYS, motion: MOTION }, (context) => {
-      if (!context.conditions?.sideways) return;
+      if (!context.conditions?.sideways) {
+        // Stacked: the same arrivals, played as the page is scrolled down.
+        if (!context.conditions?.motion) return;
+        hideBeforeEntrance(row);
+        const cancel = whenIntroOpen(() =>
+          context.add(() => {
+            growAndDrift(row, "y");
+            revealOnEnter(row, "y");
+          }),
+        );
+        return cancel;
+      }
       outer.dataset.rail = "on";
       // A page kept by the router comes back as it was left; a story starts from its beginning.
       row.scrollLeft = 0;
@@ -112,8 +123,8 @@ export function StoryRail({ label, children }: { label: string; children: ReactN
         cancelWait = whenIntroOpen(() =>
           // Added to the context, so that leaving the large layout undoes it all.
           context.add(() => {
-            growAndDrift(row);
-            revealOnEnter(row);
+            growAndDrift(row, "x");
+            revealOnEnter(row, "x");
             slideInNeighbours(row);
             stopVelocity = trackVelocity(row);
           }),
@@ -145,7 +156,7 @@ export function StoryRail({ label, children }: { label: string; children: ReactN
         tabIndex={-1}
         className="[scrollbar-width:none] focus:outline-none focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ring group-data-[rail=on]/rail:h-dvh group-data-[rail=on]/rail:overflow-x-auto group-data-[rail=on]/rail:overflow-y-hidden group-data-[rail=on]/rail:overscroll-x-contain [&::-webkit-scrollbar]:hidden"
       >
-        <div className="flex flex-col gap-(--section-space) group-data-[rail=on]/rail:h-full group-data-[rail=on]/rail:w-[max-content] group-data-[rail=on]/rail:flex-row group-data-[rail=on]/rail:gap-0 group-data-[rail=on]/rail:pr-[6vw]">
+        <div className="flex flex-col gap-10 group-data-[rail=on]/rail:h-full group-data-[rail=on]/rail:w-[max-content] group-data-[rail=on]/rail:flex-row group-data-[rail=on]/rail:gap-0 group-data-[rail=on]/rail:pr-[6vw]">
           {children}
         </div>
       </section>
