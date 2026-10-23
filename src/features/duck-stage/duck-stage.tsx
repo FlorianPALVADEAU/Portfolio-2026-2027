@@ -51,7 +51,7 @@ export function DuckStage({ className, fallback }: DuckStageProps) {
       className={className}
       onPointerDown={() => {
         input.current.quackedAt = performance.now() / 1000;
-        playIfEnabled("pop");
+        playIfEnabled("quack");
       }}
     >
       {mode === "on" && <DuckCanvas input={input} />}

@@ -15,6 +15,9 @@ const PIVOT = { y: 0, z: 0.35 };
 /** How much the head swings, per unit of gaze speed. */
 const SWAY_PUSH = 0.05;
 const MAX_SWAY = 9;
+const PRESS_PUSH = 8;
+const SQUEEZE_DAMPING = 7;
+const RELEASE_DAMPING = 30;
 
 export type Input = {
   /** Pointer position across the screen, from -1 to 1. */
@@ -82,9 +85,11 @@ export function animateDuck(
   // A press squeezes the toy, which springs back taller than it was.
   if (input.quackedAt !== memory.pressedAt) {
     memory.pressedAt = input.quackedAt;
-    memory.squash.velocity -= 6;
+    memory.squash.velocity -= PRESS_PUSH;
   }
-  memory.squash = springStep(memory.squash, 0, 140, 7, seconds);
+  // Damped harder once past rest, so the squeeze is deep and the spring back barely overshoots.
+  const damping = memory.squash.value > 0 ? RELEASE_DAMPING : SQUEEZE_DAMPING;
+  memory.squash = springStep(memory.squash, 0, 140, damping, seconds);
   const quack = Math.max(0, 1 - (now - input.quackedAt) / QUACK_SECONDS);
 
   const { root, body } = parts;
