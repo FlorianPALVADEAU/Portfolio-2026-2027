@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/organisms/site-header";
@@ -36,6 +36,14 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
+/** The browser chrome follows the page: the dark theme is the default one. */
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0b" },
+    { media: "(prefers-color-scheme: light)", color: "#fafaf9" },
+  ],
+};
+
 export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
@@ -43,7 +51,7 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
 
   return {
     metadataBase: new URL(siteUrl),
-    title: meta.title,
+    title: { default: meta.title, template: `%s | ${siteName}` },
     description: meta.description,
     alternates: { canonical: `/${locale}`, languages: languageAlternates() },
     openGraph: {

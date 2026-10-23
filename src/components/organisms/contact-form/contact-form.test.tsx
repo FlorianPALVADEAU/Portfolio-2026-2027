@@ -88,7 +88,7 @@ describe("ContactForm", () => {
     await send();
 
     expect(await screen.findByRole("status")).toHaveTextContent(messages.confirmation.title);
-    expect(screen.getByRole("status")).toHaveFocus();
+    await waitFor(() => expect(screen.getByRole("status")).toHaveFocus());
     expect(screen.queryByLabelText(messages.name)).not.toBeInTheDocument();
     const data = action.mock.calls[0]?.[1] as FormData;
     expect(data.get("name")).toBe("Ada");

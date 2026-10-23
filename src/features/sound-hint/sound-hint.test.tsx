@@ -1,5 +1,6 @@
 import { act, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { mockMatchMedia } from "@/test/match-media";
 
 let soundOn = false;
 vi.mock("@/lib/sound", () => ({
@@ -25,7 +26,7 @@ beforeEach(() => {
   vi.resetModules();
   vi.useFakeTimers();
   soundOn = false;
-  window.matchMedia = (() => ({ matches: false })) as unknown as typeof window.matchMedia;
+  mockMatchMedia(false);
 });
 
 async function mount() {

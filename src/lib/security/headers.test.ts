@@ -37,7 +37,16 @@ describe("securityHeaders", () => {
         "Referrer-Policy",
         "Permissions-Policy",
         "Strict-Transport-Security",
+        "Cross-Origin-Opener-Policy",
       ]),
     );
+  });
+
+  it("meets the HSTS preload list requirements", () => {
+    const hsts = securityHeaders(false).find((h) => h.key === "Strict-Transport-Security")?.value;
+    expect(hsts).toMatch(/max-age=(\d+)/);
+    expect(Number(hsts?.match(/max-age=(\d+)/)?.[1])).toBeGreaterThanOrEqual(31536000);
+    expect(hsts).toContain("includeSubDomains");
+    expect(hsts).toContain("preload");
   });
 });

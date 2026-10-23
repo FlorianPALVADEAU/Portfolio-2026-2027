@@ -1,13 +1,10 @@
 import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+import { mockMatchMedia } from "@/test/match-media";
 import { Frame, FrameRail } from ".";
 
 function mockMotion(reduced: boolean) {
-  window.matchMedia = vi.fn().mockReturnValue({
-    matches: reduced,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-  }) as unknown as typeof window.matchMedia;
+  mockMatchMedia(reduced);
 }
 
 function renderRail() {

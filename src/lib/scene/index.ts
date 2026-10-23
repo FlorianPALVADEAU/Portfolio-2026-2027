@@ -1,1 +1,1 @@
-export { canRenderScene } from "./capability";
+export { canRenderScene, canRenderStage } from "./capability";

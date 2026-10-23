@@ -18,6 +18,11 @@ const JUMP_REVEAL_SECONDS = 0.5;
 /** Reveals anyway if a navigation never lands, so the overlay cannot trap the page. */
 const GIVE_UP_MS = 4000;
 
+/** A link marked this way plays its own exit and navigates by itself. */
+function hasOwnTransition(anchor: HTMLAnchorElement): boolean {
+  return anchor.hasAttribute("data-own-transition");
+}
+
 /**
  * GSAP overlay that covers the page, lets the router navigate, then reveals the new page. A link
  * marked `data-jump` to a section of the current page is covered the same way, and lands at once.
@@ -103,7 +108,7 @@ export function PageTransition() {
     function onClick(event: MouseEvent) {
       const element = overlay.current;
       const anchor = event.target instanceof Element ? event.target.closest("a") : null;
-      if (!(element && anchor) || covering.current) return;
+      if (!(element && anchor) || covering.current || hasOwnTransition(anchor)) return;
 
       const destination = getInternalNavigation(event, anchor, window.location);
       if (!destination) return;
@@ -121,11 +126,13 @@ export function PageTransition() {
       });
     }
 
+    // Both captured: a page hydrated from a prerendered shell can have the router's link handler
+    // registered ahead of this one, and it would take the click before the cover could play.
     document.addEventListener("click", onJump, true);
-    document.addEventListener("click", onClick);
+    document.addEventListener("click", onClick, true);
     return () => {
       document.removeEventListener("click", onJump, true);
-      document.removeEventListener("click", onClick);
+      document.removeEventListener("click", onClick, true);
       clearTimeout(giveUp.current);
       if (overlay.current) gsap.killTweensOf(overlay.current);
     };

@@ -1,0 +1,338 @@
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { hasFinePointer, jumpToTop, rememberLeftWork } from "@/lib/motion";
+import { getInternalNavigation } from "@/lib/navigation";
+import { playIfEnabled } from "@/lib/sound";
+import type { CoverState, ReelCover } from "./reel-cover";
+import { prepareTypewriter, ROLLER_COPIES, splitIntoLetters } from "./reel-text";
+import { pageBackground } from "./reel-tint";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/** Degrees a cover leans on its inner edge before it straightens. */
+const TILT = 7;
+
+/** +1 for a card left of the grid's middle, -1 for one right of it, 0 when centred. */
+function sideOf(item: HTMLElement, container: HTMLElement): number {
+  const grid = container.getBoundingClientRect();
+  const box = item.getBoundingClientRect();
+  const offset = grid.left + grid.width / 2 - (box.left + box.width / 2);
+  return Math.abs(offset) < grid.width * 0.05 ? 0 : Math.sign(offset);
+}
+
+/**
+ * A row appears as a pair: both covers lean with their inner edges down, then straighten and
+ * grow slightly while the picture un-zooms. Tied to scroll, so it plays in both directions.
+ */
+export function appearOnScroll(state: CoverState, cell: HTMLElement, container: HTMLElement) {
+  gsap.fromTo(
+    state,
+    { tilt: () => sideOf(cell, container) * TILT, grow: 0.84, zoom: 1.5 },
+    {
+      tilt: 0,
+      grow: 1,
+      zoom: 1,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: cell,
+        start: "top 98%",
+        end: "top 50%",
+        scrub: 0.5,
+        invalidateOnRefresh: true,
+      },
+    },
+  );
+}
+
+/**
+ * A photographer racking focus with a hand-held camera: the picture starts a little out of focus,
+ * the focal line sweeps across it and hunts back and forth while the hand trembles,
+ * and everything settles to a sharp, steady picture.
+ * Each step is `[focus, blur, shake, seconds]`.
+ */
+const FOCUS_HUNT: ReadonlyArray<readonly [number, number, number, number]> = [
+  [0.95, 0.5, 0.4, 0],
+  [0.08, 0.42, 1, 0.34],
+  [0.72, 0.3, 0.7, 0.24],
+  [0.3, 0.18, 0.9, 0.2],
+  [0.58, 0.08, 0.45, 0.17],
+  [0.46, 0.03, 0.25, 0.14],
+  [0.5, 0, 0, 0.3],
+];
+/** The table above is timed at its natural pace; the pull plays this many times faster. */
+const PULL_SPEED = 1.4;
+
+function pullFocus(state: CoverState): gsap.core.Timeline {
+  const pull = gsap.timeline();
+  let at = 0;
+  for (const [focus, blur, shake, seconds] of FOCUS_HUNT) {
+    pull.to(state, { focus, blur, shake, duration: seconds, ease: "power2.inOut" }, at);
+    at += seconds;
+  }
+  return pull.timeScale(PULL_SPEED);
+}
+
+/** Touch screens have no hover and no cheap point of view, so they never fetch a depth map. */
+export function depthMapFor(image: HTMLImageElement): string | undefined {
+  return hasFinePointer() ? image.dataset.reelDepth : undefined;
+}
+
+/** Seconds a cover takes to fill the screen, and to come back to its card. */
+const LEAVE_SECONDS = 0.95;
+const WIDE_SCREEN = 1024;
+/** Degrees a cover leans to the left on its way to a project page. */
+const LEAN = -4;
+/** Frames the way back waits for the page to scroll to its card before it gives up. */
+const RETURN_GIVE_UP_MS = 2500;
+
+/**
+ * A cover filling the screen, leaning a little to the left, its edges pulled toward the viewer
+ * like a bowl and its picture fading into the page background. Small screens skip the lean and
+ * the bowl. Built paused: play it to leave, reverse it from the end to come back.
+ */
+function leaveTimeline(state: CoverState): gsap.core.Timeline {
+  const wide = window.innerWidth >= WIDE_SCREEN;
+  state.tintColor = pageBackground();
+  const timeline = gsap.timeline({ paused: true });
+  timeline.to(state, { fill: 1, duration: LEAVE_SECONDS, ease: "power3.inOut" }, 0);
+  if (wide) {
+    timeline.to(state, { lean: LEAN, duration: LEAVE_SECONDS, ease: "power2.inOut" }, 0);
+    timeline.to(state, { cup: 1, duration: LEAVE_SECONDS * 0.8, ease: "power2.in" }, 0.2);
+  }
+  timeline.to(state, { tint: 1, duration: LEAVE_SECONDS * 0.5, ease: "power1.in" }, 0.5);
+  return timeline;
+}
+
+/** Plays a cover's way out on a click, then lets the router open the project page. */
+export function openOnClick(
+  link: HTMLAnchorElement,
+  state: CoverState,
+  open: (destination: string) => void,
+): () => void {
+  let leaving = false;
+  const onClick = (event: MouseEvent) => {
+    const destination = getInternalNavigation(event, link, window.location);
+    if (!destination) return;
+    event.preventDefault();
+    if (leaving) return;
+    leaving = true;
+    rememberLeftWork(link.pathname);
+    leaveTimeline(state)
+      .eventCallback("onComplete", () => open(destination))
+      .play();
+  };
+  // Tells the page transition to leave this link alone: the cover's own exit is the transition.
+  link.setAttribute("data-own-transition", "");
+  link.addEventListener("click", onClick);
+  return () => {
+    link.removeAttribute("data-own-transition");
+    link.removeEventListener("click", onClick);
+  };
+}
+
+/**
+ * The way back: the cover starts on screen as it ended its way out, then settles into its card
+ * once the plane is drawn and the page has scrolled there. `veil` hides the list meanwhile, in the
+ * same colour as the cover, so nothing flashes.
+ */
+export function returnToCard(cover: ReelCover, veil: HTMLElement) {
+  const way = leaveTimeline(cover.state).progress(1);
+  veil.hidden = false;
+  const started = performance.now();
+  const onCard = () => {
+    const box = cover.frame.getBoundingClientRect();
+    return box.bottom > 0 && box.top < window.innerHeight;
+  };
+  // The browser's own scroll restoration is not the same everywhere, so the card is brought to
+  // the middle of the screen here, again on every frame until the page has settled around it.
+  const bringIntoView = () => {
+    const box = cover.frame.getBoundingClientRect();
+    jumpToTop(window.scrollY + box.top - (window.innerHeight - box.height) / 2);
+  };
+  const wait = () => {
+    if (!onCard()) bringIntoView();
+    const ready = cover.state.ready && onCard();
+    if (!(ready || performance.now() - started > RETURN_GIVE_UP_MS)) return;
+    gsap.ticker.remove(wait);
+    veil.hidden = true;
+    if (ready) way.reverse();
+    else way.progress(0).kill();
+  };
+  gsap.ticker.add(wait);
+  return () => {
+    gsap.ticker.remove(wait);
+    way.kill();
+    veil.hidden = true;
+  };
+}
+
+/** Seconds the point of view takes to follow the pointer, and to come back to the centre. */
+const LOOK_DURATION = 0.9;
+
+/**
+ * Turns the pointer position over the frame into a point of view, -1 to 1 on each axis with up
+ * positive, eased so it never jumps and drifts back to the centre when the pointer leaves.
+ */
+export function followPointer(
+  item: HTMLElement,
+  frame: HTMLElement,
+  state: CoverState,
+): () => void {
+  const setting = { duration: LOOK_DURATION, ease: "power3.out" };
+  const lookX = gsap.quickTo(state, "lookX", setting);
+  const lookY = gsap.quickTo(state, "lookY", setting);
+  const move = (event: PointerEvent) => {
+    const box = frame.getBoundingClientRect();
+    lookX(gsap.utils.clamp(-1, 1, ((event.clientX - box.left) / box.width) * 2 - 1));
+    lookY(gsap.utils.clamp(-1, 1, 1 - ((event.clientY - box.top) / box.height) * 2));
+  };
+  const rest = () => {
+    lookX(0);
+    lookY(0);
+  };
+  item.addEventListener("pointermove", move);
+  item.addEventListener("pointerleave", rest);
+  return () => {
+    item.removeEventListener("pointermove", move);
+    item.removeEventListener("pointerleave", rest);
+  };
+}
+
+/**
+ * Eases the hover zoom of a cover in and out, and pulls focus on entry, for the pointer and for
+ * keyboard focus alike. `overwrite: "auto"` only replaces tweens of `hover`; `true` would also kill
+ * the scroll tween sharing this state and freeze the cover mid-tilt.
+ */
+export function followHover(item: HTMLElement, state: CoverState): () => void {
+  let pull: gsap.core.Timeline | null = null;
+  const to = (hover: number) => () =>
+    gsap.to(state, { hover, duration: 0.6, ease: "power3.out", overwrite: "auto" });
+  const zoomIn = to(1);
+  const zoomOut = to(0);
+  const enter = () => {
+    zoomIn();
+    playIfEnabled("focus");
+    pull?.kill();
+    pull = pullFocus(state);
+  };
+  const leave = () => {
+    zoomOut();
+    pull?.kill();
+    pull = null;
+    gsap.to(state, { blur: 0, shake: 0, duration: 0.2, overwrite: "auto" });
+  };
+  item.addEventListener("pointerenter", enter);
+  item.addEventListener("pointerleave", leave);
+  // A click also focuses the link; only a keyboard arrival is new, the pointer has had its turn.
+  const onFocus = (event: FocusEvent) => {
+    if (event.target instanceof Element && event.target.matches(":focus-visible")) enter();
+  };
+  item.addEventListener("focusin", onFocus);
+  item.addEventListener("focusout", leave);
+  return () => {
+    pull?.kill();
+    item.removeEventListener("pointerenter", enter);
+    item.removeEventListener("pointerleave", leave);
+    item.removeEventListener("focusin", onFocus);
+    item.removeEventListener("focusout", leave);
+  };
+}
+
+/** Px beyond the viewport edge a text must travel before it is reset, so a reset is never seen. */
+const RESET_MARGIN = 120;
+
+/**
+ * Plays `play` when the element enters the viewport and `hide` only once it is fully out of
+ * sight, on either side, so scrolling away and back replays it without ever flashing a reset.
+ */
+function playWhileVisible(element: HTMLElement, play: () => void, hide: () => void) {
+  ScrollTrigger.create({
+    trigger: element,
+    start: "top 92%",
+    end: `bottom top-=${RESET_MARGIN}`,
+    onEnter: play,
+    onEnterBack: play,
+    onLeave: hide,
+  });
+  ScrollTrigger.create({
+    trigger: element,
+    start: `top bottom+=${RESET_MARGIN}`,
+    onLeaveBack: hide,
+  });
+}
+
+/**
+ * Hides the title and tags and plays each one as it enters the viewport. Hovering the title
+ * flips its letters once.
+ */
+export function revealTextOnEnter(item: HTMLElement, restores: Array<() => void>) {
+  const titleElement = item.querySelector<HTMLElement>("[data-reel-title]");
+  const tagsElement = item.querySelector<HTMLElement>("[data-reel-tags]");
+  const roller = titleElement ? splitIntoLetters(titleElement) : null;
+  const typing = tagsElement ? prepareTypewriter(tagsElement) : null;
+  const length = tagsElement?.textContent?.length ?? 0;
+  const resting = -100 * ((ROLLER_COPIES - 1) / ROLLER_COPIES);
+  let titleReveal: gsap.core.Timeline | null = null;
+  let tagsReveal: gsap.core.Tween | null = null;
+  let flip: gsap.core.Tween | null = null;
+
+  if (roller) restores.push(roller.restore);
+  if (typing) restores.push(typing.restore);
+
+  const hideTitle = () => {
+    titleReveal?.kill();
+    flip?.kill();
+    if (!roller) return;
+    gsap.set(roller.strips, { yPercent: resting });
+    gsap.set(roller.letters, { autoAlpha: 0 });
+  };
+  const hideTags = () => {
+    tagsReveal?.kill();
+    typing?.type(0);
+  };
+
+  const playTitle = () => {
+    if (!roller) return;
+    hideTitle();
+    playIfEnabled("pop");
+    titleReveal = gsap.timeline();
+    titleReveal.to(roller.letters, { autoAlpha: 1, duration: 0.1, stagger: 0.02 }, 0);
+    // Fast at first, then easing out: the strip falls twice past its copies before landing.
+    titleReveal.to(
+      roller.strips,
+      { yPercent: 0, duration: 0.8, ease: "expo.out", stagger: 0.02 },
+      0,
+    );
+  };
+  const playTags = () => {
+    if (!typing) return;
+    hideTags();
+    const progress = { value: 0 };
+    tagsReveal = gsap.to(progress, {
+      value: 1,
+      duration: Math.max(0.2, length * 0.006),
+      ease: "none",
+      onUpdate: () => typing.type(progress.value),
+    });
+  };
+
+  hideTitle();
+  hideTags();
+  if (titleElement) playWhileVisible(titleElement, playTitle, hideTitle);
+  if (tagsElement) playWhileVisible(tagsElement, playTags, hideTags);
+
+  if (roller && titleElement) {
+    const onHover = () => {
+      if (titleReveal?.isActive() || flip?.isActive()) return;
+      gsap.set(roller.strips, { yPercent: resting });
+      flip = gsap.to(roller.strips, {
+        yPercent: 0,
+        duration: 0.5,
+        ease: "expo.out",
+        stagger: 0.015,
+      });
+    };
+    titleElement.addEventListener("pointerenter", onHover);
+    restores.push(() => titleElement.removeEventListener("pointerenter", onHover));
+  }
+}

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { ProjectSchema } from "@/components/organisms/project-schema";
 import { ProjectDetail } from "@/components/templates/project-detail";
 import { getMessages, isLocale, locales } from "@/lib/i18n";
 import { languageAlternates, openGraphLocale } from "@/lib/seo";
+import { siteName } from "@/lib/site";
 import { loadProject, projectSlugs } from "@/server/infrastructure/content";
 import { cvHref } from "@/server/infrastructure/cv";
 
@@ -22,17 +24,32 @@ export async function generateMetadata({
 }: PageProps<"/[locale]/projects/[slug]">): Promise<Metadata> {
   const { locale, slug, project } = await findProject(params);
   const path = `/projects/${slug}`;
+  const image = {
+    url: project.cover.src,
+    width: project.cover.width,
+    height: project.cover.height,
+    alt: project.cover.alt,
+  };
 
   return {
     title: project.title,
     description: project.summary,
     alternates: { canonical: `/${locale}${path}`, languages: languageAlternates(path) },
+    // A page's `openGraph` replaces the layout's whole object, so the site fields are repeated here.
     openGraph: {
       type: "article",
+      siteName,
       title: project.title,
       description: project.summary,
       url: `/${locale}${path}`,
       locale: openGraphLocale(locale),
+      images: [image],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: project.title,
+      description: project.summary,
+      images: [image.url],
     },
   };
 }
@@ -58,14 +75,17 @@ async function ProjectContent({
   ]);
 
   return (
-    <ProjectDetail
-      locale={locale}
-      messages={messages.project}
-      playerLabels={messages.player}
-      next={next}
-      cvHref={cv}
-      project={project}
-    />
+    <>
+      <ProjectSchema locale={locale} project={project} />
+      <ProjectDetail
+        locale={locale}
+        messages={messages.project}
+        playerLabels={messages.player}
+        next={next}
+        cvHref={cv}
+        project={project}
+      />
+    </>
   );
 }
 

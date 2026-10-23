@@ -35,6 +35,8 @@ export function securityHeaders(development: boolean) {
     { key: "X-Content-Type-Options", value: "nosniff" },
     { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
     { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
-    { key: "Strict-Transport-Security", value: "max-age=63072000" },
+    // Two years, subdomains included, as hstspreload.org requires: the whole domain commits to HTTPS.
+    { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+    { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
   ];
 }

@@ -1,6 +1,6 @@
 import { JsonLd } from "@/components/atoms/json-ld";
 import type { Locale } from "@/lib/i18n";
-import { personJsonLd } from "@/lib/seo";
+import { personJsonLd, websiteJsonLd } from "@/lib/seo";
 
 type PersonSchemaProps = {
   locale: Locale;
@@ -8,5 +8,10 @@ type PersonSchemaProps = {
 };
 
 export function PersonSchema({ locale, jobTitle }: PersonSchemaProps) {
-  return <JsonLd data={personJsonLd(locale, jobTitle)} />;
+  return (
+    <>
+      <JsonLd data={personJsonLd(locale, jobTitle)} />
+      <JsonLd data={websiteJsonLd(locale)} />
+    </>
+  );
 }

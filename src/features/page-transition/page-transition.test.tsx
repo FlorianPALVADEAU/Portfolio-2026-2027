@@ -1,5 +1,6 @@
 import { fireEvent, render } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { mockMatchMedia } from "@/test/match-media";
 
 const push = vi.fn();
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push }), usePathname: () => "/en" }));
@@ -12,14 +13,7 @@ let reduced = false;
 beforeEach(() => {
   reduced = false;
   vi.clearAllMocks();
-  window.matchMedia = ((query: string) => ({
-    media: query,
-    get matches() {
-      return reduced;
-    },
-    addEventListener: () => {},
-    removeEventListener: () => {},
-  })) as unknown as typeof window.matchMedia;
+  mockMatchMedia(() => reduced);
 });
 
 async function mount() {
@@ -53,6 +47,16 @@ describe("PageTransition", () => {
 
     expect(to).not.toHaveBeenCalled();
     expect(push).toHaveBeenCalledWith("/fr", { scroll: false });
+  });
+
+  it("leaves a link that plays its own transition alone", async () => {
+    const { getByText } = await mount();
+    getByText("French").setAttribute("data-own-transition", "");
+
+    fireEvent.click(getByText("French"));
+
+    expect(to).not.toHaveBeenCalled();
+    expect(push).not.toHaveBeenCalled();
   });
 
   it("leaves hash links to the browser", async () => {

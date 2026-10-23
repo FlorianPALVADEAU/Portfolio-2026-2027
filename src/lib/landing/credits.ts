@@ -53,4 +53,12 @@ export const assetCredits = [
     licenceUrl: "https://www.apache.org/licenses/LICENSE-2.0",
     sourceUrl: "https://pictogrammers.com/library/mdi/",
   },
+  {
+    id: "duckPlush",
+    name: "Duck Plush",
+    author: "SunnyBuns",
+    licence: "CC BY 4.0",
+    licenceUrl: "https://creativecommons.org/licenses/by/4.0/",
+    sourceUrl: "https://skfb.ly/oCRHr",
+  },
 ] as const;

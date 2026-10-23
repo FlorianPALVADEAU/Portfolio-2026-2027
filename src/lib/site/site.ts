@@ -4,3 +4,6 @@ const DEFAULT_SITE_URL = "https://palvadeau.ch";
 export const siteUrl = (process.env.SITE_URL ?? DEFAULT_SITE_URL).replace(/\/+$/, "");
 
 export const siteName = "Florian Palvadeau";
+
+/** When the running build was made; see `env.BUILD_DATE` in next.config.ts. */
+export const buildDate = new Date(process.env.BUILD_DATE ?? 0);

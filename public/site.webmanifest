@@ -1,7 +1,23 @@
 {
   "name": "Palvadeau.ch",
   "short_name": "FPL",
+  "description": "Portfolio of Florian Palvadeau, full-stack software engineer.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
   "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/web-app-manifest-192x192.png",
       "sizes": "192x192",
@@ -15,7 +31,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "theme_color": "#0a0a0b",
+  "background_color": "#0a0a0b",
   "display": "standalone"
 }

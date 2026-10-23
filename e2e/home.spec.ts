@@ -1,5 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 import { expectNoA11yViolations } from "./support/axe";
+import { waitForIntro } from "./support/intro";
 
 async function openMenu(page: Page) {
   await page.getByRole("button", { name: "Menu" }).click();
@@ -41,6 +42,7 @@ test("scroll-scrubbed words keep their contrast once they sit at rest", async ({
 
 test("locale switcher navigates to the German page", async ({ page }) => {
   await page.goto("/en");
+  await waitForIntro(page);
   await openLanguage(page);
   await page.getByRole("link", { name: "DE, Deutsch" }).click();
 
@@ -72,7 +74,7 @@ test("chosen theme persists across reloads without a flash", async ({ page, isMo
 test("skip link is the first tab stop and moves focus to main", async ({ page }) => {
   await page.goto("/en");
   // The page is inert while the intro covers it, so keys only reach it once the intro opens.
-  await expect(page.locator("html")).not.toHaveAttribute("data-intro-pending");
+  await waitForIntro(page);
   await page.keyboard.press("Tab");
 
   const skip = page.getByRole("link", { name: "Skip to content" });
@@ -111,6 +113,7 @@ test.describe("smooth scroll", () => {
 test.describe("page transition", () => {
   test("navigates through the overlay and the route is announced", async ({ page }) => {
     await page.goto("/en");
+    await waitForIntro(page);
     await openLanguage(page);
     await page.getByRole("link", { name: "FR, Français" }).click();
 
@@ -127,6 +130,7 @@ test.describe("page transition", () => {
 
     test("navigates directly", async ({ page }) => {
       await page.goto("/en");
+      await waitForIntro(page);
       await openLanguage(page);
       await page.getByRole("link", { name: "DE, Deutsch" }).click();
 
@@ -169,7 +173,7 @@ test.describe("seo", () => {
       /opengraph-image/,
     );
 
-    const raw = await page.locator('script[type="application/ld+json"]').textContent();
+    const raw = await page.locator('script[type="application/ld+json"]').first().textContent();
     const person = JSON.parse(raw ?? "{}");
     expect(person["@type"]).toBe("Person");
     expect(Object.keys(person)).not.toEqual(
@@ -218,10 +222,9 @@ test.describe("project page", () => {
     page,
     request,
   }) => {
-    await page.goto("/en/projects/nope");
-    // Cache Components streams the shell first, so the status can already be 200;
-    // the not-found page still carries a noindex robots tag.
-    await expect(page.getByText("This page could not be found")).toBeVisible();
+    const response = await page.goto("/en/projects/nope");
+    expect(response?.status()).toBe(404);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("wasn't found");
     await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute("content", /noindex/);
 
     const sitemap = await (await request.get("/sitemap.xml")).text();

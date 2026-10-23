@@ -265,7 +265,8 @@
         "geist": "Typeface",
         "simpleIcons": "Brand logos",
         "lucide": "Interface icons",
-        "mdi": "LinkedIn and AWS marks"
+        "mdi": "LinkedIn and AWS marks",
+        "duckPlush": "3D duck on the 404 page"
       }
     }
   },
@@ -279,5 +280,22 @@
     "seek": "Position in the video",
     "loading": "Loading",
     "volume": "Volume"
+  },
+  "status": {
+    "notFound": {
+      "kicker": "Error 404",
+      "lead": "Your page",
+      "accent": "wasn't found.",
+      "body": "The link may be broken, or the page has moved. The rest of the site is right where you left it."
+    },
+    "error": {
+      "kicker": "Error",
+      "lead": "Something",
+      "accent": "broke.",
+      "body": "The page could not be displayed. Try again, or head back to the start."
+    },
+    "retry": "Try again",
+    "home": "Back to the home page",
+    "work": "See the work"
   }
 }

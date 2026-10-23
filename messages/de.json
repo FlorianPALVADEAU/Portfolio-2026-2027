@@ -270,7 +270,8 @@
         "geist": "Schriftart",
         "simpleIcons": "Markenlogos",
         "lucide": "Oberflächen-Icons",
-        "mdi": "LinkedIn- und AWS-Marken"
+        "mdi": "LinkedIn- und AWS-Marken",
+        "duckPlush": "3D-Ente auf der 404-Seite"
       }
     }
   },
@@ -284,5 +285,22 @@
     "seek": "Position im Video",
     "loading": "Wird geladen",
     "volume": "Lautstärke"
+  },
+  "status": {
+    "notFound": {
+      "kicker": "Fehler 404",
+      "lead": "Ihre Seite",
+      "accent": "wurde nicht gefunden.",
+      "body": "Der Link ist möglicherweise defekt, oder die Seite wurde verschoben. Der Rest der Website ist genau dort, wo Sie ihn verlassen haben."
+    },
+    "error": {
+      "kicker": "Fehler",
+      "lead": "Etwas",
+      "accent": "ist kaputtgegangen.",
+      "body": "Die Seite konnte nicht angezeigt werden. Versuchen Sie es erneut oder kehren Sie zum Anfang zurück."
+    },
+    "retry": "Erneut versuchen",
+    "home": "Zurück zur Startseite",
+    "work": "Projekte ansehen"
   }
 }

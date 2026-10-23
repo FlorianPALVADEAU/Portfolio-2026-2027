@@ -1,1 +1,1 @@
-export { siteName, siteUrl } from "./site";
+export { buildDate, siteName, siteUrl } from "./site";
