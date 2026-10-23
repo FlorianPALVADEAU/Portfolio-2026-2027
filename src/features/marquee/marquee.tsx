@@ -30,8 +30,6 @@ type MarqueeProps = {
   itemClassName?: string;
   /** Fades both ends of the band on wide screens. */
   fade?: boolean;
-  /** Eases the band to a stop while a mouse is over it. */
-  pauseOnHover?: boolean;
 };
 
 function Items({
@@ -67,7 +65,7 @@ function Items({
  * Endless band of keywords or logos. The track holds as many copies as it takes to cover the
  * band plus one, and every frame it moves by a distance that is wrapped to the width of one copy,
  * so the copy that leaves is exactly the copy that enters and nothing ever jumps. It runs at its
- * own speed and goes faster the faster the page scrolls; it can ease to a stop under a mouse. The copies are hidden from assistive
+ * own speed and goes faster the faster the page scrolls; it eases to a stop while a mouse is over the band. The copies are hidden from assistive
  * technology; reduced motion shows one static, wrapping list.
  */
 export function Marquee({
@@ -77,8 +75,8 @@ export function Marquee({
   speed = DEFAULT_SPEED,
   itemClassName = DEFAULT_ITEM_CLASS,
   fade = false,
-  pauseOnHover = false,
 }: MarqueeProps) {
+  const frame = useRef<HTMLElement>(null);
   const root = useRef<HTMLDivElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
@@ -89,7 +87,8 @@ export function Marquee({
     const band = viewport.current;
     const strip = track.current;
     const first = copy.current;
-    if (!(band && strip && first && root.current)) return;
+    const hover = frame.current;
+    if (!(band && strip && first && hover && root.current)) return;
     if (prefersReducedMotion()) {
       root.current.dataset.motion = "static";
       return;
@@ -138,23 +137,23 @@ export function Marquee({
     const release = () => {
       paceTarget = 1;
     };
-    if (pauseOnHover) {
-      band.addEventListener("pointerenter", hold);
-      band.addEventListener("pointerleave", release);
-    }
+    // The whole band, padding included, is the target: not only the height of a logo or a word.
+    hover.addEventListener("pointerenter", hold);
+    hover.addEventListener("pointerleave", release);
 
     return () => {
-      band.removeEventListener("pointerenter", hold);
-      band.removeEventListener("pointerleave", release);
+      hover.removeEventListener("pointerenter", hold);
+      hover.removeEventListener("pointerleave", release);
       gsap.ticker.remove(tick);
       resize.disconnect();
       intersection.disconnect();
       strip.style.transform = "";
     };
-  }, [speed, pauseOnHover]);
+  }, [speed]);
 
   return (
     <section
+      ref={frame}
       aria-label={label}
       className={cn("relative border-y border-border bg-background px-(--gutter) py-6", className)}
     >
