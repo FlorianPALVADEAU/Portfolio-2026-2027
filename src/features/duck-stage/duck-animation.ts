@@ -6,10 +6,10 @@ const QUACK_SECONDS = 0.7;
 /** How far, in radians, the whole toy turns when the pointer is at the edge of the screen. */
 const TURN = 0.5;
 /** Tilt, in radians, at the bottom edge of the screen: the toy bows toward the visitor much further than it leans back. */
-const LEAN_FORWARD = 0.55;
+const LEAN_FORWARD = 0.8;
 const LEAN_BACK = 0.14;
 /** The lean turns about the front of the toy's lower torso, as if it were anchored there: height and depth in scene units. */
-const PIVOT = { y: 0.9, z: 0.75 };
+const PIVOT = { y: 0.7, z: 0.75 };
 /** How much the head swings, per unit of gaze speed. */
 const SWAY_PUSH = 0.05;
 const MAX_SWAY = 9;

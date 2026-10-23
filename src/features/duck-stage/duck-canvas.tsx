@@ -8,7 +8,7 @@ import type { Input } from "./duck-animation";
 /** Below this width-to-height ratio the stage is a phone's: the camera moves in on the head. */
 const PORTRAIT_RATIO = 0.95;
 type View = { position: [number, number, number]; target: [number, number, number] };
-const FULL_BODY: View = { position: [0, 1.7, 4.0], target: [0, 0.7, 0] };
+const FULL_BODY: View = { position: [0, 1.55, 2.6], target: [0, 0.83, 0] };
 const CLOSE_UP: View = { position: [0, 2.85, 4.1], target: [0, 2.75, 0] };
 
 function Rig() {
@@ -35,8 +35,8 @@ export default function DuckCanvas({ input }: { input: RefObject<Input> }) {
       gl={{ antialias: true, alpha: true }}
     >
       <Rig />
-      <ambientLight intensity={1.1} />
-      <directionalLight position={[3, 5, 6]} intensity={2.6} />
+      <ambientLight intensity={0.45} />
+      <directionalLight position={[2, 7, 5]} intensity={3.4} />
       <directionalLight position={[-5, 2, -3]} intensity={1.2} color="#8ab4ff" />
       <Suspense fallback={null}>
         <Duck input={input} />
