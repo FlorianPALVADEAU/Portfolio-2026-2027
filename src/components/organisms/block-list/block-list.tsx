@@ -98,7 +98,7 @@ export function BlockList({ blocks, startAt = 0 }: BlockListProps) {
                 key={block.id}
                 data-story-rise
                 data-story-velocity
-                className="relative flex flex-col gap-6 overflow-hidden rounded-3xl border border-border bg-surface p-6 group-data-[rail=on]/rail:h-[calc(100dvh-12rem)] group-data-[rail=on]/rail:w-[min(80vw,26rem)] group-data-[rail=on]/rail:shrink-0 lg:p-8"
+                className="relative flex flex-col gap-6 overflow-hidden rounded-3xl border border-border bg-surface p-6 group-data-[rail=on]/rail:h-[calc(100svh-12rem)] group-data-[rail=on]/rail:w-[min(80vw,26rem)] group-data-[rail=on]/rail:shrink-0 lg:p-8"
               >
                 <span
                   aria-hidden="true"

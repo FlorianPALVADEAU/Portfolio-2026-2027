@@ -54,7 +54,7 @@ export function ProjectIntro({
               <div
                 data-entrance
                 data-story-frame
-                className="w-full lg:w-[min(100%,calc((100dvh-24rem)*1.7778))]"
+                className="w-full lg:w-[min(100%,calc((100svh-24rem)*1.7778))]"
               >
                 {teaser.video ? (
                   <VideoPlayer

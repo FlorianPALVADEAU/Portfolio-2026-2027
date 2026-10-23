@@ -22,8 +22,8 @@ export function MediaBlock({ image, alt, caption, priority = false }: MediaBlock
             priority={priority}
             data-story-zoom
             // In the sideways story a picture is as high as the screen allows, so its width follows its shape.
-            sizes={`(min-width: 1024px) calc((100vh - 7.5rem) * ${image.width / image.height}), 100vw`}
-            className="h-auto w-full group-data-[rail=on]/rail:h-[calc(100dvh-7.5rem)] group-data-[rail=on]/rail:w-auto group-data-[rail=on]/rail:max-w-none group-data-[rail=on]/rail:object-cover"
+            sizes={`(min-width: 1024px) calc((100svh - 7.5rem) * ${image.width / image.height}), 100vw`}
+            className="h-auto w-full group-data-[rail=on]/rail:h-[calc(100svh-7.5rem)] group-data-[rail=on]/rail:w-auto group-data-[rail=on]/rail:max-w-none group-data-[rail=on]/rail:object-cover"
           />
         </div>
       </div>

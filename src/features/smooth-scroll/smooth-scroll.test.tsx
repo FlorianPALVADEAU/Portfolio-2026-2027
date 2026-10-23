@@ -16,7 +16,10 @@ vi.mock("lenis", () => ({
 }));
 
 const ticker = { add: vi.fn(), remove: vi.fn(), lagSmoothing: vi.fn() };
-vi.mock("gsap", () => ({ gsap: { ticker } }));
+vi.mock("gsap", () => ({ gsap: { ticker, registerPlugin: vi.fn() } }));
+
+const scrollTriggerConfig = vi.fn();
+vi.mock("gsap/ScrollTrigger", () => ({ ScrollTrigger: { config: scrollTriggerConfig } }));
 
 let reduced = false;
 const listeners: Array<(event: { matches: boolean }) => void> = [];
@@ -48,6 +51,12 @@ describe("SmoothScroll", () => {
 
     expect(lenisOptions).toHaveBeenCalledWith(expect.objectContaining({ autoRaf: false }));
     expect(ticker.add).toHaveBeenCalledTimes(1);
+  });
+
+  it("ignores mobile viewport resizes in ScrollTrigger", async () => {
+    await mount();
+
+    expect(scrollTriggerConfig).toHaveBeenCalledWith({ ignoreMobileResize: true });
   });
 
   it("does not start when reduced motion is preferred", async () => {

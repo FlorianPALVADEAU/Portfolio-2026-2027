@@ -123,7 +123,7 @@ export function SiteMenu({
         ref={panel}
         id={panelId}
         className={cn(
-          "absolute top-full right-0 left-0 z-50 mt-2 max-h-[calc(100dvh-6rem)] flex-col gap-2 overflow-y-auto md:gap-3 overscroll-contain px-1 pb-3 md:left-auto md:w-96 md:overflow-visible",
+          "absolute top-full right-0 left-0 z-50 mt-2 max-h-[calc(100svh-6rem)] flex-col gap-2 overflow-y-auto md:gap-3 overscroll-contain px-1 pb-3 md:left-auto md:w-96 md:overflow-visible",
           open ? "flex" : "hidden",
         )}
       >
