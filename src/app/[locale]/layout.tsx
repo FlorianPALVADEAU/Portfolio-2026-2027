@@ -1,5 +1,4 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { Document } from "@/components/templates/document";
@@ -18,23 +17,20 @@ import { getMessages, isLocale, locales } from "@/lib/i18n";
 import { languageAlternates, openGraphLocale } from "@/lib/seo";
 import { siteName, siteUrl } from "@/lib/site";
 import { cvHref } from "@/server/infrastructure/cv";
+import { fontVariables } from "../fonts";
 import "../globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
+
+/** The browser chrome follows the page: the dark theme is the default one. */
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0b" },
+    { media: "(prefers-color-scheme: light)", color: "#fafaf9" },
+  ],
+};
 
 export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
@@ -43,7 +39,7 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
 
   return {
     metadataBase: new URL(siteUrl),
-    title: meta.title,
+    title: { default: meta.title, template: `%s | ${siteName}` },
     description: meta.description,
     alternates: { canonical: `/${locale}`, languages: languageAlternates() },
     openGraph: {
@@ -75,7 +71,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   const messages = await getMessages(locale);
 
   return (
-    <Document lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
+    <Document lang={locale} className={fontVariables}>
       <IntroCover>
         <SiteHeader locale={locale} messages={messages.header} cvHref={await cvHref(locale)} />
         {children}

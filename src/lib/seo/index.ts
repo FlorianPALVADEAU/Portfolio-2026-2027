@@ -1,1 +1,8 @@
-export { languageAlternates, openGraphLocale, personJsonLd } from "./seo";
+export {
+  breadcrumbJsonLd,
+  languageAlternates,
+  openGraphLocale,
+  personJsonLd,
+  projectJsonLd,
+  websiteJsonLd,
+} from "./seo";
