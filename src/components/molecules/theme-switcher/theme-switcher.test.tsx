@@ -11,16 +11,16 @@ beforeEach(() => {
 });
 
 describe("ThemeSwitcher", () => {
-  it("names the current theme, dark by default", () => {
+  it("names the current theme, light by default", () => {
     render(<ThemeSwitcher label="Theme" names={names} />);
 
-    expect(screen.getByRole("button", { name: "Theme: Dark" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Theme: Light" })).toBeInTheDocument();
   });
 
   it("lists the three themes and applies and persists the chosen one", async () => {
     render(<ThemeSwitcher label="Theme" names={names} />);
 
-    await userEvent.click(screen.getByRole("button", { name: "Theme: Dark" }));
+    await userEvent.click(screen.getByRole("button", { name: "Theme: Light" }));
     expect(screen.getAllByRole("button", { pressed: false })).toHaveLength(2);
     await userEvent.click(screen.getByRole("button", { name: "Swiss" }));
 
@@ -30,9 +30,9 @@ describe("ThemeSwitcher", () => {
   });
 
   it("restores the stored theme", async () => {
-    localStorage.setItem("theme", "light");
+    localStorage.setItem("theme", "dark");
     render(<ThemeSwitcher label="Theme" names={names} />);
 
-    expect(await screen.findByRole("button", { name: "Theme: Light" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Theme: Dark" })).toBeInTheDocument();
   });
 });
