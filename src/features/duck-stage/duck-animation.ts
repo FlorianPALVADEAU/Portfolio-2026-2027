@@ -9,7 +9,9 @@ const TURN = 0.5;
 const LEAN_FORWARD = 0.5;
 const LEAN_BACK = 0.14;
 /** How far, in scene units, the toy steps toward the camera as the pointer drops. */
-const STEP_FORWARD = 0.55;
+const STEP_FORWARD = 0.3;
+/** The toy peeks over the bottom edge at rest, so it rises as it bows toward the pointer. */
+const RISE_FORWARD = 1.0;
 const RISE_BACK = 0.12;
 /** How much the head swings, per unit of gaze speed. */
 const SWAY_PUSH = 0.05;
@@ -94,7 +96,9 @@ export function animateDuck(
     root.current.rotation.x = down * LEAN_FORWARD - up * LEAN_BACK;
     root.current.position.z = down * STEP_FORWARD;
     root.current.position.y =
-      up * RISE_BACK + (quack > 0 ? Math.sin((1 - quack) * Math.PI) * 0.25 : 0);
+      down * RISE_FORWARD +
+      up * RISE_BACK +
+      (quack > 0 ? Math.sin((1 - quack) * Math.PI) * 0.25 : 0);
   }
   if (body.current) {
     const breath = 1 + Math.sin(now * 1.6) * 0.008;
