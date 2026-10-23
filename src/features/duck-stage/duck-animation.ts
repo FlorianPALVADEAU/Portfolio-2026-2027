@@ -2,7 +2,6 @@ import type { Group, Vector2 } from "three";
 import { damp, type Gaze, type Spring, springStep, wanderGaze } from "./duck-motion";
 
 const IDLE_AFTER_SECONDS = 2.5;
-const QUACK_SECONDS = 0.7;
 /** How far, in radians, the whole toy turns when the pointer is at the edge of the screen. */
 const TURN = 0.5;
 /** Tilt, in radians, at the bottom edge of the screen: the toy bows toward the visitor much further than it leans back. */
@@ -46,7 +45,7 @@ export const newMemory = (): Memory => ({
 type Ref<T> = { current: T | null };
 
 export type Parts = {
-  /** Turns toward the pointer and hops. */
+  /** Turns and leans toward the pointer. */
   root: Ref<Group>;
   /** Squashes and stretches, and breathes. */
   body: Ref<Group>;
@@ -90,7 +89,6 @@ export function animateDuck(
   // Damped harder once past rest, so the squeeze is deep and the spring back barely overshoots.
   const damping = memory.squash.value > 0 ? RELEASE_DAMPING : SQUEEZE_DAMPING;
   memory.squash = springStep(memory.squash, 0, 140, damping, seconds);
-  const quack = Math.max(0, 1 - (now - input.quackedAt) / QUACK_SECONDS);
 
   const { root, body } = parts;
   if (root.current) {
@@ -99,10 +97,7 @@ export function animateDuck(
     const [sin, cos] = [Math.sin(lean), Math.cos(lean)];
     root.current.rotation.x = lean;
     // Keeps the pivot point where it was, so the rotation happens around it and not around the feet.
-    root.current.position.y =
-      PIVOT.y -
-      (PIVOT.y * cos - PIVOT.z * sin) +
-      (quack > 0 ? Math.sin((1 - quack) * Math.PI) * 0.25 : 0);
+    root.current.position.y = PIVOT.y - (PIVOT.y * cos - PIVOT.z * sin);
     root.current.position.z = PIVOT.z - (PIVOT.y * sin + PIVOT.z * cos);
   }
   if (body.current) {
