@@ -50,8 +50,9 @@ export function IntroSection({ title, messages }: IntroSectionProps) {
             }))}
             label={messages.clients}
             className="w-full min-w-0 flex-1 border-0 bg-transparent px-0"
-            speed={190}
+            speed={130}
             fade
+            pauseOnHover
           />
         </div>
       </LitText>

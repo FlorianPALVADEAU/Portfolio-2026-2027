@@ -13,6 +13,8 @@ const SCROLL_GAIN = 0.6;
 const MAX_BOOST = 2400;
 /** How fast the boost follows the scroll speed, per second: higher is snappier, lower glides longer. */
 const FOLLOW = 6;
+/** How fast the band eases to a stop or back to speed on hover, per second. */
+const PACE_FOLLOW = 5;
 /** A frame longer than this (a hidden tab, a long task) never makes the band jump. */
 const MAX_FRAME_SECONDS = 0.1;
 
@@ -28,6 +30,8 @@ type MarqueeProps = {
   itemClassName?: string;
   /** Fades both ends of the band on wide screens. */
   fade?: boolean;
+  /** Eases the band to a stop while a mouse is over it. */
+  pauseOnHover?: boolean;
 };
 
 function Items({
@@ -63,7 +67,7 @@ function Items({
  * Endless band of keywords or logos. The track holds as many copies as it takes to cover the
  * band plus one, and every frame it moves by a distance that is wrapped to the width of one copy,
  * so the copy that leaves is exactly the copy that enters and nothing ever jumps. It runs at its
- * own speed and goes faster the faster the page scrolls. The copies are hidden from assistive
+ * own speed and goes faster the faster the page scrolls; it can ease to a stop under a mouse. The copies are hidden from assistive
  * technology; reduced motion shows one static, wrapping list.
  */
 export function Marquee({
@@ -73,6 +77,7 @@ export function Marquee({
   speed = DEFAULT_SPEED,
   itemClassName = DEFAULT_ITEM_CLASS,
   fade = false,
+  pauseOnHover = false,
 }: MarqueeProps) {
   const root = useRef<HTMLDivElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
@@ -96,6 +101,8 @@ export function Marquee({
     let offset = 0;
     let lastScroll = window.scrollY;
     let boost = 0;
+    let pace = 1;
+    let paceTarget = 1;
 
     const measure = () => {
       width = first.getBoundingClientRect().width;
@@ -111,7 +118,8 @@ export function Marquee({
 
       const target = Math.min((scrolled / seconds) * SCROLL_GAIN, MAX_BOOST);
       boost += (target - boost) * (1 - Math.exp(-FOLLOW * seconds));
-      offset = (offset + (speed + boost) * seconds) % width;
+      pace += (paceTarget - pace) * (1 - Math.exp(-PACE_FOLLOW * seconds));
+      offset = (offset + (speed + boost) * pace * seconds) % width;
       strip.style.transform = `translate3d(${-offset}px, 0, 0)`;
     };
     gsap.ticker.add(tick);
@@ -123,13 +131,27 @@ export function Marquee({
     });
     intersection.observe(band);
 
+    // Touch has no hover: a finger resting on the band would stop it with nothing to release it.
+    const hold = (event: PointerEvent) => {
+      if (event.pointerType === "mouse") paceTarget = 0;
+    };
+    const release = () => {
+      paceTarget = 1;
+    };
+    if (pauseOnHover) {
+      band.addEventListener("pointerenter", hold);
+      band.addEventListener("pointerleave", release);
+    }
+
     return () => {
+      band.removeEventListener("pointerenter", hold);
+      band.removeEventListener("pointerleave", release);
       gsap.ticker.remove(tick);
       resize.disconnect();
       intersection.disconnect();
       strip.style.transform = "";
     };
-  }, [speed]);
+  }, [speed, pauseOnHover]);
 
   return (
     <section
