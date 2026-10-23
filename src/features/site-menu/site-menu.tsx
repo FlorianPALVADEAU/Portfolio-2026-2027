@@ -21,7 +21,7 @@ type SiteMenuProps = {
   items: readonly { href: string; label: string }[];
   /** Downloadable file, listed under the sections; absent until the file exists. */
   download?: { href: string; label: string } | null;
-  /** Last card, for preferences such as theme and sound. */
+  /** Last card, for the preferences that have no room in the header on a phone; hidden from md up. */
   children: ReactNode;
 };
 
@@ -168,7 +168,7 @@ export function SiteMenu({
         )}
         <div
           data-card=""
-          className="flex items-center justify-between gap-1 rounded-3xl border border-border bg-surface p-3 shadow-lg"
+          className="flex items-center justify-between gap-1 rounded-3xl md:hidden border border-border bg-surface p-3 shadow-lg"
         >
           {children}
         </div>
