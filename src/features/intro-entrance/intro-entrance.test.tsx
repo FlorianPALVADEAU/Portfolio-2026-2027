@@ -1,6 +1,7 @@
 import { act, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { openIntro } from "@/lib/intro";
+import { IntroCover } from "./intro-cover";
 import { IntroEntrance } from "./intro-entrance";
 
 const reduced = vi.hoisted(() => ({ value: false }));
@@ -33,18 +34,21 @@ describe("IntroEntrance", () => {
     // Rendered into the body itself, as the layout does, so the loader is a sibling of the page.
     const { unmount } = render(
       <>
-        <main>Page</main>
+        <IntroCover>
+          <main>Page</main>
+        </IntroCover>
         <div data-intro-loader />
         <IntroEntrance />
       </>,
       { container: document.body },
     );
+    const page = document.querySelector("[data-intro-covered]");
 
-    expect(document.querySelector("main")).toHaveAttribute("inert");
+    expect(page).toHaveAttribute("inert");
     expect(document.querySelector("[data-intro-loader]")).not.toHaveAttribute("inert");
 
     act(() => openIntro());
-    expect(document.querySelector("main")).not.toHaveAttribute("inert");
+    expect(page).not.toHaveAttribute("inert");
 
     unmount();
   });
