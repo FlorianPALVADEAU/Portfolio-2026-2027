@@ -1,6 +1,7 @@
 "use client";
 
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { useEffect } from "react";
 import {
@@ -10,6 +11,11 @@ import {
   SMALL_SCREEN_QUERY,
   setScroller,
 } from "@/lib/motion";
+
+gsap.registerPlugin(ScrollTrigger);
+// The browser bar sliding in and out resizes the viewport on a phone; without this every trigger
+// re-measures on each slide and the page jumps.
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 /** Gentle inertia: a high lerp keeps the scroll close to native and never lags behind the input. */
 const LERP = 0.14;

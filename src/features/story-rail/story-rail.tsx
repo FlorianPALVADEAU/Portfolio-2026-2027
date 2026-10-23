@@ -154,7 +154,7 @@ export function StoryRail({ label, children }: { label: string; children: ReactN
         data-lenis-prevent=""
         aria-label={label}
         tabIndex={-1}
-        className="[scrollbar-width:none] focus:outline-none focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ring group-data-[rail=on]/rail:h-dvh group-data-[rail=on]/rail:overflow-x-auto group-data-[rail=on]/rail:overflow-y-hidden group-data-[rail=on]/rail:overscroll-x-contain [&::-webkit-scrollbar]:hidden"
+        className="[scrollbar-width:none] focus:outline-none focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-ring group-data-[rail=on]/rail:h-svh group-data-[rail=on]/rail:overflow-x-auto group-data-[rail=on]/rail:overflow-y-hidden group-data-[rail=on]/rail:overscroll-x-contain [&::-webkit-scrollbar]:hidden"
       >
         <div className="flex flex-col gap-10 group-data-[rail=on]/rail:h-full group-data-[rail=on]/rail:w-[max-content] group-data-[rail=on]/rail:flex-row group-data-[rail=on]/rail:gap-0 group-data-[rail=on]/rail:pr-[6vw]">
           {children}
