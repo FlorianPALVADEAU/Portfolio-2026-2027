@@ -49,6 +49,11 @@ export function addFinale(
   });
 }
 
+/** On a phone the finale gets more scrolling, so a light swipe still shows it; screen heights. */
+const PHONE_FINALE_RATIO = 1.8;
+/** Screen heights the finished card stays pinned, so it can be read before the next section covers it. */
+const PHONE_FINALE_HOLD_RATIO = 0.8;
+
 /**
  * The closing photo on its own, for a stacked layout: the frame that holds it is pinned for as
  * long as the finale lasts. Returns a function that undoes it.
@@ -58,18 +63,23 @@ export function buildFinale(stage: HTMLElement): () => void {
   if (!(frame instanceof HTMLElement)) return () => {};
   stage.dataset.motion = "finale";
   const context = gsap.context(() => {
-    const length = frame.clientHeight * FINALE_RATIO;
+    const length = frame.clientHeight * PHONE_FINALE_RATIO;
+    const hold = frame.clientHeight * PHONE_FINALE_HOLD_RATIO;
     const timeline = gsap.timeline({
       defaults: { ease: "none" },
       scrollTrigger: {
         trigger: frame,
         start: "top top",
-        end: `+=${length}`,
+        end: `+=${length + hold}`,
         pin: true,
+        // Stated, not left to detection: the track is a flex column, where GSAP would add no space.
+        pinSpacing: true,
         scrub: 0.6,
       },
     });
     addFinale(timeline, stage, 0, length);
+    // Without this the timeline ends with the last tween and the hold would be scrolled through at once.
+    timeline.set({}, {}, length + hold);
   }, stage);
   return () => {
     context.revert();
