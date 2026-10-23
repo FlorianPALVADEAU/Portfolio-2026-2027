@@ -13,6 +13,12 @@ const SCROLL_GAIN = 0.6;
 const MAX_BOOST = 2400;
 /** How fast the boost follows the scroll speed, per second: higher is snappier, lower glides longer. */
 const FOLLOW = 6;
+/** How fast the band eases to a stop or back to speed on hover, per second. */
+const PACE_FOLLOW = 5;
+/** Band width, in pixels, at which `speed` applies as given; a narrower band runs slower. */
+const REFERENCE_WIDTH = 1200;
+/** Floor of the slow-down: a phone band still has to move. */
+const MIN_WIDTH_SCALE = 0.5;
 /** A frame longer than this (a hidden tab, a long task) never makes the band jump. */
 const MAX_FRAME_SECONDS = 0.1;
 
@@ -22,7 +28,7 @@ type MarqueeProps = {
   items: readonly MarqueeItem[];
   label: string;
   className?: string;
-  /** Pixels per second when the page is not scrolling. */
+  /** Pixels per second when the page is not scrolling, on a band 1200px wide or more. */
   speed?: number;
   /** Classes of each item; replaces the small uppercase mono default. */
   itemClassName?: string;
@@ -63,7 +69,7 @@ function Items({
  * Endless band of keywords or logos. The track holds as many copies as it takes to cover the
  * band plus one, and every frame it moves by a distance that is wrapped to the width of one copy,
  * so the copy that leaves is exactly the copy that enters and nothing ever jumps. It runs at its
- * own speed and goes faster the faster the page scrolls. The copies are hidden from assistive
+ * own speed and goes faster the faster the page scrolls; it eases to a stop while a mouse is over the band. The copies are hidden from assistive
  * technology; reduced motion shows one static, wrapping list.
  */
 export function Marquee({
@@ -74,6 +80,7 @@ export function Marquee({
   itemClassName = DEFAULT_ITEM_CLASS,
   fade = false,
 }: MarqueeProps) {
+  const frame = useRef<HTMLElement>(null);
   const root = useRef<HTMLDivElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
@@ -84,7 +91,8 @@ export function Marquee({
     const band = viewport.current;
     const strip = track.current;
     const first = copy.current;
-    if (!(band && strip && first && root.current)) return;
+    const hover = frame.current;
+    if (!(band && strip && first && hover && root.current)) return;
     if (prefersReducedMotion()) {
       root.current.dataset.motion = "static";
       return;
@@ -92,13 +100,18 @@ export function Marquee({
     root.current.dataset.motion = "loop";
 
     let width = first.getBoundingClientRect().width;
+    // The same pixels per second cross a small screen faster in proportion, so a narrow band slows.
+    let widthScale = 1;
     let visible = true;
     let offset = 0;
     let lastScroll = window.scrollY;
     let boost = 0;
+    let pace = 1;
+    let paceTarget = 1;
 
     const measure = () => {
       width = first.getBoundingClientRect().width;
+      widthScale = Math.min(1, Math.max(MIN_WIDTH_SCALE, band.clientWidth / REFERENCE_WIDTH));
       if (width > 0) setCopies(Math.max(2, Math.ceil(band.clientWidth / width) + 1));
     };
     measure();
@@ -111,7 +124,8 @@ export function Marquee({
 
       const target = Math.min((scrolled / seconds) * SCROLL_GAIN, MAX_BOOST);
       boost += (target - boost) * (1 - Math.exp(-FOLLOW * seconds));
-      offset = (offset + (speed + boost) * seconds) % width;
+      pace += (paceTarget - pace) * (1 - Math.exp(-PACE_FOLLOW * seconds));
+      offset = (offset + (speed * widthScale + boost) * pace * seconds) % width;
       strip.style.transform = `translate3d(${-offset}px, 0, 0)`;
     };
     gsap.ticker.add(tick);
@@ -123,7 +137,20 @@ export function Marquee({
     });
     intersection.observe(band);
 
+    // Touch has no hover: a finger resting on the band would stop it with nothing to release it.
+    const hold = (event: PointerEvent) => {
+      if (event.pointerType === "mouse") paceTarget = 0;
+    };
+    const release = () => {
+      paceTarget = 1;
+    };
+    // The whole band, padding included, is the target: not only the height of a logo or a word.
+    hover.addEventListener("pointerenter", hold);
+    hover.addEventListener("pointerleave", release);
+
     return () => {
+      hover.removeEventListener("pointerenter", hold);
+      hover.removeEventListener("pointerleave", release);
       gsap.ticker.remove(tick);
       resize.disconnect();
       intersection.disconnect();
@@ -133,6 +160,7 @@ export function Marquee({
 
   return (
     <section
+      ref={frame}
       aria-label={label}
       className={cn("relative border-y border-border bg-background px-(--gutter) py-6", className)}
     >
