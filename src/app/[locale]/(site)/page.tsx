@@ -4,6 +4,7 @@ import { ContactForm } from "@/components/organisms/contact-form";
 import { GithubActivity } from "@/components/organisms/github-activity";
 import { PersonSchema } from "@/components/organisms/person-schema";
 import { Home } from "@/components/templates/home";
+import { publicEnv } from "@/lib/env";
 import { getMessages, isLocale } from "@/lib/i18n";
 import { heroPhotos } from "@/lib/landing";
 import { CONTACT_ACTION, submitContact } from "@/server/infrastructure/contact";
@@ -26,7 +27,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         locale={locale}
         messages={messages.home}
         cvHref={await cvHref(locale)}
-        email={process.env.NEXT_PUBLIC_CONTACT_EMAIL}
+        email={publicEnv.contactEmail}
         heroPhotos={heroPhotos}
         trailPhotos={await photoUrls("trail")}
         projects={projects}
@@ -35,7 +36,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
             <ContactForm
               messages={messages.home.contact.form}
               action={submitContact}
-              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+              siteKey={publicEnv.turnstileSiteKey}
               challengeAction={CONTACT_ACTION}
             />
           ),
@@ -44,7 +45,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
               locale={locale}
               messages={messages.home.contact.details}
               timeZone="Europe/Zurich"
-              phone={process.env.NEXT_PUBLIC_CONTACT_PHONE}
+              phone={publicEnv.contactPhone}
             />
           ),
           activity: (

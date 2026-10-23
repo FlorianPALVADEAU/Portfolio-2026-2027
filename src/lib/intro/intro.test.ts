@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { mockMatchMedia } from "@/test/match-media";
 
 async function load() {
   vi.resetModules();
@@ -9,12 +10,7 @@ let reduced = false;
 
 beforeEach(() => {
   reduced = false;
-  window.matchMedia = ((query: string) => ({
-    media: query,
-    get matches() {
-      return reduced;
-    },
-  })) as unknown as typeof window.matchMedia;
+  mockMatchMedia(() => reduced);
 });
 
 describe("intro", () => {

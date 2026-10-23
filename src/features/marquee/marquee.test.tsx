@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { mockMatchMedia } from "@/test/match-media";
 import { Marquee } from "./marquee";
 
 const props = {
@@ -11,11 +12,7 @@ const props = {
 };
 
 function mockBrowser(reduced: boolean) {
-  window.matchMedia = vi.fn().mockReturnValue({
-    matches: reduced,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-  }) as unknown as typeof window.matchMedia;
+  mockMatchMedia(reduced);
   const observer = class {
     observe = vi.fn();
     disconnect = vi.fn();

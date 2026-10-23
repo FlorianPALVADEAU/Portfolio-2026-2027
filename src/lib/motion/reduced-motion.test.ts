@@ -1,11 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
+import { mockMatchMedia } from "@/test/match-media";
 import { onReducedMotionChange, prefersReducedMotion } from "./reduced-motion";
 
 describe("reduced motion", () => {
   it("reads the media query", () => {
-    window.matchMedia = vi
-      .fn()
-      .mockReturnValue({ matches: true }) as unknown as typeof window.matchMedia;
+    mockMatchMedia(true);
     expect(prefersReducedMotion()).toBe(true);
   });
 
