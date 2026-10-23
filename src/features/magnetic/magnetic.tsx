@@ -3,18 +3,20 @@
 import { gsap } from "gsap";
 import { type ReactNode, useEffect, useRef } from "react";
 import { hasFinePointer, prefersReducedMotion } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
 type MagneticProps = {
   children: ReactNode;
   /** Share of the pointer's distance from the centre that the element follows. */
   strength?: number;
+  className?: string;
 };
 
 /**
  * Leans its child toward the pointer while it hovers and lets it settle back on leave. Only for
  * a mouse or trackpad: a touch screen has no hover to lean toward.
  */
-export function Magnetic({ children, strength = 0.35 }: MagneticProps) {
+export function Magnetic({ children, strength = 0.35, className }: MagneticProps) {
   const root = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -48,7 +50,7 @@ export function Magnetic({ children, strength = 0.35 }: MagneticProps) {
   }, [strength]);
 
   return (
-    <span ref={root} className="inline-block">
+    <span ref={root} className={cn("inline-block", className)}>
       {children}
     </span>
   );
