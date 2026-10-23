@@ -6,7 +6,7 @@ import { Document } from "@/components/templates/document";
 import { Analytics } from "@/features/analytics";
 import { BackgroundMusic } from "@/features/background-music";
 import { GridOverlay } from "@/features/grid-overlay";
-import { IntroEntrance } from "@/features/intro-entrance";
+import { IntroCover, IntroEntrance } from "@/features/intro-entrance";
 import { IntroLoader } from "@/features/intro-loader";
 import { PageTransition } from "@/features/page-transition";
 import { RouteFocus } from "@/features/route-focus";
@@ -76,19 +76,21 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
 
   return (
     <Document lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
-      <SiteHeader locale={locale} messages={messages.header} cvHref={await cvHref(locale)} />
-      {children}
-      <RouteFocus />
-      <ScrollRestore />
-      <ScrollIndicator />
-      <SmoothScroll />
-      <PageTransition />
+      <IntroCover>
+        <SiteHeader locale={locale} messages={messages.header} cvHref={await cvHref(locale)} />
+        {children}
+        <RouteFocus />
+        <ScrollRestore />
+        <ScrollIndicator />
+        <SmoothScroll />
+        <PageTransition />
+        <UiSound />
+        <BackgroundMusic />
+        <Analytics />
+        {process.env.NODE_ENV === "development" && <GridOverlay />}
+      </IntroCover>
       <IntroLoader label={messages.loader.label} welcome={messages.loader.welcome} />
       <IntroEntrance />
-      <UiSound />
-      <BackgroundMusic />
-      <Analytics />
-      {process.env.NODE_ENV === "development" && <GridOverlay />}
     </Document>
   );
 }
