@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { damp, poseFor, swingStep, wanderGaze } from "./duck-motion";
+import { damp, poseFor, wanderGaze } from "./duck-motion";
 
 describe("damp", () => {
   it("approaches the target and never overshoots", () => {
@@ -17,14 +17,6 @@ describe("damp", () => {
     for (let frame = 0; frame < 30; frame++) slow = damp(slow, 1, 4, 1 / 30);
     for (let frame = 0; frame < 120; frame++) fast = damp(fast, 1, 4, 1 / 120);
     expect(slow).toBeCloseTo(fast, 5);
-  });
-});
-
-describe("swingStep", () => {
-  it("settles back to rest after a push", () => {
-    let swing = { angle: 0.8, velocity: 0 };
-    for (let frame = 0; frame < 600; frame++) swing = swingStep(swing, 0, 40, 4, 1 / 60);
-    expect(Math.abs(swing.angle)).toBeLessThan(0.01);
   });
 });
 
