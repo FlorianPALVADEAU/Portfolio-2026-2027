@@ -8,10 +8,10 @@ async function openMenu(page: Page) {
 
 // Below md the menu lists the themes inline and leaves Swiss out, a desktop-only look; from md up
 // the theme is a dropdown in the header.
-async function chooseTheme(page: Page, name: "Light" | "Swiss", isMobile: boolean) {
+async function chooseTheme(page: Page, name: "Dark" | "Swiss", isMobile: boolean) {
   if (isMobile) await openMenu(page);
-  else await page.getByRole("button", { name: "Theme: Dark" }).click();
-  await page.getByRole("button", { name: isMobile ? "Light" : name }).click();
+  else await page.getByRole("button", { name: "Theme: Light" }).click();
+  await page.getByRole("button", { name: isMobile ? "Dark" : name }).click();
 }
 
 // Below md the language flags live in the menu; from md up they sit behind a header dropdown.
@@ -57,9 +57,9 @@ test("unknown locale returns 404", async ({ page }) => {
 });
 
 test("chosen theme persists across reloads without a flash", async ({ page, isMobile }) => {
-  const theme = isMobile ? "light" : "swiss";
+  const theme = isMobile ? "dark" : "swiss";
   await page.goto("/en");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 
   await chooseTheme(page, "Swiss", isMobile);
   await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
@@ -439,7 +439,7 @@ test("the now playing route answers with no content when Spotify is not configur
 
 test("changing language keeps the theme and the scroll position", async ({ page, isMobile }) => {
   await page.goto("/en");
-  await chooseTheme(page, "Light", isMobile);
+  await chooseTheme(page, "Dark", isMobile);
   // The wheel, not `scrollTo`: a native jump leaves the smooth-scroll library on its old position.
   // Touch screens have no smooth scroll, so a native jump is exact there.
   if (isMobile) await page.evaluate(() => window.scrollTo(0, 1200));
@@ -451,7 +451,7 @@ test("changing language keeps the theme and the scroll position", async ({ page,
   await page.getByRole("link", { name: "FR, Français" }).click();
 
   await expect(page).toHaveURL(/\/fr$/);
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   // The new page restores the scroll shortly after it mounts, so wait for it rather than read once.
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(before / 2);
 });

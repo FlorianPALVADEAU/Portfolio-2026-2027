@@ -2,13 +2,21 @@ import type { Group, Vector2 } from "three";
 import { damp, type Gaze, type Spring, springStep, wanderGaze } from "./duck-motion";
 
 const IDLE_AFTER_SECONDS = 2.5;
-const QUACK_SECONDS = 0.7;
 /** How far, in radians, the whole toy turns when the pointer is at the edge of the screen. */
 const TURN = 0.5;
-const LEAN = 0.14;
+/** Tilt, in radians, at the bottom edge of the screen: the toy bows toward the visitor much further than it leans back. */
+const LEAN_FORWARD = 0.4;
+const LEAN_BACK = 0.14;
+/** The toy stands leaning back a little when the pointer is in the middle, so it arrives rearing up. */
+const REST_LEAN = -0.15;
+/** The lean turns about the toy's feet, as if they were planted: height and depth in scene units. */
+const PIVOT = { y: 0, z: 0.35 };
 /** How much the head swings, per unit of gaze speed. */
 const SWAY_PUSH = 0.05;
 const MAX_SWAY = 9;
+const PRESS_PUSH = 8;
+const SQUEEZE_DAMPING = 7;
+const RELEASE_DAMPING = 30;
 
 export type Input = {
   /** Pointer position across the screen, from -1 to 1. */
@@ -37,7 +45,7 @@ export const newMemory = (): Memory => ({
 type Ref<T> = { current: T | null };
 
 export type Parts = {
-  /** Turns toward the pointer and hops. */
+  /** Turns and leans toward the pointer. */
   root: Ref<Group>;
   /** Squashes and stretches, and breathes. */
   body: Ref<Group>;
@@ -76,16 +84,21 @@ export function animateDuck(
   // A press squeezes the toy, which springs back taller than it was.
   if (input.quackedAt !== memory.pressedAt) {
     memory.pressedAt = input.quackedAt;
-    memory.squash.velocity -= 6;
+    memory.squash.velocity -= PRESS_PUSH;
   }
-  memory.squash = springStep(memory.squash, 0, 140, 7, seconds);
-  const quack = Math.max(0, 1 - (now - input.quackedAt) / QUACK_SECONDS);
+  // Damped harder once past rest, so the squeeze is deep and the spring back barely overshoots.
+  const damping = memory.squash.value > 0 ? RELEASE_DAMPING : SQUEEZE_DAMPING;
+  memory.squash = springStep(memory.squash, 0, 140, damping, seconds);
 
   const { root, body } = parts;
   if (root.current) {
     root.current.rotation.y = memory.gaze.x * TURN;
-    root.current.rotation.x = memory.gaze.y * LEAN;
-    root.current.position.y = quack > 0 ? Math.sin((1 - quack) * Math.PI) * 0.25 : 0;
+    const lean = REST_LEAN + memory.gaze.y * (memory.gaze.y > 0 ? LEAN_FORWARD : LEAN_BACK);
+    const [sin, cos] = [Math.sin(lean), Math.cos(lean)];
+    root.current.rotation.x = lean;
+    // Keeps the pivot point where it was, so the rotation happens around it and not around the feet.
+    root.current.position.y = PIVOT.y - (PIVOT.y * cos - PIVOT.z * sin);
+    root.current.position.z = PIVOT.z - (PIVOT.y * sin + PIVOT.z * cos);
   }
   if (body.current) {
     const breath = 1 + Math.sin(now * 1.6) * 0.008;

@@ -1,7 +1,16 @@
-export type UiSound = "hover" | "item" | "click" | "pop" | "open" | "close" | "focus" | "whoosh";
+export type UiSound =
+  | "hover"
+  | "item"
+  | "click"
+  | "pop"
+  | "open"
+  | "close"
+  | "focus"
+  | "whoosh"
+  | "quack";
 
-/** Sounds made of tuned notes; `focus` plays recordings and `whoosh` is shaped noise. */
-type ToneSound = Exclude<UiSound, "focus" | "whoosh">;
+/** Sounds made of tuned notes; `focus` plays recordings, `whoosh` is shaped noise and `quack` a filtered buzz. */
+type ToneSound = Exclude<UiSound, "focus" | "whoosh" | "quack">;
 
 type Note = {
   frequency: number;
@@ -293,6 +302,41 @@ function playWhoosh({ context, input }: Graph, pan: number): void {
   source.stop(end);
 }
 
+const QUACK_SECONDS = 0.2;
+const QUACK_VOLUME = 0.1;
+
+/**
+ * A small duck: a sawtooth buzz that falls in pitch, pushed through a nasal band-pass and chopped
+ * into two quick pulses ("kwa-ack"). The pitch varies a little, so repeated presses never match.
+ */
+function playQuack({ context, input }: Graph): void {
+  const start = context.currentTime;
+  const end = start + QUACK_SECONDS;
+  const pitch = 1 + (Math.random() - 0.5) * 0.18;
+
+  const oscillator = context.createOscillator();
+  oscillator.type = "sawtooth";
+  oscillator.frequency.setValueAtTime(520 * pitch, start);
+  oscillator.frequency.exponentialRampToValueAtTime(300 * pitch, end);
+
+  const formant = context.createBiquadFilter();
+  formant.type = "bandpass";
+  formant.Q.value = 3.5;
+  formant.frequency.setValueAtTime(1500, start);
+  formant.frequency.exponentialRampToValueAtTime(900, end);
+
+  const gain = context.createGain();
+  gain.gain.setValueAtTime(0.0001, start);
+  gain.gain.linearRampToValueAtTime(QUACK_VOLUME, start + 0.015);
+  gain.gain.linearRampToValueAtTime(QUACK_VOLUME * 0.35, start + 0.085);
+  gain.gain.linearRampToValueAtTime(QUACK_VOLUME * 0.8, start + 0.11);
+  gain.gain.exponentialRampToValueAtTime(0.0001, end);
+
+  oscillator.connect(formant).connect(gain).connect(input);
+  oscillator.start(start);
+  oscillator.stop(end);
+}
+
 /** Interaction tones are synthesized; only the focus sound plays recordings. */
 export function playUiSound(sound: UiSound, pan = 0): void {
   // Browsers only allow audio after a user gesture; never try before one.
@@ -307,6 +351,10 @@ export function playUiSound(sound: UiSound, pan = 0): void {
   }
   if (sound === "whoosh") {
     playWhoosh(graph, pan);
+    return;
+  }
+  if (sound === "quack") {
+    playQuack(graph);
     return;
   }
   for (const note of pickVariant(sound)) playNote(graph, note, origin);

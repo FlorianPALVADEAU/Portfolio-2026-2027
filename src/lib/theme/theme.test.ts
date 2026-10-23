@@ -27,14 +27,14 @@ describe("applyTheme", () => {
 
 describe("themeInitScript", () => {
   it("applies a stored theme", () => {
-    localStorage.setItem("theme", "light");
+    localStorage.setItem("theme", "dark");
     new Function(themeInitScript)();
-    expect(document.documentElement.dataset.theme).toBe("light");
+    expect(document.documentElement.dataset.theme).toBe("dark");
   });
 
   it("falls back to the default when the stored value is invalid", () => {
     localStorage.setItem("theme", "neon");
     new Function(themeInitScript)();
-    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(document.documentElement.dataset.theme).toBe("light");
   });
 });

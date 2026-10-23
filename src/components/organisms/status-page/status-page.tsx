@@ -55,7 +55,7 @@ export function StatusPage({ locale, code, copy, labels, retry }: StatusPageProp
       <RiseReveal triggerMargin="0px" className="relative h-full">
         {/* The duck fills the screen behind the text and is cropped by its bottom edge. */}
         <DuckStage
-          className="absolute inset-x-0 top-[24svh] bottom-0 z-0 md:top-[4svh] md:right-[-4%] md:left-[22%] md:-bottom-[22svh]"
+          className="absolute inset-x-0 top-[24svh] bottom-0 z-0 bg-[radial-gradient(ellipse_at_50%_45%,color-mix(in_oklab,var(--accent)_22%,transparent),transparent_70%)] md:top-[4svh] md:right-[-4%] md:left-[22%] md:-bottom-[22svh]"
           fallback={
             <div aria-hidden="true" className="absolute inset-0 z-0 grid place-items-center">
               <SpinningMark
@@ -83,7 +83,7 @@ export function StatusPage({ locale, code, copy, labels, retry }: StatusPageProp
           </div>
 
           <div className="mt-[2svh] flex max-w-[34rem] flex-col gap-[1.5svh] md:mt-[4svh] md:max-w-[40%]">
-            <h1 className="order-2 text-[min(clamp(1.5rem,1rem+2.4vw,3rem),5.5svh)] leading-tight font-semibold tracking-tight text-balance">
+            <h1 className="order-2 text-[min(2.25rem,5.5svh)] md:text-[min(clamp(1.5rem,1rem+2.4vw,3rem),5.5svh)] leading-tight font-semibold tracking-tight text-balance">
               <RiseText>{copy.lead}</RiseText>{" "}
               <RiseText className="text-foreground/55">{copy.accent}</RiseText>
             </h1>
@@ -101,27 +101,27 @@ export function StatusPage({ locale, code, copy, labels, retry }: StatusPageProp
           </div>
 
           <div className="flex-1 md:hidden" />
-          <div className="pointer-events-auto mt-[2svh] flex flex-wrap items-center gap-3 md:mt-[3svh]">
+          <div className="pointer-events-auto mt-[2svh] flex flex-col gap-3 md:mt-[3svh] md:flex-row md:flex-wrap md:items-center">
             <Rise>
-              <Magnetic strength={0.25}>
+              <Magnetic strength={0.25} className="block md:inline-block">
                 {retry ? (
-                  <Button size="lg" onClick={retry}>
+                  <Button size="lg" onClick={retry} className="w-full md:w-auto">
                     {labels.retry}
                   </Button>
                 ) : (
-                  <Button asChild size="lg">
+                  <Button asChild size="lg" className="w-full md:w-auto">
                     <NextLink href={`/${locale}`}>{labels.home}</NextLink>
                   </Button>
                 )}
               </Magnetic>
             </Rise>
             <Rise>
-              <Magnetic strength={0.25}>
+              <Magnetic strength={0.25} className="block md:inline-block">
                 <Button
                   asChild
                   size="lg"
                   variant="outline"
-                  className="bg-background/75 backdrop-blur-sm"
+                  className="w-full bg-background/75 backdrop-blur-sm md:w-auto"
                 >
                   <NextLink href={retry ? `/${locale}` : `/${locale}#works`} data-jump="">
                     {retry ? labels.home : labels.work}
