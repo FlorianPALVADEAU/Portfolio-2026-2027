@@ -19,7 +19,9 @@ test.describe("works reel", () => {
 
   test("draws the covers in a hidden canvas and keeps the DOM ones for assistive tech", async ({
     page,
+    isMobile,
   }) => {
+    test.skip(isMobile, "A touch screen keeps the plain covers and never mounts the canvas");
     await page.goto("/en");
     const webgl = await page.evaluate(() =>
       Boolean(document.createElement("canvas").getContext("webgl2")),
@@ -33,6 +35,19 @@ test.describe("works reel", () => {
     await expect(canvas.locator("canvas")).toBeAttached();
     await expect(works.locator("[data-reel-image]").first()).toHaveAttribute("alt", /.+/);
     await expectNoA11yViolations(page);
+  });
+
+  test("keeps the plain covers and mounts no canvas on a touch screen", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, "Only a touch screen goes without the canvas");
+    await page.goto("/en");
+    const works = page.getByRole("region", { name: "Selected works" });
+    await works.scrollIntoViewIfNeeded();
+
+    await expect(works.locator("[data-reel-image]").first()).toBeVisible();
+    await expect(page.locator("[data-reel-canvas]")).toHaveCount(0);
   });
 
   test("leaves titles untouched under reduced motion", async ({ page }) => {
