@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { Document } from "@/components/templates/document";
@@ -17,8 +18,19 @@ import { getMessages, isLocale, locales } from "@/lib/i18n";
 import { languageAlternates, openGraphLocale } from "@/lib/seo";
 import { siteName, siteUrl } from "@/lib/site";
 import { cvHref } from "@/server/infrastructure/cv";
-import { fontVariables } from "../fonts";
 import "../globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -71,7 +83,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   const messages = await getMessages(locale);
 
   return (
-    <Document lang={locale} className={fontVariables}>
+    <Document lang={locale} className={`${geistSans.variable} ${geistMono.variable}`}>
       <IntroCover>
         <SiteHeader locale={locale} messages={messages.header} cvHref={await cvHref(locale)} />
         {children}

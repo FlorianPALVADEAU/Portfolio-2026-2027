@@ -282,15 +282,21 @@
   },
   "status": {
     "notFound": {
-      "title": "This page does not exist",
-      "body": "The link may be broken, or the page has moved."
+      "kicker": "Error 404",
+      "lead": "This page",
+      "accent": "wandered off.",
+      "body": "The link may be broken, or the page has moved. The rest of the site is right where you left it.",
+      "marquee": "Page not found"
     },
     "error": {
-      "code": "Error",
-      "title": "Something went wrong",
-      "body": "The page could not be displayed. You can try again."
+      "kicker": "Error",
+      "lead": "Something",
+      "accent": "broke.",
+      "body": "The page could not be displayed. Try again, or head back to the start.",
+      "marquee": "Something went wrong"
     },
     "retry": "Try again",
-    "home": "Back to the home page"
+    "home": "Back to the home page",
+    "work": "See the work"
   }
 }

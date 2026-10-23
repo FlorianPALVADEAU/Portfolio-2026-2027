@@ -282,15 +282,21 @@
   },
   "status": {
     "notFound": {
-      "title": "Cette page n'existe pas",
-      "body": "Le lien est peut-être rompu, ou la page a été déplacée."
+      "kicker": "Erreur 404",
+      "lead": "Cette page",
+      "accent": "s'est perdue.",
+      "body": "Le lien est peut-être rompu, ou la page a été déplacée. Le reste du site est là où vous l'avez laissé.",
+      "marquee": "Page introuvable"
     },
     "error": {
-      "code": "Erreur",
-      "title": "Une erreur est survenue",
-      "body": "La page n'a pas pu s'afficher. Vous pouvez réessayer."
+      "kicker": "Erreur",
+      "lead": "Quelque chose",
+      "accent": "s'est cassé.",
+      "body": "La page n'a pas pu s'afficher. Réessayez, ou revenez au début.",
+      "marquee": "Une erreur est survenue"
     },
     "retry": "Réessayer",
-    "home": "Retour à l'accueil"
+    "home": "Retour à l'accueil",
+    "work": "Voir les projets"
   }
 }

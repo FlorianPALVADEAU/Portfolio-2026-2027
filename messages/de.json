@@ -287,15 +287,21 @@
   },
   "status": {
     "notFound": {
-      "title": "Diese Seite existiert nicht",
-      "body": "Der Link ist möglicherweise defekt, oder die Seite wurde verschoben."
+      "kicker": "Fehler 404",
+      "lead": "Diese Seite",
+      "accent": "hat sich verlaufen.",
+      "body": "Der Link ist möglicherweise defekt, oder die Seite wurde verschoben. Der Rest der Website ist genau dort, wo Sie ihn verlassen haben.",
+      "marquee": "Seite nicht gefunden"
     },
     "error": {
-      "code": "Fehler",
-      "title": "Etwas ist schiefgelaufen",
-      "body": "Die Seite konnte nicht angezeigt werden. Sie können es erneut versuchen."
+      "kicker": "Fehler",
+      "lead": "Etwas",
+      "accent": "ist kaputtgegangen.",
+      "body": "Die Seite konnte nicht angezeigt werden. Versuchen Sie es erneut oder kehren Sie zum Anfang zurück.",
+      "marquee": "Etwas ist schiefgelaufen"
     },
     "retry": "Erneut versuchen",
-    "home": "Zurück zur Startseite"
+    "home": "Zurück zur Startseite",
+    "work": "Projekte ansehen"
   }
 }

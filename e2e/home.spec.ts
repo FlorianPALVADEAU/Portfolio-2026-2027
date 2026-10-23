@@ -169,7 +169,7 @@ test.describe("seo", () => {
       /opengraph-image/,
     );
 
-    const raw = await page.locator('script[type="application/ld+json"]').textContent();
+    const raw = await page.locator('script[type="application/ld+json"]').first().textContent();
     const person = JSON.parse(raw ?? "{}");
     expect(person["@type"]).toBe("Person");
     expect(Object.keys(person)).not.toEqual(
@@ -218,10 +218,9 @@ test.describe("project page", () => {
     page,
     request,
   }) => {
-    await page.goto("/en/projects/nope");
-    // Cache Components streams the shell first, so the status can already be 200;
-    // the not-found page still carries a noindex robots tag.
-    await expect(page.getByText("This page could not be found")).toBeVisible();
+    const response = await page.goto("/en/projects/nope");
+    expect(response?.status()).toBe(404);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("wandered off");
     await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute("content", /noindex/);
 
     const sitemap = await (await request.get("/sitemap.xml")).text();
