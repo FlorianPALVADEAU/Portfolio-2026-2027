@@ -1,10 +1,14 @@
-import type { Group, Mesh } from "three";
-import { damp, type Gaze, poseFor, wanderGaze } from "./duck-motion";
+import type { Group, Vector2 } from "three";
+import { damp, type Gaze, type Spring, springStep, wanderGaze } from "./duck-motion";
 
 const IDLE_AFTER_SECONDS = 2.5;
 const QUACK_SECONDS = 0.7;
-const BLINK_EVERY_SECONDS = 3.6;
-const BLINK_SECONDS = 0.14;
+/** How far, in radians, the whole toy turns when the pointer is at the edge of the screen. */
+const TURN = 0.5;
+const LEAN = 0.14;
+/** How much the head swings, per unit of gaze speed. */
+const SWAY_PUSH = 0.05;
+const MAX_SWAY = 9;
 
 export type Input = {
   /** Pointer position across the screen, from -1 to 1. */
@@ -16,20 +20,29 @@ export type Input = {
 };
 
 /** What the animation carries from one frame to the next. */
-export type Memory = { gaze: Gaze };
+export type Memory = {
+  gaze: Gaze;
+  sway: { x: Spring; y: Spring };
+  squash: Spring;
+  pressedAt: number;
+};
 
-export const newMemory = (): Memory => ({ gaze: { x: 0, y: 0 } });
+export const newMemory = (): Memory => ({
+  gaze: { x: 0, y: 0 },
+  sway: { x: { value: 0, velocity: 0 }, y: { value: 0, velocity: 0 } },
+  squash: { value: 0, velocity: 0 },
+  pressedAt: Number.NEGATIVE_INFINITY,
+});
 
 type Ref<T> = { current: T | null };
 
 export type Parts = {
+  /** Turns toward the pointer and hops. */
   root: Ref<Group>;
-  head: Ref<Group>;
-  jaw: Ref<Mesh>;
-  leftWing: Ref<Mesh>;
-  rightWing: Ref<Mesh>;
-  leftEye: Ref<Mesh>;
-  rightEye: Ref<Mesh>;
+  /** Squashes and stretches, and breathes. */
+  body: Ref<Group>;
+  /** Fed to the vertex shader, which swings the top of the toy. */
+  sway: Vector2;
 };
 
 /** Steps the duck's whole pose by one frame. `now` and `seconds` are real time, in seconds. */
@@ -42,33 +55,45 @@ export function animateDuck(
 ): void {
   const idle = now - input.movedAt > IDLE_AFTER_SECONDS;
   const target = idle ? wanderGaze(now) : input.gaze;
+  const previous = memory.gaze;
   memory.gaze = {
-    x: damp(memory.gaze.x, target.x, 5, seconds),
-    y: damp(memory.gaze.y, target.y, 5, seconds),
+    x: damp(previous.x, target.x, 5, seconds),
+    y: damp(previous.y, target.y, 5, seconds),
   };
-  const pose = poseFor(memory.gaze);
+  const speed = {
+    x: (memory.gaze.x - previous.x) / Math.max(seconds, 0.001),
+    y: (memory.gaze.y - previous.y) / Math.max(seconds, 0.001),
+  };
 
+  // The head lags behind the turn, then swings back, like a stuffed neck.
+  memory.sway.x.velocity -= speed.x * SWAY_PUSH * 60 * seconds;
+  memory.sway.y.velocity -= speed.y * SWAY_PUSH * 60 * seconds;
+  memory.sway.x = springStep(memory.sway.x, 0, 90, 5, seconds);
+  memory.sway.y = springStep(memory.sway.y, 0, 90, 5, seconds);
+  const clamp = (value: number) => Math.max(-MAX_SWAY, Math.min(MAX_SWAY, value));
+  parts.sway.set(clamp(memory.sway.x.value * 6), clamp(memory.sway.y.value * 6));
+
+  // A press squeezes the toy, which springs back taller than it was.
+  if (input.quackedAt !== memory.pressedAt) {
+    memory.pressedAt = input.quackedAt;
+    memory.squash.velocity -= 6;
+  }
+  memory.squash = springStep(memory.squash, 0, 140, 7, seconds);
   const quack = Math.max(0, 1 - (now - input.quackedAt) / QUACK_SECONDS);
-  const hop = quack > 0 ? Math.sin((1 - quack) * Math.PI) * 0.3 : 0;
-  const { root, head, jaw, leftWing, rightWing, leftEye, rightEye } = parts;
 
+  const { root, body } = parts;
   if (root.current) {
-    root.current.rotation.y = pose.bodyYaw;
-    root.current.rotation.x = pose.bodyPitch;
-    root.current.position.y = Math.sin(now * 1.6) * 0.03 + hop;
+    root.current.rotation.y = memory.gaze.x * TURN;
+    root.current.rotation.x = memory.gaze.y * LEAN;
+    root.current.position.y = quack > 0 ? Math.sin((1 - quack) * Math.PI) * 0.25 : 0;
   }
-  if (head.current) {
-    head.current.rotation.y = pose.headYaw - pose.bodyYaw;
-    head.current.rotation.x = pose.headPitch - pose.bodyPitch + Math.sin(now * 1.6 + 1) * 0.02;
-  }
-  if (jaw.current) jaw.current.rotation.x = quack * 0.5 * Math.abs(Math.sin(now * 28));
-
-  const flap = quack * Math.sin(now * 30) * 0.5;
-  if (leftWing.current) leftWing.current.rotation.z = 0.3 + flap;
-  if (rightWing.current) rightWing.current.rotation.z = -0.3 - flap;
-
-  const blink = now % BLINK_EVERY_SECONDS < BLINK_SECONDS ? 0.1 : 1;
-  for (const eye of [leftEye.current, rightEye.current]) {
-    if (eye) eye.scale.y = damp(eye.scale.y, blink, 40, seconds);
+  if (body.current) {
+    const breath = 1 + Math.sin(now * 1.6) * 0.008;
+    const stretch = memory.squash.value;
+    body.current.scale.set(
+      breath * (1 - stretch * 0.5),
+      breath * (1 + stretch),
+      breath * (1 - stretch * 0.5),
+    );
   }
 }

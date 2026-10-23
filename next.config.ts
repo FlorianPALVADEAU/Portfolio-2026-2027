@@ -2,7 +2,16 @@ import type { NextConfig } from "next";
 import { securityHeaders } from "./src/lib/security";
 
 /** Folders of public files that change rarely; Next sends them with `max-age=0` unless told otherwise. */
-const STATIC_FOLDERS = ["sequence", "brand", "photos", "projects", "skills", "sfx", "gallery"];
+const STATIC_FOLDERS = [
+  "sequence",
+  "brand",
+  "photos",
+  "projects",
+  "skills",
+  "sfx",
+  "gallery",
+  "models",
+];
 const WEEK_SECONDS = 60 * 60 * 24 * 7;
 
 const nextConfig: NextConfig = {

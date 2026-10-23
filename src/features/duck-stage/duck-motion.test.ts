@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { damp, poseFor, wanderGaze } from "./duck-motion";
+import { damp, springStep, wanderGaze } from "./duck-motion";
 
 describe("damp", () => {
   it("approaches the target and never overshoots", () => {
@@ -20,11 +20,11 @@ describe("damp", () => {
   });
 });
 
-describe("poseFor", () => {
-  it("turns the head further than the body, and centred looks straight ahead", () => {
-    const pose = poseFor({ x: 1, y: 0 });
-    expect(pose.headYaw).toBeGreaterThan(pose.bodyYaw);
-    expect(poseFor({ x: 0, y: 0 })).toMatchObject({ bodyYaw: 0, headYaw: 0, eyeX: 0 });
+describe("springStep", () => {
+  it("settles back to rest after a push", () => {
+    let spring = { value: 0, velocity: 3 };
+    for (let frame = 0; frame < 600; frame++) spring = springStep(spring, 0, 60, 6, 1 / 60);
+    expect(Math.abs(spring.value)).toBeLessThan(0.01);
   });
 });
 

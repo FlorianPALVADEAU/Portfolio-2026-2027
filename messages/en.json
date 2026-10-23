@@ -265,7 +265,8 @@
         "geist": "Typeface",
         "simpleIcons": "Brand logos",
         "lucide": "Interface icons",
-        "mdi": "LinkedIn and AWS marks"
+        "mdi": "LinkedIn and AWS marks",
+        "duckPlush": "3D duck on the 404 page"
       }
     }
   },

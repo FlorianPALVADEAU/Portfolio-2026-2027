@@ -1,15 +1,15 @@
 "use client";
 
 import { Canvas, useThree } from "@react-three/fiber";
-import { type RefObject, useEffect } from "react";
+import { type RefObject, Suspense, useEffect } from "react";
 import { Duck } from "./duck";
 import type { Input } from "./duck-animation";
 
 /** Below this width-to-height ratio the stage is a phone's: the camera moves in on the head. */
 const PORTRAIT_RATIO = 0.95;
 type View = { position: [number, number, number]; target: [number, number, number] };
-const FULL_BODY: View = { position: [0, 1.7, 6.0], target: [0, 1.0, 0.3] };
-const CLOSE_UP: View = { position: [0, 1.7, 5.0], target: [0, 1.3, 0.6] };
+const FULL_BODY: View = { position: [0, 2.45, 5.4], target: [0, 2.0, 0] };
+const CLOSE_UP: View = { position: [0, 2.85, 4.1], target: [0, 2.75, 0] };
 
 function Rig() {
   const camera = useThree((state) => state.camera);
@@ -38,7 +38,9 @@ export default function DuckCanvas({ input }: { input: RefObject<Input> }) {
       <ambientLight intensity={1.1} />
       <directionalLight position={[3, 5, 6]} intensity={2.6} />
       <directionalLight position={[-5, 2, -3]} intensity={1.2} color="#8ab4ff" />
-      <Duck input={input} />
+      <Suspense fallback={null}>
+        <Duck input={input} />
+      </Suspense>
     </Canvas>
   );
 }

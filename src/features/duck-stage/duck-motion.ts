@@ -3,30 +3,23 @@ export function damp(current: number, target: number, lambda: number, seconds: n
   return current + (target - current) * (1 - Math.exp(-lambda * seconds));
 }
 
+export type Spring = { value: number; velocity: number };
+
+/** One step of a damped spring pulling `spring` toward `rest`. */
+export function springStep(
+  spring: Spring,
+  rest: number,
+  stiffness: number,
+  damping: number,
+  seconds: number,
+): Spring {
+  const velocity =
+    spring.velocity + (-stiffness * (spring.value - rest) - damping * spring.velocity) * seconds;
+  return { value: spring.value + velocity * seconds, velocity };
+}
+
 /** Pointer position, from -1 (left, top) to 1 (right, bottom) across the screen. */
 export type Gaze = { x: number; y: number };
-
-export type Pose = {
-  bodyYaw: number;
-  bodyPitch: number;
-  headYaw: number;
-  headPitch: number;
-  /** Where the pupils sit in the eye, from -1 to 1 on each axis. */
-  eyeX: number;
-  eyeY: number;
-};
-
-/** The head follows further than the body, and the eyes furthest, so the duck looks before it turns. */
-export function poseFor(gaze: Gaze): Pose {
-  return {
-    bodyYaw: gaze.x * 0.4,
-    bodyPitch: gaze.y * 0.12,
-    headYaw: gaze.x * 0.5,
-    headPitch: gaze.y * 0.25,
-    eyeX: gaze.x,
-    eyeY: -gaze.y,
-  };
-}
 
 /** Where the duck looks when nobody is moving a pointer: a slow wander, so it never freezes. */
 export function wanderGaze(seconds: number): Gaze {
