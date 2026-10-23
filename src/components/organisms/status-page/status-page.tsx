@@ -9,6 +9,7 @@ import { Rise } from "@/components/atoms/rise";
 import { RiseText } from "@/components/atoms/rise-text";
 import { Magnetic } from "@/features/magnetic";
 import { Marquee } from "@/features/marquee";
+import { NumeralPlay, SpinningMark } from "@/features/numeral-play";
 import { RiseReveal } from "@/features/rise-reveal";
 import { MAIN_ID } from "@/features/route-focus";
 import type { Locale, Messages } from "@/lib/i18n";
@@ -59,8 +60,15 @@ export function StatusPage({ locale, code, copy, labels, retry }: StatusPageProp
   }));
 
   return (
-    <main id={MAIN_ID} tabIndex={-1} className="focus:outline-none">
-      <RiseReveal className="flex min-h-svh flex-col justify-between gap-10 px-(--gutter) pt-24 pb-8 md:pt-28 md:pb-10">
+    <main
+      id={MAIN_ID}
+      tabIndex={-1}
+      className="fixed inset-x-0 top-0 h-svh overflow-hidden focus:outline-none"
+    >
+      <RiseReveal
+        triggerMargin="0px"
+        className="flex h-full flex-col justify-between gap-[2svh] px-(--gutter) pt-24 pb-[3svh] md:pt-28"
+      >
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
           <Rise>
             <p className={`flex items-center gap-3 ${MONO}`}>
@@ -76,25 +84,24 @@ export function StatusPage({ locale, code, copy, labels, retry }: StatusPageProp
           </Rise>
         </div>
 
-        <div className="flex flex-col gap-6 md:gap-8">
-          <div aria-hidden="true" className="flex items-end justify-between gap-6">
-            <p className="text-[clamp(7rem,0.5rem+28vw,18rem)] leading-[0.8] font-semibold tracking-tighter">
-              <RiseText>{code}</RiseText>
-            </p>
-            <Icon
+        <div className="flex min-h-0 flex-col gap-[2svh]">
+          <div className="flex items-end justify-between gap-6">
+            <NumeralPlay
+              code={code}
+              className="text-[min(32vw,30svh,22rem)] leading-[0.8] font-semibold tracking-tighter"
+            />
+            <SpinningMark
               icon={Asterisk}
-              className="mb-[2vw] hidden size-[clamp(6rem,2rem+14vw,14rem)] shrink-0 animate-[spin_24s_linear_infinite] stroke-1 text-foreground/25 md:block motion-reduce:animate-none"
+              className="mb-[1svh] hidden size-[min(14vw,20svh)] shrink-0 cursor-pointer stroke-1 text-foreground/25 transition-colors hover:text-accent md:block"
             />
           </div>
-          <div className="flex flex-col gap-5">
-            <h1 className="max-w-5xl text-[clamp(2.25rem,1rem+5vw,6rem)] leading-[0.95] font-semibold tracking-tight text-balance">
-              <RiseText>{copy.lead}</RiseText>{" "}
-              <RiseText className="text-foreground/55">{copy.accent}</RiseText>
-            </h1>
-            <Rise>
-              <p className="max-w-[48ch] text-lg text-muted-foreground">{copy.body}</p>
-            </Rise>
-          </div>
+          <h1 className="max-w-5xl text-[min(clamp(2rem,1rem+5vw,6rem),9svh)] leading-[0.95] font-semibold tracking-tight text-balance">
+            <RiseText>{copy.lead}</RiseText>{" "}
+            <RiseText className="text-foreground/55">{copy.accent}</RiseText>
+          </h1>
+          <Rise className="[@media(max-height:640px)]:hidden">
+            <p className="max-w-[48ch] text-lg text-muted-foreground">{copy.body}</p>
+          </Rise>
           <div className="flex flex-wrap items-center gap-3">
             <Rise>
               <Magnetic strength={0.25}>
@@ -126,7 +133,7 @@ export function StatusPage({ locale, code, copy, labels, retry }: StatusPageProp
             items={band}
             label={copy.marquee}
             speed={100}
-            itemClassName="text-[clamp(2.5rem,1.2rem+5vw,5.5rem)] leading-none font-semibold tracking-tight whitespace-nowrap text-foreground/20"
+            itemClassName="text-[min(clamp(2.5rem,1.2rem+5vw,5.5rem),8svh)] leading-none font-semibold tracking-tight whitespace-nowrap text-foreground/20"
             className="border-0 bg-transparent px-0 py-0"
           />
         </Rise>

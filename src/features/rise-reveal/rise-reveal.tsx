@@ -17,7 +17,13 @@ const STAGGER = 0.07;
  * late images and fonts cannot make one play before it is seen. Nothing is hidden until the script
  * runs, and under reduced motion nothing moves.
  */
-export function RiseReveal(props: ComponentPropsWithoutRef<"div">) {
+export function RiseReveal({
+  triggerMargin = TRIGGER_MARGIN,
+  ...props
+}: ComponentPropsWithoutRef<"div"> & {
+  /** `rootMargin` of the observer; a page that never scrolls passes `0px` so its last block rises too. */
+  triggerMargin?: string;
+}) {
   const root = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -62,7 +68,7 @@ export function RiseReveal(props: ComponentPropsWithoutRef<"div">) {
           rises.get(entry.target)?.play();
         }
       },
-      { rootMargin: TRIGGER_MARGIN },
+      { rootMargin: triggerMargin },
     );
     for (const block of rises.keys()) observer.observe(block);
 
@@ -72,7 +78,7 @@ export function RiseReveal(props: ComponentPropsWithoutRef<"div">) {
       gsap.set(everyMask, { clearProps: "overflow" });
       gsap.set(everyMover, { clearProps: "transform" });
     };
-  }, []);
+  }, [triggerMargin]);
 
   return <div ref={root} {...props} />;
 }
