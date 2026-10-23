@@ -26,7 +26,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         locale={locale}
         messages={messages.home}
         cvHref={await cvHref(locale)}
-        email={process.env.CONTACT_EMAIL}
+        email={process.env.NEXT_PUBLIC_CONTACT_EMAIL}
         heroPhotos={heroPhotos}
         trailPhotos={await photoUrls("trail")}
         projects={projects}
