@@ -25,6 +25,8 @@ export function LocaleSwitcher({ current, label, layout = "dropdown" }: LocaleSw
             <li key={locale}>
               <Link
                 href={localizePath(pathname, locale)}
+                // The 404 page is served from a prerendered route, so its server pathname is not the typed one.
+                suppressHydrationWarning
                 scroll={false}
                 data-keep-scroll=""
                 hrefLang={locale}
@@ -57,6 +59,8 @@ export function LocaleSwitcher({ current, label, layout = "dropdown" }: LocaleSw
             <li key={locale}>
               <Link
                 href={localizePath(pathname, locale)}
+                // The 404 page is served from a prerendered route, so its server pathname is not the typed one.
+                suppressHydrationWarning
                 scroll={false}
                 data-keep-scroll=""
                 hrefLang={locale}

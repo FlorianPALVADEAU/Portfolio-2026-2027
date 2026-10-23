@@ -283,17 +283,15 @@
   "status": {
     "notFound": {
       "kicker": "Error 404",
-      "lead": "This page",
-      "accent": "wandered off.",
-      "body": "The link may be broken, or the page has moved. The rest of the site is right where you left it.",
-      "marquee": "Page not found"
+      "lead": "Your page",
+      "accent": "wasn't found.",
+      "body": "The link may be broken, or the page has moved. The rest of the site is right where you left it."
     },
     "error": {
       "kicker": "Error",
       "lead": "Something",
       "accent": "broke.",
-      "body": "The page could not be displayed. Try again, or head back to the start.",
-      "marquee": "Something went wrong"
+      "body": "The page could not be displayed. Try again, or head back to the start."
     },
     "retry": "Try again",
     "home": "Back to the home page",

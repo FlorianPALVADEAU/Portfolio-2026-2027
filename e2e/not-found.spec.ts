@@ -7,7 +7,7 @@ test.describe("unknown addresses", () => {
       const response = await page.goto(path);
       expect(response?.status()).toBe(404);
 
-      await expect(page.getByRole("heading", { level: 1 })).toContainText("wandered off");
+      await expect(page.getByRole("heading", { level: 1 })).toContainText("wasn't found");
       await expect(page.getByRole("link", { name: "Back to the home page" })).toHaveAttribute(
         "href",
         "/en",
@@ -39,6 +39,6 @@ test.describe("unknown addresses", () => {
   test("a French address gets the French page", async ({ page }) => {
     const response = await page.goto("/fr/nope");
     expect(response?.status()).toBe(404);
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("s'est perdue");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("n'a pas été trouvée");
   });
 });

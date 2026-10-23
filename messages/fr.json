@@ -283,17 +283,15 @@
   "status": {
     "notFound": {
       "kicker": "Erreur 404",
-      "lead": "Cette page",
-      "accent": "s'est perdue.",
-      "body": "Le lien est peut-être rompu, ou la page a été déplacée. Le reste du site est là où vous l'avez laissé.",
-      "marquee": "Page introuvable"
+      "lead": "Votre page",
+      "accent": "n'a pas été trouvée.",
+      "body": "Le lien est peut-être rompu, ou la page a été déplacée. Le reste du site est là où vous l'avez laissé."
     },
     "error": {
       "kicker": "Erreur",
       "lead": "Quelque chose",
       "accent": "s'est cassé.",
-      "body": "La page n'a pas pu s'afficher. Réessayez, ou revenez au début.",
-      "marquee": "Une erreur est survenue"
+      "body": "La page n'a pas pu s'afficher. Réessayez, ou revenez au début."
     },
     "retry": "Réessayer",
     "home": "Retour à l'accueil",

@@ -20,3 +20,13 @@ export function canRenderScene(): boolean {
   if (prefersReducedMotion() || connection?.saveData || !hasFinePointer()) return false;
   return hasWebGl();
 }
+
+/**
+ * A scene that moves with the pointer but never scrolls with the page, so touch screens may have
+ * it: only a visitor who asked for less motion or less data, or a browser without WebGL, is left out.
+ */
+export function canRenderStage(): boolean {
+  const connection = (navigator as Navigator & { connection?: NetworkInformation }).connection;
+  if (prefersReducedMotion() || connection?.saveData) return false;
+  return hasWebGl();
+}

@@ -220,7 +220,7 @@ test.describe("project page", () => {
   }) => {
     const response = await page.goto("/en/projects/nope");
     expect(response?.status()).toBe(404);
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("wandered off");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("wasn't found");
     await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute("content", /noindex/);
 
     const sitemap = await (await request.get("/sitemap.xml")).text();
