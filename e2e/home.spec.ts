@@ -1,5 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 import { expectNoA11yViolations } from "./support/axe";
+import { waitForIntro } from "./support/intro";
 
 async function openMenu(page: Page) {
   await page.getByRole("button", { name: "Menu" }).click();
@@ -41,6 +42,7 @@ test("scroll-scrubbed words keep their contrast once they sit at rest", async ({
 
 test("locale switcher navigates to the German page", async ({ page }) => {
   await page.goto("/en");
+  await waitForIntro(page);
   await openLanguage(page);
   await page.getByRole("link", { name: "DE, Deutsch" }).click();
 
@@ -72,7 +74,7 @@ test("chosen theme persists across reloads without a flash", async ({ page, isMo
 test("skip link is the first tab stop and moves focus to main", async ({ page }) => {
   await page.goto("/en");
   // The page is inert while the intro covers it, so keys only reach it once the intro opens.
-  await expect(page.locator("html")).not.toHaveAttribute("data-intro-pending");
+  await waitForIntro(page);
   await page.keyboard.press("Tab");
 
   const skip = page.getByRole("link", { name: "Skip to content" });
@@ -111,6 +113,7 @@ test.describe("smooth scroll", () => {
 test.describe("page transition", () => {
   test("navigates through the overlay and the route is announced", async ({ page }) => {
     await page.goto("/en");
+    await waitForIntro(page);
     await openLanguage(page);
     await page.getByRole("link", { name: "FR, Français" }).click();
 
@@ -127,6 +130,7 @@ test.describe("page transition", () => {
 
     test("navigates directly", async ({ page }) => {
       await page.goto("/en");
+      await waitForIntro(page);
       await openLanguage(page);
       await page.getByRole("link", { name: "DE, Deutsch" }).click();
 

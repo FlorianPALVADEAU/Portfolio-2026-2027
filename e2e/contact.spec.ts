@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { expectNoA11yViolations } from "./support/axe";
+import { waitForIntro } from "./support/intro";
 
 test.describe("contact form", () => {
   test("offers a labelled, accessible form without exposing an address", async ({ page }) => {
@@ -42,7 +43,7 @@ test.describe("contact form", () => {
     expect(hosts).not.toContain("challenges.cloudflare.com");
 
     // The page is inert while the intro covers it, and an inert field cannot take focus.
-    await expect(page.locator("html")).not.toHaveAttribute("data-intro-pending");
+    await waitForIntro(page);
     // The form rises in as it enters the viewport, and a hidden field cannot take focus.
     await expect(form.getByLabel("Name")).toBeVisible();
     await form.getByLabel("Name").focus();
