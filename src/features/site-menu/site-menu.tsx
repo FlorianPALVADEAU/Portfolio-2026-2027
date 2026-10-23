@@ -2,7 +2,7 @@
 
 import { gsap } from "gsap";
 import { Download, Plus } from "lucide-react";
-import { type ReactNode, useEffect, useId, useRef, useState } from "react";
+import { type ReactNode, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { FlipText } from "@/components/atoms/flip-text";
 import { Icon } from "@/components/atoms/icon";
 import { Link } from "@/components/atoms/link";
@@ -13,9 +13,6 @@ import { cn } from "@/lib/utils";
 /** Shared by every row of the panel so links and downloads render alike. */
 const ROW_CLASS =
   "group flip-host flex min-h-14 items-center justify-between rounded-2xl px-4 text-2xl md:text-2xl font-medium tracking-tight no-underline transition-transform duration-(--duration-fast) hover:translate-x-1 hover:text-foreground";
-
-/** Each card rests slightly off-square: the type stays exact, the objects do not. */
-const CARD_TILTS = [-1.2, 1, -0.8] as const;
 
 type SiteMenuProps = {
   openLabel: string;
@@ -72,7 +69,8 @@ export function SiteMenu({
     };
   }, [open]);
 
-  useEffect(() => {
+  // Before paint: the panel shows as soon as `open` flips, and the tween must hide it first.
+  useLayoutEffect(() => {
     const element = panel.current;
     if (!(open && element) || prefersReducedMotion()) return;
     const cards = element.querySelectorAll("[data-card]");
@@ -83,16 +81,24 @@ export function SiteMenu({
         .from(cards, {
           opacity: 0,
           y: -28,
-          scale: 0.9,
-          rotate: () => gsap.utils.random(-7, 7),
+          scale: 0.94,
           transformOrigin: "100% 0%",
-          duration: 0.7,
-          ease: "back.out(1.8)",
-          stagger: 0.1,
+          duration: 0.6,
+          ease: "power3.out",
+          stagger: 0.08,
+          // Leaves no inline transform behind, so the resting state is the stylesheet's own.
+          clearProps: "transform,opacity",
         })
         .from(
           links,
-          { opacity: 0, x: 36, skewX: -10, duration: 0.5, ease: "power3.out", stagger: 0.06 },
+          {
+            opacity: 0,
+            x: 24,
+            duration: 0.45,
+            ease: "power3.out",
+            stagger: 0.05,
+            clearProps: "transform,opacity",
+          },
           0.12,
         );
     }, element);
@@ -130,7 +136,6 @@ export function SiteMenu({
         <nav
           data-card=""
           aria-label={navLabel}
-          style={{ rotate: `${CARD_TILTS[0]}deg` }}
           className="rounded-3xl border border-border bg-surface p-3 shadow-lg"
         >
           <ul>
@@ -148,11 +153,7 @@ export function SiteMenu({
           </ul>
         </nav>
         {download && (
-          <div
-            data-card=""
-            style={{ rotate: `${CARD_TILTS[1]}deg` }}
-            className="rounded-3xl border border-border bg-surface p-3 shadow-lg"
-          >
+          <div data-card="" className="rounded-3xl border border-border bg-surface p-3 shadow-lg">
             <div data-item="">
               <a
                 href={download.href}
@@ -167,7 +168,6 @@ export function SiteMenu({
         )}
         <div
           data-card=""
-          style={{ rotate: `${CARD_TILTS[2]}deg` }}
           className="flex items-center justify-between gap-1 rounded-3xl border border-border bg-surface p-3 shadow-lg"
         >
           {children}
