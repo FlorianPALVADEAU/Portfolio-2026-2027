@@ -6,6 +6,8 @@ const STATIC_FOLDERS = ["sequence", "brand", "photos", "projects", "skills", "sf
 const WEEK_SECONDS = 60 * 60 * 24 * 7;
 
 const nextConfig: NextConfig = {
+  // Frozen when the build starts: reading the clock at request time would date every page "now".
+  env: { BUILD_DATE: new Date().toISOString() },
   // Spotify only accepts a loopback IP as redirect URI, so the setup guide opens the dev server there.
   // The fixed back button of project pages lives at the bottom left, where the indicator sits by default.
   devIndicators: { position: "bottom-right" },
