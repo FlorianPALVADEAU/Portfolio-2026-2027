@@ -29,9 +29,6 @@ export const experiences = [
   },
 ] as const;
 
-/** First and last year of the timeline axis. */
-export const timelineYears = { start: 2022, end: 2027 } as const;
-
 /** Figures from the CV; the labels live in the messages. */
 export const skillStats = {
   features: 70,

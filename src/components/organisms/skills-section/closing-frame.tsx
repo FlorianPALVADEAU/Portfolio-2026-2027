@@ -10,15 +10,15 @@ type ClosingFrameProps = {
 
 /**
  * Frame 6: a photo that fills the screen as it arrives, then shrinks into a rounded card with
- * texts over it (see `addFinale` in the rail). Stacked, it is simply that card, texts showing.
+ * texts over it (see `addFinale` in the rail). On a phone it does the same pinned in place; stacked without motion, it is simply that card, texts showing.
  */
 export function ClosingFrame({ messages, photo }: ClosingFrameProps) {
   return (
     <Frame bleed aria-labelledby="skills-closing">
-      <figure className="relative m-0 aspect-4/5 w-full md:aspect-21/9 in-data-[motion=rail]:h-svh in-data-[motion=rail]:aspect-auto">
+      <figure className="relative m-0 aspect-4/5 w-full md:aspect-21/9 in-data-[motion=rail]:h-svh in-data-[motion=rail]:aspect-auto in-data-[motion=finale]:h-svh in-data-[motion=finale]:aspect-auto">
         <div
           data-frame-finale
-          className="absolute inset-0 overflow-hidden rounded-3xl in-data-[motion=rail]:rounded-none"
+          className="absolute inset-0 overflow-hidden rounded-3xl in-data-[motion=finale]:rounded-none in-data-[motion=rail]:rounded-none"
         >
           <div data-frame-finale-image className="absolute inset-0">
             <Image
@@ -31,7 +31,7 @@ export function ClosingFrame({ messages, photo }: ClosingFrameProps) {
           </div>
           <div className="absolute inset-0 bg-linear-to-t from-scrim/75 via-scrim/25 to-scrim/10" />
         </div>
-        <div className="absolute inset-0 flex flex-col justify-end gap-4 p-6 text-on-scrim md:p-12 in-data-[motion=rail]:inset-x-[7%] in-data-[motion=rail]:inset-y-[9%]">
+        <div className="absolute inset-0 flex flex-col justify-end gap-4 p-6 text-on-scrim md:p-12 in-data-[motion=finale]:inset-x-[7%] in-data-[motion=finale]:inset-y-[9%] in-data-[motion=rail]:inset-x-[7%] in-data-[motion=rail]:inset-y-[9%]">
           <Text
             data-frame-finale-text
             className="font-mono text-sm tracking-widest text-on-scrim uppercase"

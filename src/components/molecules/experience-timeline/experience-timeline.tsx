@@ -13,107 +13,76 @@ type TimelineEntry = {
   /** Website of the company or project. */
   href: string;
   role: string;
-  /** Fractional years, such as 2023.7. */
-  from: number;
-  to: number;
+  /** The years spent there in words, such as "2023 – today". */
+  period: string;
+  /** True while the role goes on; its marker is filled with the accent. */
+  current: boolean;
   stack: readonly { name: string; icon: SkillIcon | null }[];
 };
 
 type ExperienceTimelineProps = {
   entries: readonly TimelineEntry[];
-  startYear: number;
-  endYear: number;
 };
 
 const STAGGER_SECONDS = 0.18;
 
 /**
- * Rows along a shared year axis, set as type rather than cards: the company large, the role beside
- * it, a bar for how long, and the technologies used. Each row's rule draws, its bar grows from its
- * start date and its chips pop in one after the other when the frame is revealed.
+ * A vertical timeline, newest first: a rule down the left with one marker per client, and beside
+ * each marker the years in words, the company large, the role, and the technologies used there.
+ * Each entry's text and chips come in one after the other when the frame is revealed.
  */
-export function ExperienceTimeline({ entries, startYear, endYear }: ExperienceTimelineProps) {
-  const span = endYear - startYear;
-  const share = (year: number) => `${((year - startYear) / span) * 100}%`;
-  const years = Array.from({ length: span + 1 }, (_, step) => startYear + step);
-
+export function ExperienceTimeline({ entries }: ExperienceTimelineProps) {
   return (
-    <div className="flex flex-col gap-2 md:gap-4">
-      <div
+    <ol className="relative flex flex-col gap-8 pl-7 md:gap-10 md:pl-10">
+      <span
         aria-hidden="true"
-        className="relative h-4 font-mono text-xs text-foreground/70 max-md:[&>span:not(:first-child):not(:last-child)]:hidden"
-      >
-        {years.map((year) => (
+        className="absolute top-2 bottom-2 left-[5px] w-px bg-foreground/25"
+      />
+      {entries.map((entry, order) => (
+        <li key={entry.id} className="relative flex flex-col gap-2 md:gap-3">
           <span
-            key={year}
-            className="absolute -translate-x-1/2 first:translate-x-0 last:-translate-x-full"
-            style={{ left: share(year) }}
-          >
-            {year}
-          </span>
-        ))}
-      </div>
-      <ol className="flex flex-col">
-        {entries.map((entry, order) => (
-          <li
-            key={entry.id}
-            className="group/lane relative flex flex-col gap-2 py-3 md:gap-3 md:py-5"
-          >
-            <Pop
-              from="grow"
-              delay={0.15 + order * STAGGER_SECONDS}
-              className="absolute inset-x-0 top-0 h-px bg-foreground/25"
+            aria-hidden="true"
+            className={
+              entry.current
+                ? "absolute top-1.5 -left-7 size-3 rounded-full bg-accent ring-4 ring-accent/25 md:-left-10"
+                : "absolute top-1.5 -left-7 size-3 rounded-full border-2 border-foreground/50 bg-background md:-left-10"
+            }
+          />
+          <Pop delay={0.2 + order * STAGGER_SECONDS}>
+            <Text as="p" size="sm" className="font-mono tracking-wide text-foreground/80">
+              {entry.period}
+            </Text>
+          </Pop>
+          <Pop from="wipe" delay={0.3 + order * STAGGER_SECONDS}>
+            <Link
+              href={entry.href}
+              external
+              className="group/link flip-host inline-flex items-center gap-1.5 text-3xl font-semibold tracking-tight no-underline md:text-4xl"
             >
-              <span className="block size-full origin-left bg-foreground/0 transition-colors duration-(--duration-base) group-hover/lane:bg-accent" />
-            </Pop>
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-              <Pop from="wipe" delay={0.25 + order * STAGGER_SECONDS}>
-                <Link
-                  href={entry.href}
-                  external
-                  className="group/link flip-host inline-flex items-center gap-1.5 text-2xl font-semibold tracking-tight no-underline md:text-4xl"
-                >
-                  <FlipText>{entry.name}</FlipText>
-                  <Icon
-                    icon={ArrowUpRight}
-                    size="sm"
-                    className="transition-transform duration-(--duration-base) group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
-                  />
-                </Link>
-              </Pop>
-              <Pop delay={0.35 + order * STAGGER_SECONDS}>
-                <Text as="span" size="sm" className="text-foreground/80">
-                  {entry.role}
-                </Text>
-              </Pop>
-            </div>
-            <div aria-hidden="true" className="relative h-1.5 rounded-full bg-foreground/15">
-              <div
-                className="absolute inset-y-0"
-                style={{
-                  left: share(entry.from),
-                  width: `${((entry.to - entry.from) / span) * 100}%`,
-                }}
-              >
-                <Pop
-                  from="grow"
-                  delay={0.4 + order * STAGGER_SECONDS}
-                  className="size-full rounded-full bg-accent duration-1000"
-                />
-              </div>
-            </div>
-            <ul className="flex flex-wrap gap-1.5 md:gap-2">
-              {entry.stack.map((skill, chip) => (
-                <li key={skill.name}>
-                  <Pop from="pop" delay={0.55 + order * STAGGER_SECONDS + chip * 0.05}>
-                    <SkillChip name={skill.name} icon={skill.icon} />
-                  </Pop>
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ol>
-    </div>
+              <FlipText>{entry.name}</FlipText>
+              <Icon
+                icon={ArrowUpRight}
+                size="sm"
+                className="transition-transform duration-(--duration-base) group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+              />
+            </Link>
+          </Pop>
+          <Pop delay={0.4 + order * STAGGER_SECONDS}>
+            <Text as="p" size="sm" className="text-foreground/80">
+              {entry.role}
+            </Text>
+          </Pop>
+          <ul className="flex flex-wrap gap-1.5 md:gap-2">
+            {entry.stack.map((skill, chip) => (
+              <li key={skill.name}>
+                <Pop from="pop" delay={0.5 + order * STAGGER_SECONDS + chip * 0.05}>
+                  <SkillChip name={skill.name} icon={skill.icon} />
+                </Pop>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ol>
   );
 }

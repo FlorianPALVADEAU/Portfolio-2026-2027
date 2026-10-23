@@ -1,6 +1,8 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { clearScrollHint, markScrollHint, SMALL_SCREEN_QUERY, scrollToTop } from "@/lib/motion";
+import { addFinale, FINALE_RATIO } from "./finale";
+import { pick } from "./pick";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,9 +17,6 @@ const COUNT_SECONDS = 1.6;
 /** Share of the screen height scrolled while the first and last frames stay still. */
 const HOLD_RATIO = 0.6;
 
-/** Share of the screen height scrolled while a closing photo shrinks and its texts appear. */
-const FINALE_RATIO = 1.2;
-
 export type Rail = {
   /** Undoes everything `buildRail` did. */
   destroy: () => void;
@@ -30,10 +29,6 @@ export type RailParts = {
   stage: HTMLElement;
   track: HTMLElement;
 };
-
-function pick<T extends Element>(root: ParentNode, selector: string): T[] {
-  return Array.from(root.querySelectorAll<T>(selector));
-}
 
 /** Figures read their final value without JavaScript; once pinned they count up when revealed. */
 function setCounters(frame: HTMLElement, value: (target: number) => string) {
@@ -100,47 +95,6 @@ function addProgressFills(
       { scaleX: 0 },
       { scaleX: 1, duration: Math.max(1, to - from) },
       hold + from,
-    );
-  });
-}
-
-/**
- * A frame may end the rail with a photo (`data-frame-finale`, holding a `data-frame-finale-image`)
- * that fills the screen, then shrinks into a rounded card while its `data-frame-finale-text`
- * lines appear one after the other.
- */
-function addFinale(
-  timeline: gsap.core.Timeline,
-  stage: HTMLElement,
-  start: number,
-  duration: number,
-) {
-  const photo = stage.querySelector<HTMLElement>("[data-frame-finale]");
-  if (!photo) return;
-  const shrink = duration * 0.6;
-  timeline.fromTo(
-    photo,
-    { clipPath: "inset(0% 0% 0% 0% round 0px)" },
-    { clipPath: "inset(9% 7% 9% 7% round 40px)", duration: shrink, ease: "power2.inOut" },
-    start,
-  );
-  const image = photo.querySelector<HTMLElement>("[data-frame-finale-image]");
-  if (image) {
-    timeline.fromTo(
-      image,
-      { scale: 1.18 },
-      { scale: 1, duration: shrink, ease: "power2.inOut" },
-      start,
-    );
-  }
-  const texts = pick<HTMLElement>(stage, "[data-frame-finale-text]");
-  const lineDuration = (duration - shrink) / 2;
-  texts.forEach((text, order) => {
-    timeline.fromTo(
-      text,
-      { autoAlpha: 0, y: 48 },
-      { autoAlpha: 1, y: 0, duration: lineDuration, ease: "power3.out" },
-      start + shrink + (order * (duration - shrink - lineDuration)) / Math.max(1, texts.length - 1),
     );
   });
 }
