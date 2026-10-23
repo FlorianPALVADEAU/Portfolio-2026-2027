@@ -108,6 +108,10 @@
         "jcdecaux": "Software engineer",
         "overbound": "Founder"
       },
+      "timeline": {
+        "caption": "Time spent with each client",
+        "today": "today"
+      },
       "pipeline": {
         "push": "Push",
         "test": "Tests",

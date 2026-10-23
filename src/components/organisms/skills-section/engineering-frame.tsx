@@ -26,6 +26,7 @@ export function EngineeringFrame({
     role: messages.experiences[id],
     from,
     to: to ?? timelineYears.end,
+    period: `${Math.floor(from)} – ${to === null ? messages.timeline.today : Math.floor(to)}`,
     stack: stack.map((skill) => ({ name: skill, icon: skillIcon(skill) })),
   }));
 
@@ -83,6 +84,7 @@ export function EngineeringFrame({
       <div className="md:col-span-7">
         <ExperienceTimeline
           entries={entries}
+          caption={messages.timeline.caption}
           startYear={timelineYears.start}
           endYear={timelineYears.end}
         />

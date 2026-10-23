@@ -13,6 +13,8 @@ type TimelineEntry = {
   /** Website of the company or project. */
   href: string;
   role: string;
+  /** The years spent there in words, such as "2023 – today". */
+  period: string;
   /** Fractional years, such as 2023.7. */
   from: number;
   to: number;
@@ -21,6 +23,8 @@ type TimelineEntry = {
 
 type ExperienceTimelineProps = {
   entries: readonly TimelineEntry[];
+  /** Says what the bars measure, shown above the year axis. */
+  caption: string;
   startYear: number;
   endYear: number;
 };
@@ -29,16 +33,24 @@ const STAGGER_SECONDS = 0.18;
 
 /**
  * Rows along a shared year axis, set as type rather than cards: the company large, the role beside
- * it, a bar for how long, and the technologies used. Each row's rule draws, its bar grows from its
+ * it, the years in words with a bar for how long (the caption says it is time spent there), and the technologies used. Each row's rule draws, its bar grows from its
  * start date and its chips pop in one after the other when the frame is revealed.
  */
-export function ExperienceTimeline({ entries, startYear, endYear }: ExperienceTimelineProps) {
+export function ExperienceTimeline({
+  entries,
+  caption,
+  startYear,
+  endYear,
+}: ExperienceTimelineProps) {
   const span = endYear - startYear;
   const share = (year: number) => `${((year - startYear) / span) * 100}%`;
   const years = Array.from({ length: span + 1 }, (_, step) => startYear + step);
 
   return (
     <div className="flex flex-col gap-2 md:gap-4">
+      <Text as="p" size="sm" className="font-mono text-foreground/80 uppercase tracking-wide">
+        {caption}
+      </Text>
       <div
         aria-hidden="true"
         className="relative h-4 font-mono text-xs text-foreground/70 max-md:[&>span:not(:first-child):not(:last-child)]:hidden"
@@ -87,6 +99,9 @@ export function ExperienceTimeline({ entries, startYear, endYear }: ExperienceTi
                 </Text>
               </Pop>
             </div>
+            <Text as="p" size="sm" className="font-mono text-foreground/80">
+              {entry.period}
+            </Text>
             <div aria-hidden="true" className="relative h-1.5 rounded-full bg-foreground/15">
               <div
                 className="absolute inset-y-0"

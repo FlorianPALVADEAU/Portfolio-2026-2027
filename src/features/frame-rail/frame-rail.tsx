@@ -1,7 +1,12 @@
 "use client";
 
 import { type ReactNode, useLayoutEffect, useRef } from "react";
-import { NATIVE_SCROLL_ATTRIBUTE, onReducedMotionChange, prefersReducedMotion } from "@/lib/motion";
+import {
+  NATIVE_SCROLL_ATTRIBUTE,
+  onReducedMotionChange,
+  PHONE_QUERY,
+  prefersReducedMotion,
+} from "@/lib/motion";
 import { buildRail } from "./build-rail";
 
 type FrameRailProps = {
@@ -13,7 +18,7 @@ type FrameRailProps = {
 };
 
 /**
- * Stacks its frames, which is what remains without JavaScript or under reduced motion. Otherwise
+ * Stacks its frames, which is what remains without JavaScript, under reduced motion and on a phone, where nothing moves sideways. Otherwise
  * the stage sticks to the top while the page scrolls and the track slides sideways, one full
  * screen per frame, with a pause before the first and after the last (see `buildRail`). The stage reports its mode in `data-motion`, which the
  * parts of the rail style themselves by.
@@ -29,6 +34,7 @@ export function FrameRail({ frames, navLabel, children }: FrameRailProps) {
     if (!(parts.runway && parts.stage && parts.track)) return;
     const rail = { runway: parts.runway, stage: parts.stage, track: parts.track };
 
+    const phone = window.matchMedia(PHONE_QUERY);
     let teardown = () => {};
     let built = "";
     const contents = Array.from(rail.track.querySelectorAll("[data-frame] > div"));
@@ -40,7 +46,7 @@ export function FrameRail({ frames, navLabel, children }: FrameRailProps) {
     const signature = () => `${rail.stage.clientWidth}:${rail.track.scrollWidth}:${overflowing()}`;
     const mount = () => {
       teardown();
-      const active = prefersReducedMotion() ? null : buildRail(rail);
+      const active = prefersReducedMotion() || phone.matches ? null : buildRail(rail);
       teardown = active?.destroy ?? (() => {});
       goTo.current = active?.goTo ?? (() => {});
       built = signature();
@@ -55,10 +61,12 @@ export function FrameRail({ frames, navLabel, children }: FrameRailProps) {
     observer.observe(rail.track);
     for (const content of contents) observer.observe(content);
     const stopListening = onReducedMotionChange(mount);
+    phone.addEventListener("change", mount);
 
     return () => {
       observer.disconnect();
       stopListening();
+      phone.removeEventListener("change", mount);
       teardown();
     };
   }, []);
@@ -72,7 +80,7 @@ export function FrameRail({ frames, navLabel, children }: FrameRailProps) {
       >
         <div
           ref={track}
-          className="mx-auto flex max-w-(--container-max) flex-col gap-24 in-data-[motion=rail]:mx-0 in-data-[motion=rail]:h-full in-data-[motion=rail]:w-[max-content] in-data-[motion=rail]:max-w-none in-data-[motion=rail]:flex-row in-data-[motion=rail]:gap-0"
+          className="mx-auto flex max-w-(--container-max) flex-col gap-16 md:gap-24 in-data-[motion=rail]:mx-0 in-data-[motion=rail]:h-full in-data-[motion=rail]:w-[max-content] in-data-[motion=rail]:max-w-none in-data-[motion=rail]:flex-row in-data-[motion=rail]:gap-0"
         >
           {children}
         </div>
