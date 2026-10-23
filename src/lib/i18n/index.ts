@@ -1,4 +1,5 @@
 export {
+  defaultLocale,
   isLocale,
   type Locale,
   localeNames,

@@ -284,5 +284,18 @@
     "seek": "Position im Video",
     "loading": "Wird geladen",
     "volume": "Lautstärke"
+  },
+  "status": {
+    "notFound": {
+      "title": "Diese Seite existiert nicht",
+      "body": "Der Link ist möglicherweise defekt, oder die Seite wurde verschoben."
+    },
+    "error": {
+      "code": "Fehler",
+      "title": "Etwas ist schiefgelaufen",
+      "body": "Die Seite konnte nicht angezeigt werden. Sie können es erneut versuchen."
+    },
+    "retry": "Erneut versuchen",
+    "home": "Zurück zur Startseite"
   }
 }

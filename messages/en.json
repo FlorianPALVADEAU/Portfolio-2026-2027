@@ -279,5 +279,18 @@
     "seek": "Position in the video",
     "loading": "Loading",
     "volume": "Volume"
+  },
+  "status": {
+    "notFound": {
+      "title": "This page does not exist",
+      "body": "The link may be broken, or the page has moved."
+    },
+    "error": {
+      "code": "Error",
+      "title": "Something went wrong",
+      "body": "The page could not be displayed. You can try again."
+    },
+    "retry": "Try again",
+    "home": "Back to the home page"
   }
 }

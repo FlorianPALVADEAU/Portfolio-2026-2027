@@ -1,6 +1,6 @@
 export const locales = ["fr", "en", "de"] as const;
 export type Locale = (typeof locales)[number];
-const defaultLocale: Locale = "en";
+export const defaultLocale: Locale = "en";
 
 /** Native names, shown as-is in every locale. */
 export const localeNames: Record<Locale, string> = {

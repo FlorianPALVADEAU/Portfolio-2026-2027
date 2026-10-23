@@ -279,5 +279,18 @@
     "seek": "Position dans la vidéo",
     "loading": "Chargement",
     "volume": "Volume"
+  },
+  "status": {
+    "notFound": {
+      "title": "Cette page n'existe pas",
+      "body": "Le lien est peut-être rompu, ou la page a été déplacée."
+    },
+    "error": {
+      "code": "Erreur",
+      "title": "Une erreur est survenue",
+      "body": "La page n'a pas pu s'afficher. Vous pouvez réessayer."
+    },
+    "retry": "Réessayer",
+    "home": "Retour à l'accueil"
   }
 }

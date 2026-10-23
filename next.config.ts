@@ -30,6 +30,8 @@ const nextConfig: NextConfig = {
       })),
     ];
   },
+  // The root layout sits under `[locale]`, so a plain `not-found.tsx` is never reached for unknown URLs.
+  experimental: { globalNotFound: true },
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
