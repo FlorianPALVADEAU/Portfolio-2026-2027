@@ -55,7 +55,7 @@ export function StatusPage({ locale, code, copy, labels, retry }: StatusPageProp
       <RiseReveal triggerMargin="0px" className="relative h-full">
         {/* The duck fills the screen behind the text and is cropped by its bottom edge. */}
         <DuckStage
-          className="absolute inset-x-0 top-[24svh] bottom-0 z-0 md:top-[4svh] md:right-[-4%] md:left-[22%] md:-bottom-[22svh]"
+          className="absolute inset-x-0 top-[24svh] bottom-0 z-0 bg-[radial-gradient(ellipse_at_50%_60%,color-mix(in_oklab,var(--accent)_12%,transparent),transparent_62%)] md:top-[4svh] md:right-[-4%] md:left-[22%] md:-bottom-[22svh]"
           fallback={
             <div aria-hidden="true" className="absolute inset-0 z-0 grid place-items-center">
               <SpinningMark

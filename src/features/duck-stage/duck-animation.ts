@@ -5,7 +5,12 @@ const IDLE_AFTER_SECONDS = 2.5;
 const QUACK_SECONDS = 0.7;
 /** How far, in radians, the whole toy turns when the pointer is at the edge of the screen. */
 const TURN = 0.5;
-const LEAN = 0.14;
+/** Tilt, in radians, at the bottom edge of the screen: the toy bows toward the visitor much further than it leans back. */
+const LEAN_FORWARD = 0.5;
+const LEAN_BACK = 0.14;
+/** How far, in scene units, the toy steps toward the camera as the pointer drops. */
+const STEP_FORWARD = 0.55;
+const RISE_BACK = 0.12;
 /** How much the head swings, per unit of gaze speed. */
 const SWAY_PUSH = 0.05;
 const MAX_SWAY = 9;
@@ -84,8 +89,12 @@ export function animateDuck(
   const { root, body } = parts;
   if (root.current) {
     root.current.rotation.y = memory.gaze.x * TURN;
-    root.current.rotation.x = memory.gaze.y * LEAN;
-    root.current.position.y = quack > 0 ? Math.sin((1 - quack) * Math.PI) * 0.25 : 0;
+    const down = Math.max(0, memory.gaze.y);
+    const up = Math.max(0, -memory.gaze.y);
+    root.current.rotation.x = down * LEAN_FORWARD - up * LEAN_BACK;
+    root.current.position.z = down * STEP_FORWARD;
+    root.current.position.y =
+      up * RISE_BACK + (quack > 0 ? Math.sin((1 - quack) * Math.PI) * 0.25 : 0);
   }
   if (body.current) {
     const breath = 1 + Math.sin(now * 1.6) * 0.008;

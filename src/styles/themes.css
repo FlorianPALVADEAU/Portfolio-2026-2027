@@ -1,23 +1,7 @@
 /* Semantic color tokens. The active theme is selected with `data-theme` on <html>. */
 
+/* Light is the default; it also serves as the paper a dark page hands over to once its black closing section ends. */
 :root,
-[data-theme="dark"] {
-  color-scheme: dark;
-  --background: #0a0a0b;
-  --foreground: #f5f5f4;
-  --surface: #141416;
-  --surface-foreground: #f5f5f4;
-  --muted: #1c1c1f;
-  --muted-foreground: #a1a1aa;
-  --border: #2e2e33;
-  --accent: #8ab4ff;
-  --accent-foreground: #0a0a0b;
-  --ring: #8ab4ff;
-  --radius: 0.75rem;
-  --shadow-color: 0 0 0;
-}
-
-/* Paper: what a dark page hands over to once its black closing section ends. */
 [data-theme="light"],
 [data-theme="dark"] [data-paper] {
   color-scheme: light;
@@ -33,6 +17,22 @@
   --ring: #1d4ed8;
   --radius: 0.75rem;
   --shadow-color: 12 10 9;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0a0a0b;
+  --foreground: #f5f5f4;
+  --surface: #141416;
+  --surface-foreground: #f5f5f4;
+  --muted: #1c1c1f;
+  --muted-foreground: #a1a1aa;
+  --border: #2e2e33;
+  --accent: #8ab4ff;
+  --accent-foreground: #0a0a0b;
+  --ring: #8ab4ff;
+  --radius: 0.75rem;
+  --shadow-color: 0 0 0;
 }
 
 [data-theme="swiss"] {

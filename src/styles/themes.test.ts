@@ -8,8 +8,8 @@ const themes = ["dark", "light", "swiss"] as const;
 
 function tokensOf(theme: (typeof themes)[number]) {
   const selectors = {
-    dark: ':root,\n[data-theme="dark"]',
-    light: '[data-theme="light"],\n[data-theme="dark"] [data-paper]',
+    dark: '[data-theme="dark"]',
+    light: ':root,\n[data-theme="light"],\n[data-theme="dark"] [data-paper]',
     swiss: '[data-theme="swiss"]',
   };
   const selector = selectors[theme];
