@@ -15,7 +15,8 @@ async function settle(read: () => Promise<number>) {
 }
 
 test.describe("skills rail", () => {
-  test("slides from frame to frame as the page scrolls", async ({ page }) => {
+  test("slides from frame to frame as the page scrolls", async ({ page, isMobile }) => {
+    test.skip(isMobile, "A phone stacks the frames instead of sliding them");
     await page.goto("/en");
     const skills = page.getByRole("region", { name: "Skills" });
     await expect(skills.locator("[data-motion]")).toHaveAttribute("data-motion", "rail");
@@ -40,7 +41,8 @@ test.describe("skills rail", () => {
       .toBeLessThan(before - 200);
   });
 
-  test("jumps to a frame from the progress bar", async ({ page }) => {
+  test("jumps to a frame from the progress bar", async ({ page, isMobile }) => {
+    test.skip(isMobile, "A phone stacks the frames instead of sliding them");
     await page.goto("/en");
     const skills = page.getByRole("region", { name: "Skills" });
     await skills.evaluate((section) => section.scrollIntoView());
@@ -63,6 +65,20 @@ test.describe("skills rail", () => {
         return x >= 0 && x < width && left < 0;
       })
       .toBe(true);
+  });
+
+  test("stacks the frames on a phone, with no sideways movement", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "Only a phone stacks the frames while motion is on");
+    await page.goto("/en");
+    const skills = page.getByRole("region", { name: "Skills" });
+
+    // The closing photo keeps its effect, so the stage is in its own mode, never the sliding rail.
+    await expect(skills.locator("[data-motion]")).toHaveAttribute("data-motion", "finale");
+    await expect(skills.getByRole("heading", { name: "Infrastructure" })).toBeAttached();
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
   });
 
   test("shows every frame stacked under reduced motion", async ({ page }) => {
