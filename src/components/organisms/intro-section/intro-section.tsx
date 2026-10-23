@@ -14,7 +14,7 @@ type IntroSectionProps = {
 
 /**
  * What the owner does, above the companies worked with. It slides over the hero, then stays in
- * place while the paragraph lights up word by word. It is opaque and above the hero (`z-10`).
+ * place while the paragraph lights up in one sweep. It is opaque and above the hero (`z-10`).
  */
 export function IntroSection({ title, messages }: IntroSectionProps) {
   return (

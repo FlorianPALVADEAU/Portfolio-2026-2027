@@ -8,12 +8,12 @@ import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Opacity of a word that has not been reached yet; low enough that only the lit words read. */
-const DIM = 0.12;
+/** Opacity of a word that has not been reached yet; white on black at this level keeps AA contrast. */
+const DIM = 0.5;
 /** Share of the scroll that lights the words; the stage fades out over the rest. */
 const LIGHT_SPAN = 0.8;
-/** How many neighbouring words are mid-fade at once: higher is softer, lower is more word by word. */
-const WORD_OVERLAP = 2.5;
+/** Share of the words that are mid-fade at once: the lit edge is a gradient, not word by word. */
+const EDGE = 0.4;
 /** Viewport heights of scrolling, with the stage held in place, that light the whole text. */
 const TRAVEL = 1.5;
 const TRACK = `${(TRAVEL + 1) * 100}svh`;
@@ -29,8 +29,8 @@ type LitTextProps = {
 };
 
 /**
- * A full-screen stage that stays in place while the visitor scrolls, lighting its paragraph word
- * by word. Scrolling goes on only once the last word is lit. Words are dimmed only once the script
+ * A full-screen stage that stays in place while the visitor scrolls, lighting its paragraph in one
+ * continuous sweep. Scrolling goes on only once the last word is lit. Words are dimmed only once the script
  * runs and the text stays plain for assistive technology, so it is fully readable without
  * JavaScript. The stage fades out as it ends, and its negative bottom margin pulls the next
  * section up by one viewport, so that section can take over at the moment the stage is released.
@@ -55,12 +55,13 @@ export function LitText({ text, className, stageClassName, children }: LitTextPr
         },
       });
       const words = gsap.utils.toArray<HTMLElement>("[data-lit-word]", element);
-      // Each word fades over a few word-slots, so words light one after another with a soft edge.
-      const slot = LIGHT_SPAN / (words.length - 1 + WORD_OVERLAP);
+      // Each word fades linearly over a wide stretch of the text, so the light sweeps along it.
+      const overlap = Math.max(1, words.length * EDGE);
+      const slot = LIGHT_SPAN / (words.length - 1 + overlap);
       timeline.fromTo(
         words,
         { opacity: DIM },
-        { opacity: 1, duration: slot * WORD_OVERLAP, ease: "power1.out", stagger: slot },
+        { opacity: 1, duration: slot * overlap, stagger: slot },
         0,
       );
       timeline.to(stage.current, { opacity: 0, duration: 1 - LIGHT_SPAN }, LIGHT_SPAN);
