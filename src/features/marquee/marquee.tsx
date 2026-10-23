@@ -15,6 +15,10 @@ const MAX_BOOST = 2400;
 const FOLLOW = 6;
 /** How fast the band eases to a stop or back to speed on hover, per second. */
 const PACE_FOLLOW = 5;
+/** Band width, in pixels, at which `speed` applies as given; a narrower band runs slower. */
+const REFERENCE_WIDTH = 1200;
+/** Floor of the slow-down: a phone band still has to move. */
+const MIN_WIDTH_SCALE = 0.5;
 /** A frame longer than this (a hidden tab, a long task) never makes the band jump. */
 const MAX_FRAME_SECONDS = 0.1;
 
@@ -24,7 +28,7 @@ type MarqueeProps = {
   items: readonly MarqueeItem[];
   label: string;
   className?: string;
-  /** Pixels per second when the page is not scrolling. */
+  /** Pixels per second when the page is not scrolling, on a band 1200px wide or more. */
   speed?: number;
   /** Classes of each item; replaces the small uppercase mono default. */
   itemClassName?: string;
@@ -96,6 +100,8 @@ export function Marquee({
     root.current.dataset.motion = "loop";
 
     let width = first.getBoundingClientRect().width;
+    // The same pixels per second cross a small screen faster in proportion, so a narrow band slows.
+    let widthScale = 1;
     let visible = true;
     let offset = 0;
     let lastScroll = window.scrollY;
@@ -105,6 +111,7 @@ export function Marquee({
 
     const measure = () => {
       width = first.getBoundingClientRect().width;
+      widthScale = Math.min(1, Math.max(MIN_WIDTH_SCALE, band.clientWidth / REFERENCE_WIDTH));
       if (width > 0) setCopies(Math.max(2, Math.ceil(band.clientWidth / width) + 1));
     };
     measure();
@@ -118,7 +125,7 @@ export function Marquee({
       const target = Math.min((scrolled / seconds) * SCROLL_GAIN, MAX_BOOST);
       boost += (target - boost) * (1 - Math.exp(-FOLLOW * seconds));
       pace += (paceTarget - pace) * (1 - Math.exp(-PACE_FOLLOW * seconds));
-      offset = (offset + (speed + boost) * pace * seconds) % width;
+      offset = (offset + (speed * widthScale + boost) * pace * seconds) % width;
       strip.style.transform = `translate3d(${-offset}px, 0, 0)`;
     };
     gsap.ticker.add(tick);
