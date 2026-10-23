@@ -8,7 +8,7 @@ import type { Input } from "./duck-animation";
 /** Below this width-to-height ratio the stage is a phone's: the camera moves in on the head. */
 const PORTRAIT_RATIO = 0.95;
 type View = { position: [number, number, number]; target: [number, number, number] };
-const FULL_BODY: View = { position: [0, 2.45, 5.4], target: [0, 2.0, 0] };
+const FULL_BODY: View = { position: [0, 1.7, 4.0], target: [0, 0.7, 0] };
 const CLOSE_UP: View = { position: [0, 2.85, 4.1], target: [0, 2.75, 0] };
 
 function Rig() {
