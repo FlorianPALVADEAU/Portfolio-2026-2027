@@ -4,7 +4,7 @@ import { Pop } from "@/components/atoms/pop";
 import { ExperienceTimeline } from "@/components/molecules/experience-timeline";
 import { StatFigure } from "@/components/molecules/stat-figure";
 import { Frame } from "@/features/frame-rail";
-import { experiences, skillIcon, skillStats, timelineYears } from "@/lib/landing";
+import { experiences, skillIcon, skillStats } from "@/lib/landing";
 import { FrameIntro } from "./frame-intro";
 import type { GroupFrameProps } from "./frame-props";
 
@@ -19,14 +19,14 @@ export function EngineeringFrame({
   messages,
   children,
 }: GroupFrameProps & { children: ReactNode }) {
-  const entries = experiences.map(({ id, name, href, from, to, stack }) => ({
+  // Newest first, as a CV reads.
+  const entries = [...experiences].reverse().map(({ id, name, href, from, to, stack }) => ({
     id,
     name,
     href,
     role: messages.experiences[id],
-    from,
-    to: to ?? timelineYears.end,
     period: `${Math.floor(from)} – ${to === null ? messages.timeline.today : Math.floor(to)}`,
+    current: to === null,
     stack: stack.map((skill) => ({ name: skill, icon: skillIcon(skill) })),
   }));
 
@@ -82,12 +82,7 @@ export function EngineeringFrame({
         </div>
       </div>
       <div className="md:col-span-7">
-        <ExperienceTimeline
-          entries={entries}
-          caption={messages.timeline.caption}
-          startYear={timelineYears.start}
-          endYear={timelineYears.end}
-        />
+        <ExperienceTimeline entries={entries} />
       </div>
     </Frame>
   );

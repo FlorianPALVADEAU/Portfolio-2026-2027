@@ -1,6 +1,6 @@
 export { clients } from "./clients";
 export { assetCredits, pictureCredits } from "./credits";
-export { experiences, pipelineStages, skillStats, timelineYears } from "./experiences";
+export { experiences, pipelineStages, skillStats } from "./experiences";
 export { type GalleryItem, galleryIds, galleryItems } from "./gallery";
 export { heroPhotoSlots, heroPhotos } from "./hero-photos";
 export { githubLogin, profiles } from "./profiles";

@@ -8,6 +8,7 @@ import {
   prefersReducedMotion,
 } from "@/lib/motion";
 import { buildRail } from "./build-rail";
+import { buildFinale } from "./finale";
 
 type FrameRailProps = {
   /** One label per `Frame`, in the same order; they name the segments of the bar. */
@@ -18,7 +19,7 @@ type FrameRailProps = {
 };
 
 /**
- * Stacks its frames, which is what remains without JavaScript, under reduced motion and on a phone, where nothing moves sideways. Otherwise
+ * Stacks its frames, which is what remains without JavaScript, under reduced motion and on a phone, where nothing moves sideways (only the closing photo keeps its effect there). Otherwise
  * the stage sticks to the top while the page scrolls and the track slides sideways, one full
  * screen per frame, with a pause before the first and after the last (see `buildRail`). The stage reports its mode in `data-motion`, which the
  * parts of the rail style themselves by.
@@ -46,8 +47,11 @@ export function FrameRail({ frames, navLabel, children }: FrameRailProps) {
     const signature = () => `${rail.stage.clientWidth}:${rail.track.scrollWidth}:${overflowing()}`;
     const mount = () => {
       teardown();
-      const active = prefersReducedMotion() || phone.matches ? null : buildRail(rail);
-      teardown = active?.destroy ?? (() => {});
+      const reduced = prefersReducedMotion();
+      const active = reduced || phone.matches ? null : buildRail(rail);
+      // A phone keeps only the closing photo's effect, pinned in the one column.
+      teardown =
+        active?.destroy ?? (reduced || !phone.matches ? () => {} : buildFinale(rail.stage));
       goTo.current = active?.goTo ?? (() => {});
       built = signature();
     };

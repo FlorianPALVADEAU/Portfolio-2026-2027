@@ -18,7 +18,7 @@ export function Frame({ numeral, bleed = false, className, children, ...props }:
       data-frame
       className={cn(
         "relative px-(--gutter) in-data-[motion=rail]:h-full in-data-[motion=rail]:w-screen in-data-[motion=rail]:shrink-0 in-data-[motion=rail]:overflow-x-hidden in-data-[motion=rail]:overflow-y-auto in-data-[motion=rail]:pt-24 in-data-[motion=rail]:pb-16 in-data-[motion=rail]:[scrollbar-width:none] focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-accent",
-        bleed && "in-data-[motion=rail]:p-0",
+        bleed && "in-data-[motion=rail]:p-0 in-data-[motion=finale]:p-0",
       )}
       {...props}
     >
@@ -34,7 +34,7 @@ export function Frame({ numeral, bleed = false, className, children, ...props }:
       <div
         className={cn(
           "relative mx-auto flex w-full max-w-(--container-max) flex-col in-data-[motion=rail]:min-h-full in-data-[motion=rail]:justify-center",
-          bleed && "in-data-[motion=rail]:max-w-none",
+          bleed && "in-data-[motion=rail]:max-w-none in-data-[motion=finale]:max-w-none",
           className,
         )}
       >
