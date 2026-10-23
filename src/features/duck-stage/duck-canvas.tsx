@@ -5,18 +5,31 @@ import { type RefObject, Suspense, useEffect } from "react";
 import { Duck } from "./duck";
 import type { Input } from "./duck-animation";
 
-/** Below this width-to-height ratio the stage is a phone's: the camera moves in on the head. */
+/** Below this width-to-height ratio the stage is tall and narrow, a phone's or a tablet's. */
 const PORTRAIT_RATIO = 0.95;
-type View = { position: [number, number, number]; target: [number, number, number] };
+type Vec3 = [number, number, number];
+type View = { position: Vec3; target: Vec3 };
 const FULL_BODY: View = { position: [0, 1.45, 2.15], target: [0, 0.83, 0] };
-const CLOSE_UP: View = { position: [0, 1.4, 3.2], target: [0, 0.95, 0] };
+/** The same framing as the full body, pulled back just far enough that the body fits the width. */
+const PORTRAIT: View = { position: [0, 1.55, 2.5], target: [0, 1.02, 0] };
+/** Distance times aspect ratio at which the body spans nearly the whole width of the stage. */
+const FIT_WIDTH = 1.52;
+
+function viewFor(width: number, height: number): View {
+  const ratio = width / height;
+  if (ratio >= PORTRAIT_RATIO) return FULL_BODY;
+  const [x, y, z] = PORTRAIT.position;
+  const [, ty, tz] = PORTRAIT.target;
+  const scale = FIT_WIDTH / ratio / Math.hypot(y - ty, z - tz);
+  return { position: [x, ty + (y - ty) * scale, tz + (z - tz) * scale], target: PORTRAIT.target };
+}
 
 function Rig() {
   const camera = useThree((state) => state.camera);
   const { width, height } = useThree((state) => state.size);
 
   useEffect(() => {
-    const view = width / height < PORTRAIT_RATIO ? CLOSE_UP : FULL_BODY;
+    const view = viewFor(width, height);
     camera.position.set(...view.position);
     camera.lookAt(...view.target);
     camera.updateProjectionMatrix();
