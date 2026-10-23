@@ -121,8 +121,13 @@ export function openOnClick(
       .eventCallback("onComplete", () => open(destination))
       .play();
   };
+  // Tells the page transition to leave this link alone: the cover's own exit is the transition.
+  link.setAttribute("data-own-transition", "");
   link.addEventListener("click", onClick);
-  return () => link.removeEventListener("click", onClick);
+  return () => {
+    link.removeAttribute("data-own-transition");
+    link.removeEventListener("click", onClick);
+  };
 }
 
 /**

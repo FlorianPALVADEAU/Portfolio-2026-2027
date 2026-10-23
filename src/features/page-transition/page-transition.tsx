@@ -104,6 +104,7 @@ export function PageTransition() {
       const element = overlay.current;
       const anchor = event.target instanceof Element ? event.target.closest("a") : null;
       if (!(element && anchor) || covering.current) return;
+      if (anchor.hasAttribute("data-own-transition")) return;
 
       const destination = getInternalNavigation(event, anchor, window.location);
       if (!destination) return;

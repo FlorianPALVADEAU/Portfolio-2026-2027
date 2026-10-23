@@ -49,6 +49,16 @@ describe("PageTransition", () => {
     expect(push).toHaveBeenCalledWith("/fr", { scroll: false });
   });
 
+  it("leaves a link that plays its own transition alone", async () => {
+    const { getByText } = await mount();
+    getByText("French").setAttribute("data-own-transition", "");
+
+    fireEvent.click(getByText("French"));
+
+    expect(to).not.toHaveBeenCalled();
+    expect(push).not.toHaveBeenCalled();
+  });
+
   it("leaves hash links to the browser", async () => {
     const { getByText } = await mount();
 
