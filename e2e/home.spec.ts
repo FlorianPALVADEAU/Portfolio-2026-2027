@@ -5,9 +5,11 @@ async function openMenu(page: Page) {
   await page.getByRole("button", { name: "Menu" }).click();
 }
 
-// Below md the menu lists the themes inline and leaves Swiss out, a desktop-only look.
+// Below md the menu lists the themes inline and leaves Swiss out, a desktop-only look; from md up
+// the theme is a dropdown in the header.
 async function chooseTheme(page: Page, name: "Light" | "Swiss", isMobile: boolean) {
-  if (!isMobile) await page.getByRole("button", { name: "Theme: Dark" }).click();
+  if (isMobile) await openMenu(page);
+  else await page.getByRole("button", { name: "Theme: Dark" }).click();
   await page.getByRole("button", { name: isMobile ? "Light" : name }).click();
 }
 
@@ -57,13 +59,11 @@ test("chosen theme persists across reloads without a flash", async ({ page, isMo
   await page.goto("/en");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 
-  await openMenu(page);
   await chooseTheme(page, "Swiss", isMobile);
   await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
 
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
-  await openMenu(page);
   if (!isMobile) {
     await expect(page.getByRole("button", { name: "Theme: Swiss" })).toBeVisible();
   }
@@ -436,7 +436,6 @@ test("the now playing route answers with no content when Spotify is not configur
 
 test("changing language keeps the theme and the scroll position", async ({ page, isMobile }) => {
   await page.goto("/en");
-  await openMenu(page);
   await chooseTheme(page, "Light", isMobile);
   // The wheel, not `scrollTo`: a native jump leaves the smooth-scroll library on its old position.
   // Touch screens have no smooth scroll, so a native jump is exact there.
