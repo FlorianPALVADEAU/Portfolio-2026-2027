@@ -6,10 +6,12 @@ const QUACK_SECONDS = 0.7;
 /** How far, in radians, the whole toy turns when the pointer is at the edge of the screen. */
 const TURN = 0.5;
 /** Tilt, in radians, at the bottom edge of the screen: the toy bows toward the visitor much further than it leans back. */
-const LEAN_FORWARD = 0.8;
+const LEAN_FORWARD = 0.4;
 const LEAN_BACK = 0.14;
-/** The lean turns about the front of the toy's lower torso, as if it were anchored there: height and depth in scene units. */
-const PIVOT = { y: 0.7, z: 0.75 };
+/** The toy stands leaning back a little when the pointer is in the middle, so it arrives rearing up. */
+const REST_LEAN = -0.15;
+/** The lean turns about the toy's feet, as if they were planted: height and depth in scene units. */
+const PIVOT = { y: 0, z: 0.35 };
 /** How much the head swings, per unit of gaze speed. */
 const SWAY_PUSH = 0.05;
 const MAX_SWAY = 9;
@@ -88,7 +90,7 @@ export function animateDuck(
   const { root, body } = parts;
   if (root.current) {
     root.current.rotation.y = memory.gaze.x * TURN;
-    const lean = memory.gaze.y * (memory.gaze.y > 0 ? LEAN_FORWARD : LEAN_BACK);
+    const lean = REST_LEAN + memory.gaze.y * (memory.gaze.y > 0 ? LEAN_FORWARD : LEAN_BACK);
     const [sin, cos] = [Math.sin(lean), Math.cos(lean)];
     root.current.rotation.x = lean;
     // Keeps the pivot point where it was, so the rotation happens around it and not around the feet.
