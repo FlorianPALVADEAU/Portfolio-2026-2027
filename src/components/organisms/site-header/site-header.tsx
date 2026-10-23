@@ -38,6 +38,7 @@ export function SiteHeader({ locale, messages, cvHref = null }: SiteHeaderProps)
                   <SoundHint label={messages.sound.hint} />
                 </div>
                 <LocaleSwitcher current={locale} label={messages.language} />
+                <ThemeSwitcher label={messages.theme.label} names={messages.theme.names} />
               </div>
               <Button
                 asChild
@@ -57,19 +58,12 @@ export function SiteHeader({ locale, messages, cvHref = null }: SiteHeaderProps)
                   label: messages.nav[id],
                 }))}
               >
-                <div className="hidden md:block">
-                  <ThemeSwitcher label={messages.theme.label} names={messages.theme.names} />
-                </div>
-                <div className="md:hidden">
-                  <ThemeSwitcher
-                    label={messages.theme.label}
-                    names={messages.theme.names}
-                    layout="inline"
-                  />
-                </div>
-                <div className="md:hidden">
-                  <LocaleSwitcher current={locale} label={messages.language} layout="inline" />
-                </div>
+                <ThemeSwitcher
+                  label={messages.theme.label}
+                  names={messages.theme.names}
+                  layout="inline"
+                />
+                <LocaleSwitcher current={locale} label={messages.language} layout="inline" />
               </SiteMenu>
             </div>
           </HeaderShrink>
