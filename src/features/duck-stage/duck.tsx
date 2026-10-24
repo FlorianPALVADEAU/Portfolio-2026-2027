@@ -6,8 +6,8 @@ import { animateDuck, type Input, newMemory } from "./duck-animation";
 import { addPlushSway } from "./plush-sway";
 
 const DUCK_URL = "/models/duck.glb";
-/** Height of the toy in scene units, whatever the model was authored in. */
-const HEIGHT = 3.2;
+/** Height of the toy in scene units, whatever the model was authored in; the camera is framed for it. */
+const HEIGHT = 1.48;
 
 /**
  * "Duck Plush" by SunnyBuns (CC BY 4.0), a knitted duck. The file is one rigid mesh, so the toy is
@@ -24,6 +24,9 @@ export function Duck({ input }: { input: RefObject<Input> }) {
   // Stand the model on the ground, centred, at a known height, and make its mesh sway.
   const { scene, base, top } = useMemo(() => {
     const model = gltf.scene;
+    // The loaded scene is cached and shared, so fit it from its authored size: a second pass
+    // (React strict mode in development) would otherwise measure the already fitted model.
+    model.scale.setScalar(1);
     model.updateWorldMatrix(true, true);
     const box = new Box3().setFromObject(model);
     const size = box.getSize(new Vector3());
