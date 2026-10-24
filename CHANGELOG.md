@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/compare/portfolio-v1.0.0...portfolio-v1.0.0) (2026-10-24)
+
+
+### Bug fixes
+
+* **duck-stage:** fit the model from its authored size in production ([#251](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/issues/251)) ([2f9f9a5](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/commit/2f9f9a5960d1c251b6f2b4427b752ecd2fb6ca9d))
+
 ## [1.0.0](https://github.com/FlorianPALVADEAU/Portfolio-2026-2027/compare/portfolio-v0.5.0...portfolio-v1.0.0) (2026-10-23)
 
 
