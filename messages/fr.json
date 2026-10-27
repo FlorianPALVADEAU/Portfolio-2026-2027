@@ -84,6 +84,30 @@
           "title": "Infrastructure",
           "lead": "Du commit à la production : tests automatisés, images et déploiements Kubernetes."
         },
+        "ai": {
+          "title": "Ingénierie assistée par l'IA",
+          "lead": "Je dirige des agents IA pour construire des logiciels, et je conçois des applications qui reposent sur l'IA.",
+          "items": [
+            "Agentic coding",
+            "LLM",
+            "RAG",
+            "Agents et sous-agents",
+            "Applications propulsées par l'IA"
+          ],
+          "notes": [
+            "Ce portfolio a été écrit par des agents sous ma direction : je fixe les règles, les tickets et les relectures, pas le code.",
+            "Choisir le bon modèle pour la tâche, puis lui donner le contexte et les outils pour être utile.",
+            "Ancrer un modèle dans mes propres documents, pour que ses réponses restent précises et vérifiables.",
+            "Un agent principal découpe le travail et le confie à des agents spécialisés, chacun avec son périmètre et ses contrôles.",
+            "Des applications où le modèle fait partie du produit, pas seulement de la chaîne d'outils."
+          ],
+          "flow": {
+            "intent": "Mon intention",
+            "lead": "Agent principal",
+            "workers": ["Construire", "Tester", "Relire"],
+            "result": "Une pull request que je relis et fusionne"
+          }
+        },
         "delivery": {
           "title": "Delivery",
           "items": ["Scrum", "Architecture hexagonale", "SOLID", "Microservices", "Planification"],

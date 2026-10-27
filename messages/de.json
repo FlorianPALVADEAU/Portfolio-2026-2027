@@ -89,6 +89,30 @@
           "title": "Infrastruktur",
           "lead": "Vom Commit bis in die Produktion: automatisierte Tests, Images und Kubernetes-Deployments."
         },
+        "ai": {
+          "title": "KI-gestützte Entwicklung",
+          "lead": "Ich steuere KI-Agenten beim Bau von Software und entwickle Anwendungen, die auf KI laufen.",
+          "items": [
+            "Agentic Coding",
+            "LLMs",
+            "RAG",
+            "Agenten und Sub-Agenten",
+            "KI-gestützte Anwendungen"
+          ],
+          "notes": [
+            "Dieses Portfolio wurde von Agenten unter meiner Leitung geschrieben: Ich lege Regeln, Tickets und Reviews fest, nicht den Code.",
+            "Das passende Modell für die Aufgabe wählen und ihm den Kontext und die Werkzeuge geben, die es braucht.",
+            "Ein Modell in meinen eigenen Dokumenten verankern, damit seine Antworten präzise und überprüfbar bleiben.",
+            "Ein Haupt-Agent zerlegt die Arbeit und übergibt sie spezialisierten Agenten, jeder mit eigenem Umfang und eigenen Prüfungen.",
+            "Anwendungen, in denen das Modell Teil des Produkts ist, nicht nur der Werkzeugkette."
+          ],
+          "flow": {
+            "intent": "Meine Absicht",
+            "lead": "Haupt-Agent",
+            "workers": ["Bauen", "Testen", "Prüfen"],
+            "result": "Ein Pull Request, den ich prüfe und merge"
+          }
+        },
         "delivery": {
           "title": "Delivery",
           "items": ["Scrum", "Hexagonale Architektur", "SOLID", "Microservices", "Planung"],

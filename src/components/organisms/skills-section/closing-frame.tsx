@@ -9,7 +9,7 @@ type ClosingFrameProps = {
 };
 
 /**
- * Frame 6: a photo that fills the screen as it arrives, then shrinks into a rounded card with
+ * Frame 7: a photo that fills the screen as it arrives, then shrinks into a rounded card with
  * texts over it (see `addFinale` in the rail). On a phone it does the same pinned in place; stacked without motion, it is simply that card, texts showing.
  */
 export function ClosingFrame({ messages, photo }: ClosingFrameProps) {
