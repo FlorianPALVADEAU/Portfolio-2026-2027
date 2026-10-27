@@ -14,7 +14,13 @@ describe("SkillsSection", () => {
       />,
     );
 
-    for (const name of ["Engineering", "Infrastructure", "Delivery", "Collaboration"]) {
+    for (const name of [
+      "Engineering",
+      "Infrastructure",
+      "AI-assisted engineering",
+      "Delivery",
+      "Collaboration",
+    ]) {
       expect(screen.getByRole("heading", { name })).toBeInTheDocument();
     }
     const certifications = screen.getByRole("region", { name: "Certifications" });
@@ -28,5 +34,20 @@ describe("SkillsSection", () => {
     ]);
     expect(within(certifications).getByText("LF-gm9o7dmr8j")).toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Skills" })).toHaveAttribute("id", "skills");
+  });
+
+  it("shows the agent flow and the five AI practices", () => {
+    render(
+      <SkillsSection
+        index={3}
+        title="Skills"
+        messages={en.home.skills}
+        photo={en.home.photos.closing}
+      />,
+    );
+
+    const frame = screen.getByRole("region", { name: "AI-assisted engineering" });
+    expect(within(frame).getAllByRole("listitem")).toHaveLength(5 + 3);
+    expect(within(frame).getByText("Lead agent")).toBeInTheDocument();
   });
 });

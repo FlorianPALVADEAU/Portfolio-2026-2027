@@ -9,7 +9,7 @@ import { FrameIntro } from "./frame-intro";
 import type { GroupFrameProps } from "./frame-props";
 
 /**
- * Frame 4: set as a page of a magazine rather than a grid of tiles. Two huge figures under the
+ * Frame 5: set as a page of a magazine rather than a grid of tiles. Two huge figures under the
  * title, two lines of prose between rules, and a tall photo whose frame wipes open.
  */
 export function CollaborationFrame({ order, total, messages }: GroupFrameProps) {
@@ -17,7 +17,7 @@ export function CollaborationFrame({ order, total, messages }: GroupFrameProps) 
 
   return (
     <Frame
-      numeral="04"
+      numeral="05"
       aria-labelledby="skills-collaboration"
       className="gap-5 md:grid md:grid-cols-12 md:items-center md:gap-14"
     >

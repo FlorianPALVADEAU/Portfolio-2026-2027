@@ -5,11 +5,11 @@ import { skillStats } from "@/lib/landing";
 import { FrameIntro } from "./frame-intro";
 import type { GroupFrameProps } from "./frame-props";
 
-/** Frame 3: the practices on a ring around the number of people the software serves. */
+/** Frame 4: the practices on a ring around the number of people the software serves. */
 export function DeliveryFrame({ order, total, messages }: GroupFrameProps) {
   return (
     <Frame
-      numeral="03"
+      numeral="04"
       aria-labelledby="skills-delivery"
       className="gap-4 md:grid md:grid-cols-12 md:items-center md:gap-12"
     >

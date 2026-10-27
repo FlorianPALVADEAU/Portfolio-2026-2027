@@ -16,6 +16,7 @@ export const skillGroups = [
     ],
   },
   { id: "infrastructure", items: ["AWS", "Kubernetes", "Docker", "Helm", "CI/CD"] },
+  { id: "ai", items: null },
   { id: "delivery", items: null },
   { id: "collaboration", items: null },
 ] as const;

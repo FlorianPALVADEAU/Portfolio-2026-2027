@@ -84,6 +84,24 @@
           "title": "Infrastructure",
           "lead": "From commit to production: automated tests, images and Kubernetes deployments."
         },
+        "ai": {
+          "title": "AI-assisted engineering",
+          "lead": "I direct AI agents to build software, and I build applications that run on AI.",
+          "items": ["Agentic coding", "LLMs", "RAG", "Agents and sub-agents", "AI-powered apps"],
+          "notes": [
+            "This portfolio was written by agents under my direction: I set the rules, the issues and the reviews, not the code.",
+            "Picking the right model for the job, then giving it the context and tools it needs to be useful.",
+            "Grounding a model in my own documents, so its answers stay specific and checkable.",
+            "A lead agent splits the work and hands it to specialised agents, each with its own scope and checks.",
+            "Applications where a model is part of the product, not only part of the toolchain."
+          ],
+          "flow": {
+            "intent": "My intent",
+            "lead": "Lead agent",
+            "workers": ["Build", "Test", "Review"],
+            "result": "A pull request I review and merge"
+          }
+        },
         "delivery": {
           "title": "Delivery",
           "items": ["Scrum", "Hexagonal architecture", "SOLID", "Microservices", "Planning"],
